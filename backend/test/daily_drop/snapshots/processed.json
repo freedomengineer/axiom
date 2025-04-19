@@ -1,0 +1,576 @@
+{
+    "publishes": [
+        [0, 1, 2, 3],
+        [],
+        [],
+        [4, 5],
+        [6, 7, 8, 9],
+        [10, 11, 12],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [13, 14, 15, 16],
+        [17, 18, 19, 20, 21, 22, 23],
+        [],
+        [24, 25, 26],
+        [27, 28, 29],
+        [],
+        [],
+        [],
+        [30, 31, 32],
+        [33, 34, 35, 36],
+        [37, 38, 39]
+    ],
+    "hypotheses": [
+        {
+            "id": 0,
+            "publisher": 0,
+            "publishDate": 0,
+            "votes": [
+                { "voter": 0, "value": 0 },
+                { "voter": 1, "value": 10 },
+                { "voter": 2, "value": 52 },
+                { "voter": 3, "value": 2 },
+                { "voter": 4, "value": 16 },
+                { "voter": 5, "value": 0 },
+                { "voter": 6, "value": 2 }
+            ],
+            "evidences": [0, 1, 2],
+            "regularScore": 7,
+            "poweredScore": 82
+        },
+        {
+            "id": 1,
+            "publisher": 1,
+            "publishDate": 0,
+            "votes": [
+                { "voter": 0, "value": 0 },
+                { "voter": 1, "value": 10 }
+            ],
+            "evidences": [],
+            "regularScore": 2,
+            "poweredScore": 10
+        },
+        {
+            "id": 2,
+            "publisher": 2,
+            "publishDate": 0,
+            "votes": [
+                { "voter": 0, "value": 3 },
+                { "voter": 1, "value": 5 },
+                { "voter": 2, "value": 0 },
+                { "voter": 3, "value": 0 },
+                { "voter": 4, "value": 0 }
+            ],
+            "evidences": [0],
+            "regularScore": 5,
+            "poweredScore": 8
+        },
+        {
+            "id": 3,
+            "publisher": 3,
+            "publishDate": 0,
+            "votes": [
+                { "voter": 0, "value": 0 },
+                { "voter": 1, "value": 0 },
+                { "voter": 2, "value": 0 },
+                { "voter": 3, "value": 0 },
+                { "voter": 4, "value": 0 },
+                { "voter": 5, "value": 0 },
+                { "voter": 6, "value": 0 },
+                { "voter": 7, "value": 0 },
+                { "voter": 8, "value": 0 },
+                { "voter": 9, "value": 0 }
+            ],
+            "evidences": [],
+            "regularScore": 10,
+            "poweredScore": 0
+        },
+        {
+            "id": 4,
+            "publisher": 4,
+            "publishDate": 3,
+            "votes": [
+                { "voter": 0, "value": 12 },
+                { "voter": 1, "value": 6 }
+            ],
+            "evidences": [0, 1],
+            "regularScore": 2,
+            "poweredScore": 18
+        },
+        {
+            "id": 5,
+            "publisher": 5,
+            "publishDate": 3,
+            "votes": [
+                { "voter": 0, "value": 0 },
+                { "voter": 1, "value": 10 },
+                { "voter": 2, "value": 52 },
+                { "voter": 3, "value": 2 },
+                { "voter": 4, "value": 16 },
+                { "voter": 5, "value": 0 },
+                { "voter": 6, "value": 2 },
+                { "voter": 7, "value": 5 }
+            ],
+            "evidences": [0, 1, 2, 3],
+            "regularScore": 8,
+            "poweredScore": 87
+        },
+        {
+            "id": 6,
+            "publisher": 6,
+            "publishDate": 4,
+            "votes": [],
+            "evidences": [0, 1],
+            "regularScore": 0,
+            "poweredScore": 0
+        },
+        {
+            "id": 7,
+            "publisher": 7,
+            "publishDate": 4,
+            "votes": [
+                { "voter": 0, "value": 3 },
+                { "voter": 1, "value": 5 },
+                { "voter": 2, "value": 0 },
+                { "voter": 3, "value": 0 },
+                { "voter": 4, "value": 0 }
+            ],
+            "evidences": [],
+            "regularScore": 5,
+            "poweredScore": 8
+        },
+        {
+            "id": 8,
+            "publisher": 8,
+            "publishDate": 4,
+            "votes": [
+                { "voter": 0, "value": 0 },
+                { "voter": 1, "value": 0 },
+                { "voter": 2, "value": 0 },
+                { "voter": 3, "value": 3 },
+                { "voter": 4, "value": 0 },
+                { "voter": 5, "value": 0 },
+                { "voter": 6, "value": 0 }
+            ],
+            "evidences": [0, 1, 2, 3, 4],
+            "regularScore": 7,
+            "poweredScore": 3
+        },
+        {
+            "id": 9,
+            "publisher": 9,
+            "publishDate": 4,
+            "votes": [],
+            "evidences": [],
+            "regularScore": 0,
+            "poweredScore": 0
+        },
+        {
+            "id": 10,
+            "publisher": 0,
+            "publishDate": 5,
+            "votes": [
+                { "voter": 0, "value": 0 },
+                { "voter": 1, "value": 5 },
+                { "voter": 2, "value": 0 },
+                { "voter": 3, "value": 0 }
+            ],
+            "evidences": [0, 1],
+            "regularScore": 4,
+            "poweredScore": 5
+        },
+        {
+            "id": 11,
+            "publisher": 1,
+            "publishDate": 5,
+            "votes": [{ "voter": 0, "value": 3 }],
+            "evidences": [0, 1, 2, 3, 4],
+            "regularScore": 1,
+            "poweredScore": 3
+        },
+        {
+            "id": 12,
+            "publisher": 2,
+            "publishDate": 5,
+            "votes": [
+                { "voter": 0, "value": 0 },
+                { "voter": 1, "value": 10 },
+                { "voter": 2, "value": 52 },
+                { "voter": 3, "value": 0 },
+                { "voter": 4, "value": 2 }
+            ],
+            "evidences": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+            "regularScore": 5,
+            "poweredScore": 64
+        },
+        {
+            "id": 13,
+            "publisher": 3,
+            "publishDate": 11,
+            "votes": [
+                { "voter": 0, "value": 0 },
+                { "voter": 1, "value": 10 },
+                { "voter": 2, "value": 12 }
+            ],
+            "evidences": [0],
+            "regularScore": 3,
+            "poweredScore": 22
+        },
+        {
+            "id": 14,
+            "publisher": 4,
+            "publishDate": 11,
+            "votes": [
+                { "voter": 0, "value": 0 },
+                { "voter": 1, "value": 10 },
+                { "voter": 2, "value": 52 },
+                { "voter": 3, "value": 2 },
+                { "voter": 4, "value": 16 },
+                { "voter": 5, "value": 0 },
+                { "voter": 6, "value": 2 }
+            ],
+            "evidences": [0, 1, 2],
+            "regularScore": 7,
+            "poweredScore": 82
+        },
+        {
+            "id": 15,
+            "publisher": 5,
+            "publishDate": 11,
+            "votes": [
+                { "voter": 0, "value": 0 },
+                { "voter": 1, "value": 10 }
+            ],
+            "evidences": [],
+            "regularScore": 2,
+            "poweredScore": 10
+        },
+        {
+            "id": 16,
+            "publisher": 6,
+            "publishDate": 11,
+            "votes": [
+                { "voter": 0, "value": 3 },
+                { "voter": 1, "value": 5 },
+                { "voter": 2, "value": 0 },
+                { "voter": 3, "value": 0 },
+                { "voter": 4, "value": 0 }
+            ],
+            "evidences": [0, 1],
+            "regularScore": 5,
+            "poweredScore": 8
+        },
+        {
+            "id": 17,
+            "publisher": 7,
+            "publishDate": 12,
+            "votes": [
+                { "voter": 0, "value": 0 },
+                { "voter": 1, "value": 0 },
+                { "voter": 2, "value": 0 },
+                { "voter": 3, "value": 0 },
+                { "voter": 4, "value": 0 },
+                { "voter": 5, "value": 0 },
+                { "voter": 6, "value": 0 },
+                { "voter": 7, "value": 0 }
+            ],
+            "evidences": [],
+            "regularScore": 8,
+            "poweredScore": 0
+        },
+        {
+            "id": 18,
+            "publisher": 8,
+            "publishDate": 12,
+            "votes": [{ "voter": 0, "value": 3 }],
+            "evidences": [0, 1],
+            "regularScore": 1,
+            "poweredScore": 3
+        },
+        {
+            "id": 19,
+            "publisher": 9,
+            "publishDate": 12,
+            "votes": [
+                { "voter": 0, "value": 0 },
+                { "voter": 1, "value": 10 },
+                { "voter": 2, "value": 52 },
+                { "voter": 3, "value": 2 },
+                { "voter": 4, "value": 16 },
+                { "voter": 5, "value": 0 },
+                { "voter": 6, "value": 2 }
+            ],
+            "evidences": [0, 1, 2],
+            "regularScore": 7,
+            "poweredScore": 82
+        },
+        {
+            "id": 20,
+            "publisher": 0,
+            "publishDate": 12,
+            "votes": [
+                { "voter": 0, "value": 0 },
+                { "voter": 1, "value": 10 }
+            ],
+            "evidences": [0, 1],
+            "regularScore": 2,
+            "poweredScore": 10
+        },
+        {
+            "id": 21,
+            "publisher": 1,
+            "publishDate": 12,
+            "votes": [
+                { "voter": 0, "value": 3 },
+                { "voter": 1, "value": 5 },
+                { "voter": 2, "value": 0 },
+                { "voter": 3, "value": 0 },
+                { "voter": 4, "value": 0 }
+            ],
+            "evidences": [0, 1, 2, 3],
+            "regularScore": 5,
+            "poweredScore": 8
+        },
+        {
+            "id": 22,
+            "publisher": 2,
+            "publishDate": 12,
+            "votes": [
+                { "voter": 0, "value": 0 },
+                { "voter": 1, "value": 0 },
+                { "voter": 2, "value": 16 },
+                { "voter": 3, "value": 0 }
+            ],
+            "evidences": [0, 1, 2, 3, 4],
+            "regularScore": 4,
+            "poweredScore": 16
+        },
+        {
+            "id": 23,
+            "publisher": 3,
+            "publishDate": 12,
+            "votes": [
+                { "voter": 0, "value": 3 },
+                { "voter": 1, "value": 15 }
+            ],
+            "evidences": [],
+            "regularScore": 2,
+            "poweredScore": 18
+        },
+        {
+            "id": 24,
+            "publisher": 4,
+            "publishDate": 14,
+            "votes": [
+                { "voter": 0, "value": 0 },
+                { "voter": 1, "value": 5 },
+                { "voter": 2, "value": 0 },
+                { "voter": 3, "value": 0 }
+            ],
+            "evidences": [0, 1],
+            "regularScore": 4,
+            "poweredScore": 5
+        },
+        {
+            "id": 25,
+            "publisher": 5,
+            "publishDate": 14,
+            "votes": [
+                { "voter": 0, "value": 3 },
+                { "voter": 1, "value": 0 },
+                { "voter": 2, "value": 0 },
+                { "voter": 3, "value": 6 },
+                { "voter": 4, "value": 3 }
+            ],
+            "evidences": [0, 1, 2, 3, 4],
+            "regularScore": 5,
+            "poweredScore": 12
+        },
+        {
+            "id": 26,
+            "publisher": 6,
+            "publishDate": 14,
+            "votes": [
+                { "voter": 0, "value": 0 },
+                { "voter": 1, "value": 10 },
+                { "voter": 2, "value": 52 },
+                { "voter": 3, "value": 0 },
+                { "voter": 4, "value": 2 }
+            ],
+            "evidences": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+            "regularScore": 5,
+            "poweredScore": 64
+        },
+        {
+            "id": 27,
+            "publisher": 7,
+            "publishDate": 15,
+            "votes": [
+                { "voter": 0, "value": 0 },
+                { "voter": 1, "value": 10 }
+            ],
+            "evidences": [0, 1, 2],
+            "regularScore": 2,
+            "poweredScore": 10
+        },
+        {
+            "id": 28,
+            "publisher": 8,
+            "publishDate": 15,
+            "votes": [
+                { "voter": 0, "value": 24 },
+                { "voter": 1, "value": 10 },
+                { "voter": 2, "value": 100 },
+                { "voter": 3, "value": 0 },
+                { "voter": 4, "value": 2 }
+            ],
+            "evidences": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+            "regularScore": 5,
+            "poweredScore": 136
+        },
+        {
+            "id": 29,
+            "publisher": 9,
+            "publishDate": 15,
+            "votes": [
+                { "voter": 0, "value": 0 },
+                { "voter": 1, "value": 10 }
+            ],
+            "evidences": [],
+            "regularScore": 2,
+            "poweredScore": 10
+        },
+        {
+            "id": 30,
+            "publisher": 0,
+            "publishDate": 19,
+            "votes": [
+                { "voter": 0, "value": 3 },
+                { "voter": 1, "value": 5 },
+                { "voter": 2, "value": 0 },
+                { "voter": 3, "value": 0 },
+                { "voter": 4, "value": 0 }
+            ],
+            "evidences": [0, 1],
+            "regularScore": 5,
+            "poweredScore": 8
+        },
+        {
+            "id": 31,
+            "publisher": 1,
+            "publishDate": 19,
+            "votes": [
+                { "voter": 0, "value": 0 },
+                { "voter": 1, "value": 0 },
+                { "voter": 2, "value": 0 },
+                { "voter": 3, "value": 0 },
+                { "voter": 4, "value": 0 },
+                { "voter": 5, "value": 0 },
+                { "voter": 6, "value": 8 }
+            ],
+            "evidences": [0, 1, 2, 3],
+            "regularScore": 7,
+            "poweredScore": 8
+        },
+        {
+            "id": 32,
+            "publisher": 2,
+            "publishDate": 19,
+            "votes": [],
+            "evidences": [0, 1],
+            "regularScore": 0,
+            "poweredScore": 0
+        },
+        {
+            "id": 33,
+            "publisher": 3,
+            "publishDate": 20,
+            "votes": [
+                { "voter": 0, "value": 0 },
+                { "voter": 1, "value": 10 },
+                { "voter": 2, "value": 52 },
+                { "voter": 3, "value": 2 },
+                { "voter": 4, "value": 16 },
+                { "voter": 5, "value": 0 },
+                { "voter": 6, "value": 2 }
+            ],
+            "evidences": [0, 1, 2],
+            "regularScore": 7,
+            "poweredScore": 82
+        },
+        {
+            "id": 34,
+            "publisher": 4,
+            "publishDate": 20,
+            "votes": [
+                { "voter": 0, "value": 0 },
+                { "voter": 1, "value": 10 }
+            ],
+            "evidences": [0, 1],
+            "regularScore": 2,
+            "poweredScore": 10
+        },
+        {
+            "id": 35,
+            "publisher": 5,
+            "publishDate": 20,
+            "votes": [
+                { "voter": 0, "value": 3 },
+                { "voter": 1, "value": 5 },
+                { "voter": 2, "value": 0 },
+                { "voter": 3, "value": 0 },
+                { "voter": 4, "value": 0 }
+            ],
+            "evidences": [],
+            "regularScore": 5,
+            "poweredScore": 8
+        },
+        {
+            "id": 36,
+            "publisher": 6,
+            "publishDate": 20,
+            "votes": [
+                { "voter": 0, "value": 0 },
+                { "voter": 1, "value": 0 }
+            ],
+            "evidences": [0, 1, 2, 3, 4],
+            "regularScore": 2,
+            "poweredScore": 0
+        },
+        {
+            "id": 37,
+            "publisher": 7,
+            "publishDate": 21,
+            "votes": [{ "voter": 0, "value": 3 }],
+            "evidences": [],
+            "regularScore": 1,
+            "poweredScore": 3
+        },
+        {
+            "id": 38,
+            "publisher": 8,
+            "publishDate": 21,
+            "votes": [
+                { "voter": 0, "value": 0 },
+                { "voter": 1, "value": 5 },
+                { "voter": 2, "value": 0 },
+                { "voter": 3, "value": 0 }
+            ],
+            "evidences": [0, 1],
+            "regularScore": 4,
+            "poweredScore": 5
+        },
+        {
+            "id": 39,
+            "publisher": 9,
+            "publishDate": 21,
+            "votes": [{ "voter": 0, "value": 3 }],
+            "evidences": [0, 1, 2, 3, 4],
+            "regularScore": 1,
+            "poweredScore": 3
+        }
+    ]
+}

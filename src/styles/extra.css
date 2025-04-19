@@ -1,0 +1,144 @@
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+#__next,
+.app-root {
+    height: 100%;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+main,
+.overflow-y-auto {
+    -webkit-overflow-scrolling: touch;
+    overflow-scrolling: touch;
+}
+.scroll-container {
+    will-change: transform;
+    pointer-events: auto !important;
+}
+
+.Toastify__toast-container {
+    z-index: 10000;
+}
+
+@media (max-width: 768px) {
+    .Toastify__toast-container {
+        width: 90%;
+        left: 5%;
+    }
+    .Toastify__toast {
+        font-size: 14px;
+        padding: 8px;
+        margin-bottom: 4px;
+        min-height: 52px;
+    }
+}
+
+.arrow {
+    width: 24px;
+    height: 24px;
+    opacity: 0.5;
+    animation: pulse 0.75s infinite ease-in-out;
+}
+.arrow:nth-child(1) {
+    animation-delay: 0s;
+}
+.arrow:nth-child(2) {
+    animation-delay: 0.25s;
+}
+.arrow:nth-child(3) {
+    animation-delay: 0.5s;
+}
+@keyframes pulse {
+    0% {
+        opacity: 0.5;
+    }
+    25% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+    100% {
+        opacity: 0.5;
+    }
+}
+
+@keyframes pulsate {
+    0% {
+        -webkit-transform: scale(0.1, 0.1);
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        -webkit-transform: scale(1.2, 1.2);
+        opacity: 0;
+    }
+}
+.live-dot {
+    width: 10px;
+    height: 10px;
+    background-color: #62bd19;
+    border-radius: 50%;
+    position: absolute;
+    top: 25px;
+    left: 25px;
+}
+.live-animated {
+    border-radius: 25px;
+    animation: pulsate 1s ease-out;
+    animation-iteration-count: infinite;
+    border: 2px solid #62bd19;
+    height: 25px;
+    width: 25px;
+    position: absolute;
+    left: 17.5px;
+    top: 17.5px;
+    opacity: 0;
+}
+
+.p-truncate-1 {
+    width: 100%;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+}
+.p-truncate-2 {
+    width: 100%;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+.p-truncate-3 {
+    width: 100%;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+.p-truncate-4 {
+    width: 100%;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+}
+.p-truncate-5 {
+    width: 100%;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+}

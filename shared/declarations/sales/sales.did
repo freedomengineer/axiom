@@ -1,0 +1,150 @@
+type Value_2 = 
+ variant {
+   infinity;
+   value: ValueProp_2;
+ };
+type Value_1 = 
+ variant {
+   infinity;
+   value: ValueProp_1;
+ };
+type ValueProp_2 = 
+ variant {
+   exclusive: nat;
+   inclusive: nat;
+ };
+type ValueProp_1 = 
+ variant {
+   exclusive: int;
+   inclusive: int;
+ };
+type ValueProp = 
+ variant {
+   exclusive: float64;
+   inclusive: float64;
+ };
+type Value = 
+ variant {
+   infinity;
+   value: ValueProp;
+ };
+type Sharable__2 = 
+ vec record {
+       Key;
+       SharableValue;
+     };
+type Sharable__1 = vec SharableAchievementPackage;
+type SharableValue = 
+ variant {
+   Bool: bool;
+   Date: SharableDate;
+   Duration: nat;
+   E8S: SharableE8S;
+   Float: float64;
+   Nat: nat;
+   Proportion: SharableProportion;
+   RangeFloat: SharableRange;
+   RangeInt: SharableRange_1;
+   RangeNat: SharableRange_2;
+   Text: text;
+ };
+type SharableRange_2 = 
+ record {
+   Value_2;
+   Value_2;
+ };
+type SharableRange_1 = 
+ record {
+   Value_1;
+   Value_1;
+ };
+type SharableRange = 
+ record {
+   Value;
+   Value;
+ };
+type SharableProportion = 
+ record {
+   nat;
+   nat;
+ };
+type SharablePackage = 
+ record {
+   capitalRaised: nat;
+   metadata: Dip721NonFungibleToken;
+   "principal": opt principal;
+ };
+type SharableE8S = nat;
+type SharableDate = nat;
+type SharableAchievementPackage = 
+ record {
+   achievement: Achievement;
+   metadata: Dip721NonFungibleToken;
+   "principal": opt principal;
+ };
+type Sharable = vec SharablePackage;
+type Sales = 
+ service {
+   addAchievementPackage: (Achievement, text, text, text) -> ();
+   addPackage: (nat, text, text, text) -> ();
+   computeAcornToMint: (nat) -> (ACORNToMint);
+   deployAchievementPackage: (Achievement) -> ();
+   deployPackage: (nat) -> ();
+   expectPackageFound: (nat) -> (nat) query;
+   /// PUBLIC ////// ASSERTERS ////////////
+   expectPackageNotFound: (nat) -> () query;
+   getAchievementPackagePrincipals: () ->
+    (vec record {
+           Achievement;
+           principal;
+         }) query;
+   getAchievementPackages: () -> (Sharable__1) query;
+   /// PUBLIC ////// ACCESSORS ////////////
+   getConfig: (Key) -> (SharableValue) query;
+   getConfigs: () -> (Sharable__2) query;
+   getOwnedAchievementPackages: (principal) -> (Sharable__1);
+   getOwnedPackages: (principal) -> (Sharable);
+   getPackagePrincipals: () -> (vec record {
+                                      nat;
+                                      principal;
+                                    }) query;
+   getPackages: () -> (Sharable) query;
+   /// PROTECTED ////// MODIFIERS ////////////
+   initialize: () -> ();
+   mintAchievementPackage: (Achievement) -> ();
+   mintPackage: (principal, nat) -> (nat);
+   putConfigs: (vec record {
+                      Key;
+                      SharableValue;
+                    }) -> ();
+   setConfigs: (vec record {
+                      Key;
+                      SharableValue;
+                    }) -> ();
+   /// PUBLIC ////// MODIFIERS ////////////
+   upgradePackage: () -> ();
+ };
+type LogoResult = 
+ record {
+   data: text;
+   logo_type: text;
+ };
+type Key = text;
+type Dip721NonFungibleToken = 
+ record {
+   logo: LogoResult;
+   maxLimit: nat16;
+   name: text;
+   symbol: text;
+ };
+type Achievement = 
+ variant {
+   OctupleBurial;
+   Referral;
+ };
+type ACORNToMint = 
+ record {
+   buried: nat;
+   liquid: nat;
+ };
+service : () -> Sales

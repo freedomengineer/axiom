@@ -1,0 +1,42 @@
+[
+    {
+        "question": "What is Axiom?",
+        "answer": "Axiom is the free thought network where anyone can publish any hypothesis and debate ideas with peers and without censorship from authoritarians.",
+        "links": [
+            {
+                "title": "Axiom Whitepaper",
+                "url": "/school/axiom/whitepaper"
+            }
+        ]
+    },
+    {
+        "question": "What is an Acorn?",
+        "answer": "Acorns are the native cryptocurrency that flows through the Axiom micro economy. Our 'Proof of Thought' rewards users daily.",
+        "links": [
+            {
+                "title": "Learn more about Acorns and how to earn them?",
+                "url": "/school/axiom/acorns"
+            }
+        ]
+    },
+    {
+        "question": "What does a membership cost?",
+        "answer": "Memberships cost between $10 and $10,000 in ICP. The more you spend the more Acorn tokens you start with.",
+        "links": []
+    },
+    {
+        "question": "Can I join Axiom for free?",
+        "answer": "Nope. In the words of the hero from Team America, 'Freedom isn't free, freedom costs a buck or two.'",
+        "links": []
+    },
+    {
+        "question": "Where can I trade Acorn tokens?",
+        "answer": "After May 1, 2025 you will be able to trade Acorns where you can trade other tokens on ICP.",
+        "links": []
+    },
+    {
+        "question": "How do I join the affiliate program?",
+        "answer": "Copy 'My Referral Link' from the drop down menu on the top right of any page. Share it anywhere and you'll receive 50% of the ICP from anyone who signs up for Axiom.",
+        "links": []
+    }
+]

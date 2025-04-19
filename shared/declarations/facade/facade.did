@@ -1,0 +1,160 @@
+type Value_2 = 
+ variant {
+   infinity;
+   value: ValueProp_2;
+ };
+type Value_1 = 
+ variant {
+   infinity;
+   value: ValueProp_1;
+ };
+type ValueProp_2 = 
+ variant {
+   exclusive: nat;
+   inclusive: nat;
+ };
+type ValueProp_1 = 
+ variant {
+   exclusive: int;
+   inclusive: int;
+ };
+type ValueProp = 
+ variant {
+   exclusive: float64;
+   inclusive: float64;
+ };
+type Value = 
+ variant {
+   infinity;
+   value: ValueProp;
+ };
+type Time = int;
+type Sort__1 = 
+ variant {
+   alphabetical;
+   capitalRaised;
+   recent;
+ };
+type Sort = 
+ record {
+   by: Sort__1;
+   order: Order;
+ };
+type Sharable__1 = 
+ vec record {
+       Key;
+       SharableValue;
+     };
+type SharableValue = 
+ variant {
+   Bool: bool;
+   Date: SharableDate;
+   Duration: nat;
+   E8S: SharableE8S;
+   Float: float64;
+   Nat: nat;
+   Proportion: SharableProportion;
+   RangeFloat: SharableRange;
+   RangeInt: SharableRange_1;
+   RangeNat: SharableRange_2;
+   Text: text;
+ };
+type SharableRange_2 = 
+ record {
+   Value_2;
+   Value_2;
+ };
+type SharableRange_1 = 
+ record {
+   Value_1;
+   Value_1;
+ };
+type SharableRange = 
+ record {
+   Value;
+   Value;
+ };
+type SharableProportion = 
+ record {
+   nat;
+   nat;
+ };
+type SharableE8S = nat;
+type SharableDate = nat;
+type Sharable = 
+ record {
+   avatar: opt Picture;
+   capitalRaised: nat;
+   creationDate: Time;
+   links: vec Hyperlink;
+   location: text;
+   "principal": principal;
+   username: text;
+ };
+type Picture = record {"blob": blob;};
+type Pagination = 
+ record {
+   is: nat;
+   of: nat;
+   result: vec Sharable;
+ };
+type Order = 
+ variant {
+   ascending;
+   descending;
+ };
+type Key = text;
+type IdentifierVariant = 
+ variant {
+   Principal: principal;
+   Username: text;
+ };
+type Identifier = 
+ record {
+   "principal": principal;
+   username: text;
+ };
+type Hyperlink__1 = 
+ record {
+   anchorText: text;
+   url: text;
+ };
+type Hyperlink = 
+ record {
+   anchorText: text;
+   url: text;
+ };
+type Filter = 
+ record {
+   containsPattern: opt text;
+   hasCapitalRaised: opt nat;
+ };
+type Facade = 
+ service {
+   editAvatar: (opt Picture) -> ();
+   editLinks: (vec Hyperlink__1) -> ();
+   editLocation: (opt text) -> ();
+   editUsername: (text) -> ();
+   /// PUBLIC ////// ACCESSORS ////////////
+   getConfig: (Key) -> (SharableValue) query;
+   getConfigs: () -> (Sharable__1) query;
+   getUser: (principal) -> (Sharable) query;
+   getUserIdentifier: (IdentifierVariant) -> (Identifier) query;
+   getUsers: (Filter, Sort) -> (vec Sharable) query;
+   getUsersCount: () -> (nat) query;
+   getUsersPagination: (Filter, Sort, nat, nat) -> (Pagination) query;
+   /// PROTECTED ////// MODIFIERS ////////////
+   initialize: () -> ();
+   putConfigs: (vec record {
+                      Key;
+                      SharableValue;
+                    }) -> ();
+   /// PUBLIC ////// MODIFIERS ////////////
+   register: (text, nat, opt principal) -> ();
+   setConfigs: (vec record {
+                      Key;
+                      SharableValue;
+                    }) -> ();
+   shiftToMidnight: (nat) -> ();
+ };
+service : () -> Facade

@@ -1,0 +1,46 @@
+import FieldCard from '@components/Pages/Feed/Fields/FieldCard'
+import FilterSort from '@components/Shared/FilterSort'
+import InfiniteScrollWrapper from '@components/Shared/InfiniteScrollWrapper'
+import PageMetadata from '@components/Shared/PageMetadata'
+import siteMetadata from '@data/siteMetadata.json'
+import useAuth from '@hooks/useAuth'
+import { FIELD_FILTER, FIELD_SORT } from 'shared/default/filter_sort'
+import { DAxioms } from 'shared/types/services'
+import { Axioms } from 'shared/utils/services'
+
+const title = 'Fields'
+const metadata = siteMetadata.routes['Truth Feed'].routes[title]
+const pageMetadata: Metadata = {
+    url: siteMetadata.siteUrl + metadata.url,
+    title: `${title} | ${siteMetadata.title}`,
+    description: metadata.description,
+}
+
+const FieldsPage = () => {
+    const { agent } = useAuth()
+
+    return (
+        <>
+            <PageMetadata {...pageMetadata} />
+            <div className="gap-medium flex flex-col items-center justify-center">
+                <FilterSort filter={FIELD_FILTER} sort={FIELD_SORT} />
+                <InfiniteScrollWrapper<DAxioms.SharableField>
+                    LayoutComponent={({ items }) => (
+                        <div className="gap-medium mx-auto flex w-full max-w-full flex-wrap justify-center md:max-w-[1500px]">
+                            {items.map((item, i) => (
+                                <FieldCard key={i} item={item} className="w-full" />
+                            ))}
+                        </div>
+                    )}
+                    query={Axioms.call(agent, true).getFieldsPagination}
+                    filter={FIELD_FILTER}
+                    sort={FIELD_SORT}
+                    className="h-full"
+                    size={12n}
+                />
+            </div>
+        </>
+    )
+}
+
+export default FieldsPage

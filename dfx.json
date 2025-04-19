@@ -1,0 +1,302 @@
+{
+    "canisters": {
+        "indicator": {
+            "type": "motoko",
+            "main": "backend/canisters/periphery/indicator/Main.mo",
+            "dependencies": [],
+            "declarations": {
+                "output": "shared/declarations/indicator",
+                "bindings": ["js", "ts", "did"],
+                "node_compatibility": true
+            }
+        },
+        "indicator_prod": {
+            "type": "motoko",
+            "main": "backend_prod/canisters/periphery/indicator/Main.mo",
+            "dependencies": [],
+            "declarations": {
+                "output": "shared/declarations/indicator",
+                "bindings": ["js", "ts", "did"],
+                "node_compatibility": true
+            }
+        },
+        "facade": {
+            "type": "motoko",
+            "main": "backend/canisters/periphery/facade/Main.mo",
+            "dependencies": [],
+            "declarations": {
+                "output": "shared/declarations/facade",
+                "bindings": ["js", "ts", "did"],
+                "node_compatibility": true
+            }
+        },
+        "facade_prod": {
+            "type": "motoko",
+            "main": "backend_prod/canisters/periphery/facade/Main.mo",
+            "dependencies": [],
+            "declarations": {
+                "output": "shared/declarations/facade",
+                "bindings": ["js", "ts", "did"],
+                "node_compatibility": true
+            }
+        },
+        "dao": {
+            "type": "motoko",
+            "main": "backend/canisters/periphery/dao/Main.mo",
+            "dependencies": [],
+            "declarations": {
+                "output": "shared/declarations/dao",
+                "bindings": ["js", "ts", "did"],
+                "node_compatibility": true
+            }
+        },
+        "dao_prod": {
+            "type": "motoko",
+            "main": "backend_prod/canisters/periphery/dao/Main.mo",
+            "dependencies": [],
+            "declarations": {
+                "output": "shared/declarations/dao",
+                "bindings": ["js", "ts", "did"],
+                "node_compatibility": true
+            }
+        },
+        "icpusd": {
+            "type": "motoko",
+            "main": "backend/canisters/core/icpusd/Main.mo",
+            "dependencies": ["xrc"],
+            "declarations": {
+                "output": "shared/declarations/icpusd",
+                "bindings": ["js", "ts", "did"],
+                "node_compatibility": true
+            }
+        },
+        "icpusd_prod": {
+            "type": "motoko",
+            "main": "backend_prod/canisters/core/icpusd/Main.mo",
+            "dependencies": ["xrc"],
+            "declarations": {
+                "output": "shared/declarations/icpusd",
+                "bindings": ["js", "ts", "did"],
+                "node_compatibility": true
+            }
+        },
+        "treasury": {
+            "type": "motoko",
+            "main": "backend/canisters/core/treasury/Main.mo",
+            "dependencies": [],
+            "declarations": {
+                "output": "shared/declarations/treasury",
+                "bindings": ["js", "ts", "did"],
+                "node_compatibility": true
+            }
+        },
+        "treasury_prod": {
+            "type": "motoko",
+            "main": "backend_prod/canisters/core/treasury/Main.mo",
+            "dependencies": [],
+            "declarations": {
+                "output": "shared/declarations/treasury",
+                "bindings": ["js", "ts", "did"],
+                "node_compatibility": true
+            }
+        },
+        "split": {
+            "type": "motoko",
+            "main": "backend/canisters/core/split/Main.mo",
+            "dependencies": ["icp_ledger"],
+            "declarations": {
+                "output": "shared/declarations/split",
+                "bindings": ["js", "ts", "did"],
+                "node_compatibility": true
+            }
+        },
+        "split_prod": {
+            "type": "motoko",
+            "main": "backend_prod/canisters/core/split/Main.mo",
+            "dependencies": ["icp_ledger"],
+            "declarations": {
+                "output": "shared/declarations/split",
+                "bindings": ["js", "ts", "did"],
+                "node_compatibility": true
+            }
+        },
+        "affiliate": {
+            "type": "motoko",
+            "main": "backend/canisters/core/affiliate/Main.mo",
+            "dependencies": [],
+            "declarations": {
+                "output": "shared/declarations/affiliate",
+                "bindings": ["js", "ts", "did"],
+                "node_compatibility": true
+            }
+        },
+        "affiliate_prod": {
+            "type": "motoko",
+            "main": "backend_prod/canisters/core/affiliate/Main.mo",
+            "dependencies": [],
+            "declarations": {
+                "output": "shared/declarations/affiliate",
+                "bindings": ["js", "ts", "did"],
+                "node_compatibility": true
+            }
+        },
+        "escrow": {
+            "type": "motoko",
+            "main": "backend/canisters/core/escrow/Main.mo",
+            "dependencies": [],
+            "declarations": {
+                "output": "shared/declarations/escrow",
+                "bindings": ["js", "ts", "did"],
+                "node_compatibility": true
+            }
+        },
+        "escrow_prod": {
+            "type": "motoko",
+            "main": "backend_prod/canisters/core/escrow/Main.mo",
+            "dependencies": [],
+            "declarations": {
+                "output": "shared/declarations/escrow",
+                "bindings": ["js", "ts", "did"],
+                "node_compatibility": true
+            }
+        },
+        "sales": {
+            "type": "motoko",
+            "main": "backend/canisters/core/sales/Main.mo",
+            "dependencies": [],
+            "declarations": {
+                "output": "shared/declarations/sales",
+                "bindings": ["js", "ts", "did"],
+                "node_compatibility": true
+            }
+        },
+        "sales_prod": {
+            "type": "motoko",
+            "main": "backend_prod/canisters/core/sales/Main.mo",
+            "dependencies": [],
+            "declarations": {
+                "output": "shared/declarations/sales",
+                "bindings": ["js", "ts", "did"],
+                "node_compatibility": true
+            }
+        },
+        "axioms": {
+            "type": "motoko",
+            "main": "backend/canisters/core/axioms/Main.mo",
+            "dependencies": [],
+            "declarations": {
+                "output": "shared/declarations/axioms",
+                "bindings": ["js", "ts", "did"],
+                "node_compatibility": true
+            }
+        },
+        "axioms_prod": {
+            "type": "motoko",
+            "main": "backend_prod/canisters/core/axioms/Main.mo",
+            "dependencies": [],
+            "declarations": {
+                "output": "shared/declarations/axioms",
+                "bindings": ["js", "ts", "did"],
+                "node_compatibility": true
+            }
+        },
+        "dip721": {
+            "type": "motoko",
+            "main": "backend/canisters/core/dip721/Main.mo",
+            "dependencies": [],
+            "declarations": {
+                "output": "shared/declarations/dip721",
+                "bindings": ["js", "ts", "did"],
+                "node_compatibility": true
+            }
+        },
+        "dip721_prod": {
+            "type": "motoko",
+            "main": "backend_prod/canisters/core/dip721/Main.mo",
+            "dependencies": [],
+            "declarations": {
+                "output": "shared/declarations/dip721",
+                "bindings": ["js", "ts", "did"],
+                "node_compatibility": true
+            }
+        },
+        "acorn_ledger": {
+            "type": "custom",
+            "candid": "https://raw.githubusercontent.com/dfinity/ic/04775a0d6a27b65be2412f73172e529a138a6f44/rs/rosetta-api/icrc1/ledger/ledger.did",
+            "wasm": "https://download.dfinity.systems/ic/04775a0d6a27b65be2412f73172e529a138a6f44/canisters/ic-icrc1-ledger.wasm.gz",
+            "declarations": {
+                "output": "shared/declarations/acorn_ledger",
+                "bindings": ["js", "ts", "did"],
+                "node_compatibility": true
+            }
+        },
+        "icp_ledger": {
+            "type": "custom",
+            "candid": "https://raw.githubusercontent.com/dfinity/ic/04775a0d6a27b65be2412f73172e529a138a6f44/rs/rosetta-api/icp_ledger/ledger.did",
+            "wasm": "https://download.dfinity.systems/ic/04775a0d6a27b65be2412f73172e529a138a6f44/canisters/ledger-canister.wasm.gz",
+            "declarations": {
+                "output": "shared/declarations/icp_ledger",
+                "bindings": ["js", "ts", "did"],
+                "node_compatibility": true
+            },
+            "remote": {
+                "id": {
+                    "ic": "ryjl3-tyaaa-aaaaa-aaaba-cai"
+                }
+            }
+        },
+        "xrc": {
+            "type": "custom",
+            "candid": "https://raw.githubusercontent.com/dfinity/exchange-rate-canister/main/src/xrc/xrc.did",
+            "wasm": "https://github.com/dfinity/exchange-rate-canister/releases/latest/download/xrc.wasm.gz",
+            "declarations": {
+                "bindings": []
+            },
+            "remote": {
+                "id": {
+                    "ic": "uf6dk-hyaaa-aaaaq-qaaaq-cai"
+                }
+            }
+        },
+        "internet_identity": {
+            "type": "custom",
+            "candid": "https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity.did",
+            "wasm": "https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity_dev.wasm.gz",
+            "declarations": {
+                "bindings": []
+            },
+            "remote": {
+                "id": {
+                    "ic": "rdmx6-jaaaa-aaaaa-aaadq-cai"
+                }
+            }
+        },
+        "frontend": {
+            "frontend": {
+                "entrypoint": "dist/index.html"
+            },
+            "type": "assets",
+            "source": ["dist/"],
+            "declarations": {
+                "bindings": []
+            },
+            "output_env_file": ".env"
+        }
+    },
+    "networks": {
+        "local": {
+            "bind": "127.0.0.1:4943"
+        }
+    },
+    "defaults": {
+        "build": {
+            "packtool": "yarn --silent sources"
+        },
+        "replica": {
+            "subnet_type": "system"
+        }
+    },
+    "dfx": "0.26.0",
+    "output_env_file": ".env",
+    "version": 2
+}

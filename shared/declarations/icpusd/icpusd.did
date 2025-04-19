@@ -1,0 +1,5 @@
+type ICPUSD = 
+ service {
+   exchange: (bool, nat) -> (nat);
+ };
+service : () -> ICPUSD

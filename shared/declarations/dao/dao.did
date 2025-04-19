@@ -1,0 +1,443 @@
+type Value_2 = 
+ variant {
+   infinity;
+   value: ValueProp_2;
+ };
+type Value_1 = 
+ variant {
+   infinity;
+   value: ValueProp_1;
+ };
+type ValueProp_2 = 
+ variant {
+   exclusive: nat;
+   inclusive: nat;
+ };
+type ValueProp_1 = 
+ variant {
+   exclusive: int;
+   inclusive: int;
+ };
+type ValueProp = 
+ variant {
+   exclusive: float64;
+   inclusive: float64;
+ };
+type Value = 
+ variant {
+   infinity;
+   value: ValueProp;
+ };
+type UpdateLevel__1 = 
+ variant {
+   Major;
+   Minor;
+   Patch;
+ };
+type UpdateLevel = 
+ variant {
+   Major;
+   Minor;
+   Patch;
+ };
+type UniformBinaryVote__1 = record {choice: Choice;};
+type UniformBinaryVote = record {choice: Choice;};
+type Time__2 = int;
+type Time__1 = int;
+type Time = int;
+type TernaryVote = 
+ record {
+   choice: Choice__1;
+   value: nat;
+ };
+type StatusVariant = 
+ variant {
+   Approved;
+   Executed;
+   Expired;
+   Failed;
+   Proposed;
+   Rejected;
+   Retried;
+ };
+type Status = 
+ variant {
+   Approved;
+   Executed;
+   Expired;
+   Failed: text;
+   Proposed;
+   Rejected;
+   Retried;
+ };
+type Sort__2 = 
+ variant {
+   token;
+   voter;
+ };
+type Sort__1 = 
+ variant {
+   acornReward;
+   icpReward;
+   recent;
+   updated;
+ };
+type Sort_1 = 
+ record {
+   by: Sort__2;
+   order: Order;
+ };
+type Sort = 
+ record {
+   by: Sort__1;
+   order: Order;
+ };
+type Sharable__8 = 
+ vec record {
+       Key;
+       SharableValue;
+     };
+type Sharable__7 = nat;
+type Sharable__6 = 
+ record {
+   balance: SharableE8S__1;
+   lastWithdrawAt: Time;
+   revenue: SharableE8S__1;
+ };
+type Sharable__5 = vec SharableNominee;
+type Sharable__4 = 
+ record {
+   ballots: record {
+              nat;
+              nat;
+            };
+   callerBallot: opt nat;
+   isCustodian: bool;
+   "principal": principal;
+   title: text;
+ };
+type Sharable__3 = vec SharableProposal;
+type Sharable__2 = 
+ record {
+   acornReward: nat;
+   callerVote: opt Delegable__2;
+   content: text;
+   detachment: SharableDetachment;
+   icpReward: nat;
+   id: nat;
+   proposer: principal;
+   timeline: vec Milestone;
+   title: text;
+   votes: record {
+            vec principal;
+            vec principal;
+            vec principal;
+            vec principal;
+          };
+ };
+type Sharable__1 = 
+ record {
+   acornEarning: SharableEarning;
+   ballots: vec record {
+                  principal;
+                  nat;
+                };
+   icpEarning: SharableEarning;
+   lastUpdateBallot: Time__1;
+   proposalVotes: vec record {
+                        nat;
+                        Delegable__1;
+                      };
+   proposals: List;
+   referendumVotes: vec record {
+                          nat;
+                          TernaryVote;
+                        };
+   referendums: List;
+ };
+type SharableWorker = record {};
+type SharableValue = 
+ variant {
+   Bool: bool;
+   Date: SharableDate;
+   Duration: nat;
+   E8S: SharableE8S;
+   Float: float64;
+   Nat: nat;
+   Proportion: SharableProportion;
+   RangeFloat: SharableRange;
+   RangeInt: SharableRange_1;
+   RangeNat: SharableRange_2;
+   Text: text;
+ };
+type SharableRange_2 = 
+ record {
+   Value_2;
+   Value_2;
+ };
+type SharableRange_1 = 
+ record {
+   Value_1;
+   Value_1;
+ };
+type SharableRange = 
+ record {
+   Value;
+   Value;
+ };
+type SharableProposal = 
+ record {
+   acornReward: nat;
+   callerVote: opt Delegable__2;
+   content: text;
+   detachment: SharableDetachment;
+   icpReward: nat;
+   id: nat;
+   proposer: principal;
+   timeline: vec Milestone;
+   title: text;
+   votes: record {
+            vec principal;
+            vec principal;
+            vec principal;
+            vec principal;
+          };
+ };
+type SharableProportion = 
+ record {
+   nat;
+   nat;
+ };
+type SharableNominee = 
+ record {
+   ballots: record {
+              nat;
+              nat;
+            };
+   callerBallot: opt nat;
+   isCustodian: bool;
+   "principal": principal;
+   title: text;
+ };
+type SharableInstallation = 
+ record {
+   commitHash: text;
+   commitments: SharableCommitments;
+   releaseNotes: ReleaseNotes;
+   updateLevel: UpdateLevel__1;
+ };
+type SharableField = 
+ record {
+   description: text;
+   name: text;
+ };
+type SharableEarning = 
+ record {
+   balance: SharableE8S__1;
+   lastWithdrawAt: Time;
+   revenue: SharableE8S__1;
+ };
+type SharableE8S__1 = nat;
+type SharableE8S = nat;
+type SharableDetachment = 
+ variant {
+   Code: SharableCode;
+   Configs: SharableConfigs__1;
+   Field: SharableField;
+   Worker: SharableWorker;
+ };
+type SharableDate = nat;
+type SharableConfigs__1 = record {actorsConfigs: ActorsConfigs__1;};
+type SharableConfigs = 
+ vec record {
+       Key;
+       SharableValue;
+     };
+type SharableCommitments = vec SharableCommitment;
+type SharableCommitment = 
+ record {
+   actorVariant: DeployableActorVariant;
+   args: vec nat8;
+   moduleHash: text;
+ };
+type SharableCode = 
+ record {
+   actorsConfigs: ActorsConfigs__1;
+   installation: SharableInstallation;
+ };
+type Sharable = vec SharableCommitment;
+type ReleaseNotes = vec Changes;
+type ProposalVariant = 
+ variant {
+   Code;
+   Configs;
+   Field;
+   Worker;
+ };
+type Pagination_1 = 
+ record {
+   is: nat;
+   of: nat;
+   result: vec Sharable__4;
+ };
+type Pagination = 
+ record {
+   is: nat;
+   of: nat;
+   result: vec Sharable__2;
+ };
+type Order = 
+ variant {
+   ascending;
+   descending;
+ };
+type Milestone = 
+ record {
+   date: Time__2;
+   status: Status;
+ };
+type List__1 = 
+ opt record {
+       nat;
+       List__1;
+     };
+type List = 
+ opt record {
+       nat;
+       List__1;
+     };
+type Key = text;
+type Filter__1 = 
+ record {
+   isCustodian: opt bool;
+   votedBy: opt principal;
+ };
+type Filter = 
+ record {
+   proposedBy: opt principal;
+   proposedIn: opt ProposalVariant;
+   votedBy: opt principal;
+   withStatus: opt StatusVariant;
+ };
+type DeployableActorVariant = 
+ variant {
+   ACORN;
+   Affiliate;
+   Axioms;
+   DAO;
+   Escrow;
+   Facade;
+   Frontend;
+   ICPUSD;
+   Indicator;
+   Sales;
+   Split;
+   Treasury;
+ };
+type Delegable__2 = 
+ variant {
+   Default: UniformBinaryVote__1;
+   Delegated: principal;
+ };
+type Delegable__1 = 
+ variant {
+   Default: UniformBinaryVote;
+   Delegated: principal;
+ };
+type Delegable = 
+ variant {
+   Default: Choice;
+   Delegated: principal;
+ };
+type DAO = 
+ service {
+   cancelCodeUpload: () -> ();
+   castBallots: (vec principal) -> ();
+   enterElection: (text) -> ();
+   /// PUBLIC ////// ASSERTERS ////////////
+   expectUserNotFound: (principal) -> () query;
+   /// PUBLIC ////// ACCESSORS ////////////
+   getConfig: (Key) -> (SharableValue) query;
+   getConfigs: () -> (Sharable__8) query;
+   getDaysInPeriod: () -> (Sharable__7) query;
+   getEarning: (principal) -> (Sharable__6, Sharable__6) query;
+   getNominee: (principal) -> (Sharable__4) query;
+   getNominees: (Filter__1, Sort_1) -> (Sharable__5) query;
+   getNomineesPagination: (Filter__1, Sort_1, nat, nat) ->
+    (Pagination_1) query;
+   getProposal: (nat) -> (Sharable__2) query;
+   getProposals: (Filter, Sort) -> (Sharable__3) query;
+   getProposalsPagination: (Filter, Sort, nat, nat) -> (Pagination) query;
+   getUser: (principal) -> (Sharable__1) query;
+   /// PROTECTED ////// MODIFIERS ////////////
+   initialize: () -> ();
+   /// PUBLIC ////// MODIFIERS ////////////
+   initializeCodeUploadSession: (text, UpdateLevel, ReleaseNotes,
+    Sharable) -> ();
+   leaveElection: () -> ();
+   openCodeProposal: (text, nat, nat, ActorsConfigs) -> (nat);
+   openConfigsProposal: (text, nat, nat, ActorsConfigs) -> (nat);
+   openFieldProposal: (text, text, text) -> (nat);
+   openWorkerProposal: (text, text, nat, nat) -> (nat);
+   putConfigs: (vec record {
+                      Key;
+                      SharableValue;
+                    }) -> ();
+   register: (principal) -> ();
+   retryConfigsProposal: (nat, text, nat, nat, ActorsConfigs) -> ();
+   retryFieldProposal: (nat, text, text, text) -> ();
+   retryWorkerProposal: (nat, text, nat, nat) -> ();
+   setCodeProposalExecuted: (nat) -> ();
+   setCodeProposalFailed: (nat, text) -> ();
+   setConfigs: (vec record {
+                      Key;
+                      SharableValue;
+                    }) -> ();
+   shiftToMidnight: (nat) -> ();
+   updateNomineeTitle: (text) -> ();
+   voteProposal: (nat, Delegable) -> ();
+   withdrawAll: () -> ();
+ };
+type ConfigurableActorVariant = 
+ variant {
+   Affiliate;
+   Axioms;
+   DAO;
+   Escrow;
+   Facade;
+   Indicator;
+   Sales;
+   Split;
+   Treasury;
+ };
+type Choice__1 = 
+ variant {
+   Negative;
+   Neutral;
+   Positive;
+ };
+type Choice = 
+ variant {
+   Delegated;
+   Negative;
+   Positive;
+ };
+type Changes = 
+ variant {
+   Added: vec text;
+   Changed: vec text;
+   Fixed: vec text;
+   Removed: vec text;
+   Security: vec text;
+ };
+type ActorsConfigs__1 = 
+ vec record {
+       ConfigurableActorVariant;
+       SharableConfigs;
+     };
+type ActorsConfigs = 
+ vec record {
+       ConfigurableActorVariant;
+       SharableConfigs;
+     };
+service : () -> DAO

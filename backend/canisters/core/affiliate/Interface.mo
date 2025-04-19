@@ -1,0 +1,19 @@
+import User "users/User";
+import Configs "../../library/Configs";
+import Earning "../../library/Earning";
+
+module {
+    public type Affiliate = actor {
+        shiftToMidnight : shared (Nat) -> async ();
+        initialize : shared () -> async ();
+        setConfigs : shared ([(Configs.Key, Configs.SharableValue)]) -> async ();
+        putConfigs : shared ([(Configs.Key, Configs.SharableValue)]) -> async ();
+        fillReferrals : shared (Principal, Nat, ?Principal) -> async ();
+        withdrawAll : shared () -> async ();
+        getConfig : query (Configs.Key) -> async Configs.SharableValue;
+        getConfigs : query () -> async Configs.Sharable;
+        getUser : query (Principal) -> async User.Sharable;
+        getEarning : query (Principal) -> async Earning.Sharable;
+        expectUserNotFound : query (Principal) -> async ();
+    };
+};

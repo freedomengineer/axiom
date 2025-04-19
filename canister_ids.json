@@ -1,0 +1,38 @@
+{
+    "indicator_prod": {
+        "ic": "qqykc-qyaaa-aaaak-qudzq-cai"
+    },
+    "acorn_ledger": {
+        "ic": "r2xiy-siaaa-aaaak-qud6q-cai"
+    },
+    "icpusd_prod": {
+        "ic": "rtude-eaaaa-aaaak-qud7a-cai"
+    },
+    "treasury_prod": {
+        "ic": "ruvfq-jyaaa-aaaak-qud7q-cai"
+    },
+    "split_prod": {
+        "ic": "rmhax-lyaaa-aaaak-queaa-cai"
+    },
+    "affiliate_prod": {
+        "ic": "rlggd-gaaaa-aaaak-queaq-cai"
+    },
+    "escrow_prod": {
+        "ic": "rcfn7-qiaaa-aaaak-queba-cai"
+    },
+    "sales_prod": {
+        "ic": "rfell-5qaaa-aaaak-quebq-cai"
+    },
+    "axioms_prod": {
+        "ic": "rqd2g-4yaaa-aaaak-queca-cai"
+    },
+    "dao_prod": {
+        "ic": "rxc4s-raaaa-aaaak-quecq-cai"
+    },
+    "facade_prod": {
+        "ic": "r6bxo-hiaaa-aaaak-queda-cai"
+    },
+    "frontend": {
+        "ic": "rzar2-kqaaa-aaaak-quedq-cai"
+    }
+}

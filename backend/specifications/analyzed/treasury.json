@@ -1,0 +1,1774 @@
+{
+  "canisterName": "treasury",
+  "actorName": "Treasury",
+  "category": "core",
+  "functions": [
+    {
+      "name": "setConfigs",
+      "flag": {
+        "isQuery": false,
+        "callerRequired": true
+      },
+      "argTypes": {
+        "entries": {
+          "origin": "[(Configs.Key, Configs.SharableValue)]",
+          "singular": {
+            "name": "()"
+          },
+          "entries": [
+            [
+              null,
+              {
+                "origin": "Configs.Key",
+                "singular": {
+                  "name": "Key",
+                  "parent": "Configs"
+                },
+                "entries": [],
+                "isArray": false,
+                "isOptional": false,
+                "isAsync": false
+              }
+            ],
+            [
+              null,
+              {
+                "origin": "Configs.SharableValue",
+                "singular": {
+                  "name": "SharableValue",
+                  "parent": "Configs"
+                },
+                "entries": [],
+                "isArray": false,
+                "isOptional": false,
+                "isAsync": false
+              }
+            ]
+          ],
+          "isArray": true,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async ()",
+        "singular": {
+          "name": "()"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
+      "name": "putConfigs",
+      "flag": {
+        "isQuery": false,
+        "callerRequired": true
+      },
+      "argTypes": {
+        "entries": {
+          "origin": "[(Configs.Key, Configs.SharableValue)]",
+          "singular": {
+            "name": "()"
+          },
+          "entries": [
+            [
+              null,
+              {
+                "origin": "Configs.Key",
+                "singular": {
+                  "name": "Key",
+                  "parent": "Configs"
+                },
+                "entries": [],
+                "isArray": false,
+                "isOptional": false,
+                "isAsync": false
+              }
+            ],
+            [
+              null,
+              {
+                "origin": "Configs.SharableValue",
+                "singular": {
+                  "name": "SharableValue",
+                  "parent": "Configs"
+                },
+                "entries": [],
+                "isArray": false,
+                "isOptional": false,
+                "isAsync": false
+              }
+            ]
+          ],
+          "isArray": true,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async ()",
+        "singular": {
+          "name": "()"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
+      "name": "internalMint",
+      "flag": {
+        "isQuery": false,
+        "callerRequired": true
+      },
+      "argTypes": {
+        "recipient": {
+          "origin": "Actor.Variant",
+          "singular": {
+            "name": "Variant",
+            "parent": "Actor"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        },
+        "amount": {
+          "origin": "Nat",
+          "singular": {
+            "name": "Nat"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async ()",
+        "singular": {
+          "name": "()"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
+      "name": "internalTransfer",
+      "flag": {
+        "isQuery": false,
+        "callerRequired": true
+      },
+      "argTypes": {
+        "recipient": {
+          "origin": "Actor.Variant",
+          "singular": {
+            "name": "Variant",
+            "parent": "Actor"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        },
+        "amount": {
+          "origin": "Nat",
+          "singular": {
+            "name": "Nat"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async ()",
+        "singular": {
+          "name": "()"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
+      "name": "externalMint",
+      "flag": {
+        "isQuery": false,
+        "callerRequired": true
+      },
+      "argTypes": {
+        "recipient": {
+          "origin": "Principal",
+          "singular": {
+            "name": "Principal"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        },
+        "amount": {
+          "origin": "Nat",
+          "singular": {
+            "name": "Nat"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async ()",
+        "singular": {
+          "name": "()"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
+      "name": "externalTransfer",
+      "flag": {
+        "isQuery": false,
+        "callerRequired": true
+      },
+      "argTypes": {
+        "recipient": {
+          "origin": "Principal",
+          "singular": {
+            "name": "Principal"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        },
+        "amount": {
+          "origin": "Nat",
+          "singular": {
+            "name": "Nat"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async ()",
+        "singular": {
+          "name": "()"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
+      "name": "delegatedExternalTransfer",
+      "flag": {
+        "isQuery": false,
+        "callerRequired": true
+      },
+      "argTypes": {
+        "sender": {
+          "origin": "Actor.Variant",
+          "singular": {
+            "name": "Variant",
+            "parent": "Actor"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        },
+        "recipient": {
+          "origin": "Principal",
+          "singular": {
+            "name": "Principal"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        },
+        "amount": {
+          "origin": "Nat",
+          "singular": {
+            "name": "Nat"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async ()",
+        "singular": {
+          "name": "()"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
+      "name": "claim",
+      "flag": {
+        "isQuery": false,
+        "callerRequired": true
+      },
+      "argTypes": {
+        "sender": {
+          "origin": "Principal",
+          "singular": {
+            "name": "Principal"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        },
+        "amount": {
+          "origin": "Nat",
+          "singular": {
+            "name": "Nat"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async ()",
+        "singular": {
+          "name": "()"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
+      "name": "delegatedClaim",
+      "flag": {
+        "isQuery": false,
+        "callerRequired": true
+      },
+      "argTypes": {
+        "recipient": {
+          "origin": "Actor.Variant",
+          "singular": {
+            "name": "Variant",
+            "parent": "Actor"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        },
+        "sender": {
+          "origin": "Principal",
+          "singular": {
+            "name": "Principal"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        },
+        "amount": {
+          "origin": "Nat",
+          "singular": {
+            "name": "Nat"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async ()",
+        "singular": {
+          "name": "()"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
+      "name": "getConfig",
+      "flag": {
+        "isQuery": true,
+        "callerRequired": false
+      },
+      "argTypes": {
+        "key": {
+          "origin": "Configs.Key",
+          "singular": {
+            "name": "Key",
+            "parent": "Configs"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async Configs.SharableValue",
+        "singular": {
+          "name": "SharableValue",
+          "parent": "Configs"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
+      "name": "getConfigs",
+      "flag": {
+        "isQuery": true,
+        "callerRequired": false
+      },
+      "argTypes": {},
+      "returnType": {
+        "origin": "async Configs.Sharable",
+        "singular": {
+          "name": "Sharable",
+          "parent": "Configs"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
+      "name": "getAllocation",
+      "flag": {
+        "isQuery": true,
+        "callerRequired": false
+      },
+      "argTypes": {
+        "actorVariant": {
+          "origin": "Actor.Variant",
+          "singular": {
+            "name": "Variant",
+            "parent": "Actor"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async Allocation.Sharable",
+        "singular": {
+          "name": "Sharable",
+          "parent": "Allocation"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
+      "name": "getAllocations",
+      "flag": {
+        "isQuery": true,
+        "callerRequired": false
+      },
+      "argTypes": {},
+      "returnType": {
+        "origin": "async Allocations.Sharable",
+        "singular": {
+          "name": "Sharable",
+          "parent": "Allocations"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
+      "name": "getBalance",
+      "flag": {
+        "isQuery": true,
+        "callerRequired": false
+      },
+      "argTypes": {
+        "actorVariant": {
+          "origin": "Actor.Variant",
+          "singular": {
+            "name": "Variant",
+            "parent": "Actor"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async E8S.Sharable",
+        "singular": {
+          "name": "Sharable",
+          "parent": "E8S"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
+      "name": "getAllocated",
+      "flag": {
+        "isQuery": true,
+        "callerRequired": false
+      },
+      "argTypes": {
+        "actorVariant": {
+          "origin": "Actor.Variant",
+          "singular": {
+            "name": "Variant",
+            "parent": "Actor"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async E8S.Sharable",
+        "singular": {
+          "name": "Sharable",
+          "parent": "E8S"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
+      "name": "getTotalSupply",
+      "flag": {
+        "isQuery": true,
+        "callerRequired": false
+      },
+      "argTypes": {},
+      "returnType": {
+        "origin": "async E8S.Sharable",
+        "singular": {
+          "name": "Sharable",
+          "parent": "E8S"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
+      "name": "getReserveSupply",
+      "flag": {
+        "isQuery": true,
+        "callerRequired": false
+      },
+      "argTypes": {},
+      "returnType": {
+        "origin": "async E8S.Sharable",
+        "singular": {
+          "name": "Sharable",
+          "parent": "E8S"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
+      "name": "getCirculatingSupply",
+      "flag": {
+        "isQuery": true,
+        "callerRequired": false
+      },
+      "argTypes": {},
+      "returnType": {
+        "origin": "async E8S.Sharable",
+        "singular": {
+          "name": "Sharable",
+          "parent": "E8S"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    }
+  ],
+  "imports": {
+    "Allocation": {
+      "origin": "import Allocation \"allocations/Allocation\";",
+      "name": "Allocation",
+      "category": "attribute",
+      "relativePath": "allocations/Allocation",
+      "depth": 2
+    },
+    "Allocations": {
+      "origin": "import Allocations \"allocations/Allocations\";",
+      "name": "Allocations",
+      "category": "attribute",
+      "relativePath": "allocations/Allocations",
+      "depth": 2
+    },
+    "Actor": {
+      "origin": "import Actor \"../../periphery/indicator/actors/Actor\";",
+      "name": "Actor",
+      "category": "attribute",
+      "relativePath": "../../periphery/indicator/actors/Actor",
+      "depth": 6
+    },
+    "ACORNTypes": {
+      "origin": "import ACORNTypes \"../acorn/Types\";",
+      "name": "ACORNTypes",
+      "category": "attribute",
+      "relativePath": "../acorn/Types",
+      "depth": 3
+    },
+    "ACORNInterface": {
+      "origin": "import ACORNInterface \"../acorn/Interface\";",
+      "name": "ACORNInterface",
+      "category": "interface",
+      "relativePath": "../acorn/Interface",
+      "depth": 3
+    },
+    "IndicatorInterface": {
+      "origin": "import IndicatorInterface \"../../periphery/indicator/Interface\";",
+      "name": "IndicatorInterface",
+      "category": "interface",
+      "relativePath": "../../periphery/indicator/Interface",
+      "depth": 5
+    },
+    "E": {
+      "origin": "import E \"../../common/Errors\";",
+      "name": "E",
+      "category": "common",
+      "relativePath": "../../common/Errors",
+      "depth": 4
+    },
+    "Configs": {
+      "origin": "import Configs \"../../library/Configs\";",
+      "name": "Configs",
+      "category": "library",
+      "relativePath": "../../library/Configs",
+      "depth": 4
+    },
+    "E8S": {
+      "origin": "import E8S \"../../library/E8S\";",
+      "name": "E8S",
+      "category": "library",
+      "relativePath": "../../library/E8S",
+      "depth": 4
+    },
+    "Principal": {
+      "origin": "import Principal \"mo:base/Principal\";",
+      "name": "Principal",
+      "category": "base",
+      "relativePath": "mo:base/Principal",
+      "depth": 2
+    }
+  },
+  "actorDependencies": [
+    "Allocation",
+    "Allocations",
+    "Actor",
+    "ACORNTypes",
+    "ACORNInterface",
+    "IndicatorInterface",
+    "E",
+    "Configs",
+    "E8S",
+    "Principal"
+  ],
+  "interfaceDependencies": [
+    "Configs",
+    "Actor",
+    "Allocation",
+    "Allocations",
+    "E8S"
+  ],
+  "typeDefinitions": {
+    "[(Configs.Key, Configs.SharableValue)]": {
+      "origin": "[(Configs.Key, Configs.SharableValue)]",
+      "singular": {
+        "name": "()"
+      },
+      "entries": [
+        [
+          null,
+          {
+            "origin": "Configs.Key",
+            "singular": {
+              "name": "Text"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          null,
+          {
+            "origin": "Configs.SharableValue",
+            "singular": {
+              "name": "()"
+            },
+            "entries": [
+              [
+                "#Bool",
+                {
+                  "origin": "Bool",
+                  "singular": {
+                    "name": "Bool"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#Nat",
+                {
+                  "origin": "Nat",
+                  "singular": {
+                    "name": "Nat"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#Float",
+                {
+                  "origin": "Float",
+                  "singular": {
+                    "name": "Float"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#Text",
+                {
+                  "origin": "Text",
+                  "singular": {
+                    "name": "Text"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#E8S",
+                {
+                  "origin": "SharableE8S",
+                  "singular": {
+                    "name": "Nat"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#Duration",
+                {
+                  "origin": "Nat",
+                  "singular": {
+                    "name": "Nat"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#Date",
+                {
+                  "origin": "SharableDate",
+                  "singular": {
+                    "name": "Nat"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#Proportion",
+                {
+                  "origin": "SharableProportion",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      null,
+                      {
+                        "origin": "Nat",
+                        "singular": {
+                          "name": "Nat"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      null,
+                      {
+                        "origin": "Nat",
+                        "singular": {
+                          "name": "Nat"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#RangeNat",
+                {
+                  "origin": "Range.Sharable<T>",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      null,
+                      {
+                        "origin": "Nat",
+                        "singular": {
+                          "name": "Nat"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#RangeInt",
+                {
+                  "origin": "Range.Sharable<T>",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      null,
+                      {
+                        "origin": "Int",
+                        "singular": {
+                          "name": "Int"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#RangeFloat",
+                {
+                  "origin": "Range.Sharable<T>",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      null,
+                      {
+                        "origin": "Float",
+                        "singular": {
+                          "name": "Float"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ]
+            ],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ]
+      ],
+      "isArray": true,
+      "isOptional": false,
+      "isAsync": false
+    },
+    "async ()": {
+      "origin": "async ()",
+      "singular": {
+        "name": "()"
+      },
+      "entries": [],
+      "isArray": false,
+      "isOptional": false,
+      "isAsync": true
+    },
+    "Actor.Variant": {
+      "origin": "Actor.Variant",
+      "singular": {
+        "name": "()"
+      },
+      "entries": [
+        [
+          "#Treasury",
+          null
+        ],
+        [
+          "#Split",
+          null
+        ],
+        [
+          "#Affiliate",
+          null
+        ],
+        [
+          "#Escrow",
+          null
+        ],
+        [
+          "#Sales",
+          null
+        ],
+        [
+          "#Axioms",
+          null
+        ],
+        [
+          "#DAO",
+          null
+        ],
+        [
+          "#Facade",
+          null
+        ],
+        [
+          "#Indicator",
+          null
+        ],
+        [
+          "#ICPUSD",
+          null
+        ],
+        [
+          "#Frontend",
+          null
+        ],
+        [
+          "#ACORN",
+          null
+        ],
+        [
+          "#Founder",
+          null
+        ]
+      ],
+      "isArray": false,
+      "isOptional": false,
+      "isAsync": false
+    },
+    "Nat": {
+      "origin": "Nat",
+      "singular": {
+        "name": "Nat"
+      },
+      "entries": [],
+      "isArray": false,
+      "isOptional": false,
+      "isAsync": false
+    },
+    "Principal": {
+      "origin": "Principal",
+      "singular": {
+        "name": "Principal"
+      },
+      "entries": [],
+      "isArray": false,
+      "isOptional": false,
+      "isAsync": false
+    },
+    "Configs.Key": {
+      "origin": "Configs.Key",
+      "singular": {
+        "name": "Text"
+      },
+      "entries": [],
+      "isArray": false,
+      "isOptional": false,
+      "isAsync": false
+    },
+    "async Configs.SharableValue": {
+      "origin": "async Configs.SharableValue",
+      "singular": {
+        "name": "()"
+      },
+      "entries": [
+        [
+          "#Bool",
+          {
+            "origin": "Bool",
+            "singular": {
+              "name": "Bool"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "#Nat",
+          {
+            "origin": "Nat",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "#Float",
+          {
+            "origin": "Float",
+            "singular": {
+              "name": "Float"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "#Text",
+          {
+            "origin": "Text",
+            "singular": {
+              "name": "Text"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "#E8S",
+          {
+            "origin": "SharableE8S",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "#Duration",
+          {
+            "origin": "Nat",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "#Date",
+          {
+            "origin": "SharableDate",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "#Proportion",
+          {
+            "origin": "SharableProportion",
+            "singular": {
+              "name": "()"
+            },
+            "entries": [
+              [
+                null,
+                {
+                  "origin": "Nat",
+                  "singular": {
+                    "name": "Nat"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                null,
+                {
+                  "origin": "Nat",
+                  "singular": {
+                    "name": "Nat"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ]
+            ],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "#RangeNat",
+          {
+            "origin": "Range.Sharable<T>",
+            "singular": {
+              "name": "()"
+            },
+            "entries": [
+              [
+                null,
+                {
+                  "origin": "Nat",
+                  "singular": {
+                    "name": "Nat"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ]
+            ],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "#RangeInt",
+          {
+            "origin": "Range.Sharable<T>",
+            "singular": {
+              "name": "()"
+            },
+            "entries": [
+              [
+                null,
+                {
+                  "origin": "Int",
+                  "singular": {
+                    "name": "Int"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ]
+            ],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "#RangeFloat",
+          {
+            "origin": "Range.Sharable<T>",
+            "singular": {
+              "name": "()"
+            },
+            "entries": [
+              [
+                null,
+                {
+                  "origin": "Float",
+                  "singular": {
+                    "name": "Float"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ]
+            ],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ]
+      ],
+      "isArray": false,
+      "isOptional": false,
+      "isAsync": true
+    },
+    "async Configs.Sharable": {
+      "origin": "async Configs.Sharable",
+      "singular": {
+        "name": "()"
+      },
+      "entries": [
+        [
+          null,
+          {
+            "origin": "Key",
+            "singular": {
+              "name": "Text"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          null,
+          {
+            "origin": "SharableValue",
+            "singular": {
+              "name": "()"
+            },
+            "entries": [
+              [
+                "#Bool",
+                {
+                  "origin": "Bool",
+                  "singular": {
+                    "name": "Bool"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#Nat",
+                {
+                  "origin": "Nat",
+                  "singular": {
+                    "name": "Nat"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#Float",
+                {
+                  "origin": "Float",
+                  "singular": {
+                    "name": "Float"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#Text",
+                {
+                  "origin": "Text",
+                  "singular": {
+                    "name": "Text"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#E8S",
+                {
+                  "origin": "SharableE8S",
+                  "singular": {
+                    "name": "Nat"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#Duration",
+                {
+                  "origin": "Nat",
+                  "singular": {
+                    "name": "Nat"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#Date",
+                {
+                  "origin": "SharableDate",
+                  "singular": {
+                    "name": "Nat"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#Proportion",
+                {
+                  "origin": "SharableProportion",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      null,
+                      {
+                        "origin": "Nat",
+                        "singular": {
+                          "name": "Nat"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      null,
+                      {
+                        "origin": "Nat",
+                        "singular": {
+                          "name": "Nat"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#RangeNat",
+                {
+                  "origin": "Range.Sharable<T>",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      null,
+                      {
+                        "origin": "Nat",
+                        "singular": {
+                          "name": "Nat"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#RangeInt",
+                {
+                  "origin": "Range.Sharable<T>",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      null,
+                      {
+                        "origin": "Int",
+                        "singular": {
+                          "name": "Int"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#RangeFloat",
+                {
+                  "origin": "Range.Sharable<T>",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      null,
+                      {
+                        "origin": "Float",
+                        "singular": {
+                          "name": "Float"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ]
+            ],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ]
+      ],
+      "isArray": true,
+      "isOptional": false,
+      "isAsync": true
+    },
+    "async Allocation.Sharable": {
+      "origin": "async Allocation.Sharable",
+      "singular": {
+        "name": "()"
+      },
+      "entries": [
+        [
+          "actorVariant",
+          {
+            "origin": "ActorVariant",
+            "singular": {
+              "name": "()"
+            },
+            "entries": [
+              [
+                "#Treasury",
+                null
+              ],
+              [
+                "#Split",
+                null
+              ],
+              [
+                "#Affiliate",
+                null
+              ],
+              [
+                "#Escrow",
+                null
+              ],
+              [
+                "#Sales",
+                null
+              ],
+              [
+                "#Axioms",
+                null
+              ],
+              [
+                "#DAO",
+                null
+              ],
+              [
+                "#Facade",
+                null
+              ],
+              [
+                "#Indicator",
+                null
+              ],
+              [
+                "#ICPUSD",
+                null
+              ],
+              [
+                "#Frontend",
+                null
+              ],
+              [
+                "#ACORN",
+                null
+              ],
+              [
+                "#Founder",
+                null
+              ]
+            ],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "allocated",
+          {
+            "origin": "Nat",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "balance",
+          {
+            "origin": "Nat",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ]
+      ],
+      "isArray": false,
+      "isOptional": false,
+      "isAsync": true
+    },
+    "async Allocations.Sharable": {
+      "origin": "async Allocations.Sharable",
+      "singular": {
+        "name": "()"
+      },
+      "entries": [
+        [
+          "actorVariant",
+          {
+            "origin": "ActorVariant",
+            "singular": {
+              "name": "()"
+            },
+            "entries": [
+              [
+                "#Treasury",
+                null
+              ],
+              [
+                "#Split",
+                null
+              ],
+              [
+                "#Affiliate",
+                null
+              ],
+              [
+                "#Escrow",
+                null
+              ],
+              [
+                "#Sales",
+                null
+              ],
+              [
+                "#Axioms",
+                null
+              ],
+              [
+                "#DAO",
+                null
+              ],
+              [
+                "#Facade",
+                null
+              ],
+              [
+                "#Indicator",
+                null
+              ],
+              [
+                "#ICPUSD",
+                null
+              ],
+              [
+                "#Frontend",
+                null
+              ],
+              [
+                "#ACORN",
+                null
+              ],
+              [
+                "#Founder",
+                null
+              ]
+            ],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "allocated",
+          {
+            "origin": "Nat",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "balance",
+          {
+            "origin": "Nat",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ]
+      ],
+      "isArray": true,
+      "isOptional": false,
+      "isAsync": true
+    },
+    "async E8S.Sharable": {
+      "origin": "async E8S.Sharable",
+      "singular": {
+        "name": "Nat"
+      },
+      "entries": [],
+      "isArray": false,
+      "isOptional": false,
+      "isAsync": true
+    }
+  }
+}

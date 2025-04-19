@@ -1,0 +1,1398 @@
+type Variant = 
+ variant {
+   ACORN;
+   Affiliate;
+   Axioms;
+   DAO;
+   Escrow;
+   Facade;
+   Founder;
+   Frontend;
+   ICPUSD;
+   Indicator;
+   Sales;
+   Split;
+   Treasury;
+ };
+type Value_2 = 
+ variant {
+   infinity;
+   value: ValueProp_2;
+ };
+type Value_1 = 
+ variant {
+   infinity;
+   value: ValueProp_1;
+ };
+type ValueProp_2 = 
+ variant {
+   exclusive: nat;
+   inclusive: nat;
+ };
+type ValueProp_1 = 
+ variant {
+   exclusive: int;
+   inclusive: int;
+ };
+type ValueProp = 
+ variant {
+   exclusive: float64;
+   inclusive: float64;
+ };
+type Value = 
+ variant {
+   infinity;
+   value: ValueProp;
+ };
+type UpdateLevel__1 = 
+ variant {
+   Major;
+   Minor;
+   Patch;
+ };
+type UpdateLevel = 
+ variant {
+   Major;
+   Minor;
+   Patch;
+ };
+type UniformBinaryVote__1 = record {choice: Choice;};
+type UniformBinaryVote = record {choice: Choice;};
+type Treasury = 
+ service {
+   claim: (principal, nat) -> ();
+   delegatedClaim: (Variant, principal, nat) -> ();
+   externalMint: (principal, nat) -> ();
+   externalTransfer: (principal, nat) -> ();
+   getAllocated: (Variant) -> (Sharable__4) query;
+   getAllocation: (Variant) -> (Sharable__6) query;
+   getAllocations: () -> (Sharable__5) query;
+   getBalance: (Variant) -> (Sharable__4) query;
+   getCirculatingSupply: () -> (Sharable__4) query;
+   getConfig: (Key) -> (SharableValue) query;
+   getConfigs: () -> (Sharable__3) query;
+   getReserveSupply: () -> (Sharable__4) query;
+   getTotalSupply: () -> (Sharable__4) query;
+   internalMint: (Variant, nat) -> ();
+   internalTransfer: (Variant, nat) -> ();
+   putConfigs: (vec record {
+                      Key;
+                      SharableValue;
+                    }) -> ();
+   setConfigs: (vec record {
+                      Key;
+                      SharableValue;
+                    }) -> ();
+ };
+type TransferResult = 
+ variant {
+   Err:
+    variant {
+      BadBurn: record {min_burn_amount: nat;};
+      BadFee: record {expected_fee: nat;};
+      CreatedInFuture: record {ledger_time: nat64;};
+      Duplicate: record {duplicate_of: nat;};
+      GenericError: record {
+                      error_code: nat;
+                      message: text;
+                    };
+      InsufficientFunds: record {balance: nat;};
+      TemporarilyUnavailable;
+      TooOld;
+    };
+   Ok: nat;
+ };
+type TransferFromResult = 
+ variant {
+   Err:
+    variant {
+      BadBurn: record {min_burn_amount: nat;};
+      BadFee: record {expected_fee: nat;};
+      CreatedInFuture: record {ledger_time: nat64;};
+      Duplicate: record {duplicate_of: nat;};
+      GenericError: record {
+                      error_code: nat;
+                      message: text;
+                    };
+      InsufficientAllowance: record {allowance: nat;};
+      InsufficientFunds: record {balance: nat;};
+      TemporarilyUnavailable;
+      TooOld;
+    };
+   Ok: nat;
+ };
+type TransferFromArgs = 
+ record {
+   amount: nat;
+   created_at_time: opt nat64;
+   fee: opt nat;
+   from: Account;
+   memo: opt blob;
+   spender_subaccount: opt blob;
+   to: Account;
+ };
+type TransferArgs = 
+ record {
+   amount: nat;
+   created_at_time: opt nat64;
+   fee: opt nat;
+   from_subaccount: opt blob;
+   memo: opt blob;
+   to: Account;
+ };
+type Time__6 = int;
+type Time__5 = int;
+type Time__4 = int;
+type Time__3 = int;
+type Time__2 = int;
+type Time__1 = int;
+type Time = int;
+type TernaryVote__2 = 
+ record {
+   choice: Choice__1;
+   value: nat;
+ };
+type TernaryVote__1 = 
+ record {
+   choice: Choice__1;
+   value: nat;
+ };
+type TernaryVote = 
+ record {
+   choice: Choice__1;
+   value: nat;
+ };
+type StatusVariant = 
+ variant {
+   Approved;
+   Executed;
+   Expired;
+   Failed;
+   Proposed;
+   Rejected;
+   Retried;
+ };
+type Status = 
+ variant {
+   Approved;
+   Executed;
+   Expired;
+   Failed: text;
+   Proposed;
+   Rejected;
+   Retried;
+ };
+type Split = 
+ service {
+   deposit: (principal, nat) -> ();
+   externalTransfer: (principal, nat) -> ();
+   getBalance: (Variant) -> (Sharable__4) query;
+   getConfig: (Key) -> (SharableValue) query;
+   getConfigs: () -> (Sharable__3) query;
+   getDistribution: (Variant) -> (Sharable__9) query;
+   getDistributions: () -> (Sharable__8) query;
+   getEarning: (Variant) -> (Sharable__7) query;
+   getTotalBalance: () -> (Sharable__4) query;
+   getTotalRevenue: () -> (Sharable__4) query;
+   internalTransfer: (Variant, nat) -> ();
+   putConfigs: (vec record {
+                      Key;
+                      SharableValue;
+                    }) -> ();
+   setConfigs: (vec record {
+                      Key;
+                      SharableValue;
+                    }) -> ();
+   shiftToMidnight: (nat) -> ();
+ };
+type Sort__7 = 
+ variant {
+   negativity;
+   popularity;
+   positivity;
+   recent;
+ };
+type Sort__6 = 
+ variant {
+   alphabetical;
+   popularity;
+   recent;
+ };
+type Sort__5 = 
+ variant {
+   difference;
+   recent;
+ };
+type Sort__4 = 
+ variant {
+   controversy;
+   negativity;
+   neutrality;
+   popularity;
+   positivity;
+   recent;
+ };
+type Sort__3 = 
+ variant {
+   token;
+   voter;
+ };
+type Sort__2 = 
+ variant {
+   acornReward;
+   icpReward;
+   recent;
+   updated;
+ };
+type Sort__1 = 
+ variant {
+   alphabetical;
+   capitalRaised;
+   recent;
+ };
+type Sort_6 = 
+ record {
+   by: Sort__7;
+   order: Order;
+ };
+type Sort_5 = 
+ record {
+   by: Sort__6;
+   order: Order;
+ };
+type Sort_4 = 
+ record {
+   by: Sort__5;
+   order: Order;
+ };
+type Sort_3 = 
+ record {
+   by: Sort__4;
+   order: Order;
+ };
+type Sort_2 = 
+ record {
+   by: Sort__3;
+   order: Order;
+ };
+type Sort_1 = 
+ record {
+   by: Sort__2;
+   order: Order;
+ };
+type Sort = 
+ record {
+   by: Sort__1;
+   order: Order;
+ };
+type Sharable__9 = 
+ record {
+   actorVariant: ActorVariant__1;
+   earning: SharableEarning;
+   proportion: SharableProportion__1;
+ };
+type Sharable__8 = vec SharableDistribution;
+type Sharable__7 = 
+ record {
+   balance: SharableE8S__1;
+   lastWithdrawAt: Time;
+   revenue: SharableE8S__1;
+ };
+type Sharable__6 = 
+ record {
+   actorVariant: ActorVariant;
+   allocated: nat;
+   balance: nat;
+ };
+type Sharable__5 = vec SharableAllocation;
+type Sharable__4 = nat;
+type Sharable__31 = 
+ record {
+   earning: SharableEarning__3;
+   referrals: SharableCount__1;
+   referrer: opt principal;
+ };
+type Sharable__30 = 
+ record {
+   callerRevenue: opt SharableE8S__3;
+   ranks: SharableRanks;
+ };
+type Sharable__3 = 
+ vec record {
+       Key;
+       SharableValue;
+     };
+type Sharable__29 = vec SharablePayout;
+type Sharable__28 = vec SharableEvidence;
+type Sharable__27 = 
+ record {
+   callerVote: opt BinaryVote__2;
+   choice: BinaryChoice__1;
+   form: Form;
+   hypothesisId: nat;
+   id: nat;
+   publishDate: int;
+   publisher: principal;
+   votes: SharableBinaryVotes__1;
+ };
+type Sharable__26 = vec SharableField__1;
+type Sharable__25 = 
+ record {
+   callerRole: opt Role;
+   creationDate: Time__6;
+   description: text;
+   hypothesisIds: vec nat;
+   members: vec principal;
+   name: text;
+ };
+type Sharable__24 = vec SharableFlag;
+type Sharable__23 = 
+ record {
+   callerVote: opt BinaryVote__1;
+   category: Category;
+   id: nat;
+   reason: text;
+   requestDate: Time__5;
+   requester: principal;
+   votes: SharableBinaryVotes;
+ };
+type Sharable__22 = vec SharableHypothesis;
+type Sharable__21 = 
+ record {
+   axioms: SharableCount;
+   callerAxiom: opt bool;
+   callerBookmark: opt bool;
+   callerVote: opt TernaryVote__2;
+   content: text;
+   evidenceIds: vec nat;
+   fieldId: text;
+   id: nat;
+   publishDate: int;
+   publisher: principal;
+   votes: SharableTernaryVotes;
+ };
+type Sharable__20 = 
+ record {
+   axioms: vec nat;
+   bookmarks: vec nat;
+   earning: SharableEarning__2;
+   evidences: vec nat;
+   hypotheses: vec nat;
+   joinedFields: vec text;
+   votedEvidences: vec record {
+                         nat;
+                         BinaryVote;
+                       };
+   votedHypotheses: vec record {
+                          nat;
+                          TernaryVote__1;
+                        };
+ };
+type Sharable__2 = 
+ record {
+   commitHash: text;
+   commitments: SharableCommitments;
+   releaseNotes: ReleaseNotes;
+   updateLevel: UpdateLevel__1;
+ };
+type Sharable__19 = nat;
+type Sharable__18 = vec SharableNominee;
+type Sharable__17 = 
+ record {
+   ballots: record {
+              nat;
+              nat;
+            };
+   callerBallot: opt nat;
+   isCustodian: bool;
+   "principal": principal;
+   title: text;
+ };
+type Sharable__16 = vec SharableProposal;
+type Sharable__15 = 
+ record {
+   acornReward: nat;
+   callerVote: opt Delegable__2;
+   content: text;
+   detachment: SharableDetachment;
+   icpReward: nat;
+   id: nat;
+   proposer: principal;
+   timeline: vec Milestone;
+   title: text;
+   votes: record {
+            vec principal;
+            vec principal;
+            vec principal;
+            vec principal;
+          };
+ };
+type Sharable__14 = 
+ record {
+   acornEarning: SharableEarning__1;
+   ballots: vec record {
+                  principal;
+                  nat;
+                };
+   icpEarning: SharableEarning__1;
+   lastUpdateBallot: Time__3;
+   proposalVotes: vec record {
+                        nat;
+                        Delegable__1;
+                      };
+   proposals: List;
+   referendumVotes: vec record {
+                          nat;
+                          TernaryVote;
+                        };
+   referendums: List;
+ };
+type Sharable__13 = vec SharableBurial;
+type Sharable__12 = record {burials: SharableBurials;};
+type Sharable__11 = 
+ record {
+   avatar: opt Picture;
+   capitalRaised: nat;
+   creationDate: Time__1;
+   links: vec Hyperlink;
+   location: text;
+   "principal": principal;
+   username: text;
+ };
+type Sharable__10 = vec SharablePackage;
+type Sharable__1 = text;
+type SharableWorker = record {};
+type SharableValue = 
+ variant {
+   Bool: bool;
+   Date: SharableDate;
+   Duration: nat;
+   E8S: SharableE8S;
+   Float: float64;
+   Nat: nat;
+   Proportion: SharableProportion;
+   RangeFloat: SharableRange;
+   RangeInt: SharableRange_1;
+   RangeNat: SharableRange_2;
+   Text: text;
+ };
+type SharableTernaryVotes = 
+ record {
+   powered: OneSideSharable;
+   regular: OneSideSharable;
+ };
+type SharableRanks = vec SharableRank;
+type SharableRank = 
+ record {
+   averageRank: float64;
+   hypothesisId: nat;
+   poweredEntry: Entry;
+   regularEntry: Entry;
+ };
+type SharableRange_2 = 
+ record {
+   Value_2;
+   Value_2;
+ };
+type SharableRange_1 = 
+ record {
+   Value_1;
+   Value_1;
+ };
+type SharableRange = 
+ record {
+   Value;
+   Value;
+ };
+type SharableProposal = 
+ record {
+   acornReward: nat;
+   callerVote: opt Delegable__2;
+   content: text;
+   detachment: SharableDetachment;
+   icpReward: nat;
+   id: nat;
+   proposer: principal;
+   timeline: vec Milestone;
+   title: text;
+   votes: record {
+            vec principal;
+            vec principal;
+            vec principal;
+            vec principal;
+          };
+ };
+type SharableProportion__1 = 
+ record {
+   nat;
+   nat;
+ };
+type SharableProportion = 
+ record {
+   nat;
+   nat;
+ };
+type SharablePayout = 
+ record {
+   callerRevenue: opt SharableE8S__3;
+   ranks: SharableRanks;
+ };
+type SharablePackage = 
+ record {
+   capitalRaised: nat;
+   metadata: Dip721NonFungibleToken;
+   "principal": opt principal;
+ };
+type SharableNominee = 
+ record {
+   ballots: record {
+              nat;
+              nat;
+            };
+   callerBallot: opt nat;
+   isCustodian: bool;
+   "principal": principal;
+   title: text;
+ };
+type SharableInstallation = 
+ record {
+   commitHash: text;
+   commitments: SharableCommitments;
+   releaseNotes: ReleaseNotes;
+   updateLevel: UpdateLevel__1;
+ };
+type SharableHypothesis = 
+ record {
+   axioms: SharableCount;
+   callerAxiom: opt bool;
+   callerBookmark: opt bool;
+   callerVote: opt TernaryVote__2;
+   content: text;
+   evidenceIds: vec nat;
+   fieldId: text;
+   id: nat;
+   publishDate: int;
+   publisher: principal;
+   votes: SharableTernaryVotes;
+ };
+type SharableFlag = 
+ record {
+   callerVote: opt BinaryVote__1;
+   category: Category;
+   id: nat;
+   reason: text;
+   requestDate: Time__5;
+   requester: principal;
+   votes: SharableBinaryVotes;
+ };
+type SharableField__1 = 
+ record {
+   callerRole: opt Role;
+   creationDate: Time__6;
+   description: text;
+   hypothesisIds: vec nat;
+   members: vec principal;
+   name: text;
+ };
+type SharableField = 
+ record {
+   description: text;
+   name: text;
+ };
+type SharableEvidence = 
+ record {
+   callerVote: opt BinaryVote__2;
+   choice: BinaryChoice__1;
+   form: Form;
+   hypothesisId: nat;
+   id: nat;
+   publishDate: int;
+   publisher: principal;
+   votes: SharableBinaryVotes__1;
+ };
+type SharableEarning__3 = 
+ record {
+   balance: SharableE8S__1;
+   lastWithdrawAt: Time;
+   revenue: SharableE8S__1;
+ };
+type SharableEarning__2 = 
+ record {
+   balance: SharableE8S__1;
+   lastWithdrawAt: Time;
+   revenue: SharableE8S__1;
+ };
+type SharableEarning__1 = 
+ record {
+   balance: SharableE8S__1;
+   lastWithdrawAt: Time;
+   revenue: SharableE8S__1;
+ };
+type SharableEarning = 
+ record {
+   balance: SharableE8S__1;
+   lastWithdrawAt: Time;
+   revenue: SharableE8S__1;
+ };
+type SharableE8S__3 = nat;
+type SharableE8S__2 = nat;
+type SharableE8S__1 = nat;
+type SharableE8S = nat;
+type SharableDistribution = 
+ record {
+   actorVariant: ActorVariant__1;
+   earning: SharableEarning;
+   proportion: SharableProportion__1;
+ };
+type SharableDetachment = 
+ variant {
+   Code: SharableCode;
+   Configs: SharableConfigs__1;
+   Field: SharableField;
+   Worker: SharableWorker;
+ };
+type SharableDate = nat;
+type SharableCount__1 = nat;
+type SharableCount = nat;
+type SharableConfigs__1 = record {actorsConfigs: ActorsConfigs__1;};
+type SharableConfigs = 
+ vec record {
+       Key;
+       SharableValue;
+     };
+type SharableCommitments = vec SharableCommitment;
+type SharableCommitment = 
+ record {
+   actorVariant: DeployableActorVariant;
+   args: vec nat8;
+   moduleHash: text;
+ };
+type SharableCode = 
+ record {
+   actorsConfigs: ActorsConfigs__1;
+   installation: SharableInstallation;
+ };
+type SharableBurials = vec SharableBurial;
+type SharableBurial = 
+ record {
+   amount: SharableE8S__2;
+   claimableInterest: SharableE8S__2;
+   coefficient: nat;
+   expiryDate: Time__2;
+   issueDate: Time__2;
+ };
+type SharableBinaryVotes__1 = 
+ record {
+   powered: OneSideSharable__1;
+   regular: OneSideSharable__1;
+ };
+type SharableBinaryVotes = 
+ record {
+   powered: OneSideSharable__1;
+   regular: OneSideSharable__1;
+ };
+type SharableAllocation = 
+ record {
+   actorVariant: ActorVariant;
+   allocated: nat;
+   balance: nat;
+ };
+type Sharable = vec SharableCommitment;
+type Sales = 
+ service {
+   addPackage: (nat, text, text, text) -> ();
+   computeAcornToMint: (nat) -> (ACORNToMint);
+   expectPackageFound: (nat) -> (nat) query;
+   expectPackageNotFound: (nat) -> () query;
+   getConfig: (Key) -> (SharableValue) query;
+   getConfigs: () -> (Sharable__3) query;
+   getDeployedPackages: () -> (Sharable__10) query;
+   getOwnedPackages: (principal) -> (Sharable__10);
+   getPackagePrincipals: () -> (vec record {
+                                      nat;
+                                      principal;
+                                    }) query;
+   getPackages: () -> (Sharable__10) query;
+   mintPackage: (principal, nat) -> (nat);
+   putConfigs: (vec record {
+                      Key;
+                      SharableValue;
+                    }) -> ();
+   setConfigs: (vec record {
+                      Key;
+                      SharableValue;
+                    }) -> ();
+ };
+type Role = 
+ variant {
+   Guest;
+   Member;
+ };
+type ReleaseNotes = vec Changes;
+type ProposalVariant = 
+ variant {
+   Code;
+   Configs;
+   Field;
+   Worker;
+ };
+type Picture = record {"blob": blob;};
+type Pagination_6 = 
+ record {
+   is: nat;
+   of: nat;
+   result: vec Sharable__27;
+ };
+type Pagination_5 = 
+ record {
+   is: nat;
+   of: nat;
+   result: vec Sharable__25;
+ };
+type Pagination_4 = 
+ record {
+   is: nat;
+   of: nat;
+   result: vec Sharable__23;
+ };
+type Pagination_3 = 
+ record {
+   is: nat;
+   of: nat;
+   result: vec Sharable__21;
+ };
+type Pagination_2 = 
+ record {
+   is: nat;
+   of: nat;
+   result: vec Sharable__17;
+ };
+type Pagination_1 = 
+ record {
+   is: nat;
+   of: nat;
+   result: vec Sharable__15;
+ };
+type Pagination = 
+ record {
+   is: nat;
+   of: nat;
+   result: vec Sharable__11;
+ };
+type Order = 
+ variant {
+   ascending;
+   descending;
+ };
+type Option = 
+ variant {
+   Double;
+   Octuple;
+   Perpetual;
+   Quadruple;
+   Single;
+ };
+type OneSideSharable__1 = 
+ record {
+   nat;
+   nat;
+ };
+type OneSideSharable = 
+ record {
+   nat;
+   nat;
+   nat;
+ };
+type Note = 
+ record {
+   content: text;
+   extended: bool;
+ };
+type Milestone = 
+ record {
+   date: Time__4;
+   status: Status;
+ };
+type LogoResult = 
+ record {
+   data: text;
+   logo_type: text;
+ };
+type List__1 = 
+ opt record {
+       nat;
+       List__1;
+     };
+type List = 
+ opt record {
+       nat;
+       List__1;
+     };
+type Key = text;
+type Info = 
+ record {
+   args: vec nat8;
+   commitHash: text;
+   cycles: nat;
+   memorySize: nat;
+   moduleHash: text;
+   status: variant {
+             running;
+             stopped;
+             stopping;
+           };
+ };
+type Indicator = 
+ service {
+   /// PUBLIC ////// ACTORS ////////////
+   ACORN: () -> (ACORN) query;
+   Affiliate: () -> (Affiliate) query;
+   Axioms: () -> (Axioms) query;
+   DAO: () -> (DAO) query;
+   Escrow: () -> (Escrow) query;
+   Facade: () -> (Facade) query;
+   ICPUSD: () -> (ICPUSD) query;
+   Sales: () -> (Sales) query;
+   Split: () -> (Split) query;
+   Treasury: () -> (Treasury) query;
+   checkInstallationSettled: (principal) -> (bool) query;
+   clearCommitment: (DeployableVariant) -> ();
+   deleteSession: (principal) -> ();
+   enqueueUpgradeTask: (nat, principal, ActorsConfigs) -> ();
+   expectAuthorized: (principal, vec Variant) -> () query;
+   expectUnreleased: () -> () query;
+   extendInstallationExpiryDate: (principal, nat) -> ();
+   /// PUBLIC ////// ACCESSORS ////////////
+   getActorInfo: (Variant) -> (Info);
+   getActorsInfo: () -> (vec record {
+                               Variant;
+                               Info;
+                             });
+   getCanisterTime: () -> (int) query;
+   getCommitmentComputedModuleHash: (principal, DeployableVariant) ->
+    (text) query;
+   getCommitmentUploadedChunks: (principal, DeployableVariant) ->
+    (vec nat8) query;
+   /// PUBLIC ////// ASSERTORS ////////////
+   getConfig: (Key) -> (SharableValue) query;
+   getConfigs: () -> (Sharable__3) query;
+   getInstallation: (principal) -> (Sharable__2) query;
+   getInstallationWithTitle: (principal) -> (Sharable__2, text) query;
+   getPrincipal: (Variant) -> (principal) query;
+   getPrincipals: () -> (vec record {
+                               Variant;
+                               principal;
+                             }) query;
+   getVariant: (principal) -> (Variant) query;
+   getVersion: () -> (Sharable__1) query;
+   /// PROTECTED ////// MODIFIERS ////////////
+   initialize: () -> ();
+   initializeFirstSession: (UpdateLevel, ReleaseNotes, Sharable) -> ();
+   initializeSession: (principal, text, UpdateLevel, ReleaseNotes,
+    Sharable) -> ();
+   installCanisters: () -> ();
+   putActorsConfigs: (ActorsConfigs) -> ();
+   putConfigs: (vec record {
+                      Key;
+                      SharableValue;
+                    }) -> ();
+   setActorsConfigs: (ActorsConfigs) -> ();
+   setConfigs: (vec record {
+                      Key;
+                      SharableValue;
+                    }) -> ();
+   settleCommitment: (DeployableVariant) -> ();
+   shiftToMidnight: (nat) -> ();
+   /// PUBLIC ////// MODIFIERS ////////////
+   topUp: (Variant, nat) -> ();
+   uploadCommitmentChunk: (DeployableVariant, nat8, blob, text) -> ();
+ };
+type IdentifierVariant = 
+ variant {
+   Principal: principal;
+   Username: text;
+ };
+type Identifier = 
+ record {
+   "principal": principal;
+   username: text;
+ };
+type ICPUSD = 
+ service {
+   exchange: (bool, nat) -> (nat);
+ };
+type Hyperlink__1 = 
+ record {
+   anchorText: text;
+   url: text;
+ };
+type Hyperlink = 
+ record {
+   anchorText: text;
+   url: text;
+ };
+type Header = 
+ record {
+   category: Category;
+   id: nat;
+ };
+type Format = 
+ variant {
+   Hyperlink: Hyperlink__1;
+   Note: Note;
+   Picture: Picture;
+ };
+type Form = vec Format;
+type Filter__6 = 
+ record {
+   containsPattern: opt text;
+   onSide: opt BinaryChoice;
+   publishedBy: opt principal;
+   publishedIn: opt nat;
+   votedBy: opt principal;
+ };
+type Filter__5 = 
+ record {
+   containsPattern: opt text;
+   joinedBy: opt principal;
+ };
+type Filter__4 = 
+ record {
+   requestedBy: opt principal;
+   requestedIn: opt Category__1;
+   votedBy: opt principal;
+ };
+type Filter__3 = 
+ record {
+   axiomsFrom: opt principal;
+   bookmarksFrom: opt principal;
+   containsPattern: opt text;
+   publishedAt: opt nat;
+   publishedBy: opt principal;
+   publishedIn: opt text;
+   votedBy: opt principal;
+ };
+type Filter__2 = 
+ record {
+   isCustodian: opt bool;
+   votedBy: opt principal;
+ };
+type Filter__1 = 
+ record {
+   proposedBy: opt principal;
+   proposedIn: opt ProposalVariant;
+   votedBy: opt principal;
+   withStatus: opt StatusVariant;
+ };
+type Filter = 
+ record {
+   containsPattern: opt text;
+   hasCapitalRaised: opt nat;
+ };
+type Facade = 
+ service {
+   editAvatar: (opt Picture) -> ();
+   editLinks: (vec Hyperlink__1) -> ();
+   editLocation: (opt text) -> ();
+   editUsername: (text) -> ();
+   getConfig: (Key) -> (SharableValue) query;
+   getConfigs: () -> (Sharable__3) query;
+   getUser: (principal) -> (Sharable__11) query;
+   getUserIdentifier: (IdentifierVariant) -> (Identifier) query;
+   getUsers: (Filter, Sort) -> (vec Sharable__11) query;
+   getUsersCount: () -> (nat) query;
+   getUsersPagination: (Filter, Sort, nat, nat) -> (Pagination) query;
+   initialize: () -> ();
+   putConfigs: (vec record {
+                      Key;
+                      SharableValue;
+                    }) -> ();
+   register: (text, nat, opt principal) -> ();
+   setConfigs: (vec record {
+                      Key;
+                      SharableValue;
+                    }) -> ();
+   shiftToMidnight: (nat) -> ();
+ };
+type Escrow = 
+ service {
+   bury: (nat, Option) -> ();
+   expectUserNotFound: (principal) -> () query;
+   getBurials: (principal) -> (Sharable__13) query;
+   getBuriedAmount: (principal) -> (nat) query;
+   getClaimableAmount: (principal) -> (nat) query;
+   getConfig: (Key) -> (SharableValue) query;
+   getConfigs: () -> (Sharable__3) query;
+   getExpiredAmount: (principal) -> (nat) query;
+   getInterestAmount: (principal) -> (nat) query;
+   getUser: (principal) -> (Sharable__12) query;
+   getVotingPower: (principal) -> (nat) query;
+   initialize: () -> ();
+   putConfigs: (vec record {
+                      Key;
+                      SharableValue;
+                    }) -> ();
+   register: (principal, nat) -> ();
+   setConfigs: (vec record {
+                      Key;
+                      SharableValue;
+                    }) -> ();
+   shiftToMidnight: (nat) -> ();
+   withdrawAll: () -> ();
+ };
+type Entry = 
+ record {
+   rank: nat;
+   score: nat;
+ };
+type Dip721NonFungibleToken = 
+ record {
+   logo: LogoResult;
+   maxLimit: nat16;
+   name: text;
+   symbol: text;
+ };
+type DeployableVariant = 
+ variant {
+   ACORN;
+   Affiliate;
+   Axioms;
+   DAO;
+   Escrow;
+   Facade;
+   Frontend;
+   ICPUSD;
+   Indicator;
+   Sales;
+   Split;
+   Treasury;
+ };
+type DeployableActorVariant = 
+ variant {
+   ACORN;
+   Affiliate;
+   Axioms;
+   DAO;
+   Escrow;
+   Facade;
+   Frontend;
+   ICPUSD;
+   Indicator;
+   Sales;
+   Split;
+   Treasury;
+ };
+type Delegable__2 = 
+ variant {
+   Default: UniformBinaryVote__1;
+   Delegated: principal;
+ };
+type Delegable__1 = 
+ variant {
+   Default: UniformBinaryVote;
+   Delegated: principal;
+ };
+type Delegable = 
+ variant {
+   Default: Choice;
+   Delegated: principal;
+ };
+type DAO = 
+ service {
+   cancelCodeUpload: () -> ();
+   castBallots: (vec principal) -> ();
+   enterElection: (text) -> ();
+   expectUserNotFound: (principal) -> () query;
+   getConfig: (Key) -> (SharableValue) query;
+   getConfigs: () -> (Sharable__3) query;
+   getDaysInPeriod: () -> (Sharable__19) query;
+   getEarning: (principal) -> (Sharable__7, Sharable__7) query;
+   getNominee: (principal) -> (Sharable__17) query;
+   getNominees: (Filter__2, Sort_2) -> (Sharable__18) query;
+   getNomineesPagination: (Filter__2, Sort_2, nat, nat) ->
+    (Pagination_2) query;
+   getProposal: (nat) -> (Sharable__15) query;
+   getProposals: (Filter__1, Sort_1) -> (Sharable__16) query;
+   getProposalsPagination: (Filter__1, Sort_1, nat, nat) ->
+    (Pagination_1) query;
+   getUser: (principal) -> (Sharable__14) query;
+   initialize: () -> ();
+   initializeCodeUploadSession: (text, UpdateLevel, ReleaseNotes,
+    Sharable) -> ();
+   leaveElection: () -> ();
+   openCodeProposal: (text, nat, nat, ActorsConfigs) -> (nat);
+   openConfigsProposal: (text, nat, nat, ActorsConfigs) -> (nat);
+   openFieldProposal: (text, text, text) -> (nat);
+   openWorkerProposal: (text, text, nat, nat) -> (nat);
+   putConfigs: (vec record {
+                      Key;
+                      SharableValue;
+                    }) -> ();
+   register: (principal) -> ();
+   retryConfigsProposal: (nat, text, nat, nat, ActorsConfigs) -> ();
+   retryFieldProposal: (nat, text, text, text) -> ();
+   retryWorkerProposal: (nat, text, nat, nat) -> ();
+   setCodeProposalExecuted: (nat) -> ();
+   setCodeProposalFailed: (nat, text) -> ();
+   setConfigs: (vec record {
+                      Key;
+                      SharableValue;
+                    }) -> ();
+   shiftToMidnight: (nat) -> ();
+   updateNomineeTitle: (text) -> ();
+   voteProposal: (nat, Delegable) -> ();
+   withdrawAll: () -> ();
+ };
+type ConfigurableActorVariant = 
+ variant {
+   Affiliate;
+   Axioms;
+   DAO;
+   Escrow;
+   Facade;
+   Indicator;
+   Sales;
+   Split;
+   Treasury;
+ };
+type Choice__2 = 
+ variant {
+   Negative;
+   Positive;
+ };
+type Choice__1 = 
+ variant {
+   Negative;
+   Neutral;
+   Positive;
+ };
+type Choice = 
+ variant {
+   Delegated;
+   Negative;
+   Positive;
+ };
+type Changes = 
+ variant {
+   Added: vec text;
+   Changed: vec text;
+   Fixed: vec text;
+   Removed: vec text;
+   Security: vec text;
+ };
+type Category__1 = 
+ variant {
+   Evidence;
+   Hypothesis;
+ };
+type Category = 
+ variant {
+   Evidence;
+   Hypothesis;
+ };
+type BinaryVote__2 = 
+ record {
+   choice: Choice__2;
+   value: nat;
+ };
+type BinaryVote__1 = 
+ record {
+   choice: Choice__2;
+   value: nat;
+ };
+type BinaryVote = 
+ record {
+   choice: Choice__2;
+   value: nat;
+ };
+type BinaryChoice__1 = 
+ variant {
+   Negative;
+   Positive;
+ };
+type BinaryChoice = 
+ variant {
+   Negative;
+   Positive;
+ };
+type Axioms = 
+ service {
+   addToAxioms: (nat) -> ();
+   addToBookmarks: (nat) -> ();
+   createField: (text, text) -> ();
+   expectUserNotFound: (principal) -> () query;
+   getAgePayout: (nat, nat) -> (Sharable__30) query;
+   getAgePayouts: (nat) -> (Sharable__29) query;
+   getAgesPayout: (nat) -> (Sharable__29) query;
+   getAgesPayouts: () -> (vec Sharable__29) query;
+   getConfig: (Key) -> (SharableValue) query;
+   getConfigs: () -> (Sharable__3) query;
+   getEarning: (principal) -> (Sharable__7) query;
+   getEvidence: (nat) -> (Sharable__27) query;
+   getEvidences: (Filter__6, Sort_6) -> (Sharable__28) query;
+   getEvidencesPagination: (Filter__6, Sort_6, nat, nat) ->
+    (Pagination_6) query;
+   getField: (text) -> (Sharable__25) query;
+   getFields: (Filter__5, Sort_5) -> (Sharable__26) query;
+   getFieldsPagination: (Filter__5, Sort_5, nat, nat) -> (Pagination_5) query;
+   getFlag: (Header) -> (Sharable__23) query;
+   getFlags: (Filter__4, Sort_4) -> (Sharable__24) query;
+   getFlagsPagination: (Filter__4, Sort_4, nat, nat) -> (Pagination_4) query;
+   getHypotheses: (Filter__3, Sort_3) -> (Sharable__22) query;
+   getHypothesesPagination: (Filter__3, Sort_3, nat, nat) ->
+    (Pagination_3) query;
+   getHypothesis: (nat) -> (Sharable__21) query;
+   getUser: (principal) -> (Sharable__20) query;
+   initialize: () -> ();
+   joinField: (text) -> ();
+   leaveField: (text) -> ();
+   publishEvidence: (nat, Form, Choice__2) -> (nat);
+   publishHypothesis: (text, text) -> (nat);
+   putConfigs: (vec record {
+                      Key;
+                      SharableValue;
+                    }) -> ();
+   register: (principal) -> ();
+   removeEvidenceVote: (nat) -> ();
+   removeFlagVote: (Header) -> ();
+   removeFromAxioms: (nat) -> ();
+   removeFromBookmarks: (nat) -> ();
+   removeHypothesisVote: (nat) -> ();
+   requestFlag: (Header, text) -> ();
+   setConfigs: (vec record {
+                      Key;
+                      SharableValue;
+                    }) -> ();
+   shiftToMidnight: (nat) -> ();
+   voteEvidence: (nat, Choice__2) -> ();
+   voteFlag: (Header, Choice__2) -> ();
+   voteHypothesis: (nat, Choice__1) -> ();
+   withdrawAll: () -> ();
+ };
+type ApproveResult = 
+ variant {
+   Err:
+    variant {
+      AllowanceChanged: record {current_allowance: nat;};
+      BadFee: record {expected_fee: nat;};
+      CreatedInFuture: record {ledger_time: nat64;};
+      Duplicate: record {duplicate_of: nat;};
+      Expired: record {ledger_time: nat64;};
+      GenericError: record {
+                      error_code: nat;
+                      message: text;
+                    };
+      InsufficientFunds: record {balance: nat;};
+      TemporarilyUnavailable;
+      TooOld;
+    };
+   Ok: nat;
+ };
+type ApproveArgs = 
+ record {
+   amount: nat;
+   created_at_time: opt nat64;
+   expected_allowance: opt nat;
+   expires_at: opt nat64;
+   fee: opt nat;
+   from_subaccount: opt blob;
+   memo: opt blob;
+   spender: Account;
+ };
+type AllowanceArgs = 
+ record {
+   account: Account;
+   spender: Account;
+ };
+type Allowance = 
+ record {
+   allowance: nat;
+   expires_at: opt nat;
+ };
+type Affiliate = 
+ service {
+   expectUserNotFound: (principal) -> () query;
+   fillReferrals: (principal, nat, opt principal) -> ();
+   getConfig: (Key) -> (SharableValue) query;
+   getConfigs: () -> (Sharable__3) query;
+   getEarning: (principal) -> (Sharable__7) query;
+   getUser: (principal) -> (Sharable__31) query;
+   initialize: () -> ();
+   putConfigs: (vec record {
+                      Key;
+                      SharableValue;
+                    }) -> ();
+   setConfigs: (vec record {
+                      Key;
+                      SharableValue;
+                    }) -> ();
+   shiftToMidnight: (nat) -> ();
+   withdrawAll: () -> ();
+ };
+type ActorsConfigs__1 = 
+ vec record {
+       ConfigurableActorVariant;
+       SharableConfigs;
+     };
+type ActorsConfigs = 
+ vec record {
+       ConfigurableActorVariant;
+       SharableConfigs;
+     };
+type ActorVariant__1 = 
+ variant {
+   ACORN;
+   Affiliate;
+   Axioms;
+   DAO;
+   Escrow;
+   Facade;
+   Founder;
+   Frontend;
+   ICPUSD;
+   Indicator;
+   Sales;
+   Split;
+   Treasury;
+ };
+type ActorVariant = 
+ variant {
+   ACORN;
+   Affiliate;
+   Axioms;
+   DAO;
+   Escrow;
+   Facade;
+   Founder;
+   Frontend;
+   ICPUSD;
+   Indicator;
+   Sales;
+   Split;
+   Treasury;
+ };
+type Account = 
+ record {
+   owner: principal;
+   subaccount: opt blob;
+ };
+type ACORNToMint = 
+ record {
+   buried: nat;
+   liquid: nat;
+ };
+type ACORN = 
+ service {
+   icrc1_balance_of: (Account) -> (nat) query;
+   icrc1_decimals: () -> (nat8) query;
+   icrc1_fee: () -> (nat) query;
+   icrc1_minting_account: () -> (opt Account) query;
+   icrc1_name: () -> (text) query;
+   icrc1_symbol: () -> (text) query;
+   icrc1_total_supply: () -> (nat) query;
+   icrc1_transfer: (TransferArgs) -> (TransferResult);
+   icrc2_allowance: (AllowanceArgs) -> (Allowance) query;
+   icrc2_approve: (ApproveArgs) -> (ApproveResult);
+   icrc2_transfer_from: (TransferFromArgs) -> (TransferFromResult);
+ };
+service : () -> Indicator

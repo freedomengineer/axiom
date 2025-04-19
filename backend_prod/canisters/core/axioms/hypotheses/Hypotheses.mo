@@ -1,0 +1,258 @@
+import Hypothesis "Hypothesis";
+import Age "../ages/Age";
+import Field "../fields/Field";
+import User "../users/User";
+
+import E "../../../common/Errors";
+
+import Base "../../../library/Base";
+import ClusterTree "../../../library/ClusterTree";
+import Iter "../../../library/Iter";
+import List "../../../library/List";
+import Map "../../../library/Map";
+import Set "../../../library/Set";
+import Vector "../../../library/Vector";
+
+import TernaryVotes "../../../library/votes/TernaryVotes";
+
+import DoubleClusterTree "../../../library/doubletree/DoubleClusterTree";
+import DoubleRankTree "../../../library/doubletree/DoubleRankTree";
+
+import Hash "mo:base/Hash";
+import Text "mo:base/Text";
+import Array "mo:base/Array";
+import Nat "mo:base/Nat";
+import Int "mo:base/Int";
+
+module {
+    /// PRIVATE ////// DECLARATIONS ////////////
+
+    private type Hash = Hash.Hash;
+    private type List<T> = List.List<T>;
+    private type Vector<T> = Vector.Vector<T>;
+
+    private type ClusterTree<K, V> = ClusterTree.ClusterTree<K, V>;
+    private type DoubleRankTree<T> = DoubleRankTree.DoubleRankTree<T>;
+    private type Ranking<T> = DoubleRankTree.Ranking<T>;
+    private type Compare<T> = Base.Compare<T>;
+    private type Sorted<T> = Base.Sort<T>;
+    private type Order = Base.Order;
+    private type TernaryVote = TernaryVotes.Vote;
+
+    private type Hypothesis = Hypothesis.Hypothesis;
+    private type SharableHypothesis = Hypothesis.Sharable;
+    private type Age = Age.Age;
+    private type Field = Field.Field;
+    private type User = User.User;
+
+    private type Entry = (Nat, Hypothesis);
+    private type Scores = Entry -> (Nat, Nat);
+    private type Ordering = ClusterTree<Float, Ranking<Entry>>;
+
+    private func _id() : Compare<Entry> = func((i1, _), (i2, _)) = Nat.compare(i1, i2);
+    private func _recent(orderBy : Order) : Compare<Entry> = switch (orderBy) {
+        case (#ascending) func((_, a), (_, b)) = Int.compare(a.publishDate, b.publishDate);
+        case (#descending) func((_, a), (_, b)) = Int.compare(b.publishDate, a.publishDate)
+    };
+    private func _controversy(orderBy : Order) : Compare<Entry> = switch (orderBy) {
+        case (#ascending) func((_, a), (_, b)) = Nat.compare(List.size(a.evidenceIds), List.size(b.evidenceIds));
+        case (#descending) func((_, a), (_, b)) = Nat.compare(List.size(b.evidenceIds), List.size(a.evidenceIds))
+    };
+    private func _scores(sortedBy : Sort) : Scores = switch (sortedBy) {
+        case (#popularity) func(_, e) = (TernaryVotes.getRegularValue(e.votes), TernaryVotes.getPoweredValue(e.votes));
+        case (#positivity) func(_, e) = (TernaryVotes.getRegularPositiveValue(e.votes), TernaryVotes.getPoweredPositiveValue(e.votes));
+        case (#neutrality) func(_, e) = (TernaryVotes.getRegularNeutralValue(e.votes), TernaryVotes.getPoweredNeutralValue(e.votes));
+        case (#negativity) func(_, e) = (TernaryVotes.getRegularNegativeValue(e.votes), TernaryVotes.getPoweredNegativeValue(e.votes));
+        case (_) E.unreachable()
+    };
+
+    /// PUBLIC ////// DECLARATIONS ////////////
+
+    public type Filter = {
+        publishedAt : ?Nat;
+        publishedIn : ?Text;
+        publishedBy : ?Principal;
+        votedBy : ?Principal;
+        axiomsFrom : ?Principal;
+        bookmarksFrom : ?Principal;
+        containsPattern : ?Text
+    };
+    public type Sort = {
+        #recent;
+        #controversy;
+        #popularity;
+        #positivity;
+        #neutrality;
+        #negativity
+    };
+
+    /// AXIOMS ////// HYPOTHESES ////////////
+
+    private type Self = Hypotheses;
+
+    public type Hypotheses = Vector<?Hypothesis>;
+    public type Sharable = [SharableHypothesis];
+
+    public func init() : Self = Vector.new();
+
+    /// PUBLIC ////// MODIFIERS ////////////
+
+    public func addFounder(__ : Self, founder : Principal) {
+        Vector.add(__, ?Hypothesis.fromFounder(founder))
+    };
+
+    public func publish(__ : Self, hypothesis : Hypothesis) : Nat {
+        let id : Nat = Vector.size(__);
+        Vector.add(__, ?hypothesis);
+        id
+    };
+    public func remove(__ : Self, id : Nat) {
+        Vector.put(__, id, null)
+    };
+
+    /// PUBLIC ////// ACCESSORS ////////////
+
+    public func size(__ : Self) : Nat = Vector.size(__);
+    public func nextId(__ : Self) : Nat = Vector.size(__);
+    public func lastId(__ : Self) : Nat = Vector.size(__) - 1;
+
+    public func found(__ : Self, id : Nat) : Bool = switch (Vector.getOpt(__, id)) {
+        case (?_) true;
+        case (null) false
+    };
+
+    public func hypothesis(__ : Self, id : Nat) : Hypothesis {
+        switch (Vector.getOpt(__, id)) {
+            case (?hypothesis) switch (hypothesis) {
+                case (?hypothesis) hypothesis;
+                case (null) E.f(#NOT_EXISTED("Hypothesis"), "Attempted to get a removed hypothesis id " # debug_show (id) # " by flagging")
+            };
+            case (null) E.f(#NOT_EXISTED("Hypothesis"), "Attempted to get a non-existent hypothesis id " # debug_show (id) # ". Max id available is " # debug_show (lastId(__)))
+        }
+    };
+    public func hypothesisRemovedOpt(__ : Self, id : Nat) : ?Hypothesis {
+        switch (Vector.getOpt(__, id)) {
+            case (?hypothesis) hypothesis;
+            case (null) E.f(#NOT_EXISTED("Hypothesis"), "Attempted to get a non-existent hypothesis id " # debug_show (id) # ". Max id available is " # debug_show (lastId(__)))
+        }
+    };
+    public func getHypothesis(__ : Self, id : Nat, callerUser : ?(Principal, User)) : SharableHypothesis {
+        let getCallerVote : (Nat) -> ?TernaryVote = User.callerHypothesisVoteCallback(callerUser);
+        let getCallerAxiom : (Nat) -> ?Bool = User.callerAxiomCallback(callerUser);
+        let getCallerBookmark : (Nat) -> ?Bool = User.callerBookmarkCallback(callerUser);
+        Hypothesis.toSharable(hypothesis(__, id), id, getCallerVote, getCallerAxiom, getCallerBookmark)
+    };
+    public func getHypotheses(__ : Self, filter : Filter, sort : Sorted<Sort>, callerUser : ?(Principal, User), getUser : Principal -> User, getField : Text -> Field, getAge : Nat -> Age) : Sharable {
+        let getCallerVote : Nat -> ?TernaryVote = User.callerHypothesisVoteCallback(callerUser);
+        let getCallerAxiom : Nat -> ?Bool = User.callerAxiomCallback(callerUser);
+        let getCallerBookmark : Nat -> ?Bool = User.callerBookmarkCallback(callerUser);
+
+        var filtered : ?[Entry] = null;
+        let toEntry : Nat -> ?Entry = func(i) = switch (hypothesisRemovedOpt(__, i)) {
+            case (?hypothesis) ?(i, hypothesis);
+            case (null) null
+        };
+        let toSharable : Entry -> SharableHypothesis = func(i, e) = Hypothesis.toSharable(e, i, getCallerVote, getCallerAxiom, getCallerBookmark);
+
+        switch (filter.axiomsFrom) {
+            case (null) {};
+            case (?user) filtered := ?Set.toArrayFilterMap<Nat, Entry>(getUser(user).axioms, toEntry)
+        };
+        switch (filter.bookmarksFrom, filtered) {
+            case (null, _) {};
+            case (?user, null) filtered := ?Set.toArrayFilterMap<Nat, Entry>(getUser(user).bookmarks, toEntry);
+            case (?user, ?prev) {
+                let userIns : User = getUser(user);
+                filtered := ?Array.filter<Entry>(prev, func((i, _)) = User.bookmarkFound(userIns, i))
+            }
+        };
+        switch (filter.votedBy, filtered) {
+            case (null, _) {};
+            case (?user, null) filtered := ?Map.getKeysFilterMap(getUser(user).votedHypotheses, toEntry);
+            case (?user, ?prev) {
+                let userIns : User = getUser(user);
+                filtered := ?Array.filter<Entry>(prev, func((i, _)) = User.hasHypothesisVoted(userIns, i))
+            }
+        };
+        switch (filter.publishedBy, filtered) {
+            case (null, _) {};
+            case (?user, null) filtered := ?List.toArrayFilterMap<Nat, Entry>(getUser(user).hypotheses, toEntry);
+            case (?user, ?prev) filtered := ?Array.filter<Entry>(prev, func(_, e) = e.publisher == user)
+        };
+        switch (filter.publishedIn, filtered) {
+            case (null, _) {};
+            case (?field, null) filtered := ?List.toArrayFilterMap<Nat, Entry>(getField(field).hypothesisIds, toEntry);
+            case (?field, ?prev) filtered := ?Array.filter<Entry>(prev, func(_, e) = e.fieldId == field)
+        };
+        switch (filter.publishedAt, filtered) {
+            case (null, _) {};
+            case (?age, null) {
+                let nextPaidId : Nat = getAge(age).nextPaidId.val;
+                switch (nextPaidId < nextId(__)) {
+                    case (false) filtered := ?[];
+                    case (true) filtered := ?Iter.toArrayFilterMap<Nat, Entry>(Iter.range(nextPaidId, lastId(__)), toEntry)
+                }
+            };
+            case (?age, ?prev) {
+                let nextPaidId : Nat = getAge(age).nextPaidId.val;
+                switch (nextPaidId < Vector.size(__)) {
+                    case (false) filtered := ?[];
+                    case (true) filtered := ?Array.filter<Entry>(prev, func(i, _) = i >= nextPaidId)
+                }
+            }
+        };
+        switch (filter.containsPattern, filtered) {
+            case (null, _) {};
+            case (?pattern, null) {
+                let patternIns = #text(Text.toLowercase(pattern));
+                filtered := ?Vector.toEntriesFilterMap<?Hypothesis, Entry>(
+                    __,
+                    func(i, e) = switch (e) {
+                        case (?e) switch (Hypothesis.containsPattern(e, patternIns)) {
+                            case (true) ?(i, e);
+                            case (false) null
+                        };
+                        case (null) null
+                    },
+                )
+            };
+            case (?pattern, ?prev) {
+                let patternIns = #text(Text.toLowercase(pattern));
+                filtered := ?Array.filter<Entry>(prev, func(_, e) = Hypothesis.containsPattern(e, patternIns))
+            }
+        };
+
+        let default : ?[Entry] -> [Entry] = func(unsorted) = switch (unsorted) {
+            case (null) Vector.toEntriesFilterMap<?Hypothesis, Entry>(__, func(i, e) = switch (e) { case (?e) ?(i, e); case (null) null });
+            case (?unsorted) unsorted
+        };
+
+        switch (sort.by, sort.order, filtered) {
+            case (#recent, #descending, null) Vector.toEntriesFilterMapRev<?Hypothesis, SharableHypothesis>(__, func(i, e) = switch (e) { case (?e) ?toSharable(i, e); case (null) null });
+            case (#recent, #ascending, null) Vector.toEntriesFilterMap<?Hypothesis, SharableHypothesis>(__, func(i, e) = switch (e) { case (?e) ?toSharable(i, e); case (null) null });
+            case (#recent, order, ?unsorted) Array.map<Entry, SharableHypothesis>(Array.sort(unsorted, _recent(order)), toSharable);
+            case (#controversy, order, unsorted) Array.map<Entry, SharableHypothesis>(Array.sort(default(unsorted), _controversy(order)), toSharable);
+            case (sortedBy, order, unsorted) {
+                let ordering : Ordering = DoubleClusterTree.getAverageRankTreeFromArray(default(unsorted), _scores(sortedBy), _id());
+                // Should sort by score, higher score -> lower rank
+                let flippedOrder : Order = switch (order) {
+                    case (#ascending) #descending;
+                    case (#descending) #ascending
+                };
+                let ranking : [Ranking<Entry>] = ClusterTree.getFlattenVals(ordering, #all, flippedOrder);
+                Array.map<Ranking<Entry>, SharableHypothesis>(ranking, func({ key }) = toSharable(key))
+            }
+        }
+    };
+
+    /// PUBLIC ////// ASSERTIONS ////////////
+
+    public func expectFound(__ : Self, id : Nat) {
+        if (found(__, id)) return;
+        E.f(#NOT_EXISTED("Hypothesis"), "Hypothesis " # debug_show id # " not found")
+    };
+    public func expectNotFound(__ : Self, id : Nat) {
+        if (not found(__, id)) return;
+        E.f(#ALREADY_EXISTED("Hypothesis"), "Hypothesis " # debug_show id # " already exists")
+    }
+}

@@ -1,0 +1,3458 @@
+[
+    [
+        [
+            {
+                "poweredEntry": { "rank": "0", "score": "82" },
+                "regularEntry": { "rank": "1", "score": "7" },
+                "averageRank": 0.5,
+                "hypothesisId": "0"
+            },
+            {
+                "poweredEntry": { "rank": "3", "score": "0" },
+                "regularEntry": { "rank": "0", "score": "10" },
+                "averageRank": 1.5,
+                "hypothesisId": "3"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "8" },
+                "regularEntry": { "rank": "2", "score": "5" },
+                "averageRank": 2,
+                "hypothesisId": "2"
+            }
+        ],
+        [],
+        [],
+        [
+            {
+                "poweredEntry": { "rank": "0", "score": "87" },
+                "regularEntry": { "rank": "0", "score": "8" },
+                "averageRank": 0,
+                "hypothesisId": "5"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "18" },
+                "regularEntry": { "rank": "1", "score": "2" },
+                "averageRank": 1,
+                "hypothesisId": "4"
+            }
+        ],
+        [
+            {
+                "poweredEntry": { "rank": "1", "score": "3" },
+                "regularEntry": { "rank": "0", "score": "7" },
+                "averageRank": 0.5,
+                "hypothesisId": "8"
+            },
+            {
+                "poweredEntry": { "rank": "0", "score": "8" },
+                "regularEntry": { "rank": "1", "score": "5" },
+                "averageRank": 0.5,
+                "hypothesisId": "7"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "0" },
+                "regularEntry": { "rank": "2", "score": "0" },
+                "averageRank": 2,
+                "hypothesisId": "9"
+            }
+        ],
+        [
+            {
+                "poweredEntry": { "rank": "0", "score": "64" },
+                "regularEntry": { "rank": "0", "score": "5" },
+                "averageRank": 0,
+                "hypothesisId": "12"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "5" },
+                "regularEntry": { "rank": "1", "score": "4" },
+                "averageRank": 1,
+                "hypothesisId": "10"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "3" },
+                "regularEntry": { "rank": "2", "score": "1" },
+                "averageRank": 2,
+                "hypothesisId": "11"
+            }
+        ],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [
+            {
+                "poweredEntry": { "rank": "0", "score": "82" },
+                "regularEntry": { "rank": "0", "score": "7" },
+                "averageRank": 0,
+                "hypothesisId": "14"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "22" },
+                "regularEntry": { "rank": "2", "score": "3" },
+                "averageRank": 1.5,
+                "hypothesisId": "13"
+            },
+            {
+                "poweredEntry": { "rank": "3", "score": "8" },
+                "regularEntry": { "rank": "1", "score": "5" },
+                "averageRank": 2,
+                "hypothesisId": "16"
+            }
+        ],
+        [
+            {
+                "poweredEntry": { "rank": "0", "score": "82" },
+                "regularEntry": { "rank": "1", "score": "7" },
+                "averageRank": 0.5,
+                "hypothesisId": "19"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "18" },
+                "regularEntry": { "rank": "4", "score": "2" },
+                "averageRank": 2.5,
+                "hypothesisId": "23"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "16" },
+                "regularEntry": { "rank": "3", "score": "4" },
+                "averageRank": 2.5,
+                "hypothesisId": "22"
+            }
+        ],
+        [],
+        [
+            {
+                "poweredEntry": { "rank": "0", "score": "64" },
+                "regularEntry": { "rank": "0", "score": "5" },
+                "averageRank": 0,
+                "hypothesisId": "26"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "12" },
+                "regularEntry": { "rank": "0", "score": "5" },
+                "averageRank": 0.5,
+                "hypothesisId": "25"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "5" },
+                "regularEntry": { "rank": "1", "score": "4" },
+                "averageRank": 1.5,
+                "hypothesisId": "24"
+            }
+        ],
+        [
+            {
+                "poweredEntry": { "rank": "0", "score": "136" },
+                "regularEntry": { "rank": "0", "score": "5" },
+                "averageRank": 0,
+                "hypothesisId": "28"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "10" },
+                "regularEntry": { "rank": "1", "score": "2" },
+                "averageRank": 1,
+                "hypothesisId": "29"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "10" },
+                "regularEntry": { "rank": "1", "score": "2" },
+                "averageRank": 1,
+                "hypothesisId": "27"
+            }
+        ],
+        [],
+        [],
+        [],
+        [
+            {
+                "poweredEntry": { "rank": "0", "score": "8" },
+                "regularEntry": { "rank": "0", "score": "7" },
+                "averageRank": 0,
+                "hypothesisId": "31"
+            },
+            {
+                "poweredEntry": { "rank": "0", "score": "8" },
+                "regularEntry": { "rank": "1", "score": "5" },
+                "averageRank": 0.5,
+                "hypothesisId": "30"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "0" },
+                "regularEntry": { "rank": "2", "score": "0" },
+                "averageRank": 1.5,
+                "hypothesisId": "32"
+            }
+        ],
+        [
+            {
+                "poweredEntry": { "rank": "0", "score": "82" },
+                "regularEntry": { "rank": "0", "score": "7" },
+                "averageRank": 0,
+                "hypothesisId": "33"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "8" },
+                "regularEntry": { "rank": "1", "score": "5" },
+                "averageRank": 1.5,
+                "hypothesisId": "35"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "10" },
+                "regularEntry": { "rank": "2", "score": "2" },
+                "averageRank": 1.5,
+                "hypothesisId": "34"
+            }
+        ],
+        [
+            {
+                "poweredEntry": { "rank": "0", "score": "5" },
+                "regularEntry": { "rank": "0", "score": "4" },
+                "averageRank": 0,
+                "hypothesisId": "38"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "3" },
+                "regularEntry": { "rank": "1", "score": "1" },
+                "averageRank": 1,
+                "hypothesisId": "39"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "3" },
+                "regularEntry": { "rank": "1", "score": "1" },
+                "averageRank": 1,
+                "hypothesisId": "37"
+            }
+        ]
+    ],
+    [
+        [
+            {
+                "poweredEntry": { "rank": "0", "score": "82" },
+                "regularEntry": { "rank": "1", "score": "7" },
+                "averageRank": 0.5,
+                "hypothesisId": "0"
+            },
+            {
+                "poweredEntry": { "rank": "3", "score": "0" },
+                "regularEntry": { "rank": "0", "score": "10" },
+                "averageRank": 1.5,
+                "hypothesisId": "3"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "8" },
+                "regularEntry": { "rank": "2", "score": "5" },
+                "averageRank": 2,
+                "hypothesisId": "2"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "10" },
+                "regularEntry": { "rank": "3", "score": "2" },
+                "averageRank": 2,
+                "hypothesisId": "1"
+            }
+        ],
+        [
+            {
+                "poweredEntry": { "rank": "0", "score": "82" },
+                "regularEntry": { "rank": "1", "score": "7" },
+                "averageRank": 0.5,
+                "hypothesisId": "0"
+            },
+            {
+                "poweredEntry": { "rank": "3", "score": "0" },
+                "regularEntry": { "rank": "0", "score": "10" },
+                "averageRank": 1.5,
+                "hypothesisId": "3"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "8" },
+                "regularEntry": { "rank": "2", "score": "5" },
+                "averageRank": 2,
+                "hypothesisId": "2"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "10" },
+                "regularEntry": { "rank": "3", "score": "2" },
+                "averageRank": 2,
+                "hypothesisId": "1"
+            }
+        ],
+        [
+            {
+                "poweredEntry": { "rank": "0", "score": "82" },
+                "regularEntry": { "rank": "1", "score": "7" },
+                "averageRank": 0.5,
+                "hypothesisId": "0"
+            },
+            {
+                "poweredEntry": { "rank": "3", "score": "0" },
+                "regularEntry": { "rank": "0", "score": "10" },
+                "averageRank": 1.5,
+                "hypothesisId": "3"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "8" },
+                "regularEntry": { "rank": "2", "score": "5" },
+                "averageRank": 2,
+                "hypothesisId": "2"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "10" },
+                "regularEntry": { "rank": "3", "score": "2" },
+                "averageRank": 2,
+                "hypothesisId": "1"
+            }
+        ],
+        [
+            {
+                "poweredEntry": { "rank": "0", "score": "87" },
+                "regularEntry": { "rank": "1", "score": "8" },
+                "averageRank": 0.5,
+                "hypothesisId": "5"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "82" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 1.5,
+                "hypothesisId": "0"
+            },
+            {
+                "poweredEntry": { "rank": "5", "score": "0" },
+                "regularEntry": { "rank": "0", "score": "10" },
+                "averageRank": 2.5,
+                "hypothesisId": "3"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "18" },
+                "regularEntry": { "rank": "4", "score": "2" },
+                "averageRank": 3,
+                "hypothesisId": "4"
+            },
+            {
+                "poweredEntry": { "rank": "4", "score": "8" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 3.5,
+                "hypothesisId": "2"
+            },
+            {
+                "poweredEntry": { "rank": "3", "score": "10" },
+                "regularEntry": { "rank": "4", "score": "2" },
+                "averageRank": 3.5,
+                "hypothesisId": "1"
+            }
+        ],
+        [
+            {
+                "poweredEntry": { "rank": "0", "score": "87" },
+                "regularEntry": { "rank": "1", "score": "8" },
+                "averageRank": 0.5,
+                "hypothesisId": "5"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "82" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 1.5,
+                "hypothesisId": "0"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "18" },
+                "regularEntry": { "rank": "4", "score": "2" },
+                "averageRank": 3,
+                "hypothesisId": "4"
+            },
+            {
+                "poweredEntry": { "rank": "6", "score": "0" },
+                "regularEntry": { "rank": "0", "score": "10" },
+                "averageRank": 3,
+                "hypothesisId": "3"
+            },
+            {
+                "poweredEntry": { "rank": "5", "score": "3" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 3.5,
+                "hypothesisId": "8"
+            },
+            {
+                "poweredEntry": { "rank": "4", "score": "8" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 3.5,
+                "hypothesisId": "7"
+            }
+        ],
+        [
+            {
+                "poweredEntry": { "rank": "0", "score": "87" },
+                "regularEntry": { "rank": "0", "score": "8" },
+                "averageRank": 0,
+                "hypothesisId": "5"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "64" },
+                "regularEntry": { "rank": "2", "score": "5" },
+                "averageRank": 1.5,
+                "hypothesisId": "12"
+            },
+            {
+                "poweredEntry": { "rank": "3", "score": "8" },
+                "regularEntry": { "rank": "2", "score": "5" },
+                "averageRank": 2.5,
+                "hypothesisId": "7"
+            },
+            {
+                "poweredEntry": { "rank": "5", "score": "3" },
+                "regularEntry": { "rank": "1", "score": "7" },
+                "averageRank": 3,
+                "hypothesisId": "8"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "18" },
+                "regularEntry": { "rank": "4", "score": "2" },
+                "averageRank": 3,
+                "hypothesisId": "4"
+            },
+            {
+                "poweredEntry": { "rank": "4", "score": "5" },
+                "regularEntry": { "rank": "3", "score": "4" },
+                "averageRank": 3.5,
+                "hypothesisId": "10"
+            }
+        ],
+        [
+            {
+                "poweredEntry": { "rank": "0", "score": "87" },
+                "regularEntry": { "rank": "0", "score": "8" },
+                "averageRank": 0,
+                "hypothesisId": "5"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "64" },
+                "regularEntry": { "rank": "2", "score": "5" },
+                "averageRank": 1.5,
+                "hypothesisId": "12"
+            },
+            {
+                "poweredEntry": { "rank": "3", "score": "8" },
+                "regularEntry": { "rank": "2", "score": "5" },
+                "averageRank": 2.5,
+                "hypothesisId": "7"
+            },
+            {
+                "poweredEntry": { "rank": "5", "score": "3" },
+                "regularEntry": { "rank": "1", "score": "7" },
+                "averageRank": 3,
+                "hypothesisId": "8"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "18" },
+                "regularEntry": { "rank": "4", "score": "2" },
+                "averageRank": 3,
+                "hypothesisId": "4"
+            },
+            {
+                "poweredEntry": { "rank": "4", "score": "5" },
+                "regularEntry": { "rank": "3", "score": "4" },
+                "averageRank": 3.5,
+                "hypothesisId": "10"
+            }
+        ],
+        [
+            {
+                "poweredEntry": { "rank": "0", "score": "87" },
+                "regularEntry": { "rank": "0", "score": "8" },
+                "averageRank": 0,
+                "hypothesisId": "5"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "64" },
+                "regularEntry": { "rank": "2", "score": "5" },
+                "averageRank": 1.5,
+                "hypothesisId": "12"
+            },
+            {
+                "poweredEntry": { "rank": "3", "score": "8" },
+                "regularEntry": { "rank": "2", "score": "5" },
+                "averageRank": 2.5,
+                "hypothesisId": "7"
+            },
+            {
+                "poweredEntry": { "rank": "5", "score": "3" },
+                "regularEntry": { "rank": "1", "score": "7" },
+                "averageRank": 3,
+                "hypothesisId": "8"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "18" },
+                "regularEntry": { "rank": "4", "score": "2" },
+                "averageRank": 3,
+                "hypothesisId": "4"
+            },
+            {
+                "poweredEntry": { "rank": "4", "score": "5" },
+                "regularEntry": { "rank": "3", "score": "4" },
+                "averageRank": 3.5,
+                "hypothesisId": "10"
+            }
+        ],
+        [
+            {
+                "poweredEntry": { "rank": "0", "score": "64" },
+                "regularEntry": { "rank": "1", "score": "5" },
+                "averageRank": 0.5,
+                "hypothesisId": "12"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "8" },
+                "regularEntry": { "rank": "1", "score": "5" },
+                "averageRank": 1,
+                "hypothesisId": "7"
+            },
+            {
+                "poweredEntry": { "rank": "3", "score": "3" },
+                "regularEntry": { "rank": "0", "score": "7" },
+                "averageRank": 1.5,
+                "hypothesisId": "8"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "5" },
+                "regularEntry": { "rank": "2", "score": "4" },
+                "averageRank": 2,
+                "hypothesisId": "10"
+            },
+            {
+                "poweredEntry": { "rank": "3", "score": "3" },
+                "regularEntry": { "rank": "3", "score": "1" },
+                "averageRank": 3,
+                "hypothesisId": "11"
+            },
+            {
+                "poweredEntry": { "rank": "4", "score": "0" },
+                "regularEntry": { "rank": "4", "score": "0" },
+                "averageRank": 4,
+                "hypothesisId": "9"
+            }
+        ],
+        [
+            {
+                "poweredEntry": { "rank": "0", "score": "64" },
+                "regularEntry": { "rank": "0", "score": "5" },
+                "averageRank": 0,
+                "hypothesisId": "12"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "5" },
+                "regularEntry": { "rank": "1", "score": "4" },
+                "averageRank": 1,
+                "hypothesisId": "10"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "3" },
+                "regularEntry": { "rank": "2", "score": "1" },
+                "averageRank": 2,
+                "hypothesisId": "11"
+            }
+        ],
+        [],
+        [
+            {
+                "poweredEntry": { "rank": "0", "score": "82" },
+                "regularEntry": { "rank": "0", "score": "7" },
+                "averageRank": 0,
+                "hypothesisId": "14"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "22" },
+                "regularEntry": { "rank": "2", "score": "3" },
+                "averageRank": 1.5,
+                "hypothesisId": "13"
+            },
+            {
+                "poweredEntry": { "rank": "3", "score": "8" },
+                "regularEntry": { "rank": "1", "score": "5" },
+                "averageRank": 2,
+                "hypothesisId": "16"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "10" },
+                "regularEntry": { "rank": "3", "score": "2" },
+                "averageRank": 2.5,
+                "hypothesisId": "15"
+            }
+        ],
+        [
+            {
+                "poweredEntry": { "rank": "0", "score": "82" },
+                "regularEntry": { "rank": "1", "score": "7" },
+                "averageRank": 0.5,
+                "hypothesisId": "19"
+            },
+            {
+                "poweredEntry": { "rank": "0", "score": "82" },
+                "regularEntry": { "rank": "1", "score": "7" },
+                "averageRank": 0.5,
+                "hypothesisId": "14"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "22" },
+                "regularEntry": { "rank": "4", "score": "3" },
+                "averageRank": 2.5,
+                "hypothesisId": "13"
+            },
+            {
+                "poweredEntry": { "rank": "3", "score": "16" },
+                "regularEntry": { "rank": "3", "score": "4" },
+                "averageRank": 3,
+                "hypothesisId": "22"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "18" },
+                "regularEntry": { "rank": "5", "score": "2" },
+                "averageRank": 3.5,
+                "hypothesisId": "23"
+            },
+            {
+                "poweredEntry": { "rank": "5", "score": "8" },
+                "regularEntry": { "rank": "2", "score": "5" },
+                "averageRank": 3.5,
+                "hypothesisId": "21"
+            }
+        ],
+        [
+            {
+                "poweredEntry": { "rank": "0", "score": "82" },
+                "regularEntry": { "rank": "1", "score": "7" },
+                "averageRank": 0.5,
+                "hypothesisId": "19"
+            },
+            {
+                "poweredEntry": { "rank": "0", "score": "82" },
+                "regularEntry": { "rank": "1", "score": "7" },
+                "averageRank": 0.5,
+                "hypothesisId": "14"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "22" },
+                "regularEntry": { "rank": "4", "score": "3" },
+                "averageRank": 2.5,
+                "hypothesisId": "13"
+            },
+            {
+                "poweredEntry": { "rank": "3", "score": "16" },
+                "regularEntry": { "rank": "3", "score": "4" },
+                "averageRank": 3,
+                "hypothesisId": "22"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "18" },
+                "regularEntry": { "rank": "5", "score": "2" },
+                "averageRank": 3.5,
+                "hypothesisId": "23"
+            },
+            {
+                "poweredEntry": { "rank": "5", "score": "8" },
+                "regularEntry": { "rank": "2", "score": "5" },
+                "averageRank": 3.5,
+                "hypothesisId": "21"
+            }
+        ],
+        [
+            {
+                "poweredEntry": { "rank": "0", "score": "82" },
+                "regularEntry": { "rank": "1", "score": "7" },
+                "averageRank": 0.5,
+                "hypothesisId": "19"
+            },
+            {
+                "poweredEntry": { "rank": "0", "score": "82" },
+                "regularEntry": { "rank": "1", "score": "7" },
+                "averageRank": 0.5,
+                "hypothesisId": "14"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "64" },
+                "regularEntry": { "rank": "2", "score": "5" },
+                "averageRank": 1.5,
+                "hypothesisId": "26"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "22" },
+                "regularEntry": { "rank": "4", "score": "3" },
+                "averageRank": 3,
+                "hypothesisId": "13"
+            },
+            {
+                "poweredEntry": { "rank": "5", "score": "12" },
+                "regularEntry": { "rank": "2", "score": "5" },
+                "averageRank": 3.5,
+                "hypothesisId": "25"
+            },
+            {
+                "poweredEntry": { "rank": "4", "score": "16" },
+                "regularEntry": { "rank": "3", "score": "4" },
+                "averageRank": 3.5,
+                "hypothesisId": "22"
+            }
+        ],
+        [
+            {
+                "poweredEntry": { "rank": "0", "score": "136" },
+                "regularEntry": { "rank": "2", "score": "5" },
+                "averageRank": 1,
+                "hypothesisId": "28"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "82" },
+                "regularEntry": { "rank": "1", "score": "7" },
+                "averageRank": 1,
+                "hypothesisId": "19"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "82" },
+                "regularEntry": { "rank": "1", "score": "7" },
+                "averageRank": 1,
+                "hypothesisId": "14"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "64" },
+                "regularEntry": { "rank": "2", "score": "5" },
+                "averageRank": 2,
+                "hypothesisId": "26"
+            },
+            {
+                "poweredEntry": { "rank": "3", "score": "22" },
+                "regularEntry": { "rank": "4", "score": "3" },
+                "averageRank": 3.5,
+                "hypothesisId": "13"
+            },
+            {
+                "poweredEntry": { "rank": "6", "score": "12" },
+                "regularEntry": { "rank": "2", "score": "5" },
+                "averageRank": 4,
+                "hypothesisId": "25"
+            }
+        ],
+        [
+            {
+                "poweredEntry": { "rank": "0", "score": "136" },
+                "regularEntry": { "rank": "2", "score": "5" },
+                "averageRank": 1,
+                "hypothesisId": "28"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "82" },
+                "regularEntry": { "rank": "1", "score": "7" },
+                "averageRank": 1,
+                "hypothesisId": "19"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "64" },
+                "regularEntry": { "rank": "2", "score": "5" },
+                "averageRank": 2,
+                "hypothesisId": "26"
+            },
+            {
+                "poweredEntry": { "rank": "5", "score": "12" },
+                "regularEntry": { "rank": "2", "score": "5" },
+                "averageRank": 3.5,
+                "hypothesisId": "25"
+            },
+            {
+                "poweredEntry": { "rank": "3", "score": "18" },
+                "regularEntry": { "rank": "4", "score": "2" },
+                "averageRank": 3.5,
+                "hypothesisId": "23"
+            },
+            {
+                "poweredEntry": { "rank": "4", "score": "16" },
+                "regularEntry": { "rank": "3", "score": "4" },
+                "averageRank": 3.5,
+                "hypothesisId": "22"
+            }
+        ],
+        [
+            {
+                "poweredEntry": { "rank": "0", "score": "136" },
+                "regularEntry": { "rank": "0", "score": "5" },
+                "averageRank": 0,
+                "hypothesisId": "28"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "64" },
+                "regularEntry": { "rank": "0", "score": "5" },
+                "averageRank": 0.5,
+                "hypothesisId": "26"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "12" },
+                "regularEntry": { "rank": "0", "score": "5" },
+                "averageRank": 1,
+                "hypothesisId": "25"
+            },
+            {
+                "poweredEntry": { "rank": "3", "score": "10" },
+                "regularEntry": { "rank": "2", "score": "2" },
+                "averageRank": 2.5,
+                "hypothesisId": "29"
+            },
+            {
+                "poweredEntry": { "rank": "3", "score": "10" },
+                "regularEntry": { "rank": "2", "score": "2" },
+                "averageRank": 2.5,
+                "hypothesisId": "27"
+            },
+            {
+                "poweredEntry": { "rank": "4", "score": "5" },
+                "regularEntry": { "rank": "1", "score": "4" },
+                "averageRank": 2.5,
+                "hypothesisId": "24"
+            }
+        ],
+        [
+            {
+                "poweredEntry": { "rank": "0", "score": "136" },
+                "regularEntry": { "rank": "0", "score": "5" },
+                "averageRank": 0,
+                "hypothesisId": "28"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "64" },
+                "regularEntry": { "rank": "0", "score": "5" },
+                "averageRank": 0.5,
+                "hypothesisId": "26"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "12" },
+                "regularEntry": { "rank": "0", "score": "5" },
+                "averageRank": 1,
+                "hypothesisId": "25"
+            },
+            {
+                "poweredEntry": { "rank": "3", "score": "10" },
+                "regularEntry": { "rank": "2", "score": "2" },
+                "averageRank": 2.5,
+                "hypothesisId": "29"
+            },
+            {
+                "poweredEntry": { "rank": "3", "score": "10" },
+                "regularEntry": { "rank": "2", "score": "2" },
+                "averageRank": 2.5,
+                "hypothesisId": "27"
+            },
+            {
+                "poweredEntry": { "rank": "4", "score": "5" },
+                "regularEntry": { "rank": "1", "score": "4" },
+                "averageRank": 2.5,
+                "hypothesisId": "24"
+            }
+        ],
+        [
+            {
+                "poweredEntry": { "rank": "0", "score": "136" },
+                "regularEntry": { "rank": "1", "score": "5" },
+                "averageRank": 0.5,
+                "hypothesisId": "28"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "8" },
+                "regularEntry": { "rank": "0", "score": "7" },
+                "averageRank": 1,
+                "hypothesisId": "31"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "8" },
+                "regularEntry": { "rank": "1", "score": "5" },
+                "averageRank": 1.5,
+                "hypothesisId": "30"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "10" },
+                "regularEntry": { "rank": "2", "score": "2" },
+                "averageRank": 1.5,
+                "hypothesisId": "29"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "10" },
+                "regularEntry": { "rank": "2", "score": "2" },
+                "averageRank": 1.5,
+                "hypothesisId": "27"
+            },
+            {
+                "poweredEntry": { "rank": "3", "score": "0" },
+                "regularEntry": { "rank": "3", "score": "0" },
+                "averageRank": 3,
+                "hypothesisId": "32"
+            }
+        ],
+        [
+            {
+                "poweredEntry": { "rank": "0", "score": "82" },
+                "regularEntry": { "rank": "0", "score": "7" },
+                "averageRank": 0,
+                "hypothesisId": "33"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "8" },
+                "regularEntry": { "rank": "0", "score": "7" },
+                "averageRank": 1,
+                "hypothesisId": "31"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "8" },
+                "regularEntry": { "rank": "1", "score": "5" },
+                "averageRank": 1.5,
+                "hypothesisId": "35"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "10" },
+                "regularEntry": { "rank": "2", "score": "2" },
+                "averageRank": 1.5,
+                "hypothesisId": "34"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "8" },
+                "regularEntry": { "rank": "1", "score": "5" },
+                "averageRank": 1.5,
+                "hypothesisId": "30"
+            },
+            {
+                "poweredEntry": { "rank": "3", "score": "0" },
+                "regularEntry": { "rank": "2", "score": "2" },
+                "averageRank": 2.5,
+                "hypothesisId": "36"
+            }
+        ],
+        [
+            {
+                "poweredEntry": { "rank": "0", "score": "82" },
+                "regularEntry": { "rank": "0", "score": "7" },
+                "averageRank": 0,
+                "hypothesisId": "33"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "8" },
+                "regularEntry": { "rank": "0", "score": "7" },
+                "averageRank": 1,
+                "hypothesisId": "31"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "8" },
+                "regularEntry": { "rank": "1", "score": "5" },
+                "averageRank": 1.5,
+                "hypothesisId": "35"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "8" },
+                "regularEntry": { "rank": "1", "score": "5" },
+                "averageRank": 1.5,
+                "hypothesisId": "30"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "10" },
+                "regularEntry": { "rank": "3", "score": "2" },
+                "averageRank": 2,
+                "hypothesisId": "34"
+            },
+            {
+                "poweredEntry": { "rank": "3", "score": "5" },
+                "regularEntry": { "rank": "2", "score": "4" },
+                "averageRank": 2.5,
+                "hypothesisId": "38"
+            }
+        ]
+    ],
+    [
+        [
+            {
+                "poweredEntry": { "rank": "0", "score": "82" },
+                "regularEntry": { "rank": "1", "score": "7" },
+                "averageRank": 0.5,
+                "hypothesisId": "0"
+            },
+            {
+                "poweredEntry": { "rank": "3", "score": "0" },
+                "regularEntry": { "rank": "0", "score": "10" },
+                "averageRank": 1.5,
+                "hypothesisId": "3"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "8" },
+                "regularEntry": { "rank": "2", "score": "5" },
+                "averageRank": 2,
+                "hypothesisId": "2"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "10" },
+                "regularEntry": { "rank": "3", "score": "2" },
+                "averageRank": 2,
+                "hypothesisId": "1"
+            }
+        ],
+        [
+            {
+                "poweredEntry": { "rank": "0", "score": "82" },
+                "regularEntry": { "rank": "1", "score": "7" },
+                "averageRank": 0.5,
+                "hypothesisId": "0"
+            },
+            {
+                "poweredEntry": { "rank": "3", "score": "0" },
+                "regularEntry": { "rank": "0", "score": "10" },
+                "averageRank": 1.5,
+                "hypothesisId": "3"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "8" },
+                "regularEntry": { "rank": "2", "score": "5" },
+                "averageRank": 2,
+                "hypothesisId": "2"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "10" },
+                "regularEntry": { "rank": "3", "score": "2" },
+                "averageRank": 2,
+                "hypothesisId": "1"
+            }
+        ],
+        [
+            {
+                "poweredEntry": { "rank": "0", "score": "82" },
+                "regularEntry": { "rank": "1", "score": "7" },
+                "averageRank": 0.5,
+                "hypothesisId": "0"
+            },
+            {
+                "poweredEntry": { "rank": "3", "score": "0" },
+                "regularEntry": { "rank": "0", "score": "10" },
+                "averageRank": 1.5,
+                "hypothesisId": "3"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "8" },
+                "regularEntry": { "rank": "2", "score": "5" },
+                "averageRank": 2,
+                "hypothesisId": "2"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "10" },
+                "regularEntry": { "rank": "3", "score": "2" },
+                "averageRank": 2,
+                "hypothesisId": "1"
+            }
+        ],
+        [
+            {
+                "poweredEntry": { "rank": "0", "score": "87" },
+                "regularEntry": { "rank": "1", "score": "8" },
+                "averageRank": 0.5,
+                "hypothesisId": "5"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "82" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 1.5,
+                "hypothesisId": "0"
+            },
+            {
+                "poweredEntry": { "rank": "5", "score": "0" },
+                "regularEntry": { "rank": "0", "score": "10" },
+                "averageRank": 2.5,
+                "hypothesisId": "3"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "18" },
+                "regularEntry": { "rank": "4", "score": "2" },
+                "averageRank": 3,
+                "hypothesisId": "4"
+            },
+            {
+                "poweredEntry": { "rank": "4", "score": "8" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 3.5,
+                "hypothesisId": "2"
+            },
+            {
+                "poweredEntry": { "rank": "3", "score": "10" },
+                "regularEntry": { "rank": "4", "score": "2" },
+                "averageRank": 3.5,
+                "hypothesisId": "1"
+            }
+        ],
+        [
+            {
+                "poweredEntry": { "rank": "0", "score": "87" },
+                "regularEntry": { "rank": "1", "score": "8" },
+                "averageRank": 0.5,
+                "hypothesisId": "5"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "82" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 1.5,
+                "hypothesisId": "0"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "18" },
+                "regularEntry": { "rank": "4", "score": "2" },
+                "averageRank": 3,
+                "hypothesisId": "4"
+            },
+            {
+                "poweredEntry": { "rank": "6", "score": "0" },
+                "regularEntry": { "rank": "0", "score": "10" },
+                "averageRank": 3,
+                "hypothesisId": "3"
+            },
+            {
+                "poweredEntry": { "rank": "5", "score": "3" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 3.5,
+                "hypothesisId": "8"
+            },
+            {
+                "poweredEntry": { "rank": "4", "score": "8" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 3.5,
+                "hypothesisId": "7"
+            },
+            {
+                "poweredEntry": { "rank": "4", "score": "8" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 3.5,
+                "hypothesisId": "2"
+            },
+            {
+                "poweredEntry": { "rank": "3", "score": "10" },
+                "regularEntry": { "rank": "4", "score": "2" },
+                "averageRank": 3.5,
+                "hypothesisId": "1"
+            },
+            {
+                "poweredEntry": { "rank": "6", "score": "0" },
+                "regularEntry": { "rank": "5", "score": "0" },
+                "averageRank": 5.5,
+                "hypothesisId": "9"
+            },
+            {
+                "poweredEntry": { "rank": "6", "score": "0" },
+                "regularEntry": { "rank": "5", "score": "0" },
+                "averageRank": 5.5,
+                "hypothesisId": "6"
+            }
+        ],
+        [
+            {
+                "poweredEntry": { "rank": "0", "score": "87" },
+                "regularEntry": { "rank": "1", "score": "8" },
+                "averageRank": 0.5,
+                "hypothesisId": "5"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "82" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 1.5,
+                "hypothesisId": "0"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "64" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 2.5,
+                "hypothesisId": "12"
+            },
+            {
+                "poweredEntry": { "rank": "5", "score": "8" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 4,
+                "hypothesisId": "7"
+            },
+            {
+                "poweredEntry": { "rank": "3", "score": "18" },
+                "regularEntry": { "rank": "5", "score": "2" },
+                "averageRank": 4,
+                "hypothesisId": "4"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "0" },
+                "regularEntry": { "rank": "0", "score": "10" },
+                "averageRank": 4,
+                "hypothesisId": "3"
+            },
+            {
+                "poweredEntry": { "rank": "5", "score": "8" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 4,
+                "hypothesisId": "2"
+            },
+            {
+                "poweredEntry": { "rank": "7", "score": "3" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 4.5,
+                "hypothesisId": "8"
+            },
+            {
+                "poweredEntry": { "rank": "4", "score": "10" },
+                "regularEntry": { "rank": "5", "score": "2" },
+                "averageRank": 4.5,
+                "hypothesisId": "1"
+            },
+            {
+                "poweredEntry": { "rank": "6", "score": "5" },
+                "regularEntry": { "rank": "4", "score": "4" },
+                "averageRank": 5,
+                "hypothesisId": "10"
+            },
+            {
+                "poweredEntry": { "rank": "7", "score": "3" },
+                "regularEntry": { "rank": "6", "score": "1" },
+                "averageRank": 6.5,
+                "hypothesisId": "11"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "0" },
+                "regularEntry": { "rank": "7", "score": "0" },
+                "averageRank": 7.5,
+                "hypothesisId": "9"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "0" },
+                "regularEntry": { "rank": "7", "score": "0" },
+                "averageRank": 7.5,
+                "hypothesisId": "6"
+            }
+        ],
+        [
+            {
+                "poweredEntry": { "rank": "0", "score": "87" },
+                "regularEntry": { "rank": "1", "score": "8" },
+                "averageRank": 0.5,
+                "hypothesisId": "5"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "82" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 1.5,
+                "hypothesisId": "0"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "64" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 2.5,
+                "hypothesisId": "12"
+            },
+            {
+                "poweredEntry": { "rank": "5", "score": "8" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 4,
+                "hypothesisId": "7"
+            },
+            {
+                "poweredEntry": { "rank": "3", "score": "18" },
+                "regularEntry": { "rank": "5", "score": "2" },
+                "averageRank": 4,
+                "hypothesisId": "4"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "0" },
+                "regularEntry": { "rank": "0", "score": "10" },
+                "averageRank": 4,
+                "hypothesisId": "3"
+            },
+            {
+                "poweredEntry": { "rank": "5", "score": "8" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 4,
+                "hypothesisId": "2"
+            },
+            {
+                "poweredEntry": { "rank": "7", "score": "3" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 4.5,
+                "hypothesisId": "8"
+            },
+            {
+                "poweredEntry": { "rank": "4", "score": "10" },
+                "regularEntry": { "rank": "5", "score": "2" },
+                "averageRank": 4.5,
+                "hypothesisId": "1"
+            },
+            {
+                "poweredEntry": { "rank": "6", "score": "5" },
+                "regularEntry": { "rank": "4", "score": "4" },
+                "averageRank": 5,
+                "hypothesisId": "10"
+            },
+            {
+                "poweredEntry": { "rank": "7", "score": "3" },
+                "regularEntry": { "rank": "6", "score": "1" },
+                "averageRank": 6.5,
+                "hypothesisId": "11"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "0" },
+                "regularEntry": { "rank": "7", "score": "0" },
+                "averageRank": 7.5,
+                "hypothesisId": "9"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "0" },
+                "regularEntry": { "rank": "7", "score": "0" },
+                "averageRank": 7.5,
+                "hypothesisId": "6"
+            }
+        ],
+        [
+            {
+                "poweredEntry": { "rank": "0", "score": "87" },
+                "regularEntry": { "rank": "1", "score": "8" },
+                "averageRank": 0.5,
+                "hypothesisId": "5"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "82" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 1.5,
+                "hypothesisId": "0"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "64" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 2.5,
+                "hypothesisId": "12"
+            },
+            {
+                "poweredEntry": { "rank": "5", "score": "8" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 4,
+                "hypothesisId": "7"
+            },
+            {
+                "poweredEntry": { "rank": "3", "score": "18" },
+                "regularEntry": { "rank": "5", "score": "2" },
+                "averageRank": 4,
+                "hypothesisId": "4"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "0" },
+                "regularEntry": { "rank": "0", "score": "10" },
+                "averageRank": 4,
+                "hypothesisId": "3"
+            },
+            {
+                "poweredEntry": { "rank": "5", "score": "8" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 4,
+                "hypothesisId": "2"
+            },
+            {
+                "poweredEntry": { "rank": "7", "score": "3" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 4.5,
+                "hypothesisId": "8"
+            },
+            {
+                "poweredEntry": { "rank": "4", "score": "10" },
+                "regularEntry": { "rank": "5", "score": "2" },
+                "averageRank": 4.5,
+                "hypothesisId": "1"
+            },
+            {
+                "poweredEntry": { "rank": "6", "score": "5" },
+                "regularEntry": { "rank": "4", "score": "4" },
+                "averageRank": 5,
+                "hypothesisId": "10"
+            },
+            {
+                "poweredEntry": { "rank": "7", "score": "3" },
+                "regularEntry": { "rank": "6", "score": "1" },
+                "averageRank": 6.5,
+                "hypothesisId": "11"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "0" },
+                "regularEntry": { "rank": "7", "score": "0" },
+                "averageRank": 7.5,
+                "hypothesisId": "9"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "0" },
+                "regularEntry": { "rank": "7", "score": "0" },
+                "averageRank": 7.5,
+                "hypothesisId": "6"
+            }
+        ],
+        [
+            {
+                "poweredEntry": { "rank": "0", "score": "87" },
+                "regularEntry": { "rank": "1", "score": "8" },
+                "averageRank": 0.5,
+                "hypothesisId": "5"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "82" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 1.5,
+                "hypothesisId": "0"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "64" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 2.5,
+                "hypothesisId": "12"
+            },
+            {
+                "poweredEntry": { "rank": "5", "score": "8" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 4,
+                "hypothesisId": "7"
+            },
+            {
+                "poweredEntry": { "rank": "3", "score": "18" },
+                "regularEntry": { "rank": "5", "score": "2" },
+                "averageRank": 4,
+                "hypothesisId": "4"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "0" },
+                "regularEntry": { "rank": "0", "score": "10" },
+                "averageRank": 4,
+                "hypothesisId": "3"
+            },
+            {
+                "poweredEntry": { "rank": "5", "score": "8" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 4,
+                "hypothesisId": "2"
+            },
+            {
+                "poweredEntry": { "rank": "7", "score": "3" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 4.5,
+                "hypothesisId": "8"
+            },
+            {
+                "poweredEntry": { "rank": "4", "score": "10" },
+                "regularEntry": { "rank": "5", "score": "2" },
+                "averageRank": 4.5,
+                "hypothesisId": "1"
+            },
+            {
+                "poweredEntry": { "rank": "6", "score": "5" },
+                "regularEntry": { "rank": "4", "score": "4" },
+                "averageRank": 5,
+                "hypothesisId": "10"
+            },
+            {
+                "poweredEntry": { "rank": "7", "score": "3" },
+                "regularEntry": { "rank": "6", "score": "1" },
+                "averageRank": 6.5,
+                "hypothesisId": "11"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "0" },
+                "regularEntry": { "rank": "7", "score": "0" },
+                "averageRank": 7.5,
+                "hypothesisId": "9"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "0" },
+                "regularEntry": { "rank": "7", "score": "0" },
+                "averageRank": 7.5,
+                "hypothesisId": "6"
+            }
+        ],
+        [
+            {
+                "poweredEntry": { "rank": "0", "score": "87" },
+                "regularEntry": { "rank": "1", "score": "8" },
+                "averageRank": 0.5,
+                "hypothesisId": "5"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "82" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 1.5,
+                "hypothesisId": "0"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "64" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 2.5,
+                "hypothesisId": "12"
+            },
+            {
+                "poweredEntry": { "rank": "5", "score": "8" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 4,
+                "hypothesisId": "7"
+            },
+            {
+                "poweredEntry": { "rank": "3", "score": "18" },
+                "regularEntry": { "rank": "5", "score": "2" },
+                "averageRank": 4,
+                "hypothesisId": "4"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "0" },
+                "regularEntry": { "rank": "0", "score": "10" },
+                "averageRank": 4,
+                "hypothesisId": "3"
+            },
+            {
+                "poweredEntry": { "rank": "5", "score": "8" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 4,
+                "hypothesisId": "2"
+            },
+            {
+                "poweredEntry": { "rank": "7", "score": "3" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 4.5,
+                "hypothesisId": "8"
+            },
+            {
+                "poweredEntry": { "rank": "4", "score": "10" },
+                "regularEntry": { "rank": "5", "score": "2" },
+                "averageRank": 4.5,
+                "hypothesisId": "1"
+            },
+            {
+                "poweredEntry": { "rank": "6", "score": "5" },
+                "regularEntry": { "rank": "4", "score": "4" },
+                "averageRank": 5,
+                "hypothesisId": "10"
+            },
+            {
+                "poweredEntry": { "rank": "7", "score": "3" },
+                "regularEntry": { "rank": "6", "score": "1" },
+                "averageRank": 6.5,
+                "hypothesisId": "11"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "0" },
+                "regularEntry": { "rank": "7", "score": "0" },
+                "averageRank": 7.5,
+                "hypothesisId": "9"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "0" },
+                "regularEntry": { "rank": "7", "score": "0" },
+                "averageRank": 7.5,
+                "hypothesisId": "6"
+            }
+        ],
+        [
+            {
+                "poweredEntry": { "rank": "0", "score": "87" },
+                "regularEntry": { "rank": "1", "score": "8" },
+                "averageRank": 0.5,
+                "hypothesisId": "5"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "82" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 1.5,
+                "hypothesisId": "0"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "64" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 2.5,
+                "hypothesisId": "12"
+            },
+            {
+                "poweredEntry": { "rank": "5", "score": "8" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 4,
+                "hypothesisId": "7"
+            },
+            {
+                "poweredEntry": { "rank": "3", "score": "18" },
+                "regularEntry": { "rank": "5", "score": "2" },
+                "averageRank": 4,
+                "hypothesisId": "4"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "0" },
+                "regularEntry": { "rank": "0", "score": "10" },
+                "averageRank": 4,
+                "hypothesisId": "3"
+            },
+            {
+                "poweredEntry": { "rank": "5", "score": "8" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 4,
+                "hypothesisId": "2"
+            },
+            {
+                "poweredEntry": { "rank": "7", "score": "3" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 4.5,
+                "hypothesisId": "8"
+            },
+            {
+                "poweredEntry": { "rank": "4", "score": "10" },
+                "regularEntry": { "rank": "5", "score": "2" },
+                "averageRank": 4.5,
+                "hypothesisId": "1"
+            },
+            {
+                "poweredEntry": { "rank": "6", "score": "5" },
+                "regularEntry": { "rank": "4", "score": "4" },
+                "averageRank": 5,
+                "hypothesisId": "10"
+            },
+            {
+                "poweredEntry": { "rank": "7", "score": "3" },
+                "regularEntry": { "rank": "6", "score": "1" },
+                "averageRank": 6.5,
+                "hypothesisId": "11"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "0" },
+                "regularEntry": { "rank": "7", "score": "0" },
+                "averageRank": 7.5,
+                "hypothesisId": "9"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "0" },
+                "regularEntry": { "rank": "7", "score": "0" },
+                "averageRank": 7.5,
+                "hypothesisId": "6"
+            }
+        ],
+        [
+            {
+                "poweredEntry": { "rank": "0", "score": "87" },
+                "regularEntry": { "rank": "1", "score": "8" },
+                "averageRank": 0.5,
+                "hypothesisId": "5"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "82" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 1.5,
+                "hypothesisId": "14"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "82" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 1.5,
+                "hypothesisId": "0"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "64" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 2.5,
+                "hypothesisId": "12"
+            },
+            {
+                "poweredEntry": { "rank": "3", "score": "22" },
+                "regularEntry": { "rank": "5", "score": "3" },
+                "averageRank": 4,
+                "hypothesisId": "13"
+            },
+            {
+                "poweredEntry": { "rank": "6", "score": "8" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 4.5,
+                "hypothesisId": "16"
+            },
+            {
+                "poweredEntry": { "rank": "6", "score": "8" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 4.5,
+                "hypothesisId": "7"
+            },
+            {
+                "poweredEntry": { "rank": "9", "score": "0" },
+                "regularEntry": { "rank": "0", "score": "10" },
+                "averageRank": 4.5,
+                "hypothesisId": "3"
+            },
+            {
+                "poweredEntry": { "rank": "6", "score": "8" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 4.5,
+                "hypothesisId": "2"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "3" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 5,
+                "hypothesisId": "8"
+            },
+            {
+                "poweredEntry": { "rank": "4", "score": "18" },
+                "regularEntry": { "rank": "6", "score": "2" },
+                "averageRank": 5,
+                "hypothesisId": "4"
+            },
+            {
+                "poweredEntry": { "rank": "5", "score": "10" },
+                "regularEntry": { "rank": "6", "score": "2" },
+                "averageRank": 5.5,
+                "hypothesisId": "15"
+            },
+            {
+                "poweredEntry": { "rank": "7", "score": "5" },
+                "regularEntry": { "rank": "4", "score": "4" },
+                "averageRank": 5.5,
+                "hypothesisId": "10"
+            },
+            {
+                "poweredEntry": { "rank": "5", "score": "10" },
+                "regularEntry": { "rank": "6", "score": "2" },
+                "averageRank": 5.5,
+                "hypothesisId": "1"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "3" },
+                "regularEntry": { "rank": "7", "score": "1" },
+                "averageRank": 7.5,
+                "hypothesisId": "11"
+            },
+            {
+                "poweredEntry": { "rank": "9", "score": "0" },
+                "regularEntry": { "rank": "8", "score": "0" },
+                "averageRank": 8.5,
+                "hypothesisId": "9"
+            },
+            {
+                "poweredEntry": { "rank": "9", "score": "0" },
+                "regularEntry": { "rank": "8", "score": "0" },
+                "averageRank": 8.5,
+                "hypothesisId": "6"
+            }
+        ],
+        [
+            {
+                "poweredEntry": { "rank": "0", "score": "87" },
+                "regularEntry": { "rank": "1", "score": "8" },
+                "averageRank": 0.5,
+                "hypothesisId": "5"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "82" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 1.5,
+                "hypothesisId": "19"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "82" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 1.5,
+                "hypothesisId": "14"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "82" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 1.5,
+                "hypothesisId": "0"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "64" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 2.5,
+                "hypothesisId": "12"
+            },
+            {
+                "poweredEntry": { "rank": "3", "score": "22" },
+                "regularEntry": { "rank": "5", "score": "3" },
+                "averageRank": 4,
+                "hypothesisId": "13"
+            },
+            {
+                "poweredEntry": { "rank": "5", "score": "16" },
+                "regularEntry": { "rank": "4", "score": "4" },
+                "averageRank": 4.5,
+                "hypothesisId": "22"
+            },
+            {
+                "poweredEntry": { "rank": "4", "score": "18" },
+                "regularEntry": { "rank": "6", "score": "2" },
+                "averageRank": 5,
+                "hypothesisId": "23"
+            },
+            {
+                "poweredEntry": { "rank": "7", "score": "8" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 5,
+                "hypothesisId": "21"
+            },
+            {
+                "poweredEntry": { "rank": "7", "score": "8" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 5,
+                "hypothesisId": "16"
+            },
+            {
+                "poweredEntry": { "rank": "7", "score": "8" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 5,
+                "hypothesisId": "7"
+            },
+            {
+                "poweredEntry": { "rank": "4", "score": "18" },
+                "regularEntry": { "rank": "6", "score": "2" },
+                "averageRank": 5,
+                "hypothesisId": "4"
+            },
+            {
+                "poweredEntry": { "rank": "10", "score": "0" },
+                "regularEntry": { "rank": "0", "score": "10" },
+                "averageRank": 5,
+                "hypothesisId": "3"
+            },
+            {
+                "poweredEntry": { "rank": "7", "score": "8" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 5,
+                "hypothesisId": "2"
+            },
+            {
+                "poweredEntry": { "rank": "10", "score": "0" },
+                "regularEntry": { "rank": "1", "score": "8" },
+                "averageRank": 5.5,
+                "hypothesisId": "17"
+            },
+            {
+                "poweredEntry": { "rank": "9", "score": "3" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 5.5,
+                "hypothesisId": "8"
+            },
+            {
+                "poweredEntry": { "rank": "6", "score": "10" },
+                "regularEntry": { "rank": "6", "score": "2" },
+                "averageRank": 6,
+                "hypothesisId": "20"
+            },
+            {
+                "poweredEntry": { "rank": "6", "score": "10" },
+                "regularEntry": { "rank": "6", "score": "2" },
+                "averageRank": 6,
+                "hypothesisId": "15"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "5" },
+                "regularEntry": { "rank": "4", "score": "4" },
+                "averageRank": 6,
+                "hypothesisId": "10"
+            },
+            {
+                "poweredEntry": { "rank": "6", "score": "10" },
+                "regularEntry": { "rank": "6", "score": "2" },
+                "averageRank": 6,
+                "hypothesisId": "1"
+            },
+            {
+                "poweredEntry": { "rank": "9", "score": "3" },
+                "regularEntry": { "rank": "7", "score": "1" },
+                "averageRank": 8,
+                "hypothesisId": "18"
+            },
+            {
+                "poweredEntry": { "rank": "9", "score": "3" },
+                "regularEntry": { "rank": "7", "score": "1" },
+                "averageRank": 8,
+                "hypothesisId": "11"
+            },
+            {
+                "poweredEntry": { "rank": "10", "score": "0" },
+                "regularEntry": { "rank": "8", "score": "0" },
+                "averageRank": 9,
+                "hypothesisId": "9"
+            },
+            {
+                "poweredEntry": { "rank": "10", "score": "0" },
+                "regularEntry": { "rank": "8", "score": "0" },
+                "averageRank": 9,
+                "hypothesisId": "6"
+            }
+        ],
+        [
+            {
+                "poweredEntry": { "rank": "0", "score": "87" },
+                "regularEntry": { "rank": "1", "score": "8" },
+                "averageRank": 0.5,
+                "hypothesisId": "5"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "82" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 1.5,
+                "hypothesisId": "19"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "82" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 1.5,
+                "hypothesisId": "14"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "82" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 1.5,
+                "hypothesisId": "0"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "64" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 2.5,
+                "hypothesisId": "12"
+            },
+            {
+                "poweredEntry": { "rank": "3", "score": "22" },
+                "regularEntry": { "rank": "5", "score": "3" },
+                "averageRank": 4,
+                "hypothesisId": "13"
+            },
+            {
+                "poweredEntry": { "rank": "5", "score": "16" },
+                "regularEntry": { "rank": "4", "score": "4" },
+                "averageRank": 4.5,
+                "hypothesisId": "22"
+            },
+            {
+                "poweredEntry": { "rank": "4", "score": "18" },
+                "regularEntry": { "rank": "6", "score": "2" },
+                "averageRank": 5,
+                "hypothesisId": "23"
+            },
+            {
+                "poweredEntry": { "rank": "7", "score": "8" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 5,
+                "hypothesisId": "21"
+            },
+            {
+                "poweredEntry": { "rank": "7", "score": "8" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 5,
+                "hypothesisId": "16"
+            },
+            {
+                "poweredEntry": { "rank": "7", "score": "8" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 5,
+                "hypothesisId": "7"
+            },
+            {
+                "poweredEntry": { "rank": "4", "score": "18" },
+                "regularEntry": { "rank": "6", "score": "2" },
+                "averageRank": 5,
+                "hypothesisId": "4"
+            },
+            {
+                "poweredEntry": { "rank": "10", "score": "0" },
+                "regularEntry": { "rank": "0", "score": "10" },
+                "averageRank": 5,
+                "hypothesisId": "3"
+            },
+            {
+                "poweredEntry": { "rank": "7", "score": "8" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 5,
+                "hypothesisId": "2"
+            },
+            {
+                "poweredEntry": { "rank": "10", "score": "0" },
+                "regularEntry": { "rank": "1", "score": "8" },
+                "averageRank": 5.5,
+                "hypothesisId": "17"
+            },
+            {
+                "poweredEntry": { "rank": "9", "score": "3" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 5.5,
+                "hypothesisId": "8"
+            },
+            {
+                "poweredEntry": { "rank": "6", "score": "10" },
+                "regularEntry": { "rank": "6", "score": "2" },
+                "averageRank": 6,
+                "hypothesisId": "20"
+            },
+            {
+                "poweredEntry": { "rank": "6", "score": "10" },
+                "regularEntry": { "rank": "6", "score": "2" },
+                "averageRank": 6,
+                "hypothesisId": "15"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "5" },
+                "regularEntry": { "rank": "4", "score": "4" },
+                "averageRank": 6,
+                "hypothesisId": "10"
+            },
+            {
+                "poweredEntry": { "rank": "6", "score": "10" },
+                "regularEntry": { "rank": "6", "score": "2" },
+                "averageRank": 6,
+                "hypothesisId": "1"
+            },
+            {
+                "poweredEntry": { "rank": "9", "score": "3" },
+                "regularEntry": { "rank": "7", "score": "1" },
+                "averageRank": 8,
+                "hypothesisId": "18"
+            },
+            {
+                "poweredEntry": { "rank": "9", "score": "3" },
+                "regularEntry": { "rank": "7", "score": "1" },
+                "averageRank": 8,
+                "hypothesisId": "11"
+            },
+            {
+                "poweredEntry": { "rank": "10", "score": "0" },
+                "regularEntry": { "rank": "8", "score": "0" },
+                "averageRank": 9,
+                "hypothesisId": "9"
+            },
+            {
+                "poweredEntry": { "rank": "10", "score": "0" },
+                "regularEntry": { "rank": "8", "score": "0" },
+                "averageRank": 9,
+                "hypothesisId": "6"
+            }
+        ],
+        [
+            {
+                "poweredEntry": { "rank": "0", "score": "87" },
+                "regularEntry": { "rank": "1", "score": "8" },
+                "averageRank": 0.5,
+                "hypothesisId": "5"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "82" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 1.5,
+                "hypothesisId": "19"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "82" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 1.5,
+                "hypothesisId": "14"
+            },
+            {
+                "poweredEntry": { "rank": "1", "score": "82" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 1.5,
+                "hypothesisId": "0"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "64" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 2.5,
+                "hypothesisId": "26"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "64" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 2.5,
+                "hypothesisId": "12"
+            },
+            {
+                "poweredEntry": { "rank": "3", "score": "22" },
+                "regularEntry": { "rank": "5", "score": "3" },
+                "averageRank": 4,
+                "hypothesisId": "13"
+            },
+            {
+                "poweredEntry": { "rank": "6", "score": "12" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 4.5,
+                "hypothesisId": "25"
+            },
+            {
+                "poweredEntry": { "rank": "5", "score": "16" },
+                "regularEntry": { "rank": "4", "score": "4" },
+                "averageRank": 4.5,
+                "hypothesisId": "22"
+            },
+            {
+                "poweredEntry": { "rank": "4", "score": "18" },
+                "regularEntry": { "rank": "6", "score": "2" },
+                "averageRank": 5,
+                "hypothesisId": "23"
+            },
+            {
+                "poweredEntry": { "rank": "4", "score": "18" },
+                "regularEntry": { "rank": "6", "score": "2" },
+                "averageRank": 5,
+                "hypothesisId": "4"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "8" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 5.5,
+                "hypothesisId": "21"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "8" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 5.5,
+                "hypothesisId": "16"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "8" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 5.5,
+                "hypothesisId": "7"
+            },
+            {
+                "poweredEntry": { "rank": "11", "score": "0" },
+                "regularEntry": { "rank": "0", "score": "10" },
+                "averageRank": 5.5,
+                "hypothesisId": "3"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "8" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 5.5,
+                "hypothesisId": "2"
+            },
+            {
+                "poweredEntry": { "rank": "11", "score": "0" },
+                "regularEntry": { "rank": "1", "score": "8" },
+                "averageRank": 6,
+                "hypothesisId": "17"
+            },
+            {
+                "poweredEntry": { "rank": "10", "score": "3" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 6,
+                "hypothesisId": "8"
+            },
+            {
+                "poweredEntry": { "rank": "9", "score": "5" },
+                "regularEntry": { "rank": "4", "score": "4" },
+                "averageRank": 6.5,
+                "hypothesisId": "24"
+            },
+            {
+                "poweredEntry": { "rank": "7", "score": "10" },
+                "regularEntry": { "rank": "6", "score": "2" },
+                "averageRank": 6.5,
+                "hypothesisId": "20"
+            },
+            {
+                "poweredEntry": { "rank": "7", "score": "10" },
+                "regularEntry": { "rank": "6", "score": "2" },
+                "averageRank": 6.5,
+                "hypothesisId": "15"
+            },
+            {
+                "poweredEntry": { "rank": "9", "score": "5" },
+                "regularEntry": { "rank": "4", "score": "4" },
+                "averageRank": 6.5,
+                "hypothesisId": "10"
+            },
+            {
+                "poweredEntry": { "rank": "7", "score": "10" },
+                "regularEntry": { "rank": "6", "score": "2" },
+                "averageRank": 6.5,
+                "hypothesisId": "1"
+            },
+            {
+                "poweredEntry": { "rank": "10", "score": "3" },
+                "regularEntry": { "rank": "7", "score": "1" },
+                "averageRank": 8.5,
+                "hypothesisId": "18"
+            },
+            {
+                "poweredEntry": { "rank": "10", "score": "3" },
+                "regularEntry": { "rank": "7", "score": "1" },
+                "averageRank": 8.5,
+                "hypothesisId": "11"
+            },
+            {
+                "poweredEntry": { "rank": "11", "score": "0" },
+                "regularEntry": { "rank": "8", "score": "0" },
+                "averageRank": 9.5,
+                "hypothesisId": "9"
+            },
+            {
+                "poweredEntry": { "rank": "11", "score": "0" },
+                "regularEntry": { "rank": "8", "score": "0" },
+                "averageRank": 9.5,
+                "hypothesisId": "6"
+            }
+        ],
+        [
+            {
+                "poweredEntry": { "rank": "1", "score": "87" },
+                "regularEntry": { "rank": "1", "score": "8" },
+                "averageRank": 1,
+                "hypothesisId": "5"
+            },
+            {
+                "poweredEntry": { "rank": "0", "score": "136" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 1.5,
+                "hypothesisId": "28"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "82" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 2,
+                "hypothesisId": "19"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "82" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 2,
+                "hypothesisId": "14"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "82" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 2,
+                "hypothesisId": "0"
+            },
+            {
+                "poweredEntry": { "rank": "3", "score": "64" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 3,
+                "hypothesisId": "26"
+            },
+            {
+                "poweredEntry": { "rank": "3", "score": "64" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 3,
+                "hypothesisId": "12"
+            },
+            {
+                "poweredEntry": { "rank": "4", "score": "22" },
+                "regularEntry": { "rank": "5", "score": "3" },
+                "averageRank": 4.5,
+                "hypothesisId": "13"
+            },
+            {
+                "poweredEntry": { "rank": "7", "score": "12" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 5,
+                "hypothesisId": "25"
+            },
+            {
+                "poweredEntry": { "rank": "6", "score": "16" },
+                "regularEntry": { "rank": "4", "score": "4" },
+                "averageRank": 5,
+                "hypothesisId": "22"
+            },
+            {
+                "poweredEntry": { "rank": "5", "score": "18" },
+                "regularEntry": { "rank": "6", "score": "2" },
+                "averageRank": 5.5,
+                "hypothesisId": "23"
+            },
+            {
+                "poweredEntry": { "rank": "5", "score": "18" },
+                "regularEntry": { "rank": "6", "score": "2" },
+                "averageRank": 5.5,
+                "hypothesisId": "4"
+            },
+            {
+                "poweredEntry": { "rank": "9", "score": "8" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 6,
+                "hypothesisId": "21"
+            },
+            {
+                "poweredEntry": { "rank": "9", "score": "8" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 6,
+                "hypothesisId": "16"
+            },
+            {
+                "poweredEntry": { "rank": "9", "score": "8" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 6,
+                "hypothesisId": "7"
+            },
+            {
+                "poweredEntry": { "rank": "12", "score": "0" },
+                "regularEntry": { "rank": "0", "score": "10" },
+                "averageRank": 6,
+                "hypothesisId": "3"
+            },
+            {
+                "poweredEntry": { "rank": "9", "score": "8" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 6,
+                "hypothesisId": "2"
+            },
+            {
+                "poweredEntry": { "rank": "12", "score": "0" },
+                "regularEntry": { "rank": "1", "score": "8" },
+                "averageRank": 6.5,
+                "hypothesisId": "17"
+            },
+            {
+                "poweredEntry": { "rank": "11", "score": "3" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 6.5,
+                "hypothesisId": "8"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "10" },
+                "regularEntry": { "rank": "6", "score": "2" },
+                "averageRank": 7,
+                "hypothesisId": "29"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "10" },
+                "regularEntry": { "rank": "6", "score": "2" },
+                "averageRank": 7,
+                "hypothesisId": "27"
+            },
+            {
+                "poweredEntry": { "rank": "10", "score": "5" },
+                "regularEntry": { "rank": "4", "score": "4" },
+                "averageRank": 7,
+                "hypothesisId": "24"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "10" },
+                "regularEntry": { "rank": "6", "score": "2" },
+                "averageRank": 7,
+                "hypothesisId": "20"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "10" },
+                "regularEntry": { "rank": "6", "score": "2" },
+                "averageRank": 7,
+                "hypothesisId": "15"
+            },
+            {
+                "poweredEntry": { "rank": "10", "score": "5" },
+                "regularEntry": { "rank": "4", "score": "4" },
+                "averageRank": 7,
+                "hypothesisId": "10"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "10" },
+                "regularEntry": { "rank": "6", "score": "2" },
+                "averageRank": 7,
+                "hypothesisId": "1"
+            },
+            {
+                "poweredEntry": { "rank": "11", "score": "3" },
+                "regularEntry": { "rank": "7", "score": "1" },
+                "averageRank": 9,
+                "hypothesisId": "18"
+            },
+            {
+                "poweredEntry": { "rank": "11", "score": "3" },
+                "regularEntry": { "rank": "7", "score": "1" },
+                "averageRank": 9,
+                "hypothesisId": "11"
+            },
+            {
+                "poweredEntry": { "rank": "12", "score": "0" },
+                "regularEntry": { "rank": "8", "score": "0" },
+                "averageRank": 10,
+                "hypothesisId": "9"
+            },
+            {
+                "poweredEntry": { "rank": "12", "score": "0" },
+                "regularEntry": { "rank": "8", "score": "0" },
+                "averageRank": 10,
+                "hypothesisId": "6"
+            }
+        ],
+        [
+            {
+                "poweredEntry": { "rank": "1", "score": "87" },
+                "regularEntry": { "rank": "1", "score": "8" },
+                "averageRank": 1,
+                "hypothesisId": "5"
+            },
+            {
+                "poweredEntry": { "rank": "0", "score": "136" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 1.5,
+                "hypothesisId": "28"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "82" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 2,
+                "hypothesisId": "19"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "82" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 2,
+                "hypothesisId": "14"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "82" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 2,
+                "hypothesisId": "0"
+            },
+            {
+                "poweredEntry": { "rank": "3", "score": "64" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 3,
+                "hypothesisId": "26"
+            },
+            {
+                "poweredEntry": { "rank": "3", "score": "64" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 3,
+                "hypothesisId": "12"
+            },
+            {
+                "poweredEntry": { "rank": "4", "score": "22" },
+                "regularEntry": { "rank": "5", "score": "3" },
+                "averageRank": 4.5,
+                "hypothesisId": "13"
+            },
+            {
+                "poweredEntry": { "rank": "7", "score": "12" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 5,
+                "hypothesisId": "25"
+            },
+            {
+                "poweredEntry": { "rank": "6", "score": "16" },
+                "regularEntry": { "rank": "4", "score": "4" },
+                "averageRank": 5,
+                "hypothesisId": "22"
+            },
+            {
+                "poweredEntry": { "rank": "5", "score": "18" },
+                "regularEntry": { "rank": "6", "score": "2" },
+                "averageRank": 5.5,
+                "hypothesisId": "23"
+            },
+            {
+                "poweredEntry": { "rank": "5", "score": "18" },
+                "regularEntry": { "rank": "6", "score": "2" },
+                "averageRank": 5.5,
+                "hypothesisId": "4"
+            },
+            {
+                "poweredEntry": { "rank": "9", "score": "8" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 6,
+                "hypothesisId": "21"
+            },
+            {
+                "poweredEntry": { "rank": "9", "score": "8" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 6,
+                "hypothesisId": "16"
+            },
+            {
+                "poweredEntry": { "rank": "9", "score": "8" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 6,
+                "hypothesisId": "7"
+            },
+            {
+                "poweredEntry": { "rank": "12", "score": "0" },
+                "regularEntry": { "rank": "0", "score": "10" },
+                "averageRank": 6,
+                "hypothesisId": "3"
+            },
+            {
+                "poweredEntry": { "rank": "9", "score": "8" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 6,
+                "hypothesisId": "2"
+            },
+            {
+                "poweredEntry": { "rank": "12", "score": "0" },
+                "regularEntry": { "rank": "1", "score": "8" },
+                "averageRank": 6.5,
+                "hypothesisId": "17"
+            },
+            {
+                "poweredEntry": { "rank": "11", "score": "3" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 6.5,
+                "hypothesisId": "8"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "10" },
+                "regularEntry": { "rank": "6", "score": "2" },
+                "averageRank": 7,
+                "hypothesisId": "29"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "10" },
+                "regularEntry": { "rank": "6", "score": "2" },
+                "averageRank": 7,
+                "hypothesisId": "27"
+            },
+            {
+                "poweredEntry": { "rank": "10", "score": "5" },
+                "regularEntry": { "rank": "4", "score": "4" },
+                "averageRank": 7,
+                "hypothesisId": "24"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "10" },
+                "regularEntry": { "rank": "6", "score": "2" },
+                "averageRank": 7,
+                "hypothesisId": "20"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "10" },
+                "regularEntry": { "rank": "6", "score": "2" },
+                "averageRank": 7,
+                "hypothesisId": "15"
+            },
+            {
+                "poweredEntry": { "rank": "10", "score": "5" },
+                "regularEntry": { "rank": "4", "score": "4" },
+                "averageRank": 7,
+                "hypothesisId": "10"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "10" },
+                "regularEntry": { "rank": "6", "score": "2" },
+                "averageRank": 7,
+                "hypothesisId": "1"
+            },
+            {
+                "poweredEntry": { "rank": "11", "score": "3" },
+                "regularEntry": { "rank": "7", "score": "1" },
+                "averageRank": 9,
+                "hypothesisId": "18"
+            },
+            {
+                "poweredEntry": { "rank": "11", "score": "3" },
+                "regularEntry": { "rank": "7", "score": "1" },
+                "averageRank": 9,
+                "hypothesisId": "11"
+            },
+            {
+                "poweredEntry": { "rank": "12", "score": "0" },
+                "regularEntry": { "rank": "8", "score": "0" },
+                "averageRank": 10,
+                "hypothesisId": "9"
+            },
+            {
+                "poweredEntry": { "rank": "12", "score": "0" },
+                "regularEntry": { "rank": "8", "score": "0" },
+                "averageRank": 10,
+                "hypothesisId": "6"
+            }
+        ],
+        [
+            {
+                "poweredEntry": { "rank": "1", "score": "87" },
+                "regularEntry": { "rank": "1", "score": "8" },
+                "averageRank": 1,
+                "hypothesisId": "5"
+            },
+            {
+                "poweredEntry": { "rank": "0", "score": "136" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 1.5,
+                "hypothesisId": "28"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "82" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 2,
+                "hypothesisId": "19"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "82" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 2,
+                "hypothesisId": "14"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "82" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 2,
+                "hypothesisId": "0"
+            },
+            {
+                "poweredEntry": { "rank": "3", "score": "64" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 3,
+                "hypothesisId": "26"
+            },
+            {
+                "poweredEntry": { "rank": "3", "score": "64" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 3,
+                "hypothesisId": "12"
+            },
+            {
+                "poweredEntry": { "rank": "4", "score": "22" },
+                "regularEntry": { "rank": "5", "score": "3" },
+                "averageRank": 4.5,
+                "hypothesisId": "13"
+            },
+            {
+                "poweredEntry": { "rank": "7", "score": "12" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 5,
+                "hypothesisId": "25"
+            },
+            {
+                "poweredEntry": { "rank": "6", "score": "16" },
+                "regularEntry": { "rank": "4", "score": "4" },
+                "averageRank": 5,
+                "hypothesisId": "22"
+            },
+            {
+                "poweredEntry": { "rank": "5", "score": "18" },
+                "regularEntry": { "rank": "6", "score": "2" },
+                "averageRank": 5.5,
+                "hypothesisId": "23"
+            },
+            {
+                "poweredEntry": { "rank": "5", "score": "18" },
+                "regularEntry": { "rank": "6", "score": "2" },
+                "averageRank": 5.5,
+                "hypothesisId": "4"
+            },
+            {
+                "poweredEntry": { "rank": "9", "score": "8" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 6,
+                "hypothesisId": "21"
+            },
+            {
+                "poweredEntry": { "rank": "9", "score": "8" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 6,
+                "hypothesisId": "16"
+            },
+            {
+                "poweredEntry": { "rank": "9", "score": "8" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 6,
+                "hypothesisId": "7"
+            },
+            {
+                "poweredEntry": { "rank": "12", "score": "0" },
+                "regularEntry": { "rank": "0", "score": "10" },
+                "averageRank": 6,
+                "hypothesisId": "3"
+            },
+            {
+                "poweredEntry": { "rank": "9", "score": "8" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 6,
+                "hypothesisId": "2"
+            },
+            {
+                "poweredEntry": { "rank": "12", "score": "0" },
+                "regularEntry": { "rank": "1", "score": "8" },
+                "averageRank": 6.5,
+                "hypothesisId": "17"
+            },
+            {
+                "poweredEntry": { "rank": "11", "score": "3" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 6.5,
+                "hypothesisId": "8"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "10" },
+                "regularEntry": { "rank": "6", "score": "2" },
+                "averageRank": 7,
+                "hypothesisId": "29"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "10" },
+                "regularEntry": { "rank": "6", "score": "2" },
+                "averageRank": 7,
+                "hypothesisId": "27"
+            },
+            {
+                "poweredEntry": { "rank": "10", "score": "5" },
+                "regularEntry": { "rank": "4", "score": "4" },
+                "averageRank": 7,
+                "hypothesisId": "24"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "10" },
+                "regularEntry": { "rank": "6", "score": "2" },
+                "averageRank": 7,
+                "hypothesisId": "20"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "10" },
+                "regularEntry": { "rank": "6", "score": "2" },
+                "averageRank": 7,
+                "hypothesisId": "15"
+            },
+            {
+                "poweredEntry": { "rank": "10", "score": "5" },
+                "regularEntry": { "rank": "4", "score": "4" },
+                "averageRank": 7,
+                "hypothesisId": "10"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "10" },
+                "regularEntry": { "rank": "6", "score": "2" },
+                "averageRank": 7,
+                "hypothesisId": "1"
+            },
+            {
+                "poweredEntry": { "rank": "11", "score": "3" },
+                "regularEntry": { "rank": "7", "score": "1" },
+                "averageRank": 9,
+                "hypothesisId": "18"
+            },
+            {
+                "poweredEntry": { "rank": "11", "score": "3" },
+                "regularEntry": { "rank": "7", "score": "1" },
+                "averageRank": 9,
+                "hypothesisId": "11"
+            },
+            {
+                "poweredEntry": { "rank": "12", "score": "0" },
+                "regularEntry": { "rank": "8", "score": "0" },
+                "averageRank": 10,
+                "hypothesisId": "9"
+            },
+            {
+                "poweredEntry": { "rank": "12", "score": "0" },
+                "regularEntry": { "rank": "8", "score": "0" },
+                "averageRank": 10,
+                "hypothesisId": "6"
+            }
+        ],
+        [
+            {
+                "poweredEntry": { "rank": "1", "score": "87" },
+                "regularEntry": { "rank": "1", "score": "8" },
+                "averageRank": 1,
+                "hypothesisId": "5"
+            },
+            {
+                "poweredEntry": { "rank": "0", "score": "136" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 1.5,
+                "hypothesisId": "28"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "82" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 2,
+                "hypothesisId": "19"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "82" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 2,
+                "hypothesisId": "14"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "82" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 2,
+                "hypothesisId": "0"
+            },
+            {
+                "poweredEntry": { "rank": "3", "score": "64" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 3,
+                "hypothesisId": "26"
+            },
+            {
+                "poweredEntry": { "rank": "3", "score": "64" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 3,
+                "hypothesisId": "12"
+            },
+            {
+                "poweredEntry": { "rank": "4", "score": "22" },
+                "regularEntry": { "rank": "5", "score": "3" },
+                "averageRank": 4.5,
+                "hypothesisId": "13"
+            },
+            {
+                "poweredEntry": { "rank": "7", "score": "12" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 5,
+                "hypothesisId": "25"
+            },
+            {
+                "poweredEntry": { "rank": "6", "score": "16" },
+                "regularEntry": { "rank": "4", "score": "4" },
+                "averageRank": 5,
+                "hypothesisId": "22"
+            },
+            {
+                "poweredEntry": { "rank": "5", "score": "18" },
+                "regularEntry": { "rank": "6", "score": "2" },
+                "averageRank": 5.5,
+                "hypothesisId": "23"
+            },
+            {
+                "poweredEntry": { "rank": "5", "score": "18" },
+                "regularEntry": { "rank": "6", "score": "2" },
+                "averageRank": 5.5,
+                "hypothesisId": "4"
+            },
+            {
+                "poweredEntry": { "rank": "9", "score": "8" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 6,
+                "hypothesisId": "21"
+            },
+            {
+                "poweredEntry": { "rank": "9", "score": "8" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 6,
+                "hypothesisId": "16"
+            },
+            {
+                "poweredEntry": { "rank": "9", "score": "8" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 6,
+                "hypothesisId": "7"
+            },
+            {
+                "poweredEntry": { "rank": "12", "score": "0" },
+                "regularEntry": { "rank": "0", "score": "10" },
+                "averageRank": 6,
+                "hypothesisId": "3"
+            },
+            {
+                "poweredEntry": { "rank": "9", "score": "8" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 6,
+                "hypothesisId": "2"
+            },
+            {
+                "poweredEntry": { "rank": "12", "score": "0" },
+                "regularEntry": { "rank": "1", "score": "8" },
+                "averageRank": 6.5,
+                "hypothesisId": "17"
+            },
+            {
+                "poweredEntry": { "rank": "11", "score": "3" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 6.5,
+                "hypothesisId": "8"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "10" },
+                "regularEntry": { "rank": "6", "score": "2" },
+                "averageRank": 7,
+                "hypothesisId": "29"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "10" },
+                "regularEntry": { "rank": "6", "score": "2" },
+                "averageRank": 7,
+                "hypothesisId": "27"
+            },
+            {
+                "poweredEntry": { "rank": "10", "score": "5" },
+                "regularEntry": { "rank": "4", "score": "4" },
+                "averageRank": 7,
+                "hypothesisId": "24"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "10" },
+                "regularEntry": { "rank": "6", "score": "2" },
+                "averageRank": 7,
+                "hypothesisId": "20"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "10" },
+                "regularEntry": { "rank": "6", "score": "2" },
+                "averageRank": 7,
+                "hypothesisId": "15"
+            },
+            {
+                "poweredEntry": { "rank": "10", "score": "5" },
+                "regularEntry": { "rank": "4", "score": "4" },
+                "averageRank": 7,
+                "hypothesisId": "10"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "10" },
+                "regularEntry": { "rank": "6", "score": "2" },
+                "averageRank": 7,
+                "hypothesisId": "1"
+            },
+            {
+                "poweredEntry": { "rank": "11", "score": "3" },
+                "regularEntry": { "rank": "7", "score": "1" },
+                "averageRank": 9,
+                "hypothesisId": "18"
+            },
+            {
+                "poweredEntry": { "rank": "11", "score": "3" },
+                "regularEntry": { "rank": "7", "score": "1" },
+                "averageRank": 9,
+                "hypothesisId": "11"
+            },
+            {
+                "poweredEntry": { "rank": "12", "score": "0" },
+                "regularEntry": { "rank": "8", "score": "0" },
+                "averageRank": 10,
+                "hypothesisId": "9"
+            },
+            {
+                "poweredEntry": { "rank": "12", "score": "0" },
+                "regularEntry": { "rank": "8", "score": "0" },
+                "averageRank": 10,
+                "hypothesisId": "6"
+            }
+        ],
+        [
+            {
+                "poweredEntry": { "rank": "1", "score": "87" },
+                "regularEntry": { "rank": "1", "score": "8" },
+                "averageRank": 1,
+                "hypothesisId": "5"
+            },
+            {
+                "poweredEntry": { "rank": "0", "score": "136" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 1.5,
+                "hypothesisId": "28"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "82" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 2,
+                "hypothesisId": "19"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "82" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 2,
+                "hypothesisId": "14"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "82" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 2,
+                "hypothesisId": "0"
+            },
+            {
+                "poweredEntry": { "rank": "3", "score": "64" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 3,
+                "hypothesisId": "26"
+            },
+            {
+                "poweredEntry": { "rank": "3", "score": "64" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 3,
+                "hypothesisId": "12"
+            },
+            {
+                "poweredEntry": { "rank": "4", "score": "22" },
+                "regularEntry": { "rank": "5", "score": "3" },
+                "averageRank": 4.5,
+                "hypothesisId": "13"
+            },
+            {
+                "poweredEntry": { "rank": "7", "score": "12" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 5,
+                "hypothesisId": "25"
+            },
+            {
+                "poweredEntry": { "rank": "6", "score": "16" },
+                "regularEntry": { "rank": "4", "score": "4" },
+                "averageRank": 5,
+                "hypothesisId": "22"
+            },
+            {
+                "poweredEntry": { "rank": "9", "score": "8" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 5.5,
+                "hypothesisId": "31"
+            },
+            {
+                "poweredEntry": { "rank": "5", "score": "18" },
+                "regularEntry": { "rank": "6", "score": "2" },
+                "averageRank": 5.5,
+                "hypothesisId": "23"
+            },
+            {
+                "poweredEntry": { "rank": "5", "score": "18" },
+                "regularEntry": { "rank": "6", "score": "2" },
+                "averageRank": 5.5,
+                "hypothesisId": "4"
+            },
+            {
+                "poweredEntry": { "rank": "9", "score": "8" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 6,
+                "hypothesisId": "30"
+            },
+            {
+                "poweredEntry": { "rank": "9", "score": "8" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 6,
+                "hypothesisId": "21"
+            },
+            {
+                "poweredEntry": { "rank": "9", "score": "8" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 6,
+                "hypothesisId": "16"
+            },
+            {
+                "poweredEntry": { "rank": "9", "score": "8" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 6,
+                "hypothesisId": "7"
+            },
+            {
+                "poweredEntry": { "rank": "12", "score": "0" },
+                "regularEntry": { "rank": "0", "score": "10" },
+                "averageRank": 6,
+                "hypothesisId": "3"
+            },
+            {
+                "poweredEntry": { "rank": "9", "score": "8" },
+                "regularEntry": { "rank": "3", "score": "5" },
+                "averageRank": 6,
+                "hypothesisId": "2"
+            },
+            {
+                "poweredEntry": { "rank": "12", "score": "0" },
+                "regularEntry": { "rank": "1", "score": "8" },
+                "averageRank": 6.5,
+                "hypothesisId": "17"
+            },
+            {
+                "poweredEntry": { "rank": "11", "score": "3" },
+                "regularEntry": { "rank": "2", "score": "7" },
+                "averageRank": 6.5,
+                "hypothesisId": "8"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "10" },
+                "regularEntry": { "rank": "6", "score": "2" },
+                "averageRank": 7,
+                "hypothesisId": "29"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "10" },
+                "regularEntry": { "rank": "6", "score": "2" },
+                "averageRank": 7,
+                "hypothesisId": "27"
+            },
+            {
+                "poweredEntry": { "rank": "10", "score": "5" },
+                "regularEntry": { "rank": "4", "score": "4" },
+                "averageRank": 7,
+                "hypothesisId": "24"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "10" },
+                "regularEntry": { "rank": "6", "score": "2" },
+                "averageRank": 7,
+                "hypothesisId": "20"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "10" },
+                "regularEntry": { "rank": "6", "score": "2" },
+                "averageRank": 7,
+                "hypothesisId": "15"
+            },
+            {
+                "poweredEntry": { "rank": "10", "score": "5" },
+                "regularEntry": { "rank": "4", "score": "4" },
+                "averageRank": 7,
+                "hypothesisId": "10"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "10" },
+                "regularEntry": { "rank": "6", "score": "2" },
+                "averageRank": 7,
+                "hypothesisId": "1"
+            },
+            {
+                "poweredEntry": { "rank": "11", "score": "3" },
+                "regularEntry": { "rank": "7", "score": "1" },
+                "averageRank": 9,
+                "hypothesisId": "18"
+            },
+            {
+                "poweredEntry": { "rank": "11", "score": "3" },
+                "regularEntry": { "rank": "7", "score": "1" },
+                "averageRank": 9,
+                "hypothesisId": "11"
+            }
+        ],
+        [
+            {
+                "poweredEntry": { "rank": "1", "score": "87" },
+                "regularEntry": { "rank": "0", "score": "8" },
+                "averageRank": 0.5,
+                "hypothesisId": "5"
+            },
+            {
+                "poweredEntry": { "rank": "0", "score": "136" },
+                "regularEntry": { "rank": "2", "score": "5" },
+                "averageRank": 1,
+                "hypothesisId": "28"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "82" },
+                "regularEntry": { "rank": "1", "score": "7" },
+                "averageRank": 1.5,
+                "hypothesisId": "33"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "82" },
+                "regularEntry": { "rank": "1", "score": "7" },
+                "averageRank": 1.5,
+                "hypothesisId": "19"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "82" },
+                "regularEntry": { "rank": "1", "score": "7" },
+                "averageRank": 1.5,
+                "hypothesisId": "14"
+            },
+            {
+                "poweredEntry": { "rank": "3", "score": "64" },
+                "regularEntry": { "rank": "2", "score": "5" },
+                "averageRank": 2.5,
+                "hypothesisId": "26"
+            },
+            {
+                "poweredEntry": { "rank": "3", "score": "64" },
+                "regularEntry": { "rank": "2", "score": "5" },
+                "averageRank": 2.5,
+                "hypothesisId": "12"
+            },
+            {
+                "poweredEntry": { "rank": "4", "score": "22" },
+                "regularEntry": { "rank": "4", "score": "3" },
+                "averageRank": 4,
+                "hypothesisId": "13"
+            },
+            {
+                "poweredEntry": { "rank": "7", "score": "12" },
+                "regularEntry": { "rank": "2", "score": "5" },
+                "averageRank": 4.5,
+                "hypothesisId": "25"
+            },
+            {
+                "poweredEntry": { "rank": "6", "score": "16" },
+                "regularEntry": { "rank": "3", "score": "4" },
+                "averageRank": 4.5,
+                "hypothesisId": "22"
+            },
+            {
+                "poweredEntry": { "rank": "9", "score": "8" },
+                "regularEntry": { "rank": "1", "score": "7" },
+                "averageRank": 5,
+                "hypothesisId": "31"
+            },
+            {
+                "poweredEntry": { "rank": "5", "score": "18" },
+                "regularEntry": { "rank": "5", "score": "2" },
+                "averageRank": 5,
+                "hypothesisId": "23"
+            },
+            {
+                "poweredEntry": { "rank": "5", "score": "18" },
+                "regularEntry": { "rank": "5", "score": "2" },
+                "averageRank": 5,
+                "hypothesisId": "4"
+            },
+            {
+                "poweredEntry": { "rank": "9", "score": "8" },
+                "regularEntry": { "rank": "2", "score": "5" },
+                "averageRank": 5.5,
+                "hypothesisId": "35"
+            },
+            {
+                "poweredEntry": { "rank": "9", "score": "8" },
+                "regularEntry": { "rank": "2", "score": "5" },
+                "averageRank": 5.5,
+                "hypothesisId": "30"
+            },
+            {
+                "poweredEntry": { "rank": "9", "score": "8" },
+                "regularEntry": { "rank": "2", "score": "5" },
+                "averageRank": 5.5,
+                "hypothesisId": "21"
+            },
+            {
+                "poweredEntry": { "rank": "9", "score": "8" },
+                "regularEntry": { "rank": "2", "score": "5" },
+                "averageRank": 5.5,
+                "hypothesisId": "16"
+            },
+            {
+                "poweredEntry": { "rank": "9", "score": "8" },
+                "regularEntry": { "rank": "2", "score": "5" },
+                "averageRank": 5.5,
+                "hypothesisId": "7"
+            },
+            {
+                "poweredEntry": { "rank": "12", "score": "0" },
+                "regularEntry": { "rank": "0", "score": "8" },
+                "averageRank": 6,
+                "hypothesisId": "17"
+            },
+            {
+                "poweredEntry": { "rank": "11", "score": "3" },
+                "regularEntry": { "rank": "1", "score": "7" },
+                "averageRank": 6,
+                "hypothesisId": "8"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "10" },
+                "regularEntry": { "rank": "5", "score": "2" },
+                "averageRank": 6.5,
+                "hypothesisId": "34"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "10" },
+                "regularEntry": { "rank": "5", "score": "2" },
+                "averageRank": 6.5,
+                "hypothesisId": "29"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "10" },
+                "regularEntry": { "rank": "5", "score": "2" },
+                "averageRank": 6.5,
+                "hypothesisId": "27"
+            },
+            {
+                "poweredEntry": { "rank": "10", "score": "5" },
+                "regularEntry": { "rank": "3", "score": "4" },
+                "averageRank": 6.5,
+                "hypothesisId": "24"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "10" },
+                "regularEntry": { "rank": "5", "score": "2" },
+                "averageRank": 6.5,
+                "hypothesisId": "20"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "10" },
+                "regularEntry": { "rank": "5", "score": "2" },
+                "averageRank": 6.5,
+                "hypothesisId": "15"
+            },
+            {
+                "poweredEntry": { "rank": "10", "score": "5" },
+                "regularEntry": { "rank": "3", "score": "4" },
+                "averageRank": 6.5,
+                "hypothesisId": "10"
+            },
+            {
+                "poweredEntry": { "rank": "12", "score": "0" },
+                "regularEntry": { "rank": "5", "score": "2" },
+                "averageRank": 8.5,
+                "hypothesisId": "36"
+            },
+            {
+                "poweredEntry": { "rank": "11", "score": "3" },
+                "regularEntry": { "rank": "6", "score": "1" },
+                "averageRank": 8.5,
+                "hypothesisId": "18"
+            },
+            {
+                "poweredEntry": { "rank": "11", "score": "3" },
+                "regularEntry": { "rank": "6", "score": "1" },
+                "averageRank": 8.5,
+                "hypothesisId": "11"
+            }
+        ],
+        [
+            {
+                "poweredEntry": { "rank": "1", "score": "87" },
+                "regularEntry": { "rank": "0", "score": "8" },
+                "averageRank": 0.5,
+                "hypothesisId": "5"
+            },
+            {
+                "poweredEntry": { "rank": "0", "score": "136" },
+                "regularEntry": { "rank": "2", "score": "5" },
+                "averageRank": 1,
+                "hypothesisId": "28"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "82" },
+                "regularEntry": { "rank": "1", "score": "7" },
+                "averageRank": 1.5,
+                "hypothesisId": "33"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "82" },
+                "regularEntry": { "rank": "1", "score": "7" },
+                "averageRank": 1.5,
+                "hypothesisId": "19"
+            },
+            {
+                "poweredEntry": { "rank": "2", "score": "82" },
+                "regularEntry": { "rank": "1", "score": "7" },
+                "averageRank": 1.5,
+                "hypothesisId": "14"
+            },
+            {
+                "poweredEntry": { "rank": "3", "score": "64" },
+                "regularEntry": { "rank": "2", "score": "5" },
+                "averageRank": 2.5,
+                "hypothesisId": "26"
+            },
+            {
+                "poweredEntry": { "rank": "3", "score": "64" },
+                "regularEntry": { "rank": "2", "score": "5" },
+                "averageRank": 2.5,
+                "hypothesisId": "12"
+            },
+            {
+                "poweredEntry": { "rank": "4", "score": "22" },
+                "regularEntry": { "rank": "4", "score": "3" },
+                "averageRank": 4,
+                "hypothesisId": "13"
+            },
+            {
+                "poweredEntry": { "rank": "7", "score": "12" },
+                "regularEntry": { "rank": "2", "score": "5" },
+                "averageRank": 4.5,
+                "hypothesisId": "25"
+            },
+            {
+                "poweredEntry": { "rank": "6", "score": "16" },
+                "regularEntry": { "rank": "3", "score": "4" },
+                "averageRank": 4.5,
+                "hypothesisId": "22"
+            },
+            {
+                "poweredEntry": { "rank": "9", "score": "8" },
+                "regularEntry": { "rank": "1", "score": "7" },
+                "averageRank": 5,
+                "hypothesisId": "31"
+            },
+            {
+                "poweredEntry": { "rank": "5", "score": "18" },
+                "regularEntry": { "rank": "5", "score": "2" },
+                "averageRank": 5,
+                "hypothesisId": "23"
+            },
+            {
+                "poweredEntry": { "rank": "5", "score": "18" },
+                "regularEntry": { "rank": "5", "score": "2" },
+                "averageRank": 5,
+                "hypothesisId": "4"
+            },
+            {
+                "poweredEntry": { "rank": "9", "score": "8" },
+                "regularEntry": { "rank": "2", "score": "5" },
+                "averageRank": 5.5,
+                "hypothesisId": "35"
+            },
+            {
+                "poweredEntry": { "rank": "9", "score": "8" },
+                "regularEntry": { "rank": "2", "score": "5" },
+                "averageRank": 5.5,
+                "hypothesisId": "30"
+            },
+            {
+                "poweredEntry": { "rank": "9", "score": "8" },
+                "regularEntry": { "rank": "2", "score": "5" },
+                "averageRank": 5.5,
+                "hypothesisId": "21"
+            },
+            {
+                "poweredEntry": { "rank": "9", "score": "8" },
+                "regularEntry": { "rank": "2", "score": "5" },
+                "averageRank": 5.5,
+                "hypothesisId": "16"
+            },
+            {
+                "poweredEntry": { "rank": "9", "score": "8" },
+                "regularEntry": { "rank": "2", "score": "5" },
+                "averageRank": 5.5,
+                "hypothesisId": "7"
+            },
+            {
+                "poweredEntry": { "rank": "12", "score": "0" },
+                "regularEntry": { "rank": "0", "score": "8" },
+                "averageRank": 6,
+                "hypothesisId": "17"
+            },
+            {
+                "poweredEntry": { "rank": "11", "score": "3" },
+                "regularEntry": { "rank": "1", "score": "7" },
+                "averageRank": 6,
+                "hypothesisId": "8"
+            },
+            {
+                "poweredEntry": { "rank": "10", "score": "5" },
+                "regularEntry": { "rank": "3", "score": "4" },
+                "averageRank": 6.5,
+                "hypothesisId": "38"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "10" },
+                "regularEntry": { "rank": "5", "score": "2" },
+                "averageRank": 6.5,
+                "hypothesisId": "34"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "10" },
+                "regularEntry": { "rank": "5", "score": "2" },
+                "averageRank": 6.5,
+                "hypothesisId": "29"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "10" },
+                "regularEntry": { "rank": "5", "score": "2" },
+                "averageRank": 6.5,
+                "hypothesisId": "27"
+            },
+            {
+                "poweredEntry": { "rank": "10", "score": "5" },
+                "regularEntry": { "rank": "3", "score": "4" },
+                "averageRank": 6.5,
+                "hypothesisId": "24"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "10" },
+                "regularEntry": { "rank": "5", "score": "2" },
+                "averageRank": 6.5,
+                "hypothesisId": "20"
+            },
+            {
+                "poweredEntry": { "rank": "8", "score": "10" },
+                "regularEntry": { "rank": "5", "score": "2" },
+                "averageRank": 6.5,
+                "hypothesisId": "15"
+            },
+            {
+                "poweredEntry": { "rank": "10", "score": "5" },
+                "regularEntry": { "rank": "3", "score": "4" },
+                "averageRank": 6.5,
+                "hypothesisId": "10"
+            },
+            {
+                "poweredEntry": { "rank": "11", "score": "3" },
+                "regularEntry": { "rank": "6", "score": "1" },
+                "averageRank": 8.5,
+                "hypothesisId": "39"
+            },
+            {
+                "poweredEntry": { "rank": "11", "score": "3" },
+                "regularEntry": { "rank": "6", "score": "1" },
+                "averageRank": 8.5,
+                "hypothesisId": "37"
+            }
+        ]
+    ]
+]

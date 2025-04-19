@@ -1,0 +1,619 @@
+name: Compare Prod Canister Hashes
+
+on:
+    pull_request:
+        branches: [master]
+        types: [opened, synchronize, reopened]
+    workflow_dispatch:
+
+permissions:
+    contents: read
+    pull-requests: write
+
+concurrency:
+    group: ${{ github.head_ref || github.run_id }}
+    cancel-in-progress: true
+
+jobs:
+    compare-hashes:
+        runs-on: ubuntu-latest
+        env:
+            BACKEND_CANISTER_NAMES: 'indicator dao axioms facade escrow sales split treasury affiliate icpusd'
+            NODE_VERSION: '20'
+
+        steps:
+            - name: Checkout PR Code (Initial)
+              uses: actions/checkout@v4
+
+            - name: Setup DFX
+              uses: dfinity/setup-dfx@main
+              with:
+                  dfx-version: 0.26.0
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ env.NODE_VERSION }}
+                  cache: 'yarn'
+
+            # Base Branch Processing
+            - name: Base Branch - Checkout Code
+              uses: actions/checkout@v4
+              with:
+                  ref: ${{ github.event.pull_request.base.sha }}
+                  path: base
+                  persist-credentials: false
+
+            - name: Base Branch - Install Dependencies
+              working-directory: ./base
+              run: |
+                  dfx start --clean --background --replica
+                  echo "Waiting for replica to start..."
+                  sleep 15
+                  yarn install --frozen-lockfile
+                  yarn global add ic-mops@1.5.0
+                  echo "PATH=$PATH"
+                  echo "DFX_PATH=$(which dfx)"
+                  which dfx
+                  dfx cache install
+                  mops install
+                  dfx --version
+                  mops --version
+
+            - name: Base Branch - Prepare and Analyze
+              working-directory: ./base
+              id: base_prepare
+              continue-on-error: true
+              run: |
+                  # Run migrate script to prepare backend_prod
+                  echo "Running migrate script..."
+                  yarn migrate || echo "::warning::Base migrate failed."
+
+                  # Create directory for hash storage
+                  mkdir -p .wasm_hashes
+
+            - name: Base Branch - Try to Deploy and Extract Hashes
+              working-directory: ./base
+              id: base_build
+              continue-on-error: true
+              run: |
+                  # Create the canisters first
+                  echo "Creating canisters..."
+                  for canister in $BACKEND_CANISTER_NAMES; do
+                    dfx canister create ${canister}_prod || echo "::warning::Failed to create ${canister}_prod"
+                  done
+
+                  # Deploy dependency canisters
+                  echo "Deploying dependencies..."
+                  ./scripts/bash/deploy_icp.sh || echo "::warning::Failed to deploy ICP"
+                  dfx deploy internet_identity --mode=reinstall --yes || echo "::warning::Failed to deploy internet_identity"
+                  dfx deploy xrc --mode=reinstall --yes || echo "::warning::Failed to deploy xrc"
+
+                  # Try to build each canister individually without deploying to collect hashes
+                  echo "Building canisters to collect hashes..."
+                  for canister in $BACKEND_CANISTER_NAMES; do
+                    canister_name="${canister}_prod"
+                    echo "Building $canister_name..."
+                    
+                    if dfx build "$canister_name"; then
+                      WASM_PATH=".dfx/local/canisters/$canister_name/$canister_name.wasm"
+                      
+                      if [ -f "$WASM_PATH" ]; then
+                        HASH=$(sha256sum "$WASM_PATH" | cut -d ' ' -f1)
+                        echo "Generated hash for $canister_name: $HASH"
+                        echo "$HASH" > ".wasm_hashes/$canister_name.hash"
+                        
+                        CANISTER_ENV_NAME=$(echo "${canister}" | tr '[:lower:]' '[:upper:]')
+                        echo "BASE_HASH_${CANISTER_ENV_NAME}=$HASH" >> $GITHUB_ENV
+                      else
+                        echo "::warning::WASM file not found for $canister_name at $WASM_PATH"
+                        CANISTER_ENV_NAME=$(echo "${canister}" | tr '[:lower:]' '[:upper:]')
+                        echo "BASE_HASH_ERROR_${CANISTER_ENV_NAME}=true" >> $GITHUB_ENV
+                      fi
+                    else
+                      echo "::warning::Failed to build $canister_name"
+                      CANISTER_ENV_NAME=$(echo "${canister}" | tr '[:lower:]' '[:upper:]')
+                      echo "BASE_HASH_ERROR_${CANISTER_ENV_NAME}=true" >> $GITHUB_ENV
+                    fi
+                  done
+
+            # PR Branch Processing
+            - name: PR Branch - Checkout Code
+              uses: actions/checkout@v4
+              with:
+                  ref: ${{ github.event.pull_request.head.sha }}
+                  path: pr
+                  persist-credentials: false
+
+            - name: PR Branch - Install Dependencies
+              working-directory: ./pr
+              run: |
+                  killall dfx icx-proxy pocket-ic || true
+                  dfx stop || true
+                  dfx start --clean --background --replica
+                  echo "Waiting for replica to start..."
+                  sleep 15
+                  yarn install --frozen-lockfile
+                  yarn global add ic-mops@1.5.0
+                  echo "PATH=$PATH"
+                  echo "DFX_PATH=$(which dfx)"
+                  which dfx
+                  dfx cache install
+                  mops install
+                  dfx --version
+                  mops --version
+
+            - name: PR Branch - Prepare and Analyze
+              working-directory: ./pr
+              id: pr_prepare
+              continue-on-error: true
+              run: |
+                  # Run migrate script to prepare backend_prod
+                  echo "Running migrate script..."
+                  yarn migrate || echo "::warning::PR migrate failed."
+
+                  # Create directory for hash storage
+                  mkdir -p .wasm_hashes
+
+            - name: PR Branch - Try to Deploy and Extract Hashes
+              working-directory: ./pr
+              id: pr_build
+              continue-on-error: true
+              run: |
+                  # Create the canisters first
+                  echo "Creating canisters..."
+                  for canister in $BACKEND_CANISTER_NAMES; do
+                    dfx canister create ${canister}_prod || echo "::warning::Failed to create ${canister}_prod"
+                  done
+
+                  # Deploy dependency canisters
+                  echo "Deploying dependencies..."
+                  ./scripts/bash/deploy_icp.sh || echo "::warning::Failed to deploy ICP"
+                  dfx deploy internet_identity --mode=reinstall --yes || echo "::warning::Failed to deploy internet_identity"
+                  dfx deploy xrc --mode=reinstall --yes || echo "::warning::Failed to deploy xrc"
+
+                  # JSON file to store all hashes and build status
+                  echo "{" > wasm-artifacts-info.json
+                  echo "  \"wasms\": {" >> wasm-artifacts-info.json
+                  first=true
+
+                  # Try to build each canister individually without deploying to collect hashes
+                  echo "Building canisters to collect hashes..."
+                  for canister in $BACKEND_CANISTER_NAMES; do
+                    canister_name="${canister}_prod"
+                    echo "Building $canister_name..."
+                    
+                    if dfx build "$canister_name"; then
+                      WASM_PATH=".dfx/local/canisters/$canister_name/$canister_name.wasm"
+                      
+                      if [ -f "$WASM_PATH" ]; then
+                        HASH=$(sha256sum "$WASM_PATH" | cut -d ' ' -f1)
+                        echo "Generated hash for $canister_name: $HASH"
+                        echo "$HASH" > ".wasm_hashes/$canister_name.hash"
+                        
+                        CANISTER_ENV_NAME=$(echo "${canister}" | tr '[:lower:]' '[:upper:]')
+                        echo "PR_HASH_${CANISTER_ENV_NAME}=$HASH" >> $GITHUB_ENV
+                        echo "PR_BUILD_SUCCESS_${CANISTER_ENV_NAME}=true" >> $GITHUB_ENV
+                        
+                        # Compare with base hash to determine if changed or unchanged
+                        BASE_HASH_VAR="BASE_HASH_${CANISTER_ENV_NAME}"
+                        BASE_HASH="${!BASE_HASH_VAR:-}"
+                        
+                        # Determine if hash has changed
+                        if [[ "$BASE_HASH" == "$HASH" ]]; then
+                          # No change - just use canister name 
+                          TARGET_DIR="${canister}_wasm"
+                          echo "WASM_${CANISTER_ENV_NAME}_STATUS=unchanged" >> $GITHUB_ENV
+                          WASM_STATUS="unchanged"
+                        else
+                          # Changed - add 'updated_' prefix
+                          TARGET_DIR="updated_${canister}_wasm"
+                          echo "WASM_${CANISTER_ENV_NAME}_STATUS=updated" >> $GITHUB_ENV
+                          WASM_STATUS="updated"
+                        fi
+                        
+                        # Export the directories for use in later steps
+                        echo "WASM_${CANISTER_ENV_NAME}_DIR=$TARGET_DIR" >> $GITHUB_ENV
+                        
+                        # Create directory for this wasm file
+                        mkdir -p "$TARGET_DIR"
+                        cp "$WASM_PATH" "$TARGET_DIR/${canister_name}.wasm"
+                        
+                        # Create metadata - using proper bash if-else
+                        echo "Canister: ${canister}" > "$TARGET_DIR/metadata.txt"
+                        echo "Status: ${WASM_STATUS}" >> "$TARGET_DIR/metadata.txt"
+                        echo "Hash: ${HASH}" >> "$TARGET_DIR/metadata.txt"
+                        echo "PR: #${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}" >> "$TARGET_DIR/metadata.txt"
+                        echo "Branch: ${{ github.event.pull_request.head.ref }}" >> "$TARGET_DIR/metadata.txt"
+                        echo "Commit: ${{ github.event.pull_request.head.sha }}" >> "$TARGET_DIR/metadata.txt"
+                        echo "Generated: $(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> "$TARGET_DIR/metadata.txt"
+                        
+                        # Add info to JSON
+                        if [ "$first" = true ]; then
+                          first=false
+                        else
+                          echo "," >> wasm-artifacts-info.json
+                        fi
+                        echo "    \"${canister_name}\": {" >> wasm-artifacts-info.json
+                        echo "      \"hash\": \"$HASH\"," >> wasm-artifacts-info.json
+                        echo "      \"status\": \"${WASM_STATUS}\"" >> wasm-artifacts-info.json
+                        echo "    }" >> wasm-artifacts-info.json
+                      else
+                        echo "::warning::WASM file not found for $canister_name at $WASM_PATH"
+                        CANISTER_ENV_NAME=$(echo "${canister}" | tr '[:lower:]' '[:upper:]')
+                        echo "PR_HASH_ERROR_${CANISTER_ENV_NAME}=true" >> $GITHUB_ENV
+                      fi
+                    else
+                      echo "::warning::Failed to build $canister_name"
+                      CANISTER_ENV_NAME=$(echo "${canister}" | tr '[:lower:]' '[:upper:]')
+                      echo "PR_HASH_ERROR_${CANISTER_ENV_NAME}=true" >> $GITHUB_ENV
+                    fi
+                  done
+
+                  # Close JSON wasms section
+                  echo -e "\n  }," >> wasm-artifacts-info.json
+
+                  # Add metadata to JSON
+                  echo "  \"metadata\": {" >> wasm-artifacts-info.json
+                  echo "    \"pr_number\": \"${{ github.event.pull_request.number }}\"," >> wasm-artifacts-info.json
+                  echo "    \"pr_title\": \"${{ github.event.pull_request.title }}\"," >> wasm-artifacts-info.json
+                  echo "    \"branch\": \"${{ github.event.pull_request.head.ref }}\"," >> wasm-artifacts-info.json
+                  echo "    \"commit\": \"${{ github.event.pull_request.head.sha }}\"," >> wasm-artifacts-info.json
+                  echo "    \"author\": \"${{ github.event.pull_request.user.login }}\"," >> wasm-artifacts-info.json
+                  echo "    \"created\": \"$(date -u '+%Y-%m-%d %H:%M:%S UTC')\"" >> wasm-artifacts-info.json
+                  echo "  }" >> wasm-artifacts-info.json
+                  echo -e "\n}" >> wasm-artifacts-info.json
+
+                  # Create a copy in each artifact directory
+                  for dir in *_wasm/; do
+                    if [ -d "$dir" ]; then
+                      cp wasm-artifacts-info.json "$dir/"
+                    fi
+                  done
+
+            # Upload individual WASM files as separate artifacts
+            - name: Upload Indicator WASM
+              uses: actions/upload-artifact@v4
+              if: ${{ env.PR_BUILD_SUCCESS_INDICATOR == 'true' }}
+              with:
+                  name: ${{ env.WASM_INDICATOR_STATUS == 'updated' && 'updated_' || '' }}indicator_wasm
+                  path: pr/${{ env.WASM_INDICATOR_DIR }}/
+                  retention-days: 8
+
+            - name: Upload DAO WASM
+              uses: actions/upload-artifact@v4
+              if: ${{ env.PR_BUILD_SUCCESS_DAO == 'true' }}
+              with:
+                  name: ${{ env.WASM_DAO_STATUS == 'updated' && 'updated_' || '' }}dao_wasm
+                  path: pr/${{ env.WASM_DAO_DIR }}/
+                  retention-days: 8
+
+            - name: Upload Axioms WASM
+              uses: actions/upload-artifact@v4
+              if: ${{ env.PR_BUILD_SUCCESS_AXIOMS == 'true' }}
+              with:
+                  name: ${{ env.WASM_AXIOMS_STATUS == 'updated' && 'updated_' || '' }}axioms_wasm
+                  path: pr/${{ env.WASM_AXIOMS_DIR }}/
+                  retention-days: 8
+
+            - name: Upload Facade WASM
+              uses: actions/upload-artifact@v4
+              if: ${{ env.PR_BUILD_SUCCESS_FACADE == 'true' }}
+              with:
+                  name: ${{ env.WASM_FACADE_STATUS == 'updated' && 'updated_' || '' }}facade_wasm
+                  path: pr/${{ env.WASM_FACADE_DIR }}/
+                  retention-days: 8
+
+            - name: Upload Escrow WASM
+              uses: actions/upload-artifact@v4
+              if: ${{ env.PR_BUILD_SUCCESS_ESCROW == 'true' }}
+              with:
+                  name: ${{ env.WASM_ESCROW_STATUS == 'updated' && 'updated_' || '' }}escrow_wasm
+                  path: pr/${{ env.WASM_ESCROW_DIR }}/
+                  retention-days: 8
+
+            - name: Upload Sales WASM
+              uses: actions/upload-artifact@v4
+              if: ${{ env.PR_BUILD_SUCCESS_SALES == 'true' }}
+              with:
+                  name: ${{ env.WASM_SALES_STATUS == 'updated' && 'updated_' || '' }}sales_wasm
+                  path: pr/${{ env.WASM_SALES_DIR }}/
+                  retention-days: 8
+
+            - name: Upload Split WASM
+              uses: actions/upload-artifact@v4
+              if: ${{ env.PR_BUILD_SUCCESS_SPLIT == 'true' }}
+              with:
+                  name: ${{ env.WASM_SPLIT_STATUS == 'updated' && 'updated_' || '' }}split_wasm
+                  path: pr/${{ env.WASM_SPLIT_DIR }}/
+                  retention-days: 8
+
+            - name: Upload Treasury WASM
+              uses: actions/upload-artifact@v4
+              if: ${{ env.PR_BUILD_SUCCESS_TREASURY == 'true' }}
+              with:
+                  name: ${{ env.WASM_TREASURY_STATUS == 'updated' && 'updated_' || '' }}treasury_wasm
+                  path: pr/${{ env.WASM_TREASURY_DIR }}/
+                  retention-days: 8
+
+            - name: Upload Affiliate WASM
+              uses: actions/upload-artifact@v4
+              if: ${{ env.PR_BUILD_SUCCESS_AFFILIATE == 'true' }}
+              with:
+                  name: ${{ env.WASM_AFFILIATE_STATUS == 'updated' && 'updated_' || '' }}affiliate_wasm
+                  path: pr/${{ env.WASM_AFFILIATE_DIR }}/
+                  retention-days: 8
+
+            - name: Upload ICPUSD WASM
+              uses: actions/upload-artifact@v4
+              if: ${{ env.PR_BUILD_SUCCESS_ICPUSD == 'true' }}
+              with:
+                  name: ${{ env.WASM_ICPUSD_STATUS == 'updated' && 'updated_' || '' }}icpusd_wasm
+                  path: pr/${{ env.WASM_ICPUSD_DIR }}/
+                  retention-days: 8
+
+            - name: Stop DFX Replica
+              if: always()
+              run: dfx stop || true
+
+            # Generate and post comparison results
+            - name: Generate Hash Comparison Data
+              id: comparison_data
+              run: |
+                  declare -A changed_items
+                  declare -A unchanged_items
+                  declare -A error_items
+                  HAS_ERRORS=false
+                  ERROR_SECTION=""
+                  CURRENT_DATE=$(date -u '+%Y-%m-%d %H:%M:%S UTC')
+                  PR_COMMIT="${{ github.event.pull_request.head.sha }}"
+                  BASE_COMMIT="${{ github.event.pull_request.base.sha }}"
+                  REPO_URL="${{ github.server_url }}/${{ github.repository }}"
+                  ARTIFACT_BASE_URL="${REPO_URL}/actions/runs/${{ github.run_id }}#artifacts"
+
+                  # Map of canister names to actor names and directory locations
+                  declare -A ACTOR_NAMES
+                  declare -A DIRECTORY_PATHS
+
+                  ACTOR_NAMES["indicator_prod"]="Indicator"
+                  DIRECTORY_PATHS["indicator_prod"]="backend/canisters/periphery/indicator"
+
+                  ACTOR_NAMES["dao_prod"]="DAO"
+                  DIRECTORY_PATHS["dao_prod"]="backend/canisters/periphery/dao"
+
+                  ACTOR_NAMES["axioms_prod"]="Axioms"
+                  DIRECTORY_PATHS["axioms_prod"]="backend/canisters/core/axioms"
+
+                  ACTOR_NAMES["facade_prod"]="Facade"
+                  DIRECTORY_PATHS["facade_prod"]="backend/canisters/periphery/facade"
+
+                  ACTOR_NAMES["escrow_prod"]="Escrow"
+                  DIRECTORY_PATHS["escrow_prod"]="backend/canisters/core/escrow"
+
+                  ACTOR_NAMES["sales_prod"]="Sales"
+                  DIRECTORY_PATHS["sales_prod"]="backend/canisters/core/sales"
+
+                  ACTOR_NAMES["split_prod"]="Split"
+                  DIRECTORY_PATHS["split_prod"]="backend/canisters/core/split"
+
+                  ACTOR_NAMES["treasury_prod"]="Treasury"
+                  DIRECTORY_PATHS["treasury_prod"]="backend/canisters/core/treasury"
+
+                  ACTOR_NAMES["affiliate_prod"]="Affiliate"
+                  DIRECTORY_PATHS["affiliate_prod"]="backend/canisters/core/affiliate"
+
+                  ACTOR_NAMES["icpusd_prod"]="ICPUSD"
+                  DIRECTORY_PATHS["icpusd_prod"]="backend/canisters/core/icpusd"
+
+                  if [[ "${{ steps.base_prepare.outcome }}" == 'failure' ]]; then
+                    ERROR_SECTION+="**🚨 Error (Base):** Failed during migrate or analyze:prod preparation step.\n\n"
+                    HAS_ERRORS=true
+                  elif [[ "${{ steps.base_prepare.outcome }}" == 'skipped' ]]; then
+                    ERROR_SECTION+="**⚠️ Warning (Base):** Preparation step skipped.\n\n"
+                  fi
+
+                  if [[ "${{ steps.pr_prepare.outcome }}" == 'failure' ]]; then
+                    ERROR_SECTION+="**🚨 Error (PR):** Failed during migrate or analyze:prod preparation step.\n\n"
+                    HAS_ERRORS=true
+                  elif [[ "${{ steps.pr_prepare.outcome }}" == 'skipped' ]]; then
+                     ERROR_SECTION+="**⚠️ Warning (PR):** Preparation step skipped.\n\n"
+                  fi
+
+                  ALL_ITEMS=($(echo "$BACKEND_CANISTER_NAMES" | tr '[:lower:]' '[:upper:]'))
+
+                  for item in "${ALL_ITEMS[@]}"; do
+                    BASE_HASH_VAR="BASE_HASH_$item"
+                    PR_HASH_VAR="PR_HASH_$item"
+                    BASE_ERR_VAR="BASE_HASH_ERROR_$item"
+                    PR_ERR_VAR="PR_HASH_ERROR_$item"
+                    PR_SUCCESS_VAR="PR_BUILD_SUCCESS_$item"
+
+                    CANISTER_NAME="$(echo "$item" | tr '[:upper:]' '[:lower:]')_prod"
+                    
+                    ACTOR_NAME="${ACTOR_NAMES[$CANISTER_NAME]}"
+                    DIR_PATH="${DIRECTORY_PATHS[$CANISTER_NAME]}"
+                    
+                    # Create links to exact files in the PR and base commits
+                    PR_DIR_URL="${REPO_URL}/blob/${PR_COMMIT}/${DIR_PATH}"
+                    BASE_DIR_URL="${REPO_URL}/blob/${BASE_COMMIT}/${DIR_PATH}"
+                    PROD_DIR_PATH="${DIR_PATH/backend/backend_prod}"
+                    PR_PROD_DIR_URL="${REPO_URL}/blob/${PR_COMMIT}/${PROD_DIR_PATH}"
+                    
+                    DIRECTORY_INFO="[dev](${PR_DIR_URL}) / [prod](${PR_PROD_DIR_URL})"
+
+                    BASE_HASH="${!BASE_HASH_VAR:-}"
+                    PR_HASH="${!PR_HASH_VAR:-}"
+                    BASE_ERR="${!BASE_ERR_VAR:-false}"
+                    PR_ERR="${!PR_ERR_VAR:-false}"
+                    PR_SUCCESS="${!PR_SUCCESS_VAR:-false}"
+
+                    # Determine status for artifact naming
+                    if [[ "$BASE_HASH" == "$PR_HASH" ]]; then
+                      STATUS="unchanged"
+                    else
+                      STATUS="changed"
+                    fi
+
+                    HAS_BASE_ISSUE=false
+                    if [[ "$BASE_ERR" == "true" ]] || [[ -z "$BASE_HASH" ]]; then
+                      HAS_BASE_ISSUE=true
+                    fi
+
+                    HAS_PR_ISSUE=false
+                    if [[ "$PR_ERR" == "true" ]] || [[ -z "$PR_HASH" ]]; then
+                      HAS_PR_ISSUE=true
+                    fi
+
+                    if [[ "$HAS_BASE_ISSUE" == "true" ]] || [[ "$HAS_PR_ISSUE" == "true" ]]; then
+                      error_items[$CANISTER_NAME]="base_error:$HAS_BASE_ISSUE,pr_error:$HAS_PR_ISSUE,directory:$DIRECTORY_INFO,actor:$ACTOR_NAME"
+                      HAS_ERRORS=true # Mark overall errors if any specific item had an issue
+                    elif [[ "$BASE_HASH" == "$PR_HASH" ]]; then
+                      unchanged_items[$CANISTER_NAME]="hash:$PR_HASH,directory:$DIRECTORY_INFO,actor:$ACTOR_NAME,status:$STATUS"
+                    else
+                      changed_items[$CANISTER_NAME]="base:$BASE_HASH,pr:$PR_HASH,directory:$DIRECTORY_INFO,actor:$ACTOR_NAME,status:$STATUS"
+                    fi
+                  done
+
+                  # Generate tables
+                  BUILD_FAILURES_TABLE=""
+                  CHANGED_TABLE=""
+                  UNCHANGED_TABLE=""
+                  ERROR_DETAILS="" # For general error messages
+
+                  if [[ ${#error_items[@]} -gt 0 ]]; then
+                    BUILD_FAILURES_TABLE="### 🚨 Build Failures (${#error_items[@]})"$'\n\n'
+                    BUILD_FAILURES_TABLE+="| Actor | Base Status | PR Status | Directory |"$'\n'
+                    BUILD_FAILURES_TABLE+="|:---------:|:------------:|:----------:|:----------:|"$'\n'
+
+                    for name in $(echo "${!error_items[@]}" | tr ' ' '\n' | sort); do
+                      errors=${error_items[$name]}
+                      base_status="✅ Success"
+                      if [[ "$errors" == *"base_error:true"* ]]; then
+                        base_status="❌ Failed"
+                      fi
+                      pr_status="✅ Success"
+                      if [[ "$errors" == *"pr_error:true"* ]]; then
+                        pr_status="❌ Failed"
+                      fi
+                      directory=$(echo "$errors" | sed 's/.*directory:\([^,]*\).*/\1/')
+                      actor_name=$(echo "$errors" | sed 's/.*actor:\([^,]*\).*/\1/')
+                      
+                      BUILD_FAILURES_TABLE+="| $actor_name | $base_status | $pr_status | $directory |"$'\n'
+                    done
+                    BUILD_FAILURES_TABLE+=$'\n'
+                  fi
+
+                  if [[ ${#changed_items[@]} -gt 0 ]]; then
+                    CHANGED_TABLE="### ⚠️ Changed Module Hashes (${#changed_items[@]})"$'\n\n'
+                    CHANGED_TABLE+="| Actor | Base Hash | PR Hash | Directory |"$'\n'
+                    CHANGED_TABLE+="|:---------:|:----------:|:--------:|:----------:|"$'\n'
+
+                    for name in $(echo "${!changed_items[@]}" | tr ' ' '\n' | sort); do
+                      item_data=${changed_items[$name]}
+                      base_hash=$(echo "$item_data" | sed 's/.*base:\([^,]*\).*/\1/')
+                      pr_hash=$(echo "$item_data" | sed 's/.*pr:\([^,]*\).*/\1/')
+                      directory=$(echo "$item_data" | sed 's/.*directory:\([^,]*\).*/\1/')
+                      actor_name=$(echo "$item_data" | sed 's/.*actor:\([^,]*\).*/\1/')
+                      status=$(echo "$item_data" | sed 's/.*status:\([^,]*\).*/\1/')
+                      
+                      CHANGED_TABLE+="| $actor_name | \`$base_hash\` | \`$pr_hash\` | $directory |"$'\n'
+                    done
+                    CHANGED_TABLE+=$'\n'
+                  fi
+
+                  if [[ ${#unchanged_items[@]} -gt 0 ]]; then
+                    UNCHANGED_TABLE="### ✅ Unchanged Module Hashes (${#unchanged_items[@]})"$'\n\n'
+                    UNCHANGED_TABLE+="| Actor | Hash | Directory |"$'\n'
+                    UNCHANGED_TABLE+="|:---------:|:-----:|:----------:|"$'\n'
+
+                    for name in $(echo "${!unchanged_items[@]}" | tr ' ' '\n' | sort); do
+                      item_data=${unchanged_items[$name]}
+                      hash=$(echo "$item_data" | sed 's/.*hash:\([^,]*\).*/\1/')
+                      directory=$(echo "$item_data" | sed 's/.*directory:\([^,]*\).*/\1/')
+                      actor_name=$(echo "$item_data" | sed 's/.*actor:\([^,]*\).*/\1/')
+                      status=$(echo "$item_data" | sed 's/.*status:\([^,]*\).*/\1/')
+                      
+                      UNCHANGED_TABLE+="| $actor_name | \`$hash\` | $directory |"$'\n'
+                    done
+                    UNCHANGED_TABLE+=$'\n'
+                  fi
+
+                  # In case no successful builds
+                  if [[ ${#changed_items[@]} -eq 0 ]] && [[ ${#unchanged_items[@]} -eq 0 ]]; then
+                    if [[ $HAS_ERRORS == true ]]; then
+                      if [[ -z "$BUILD_FAILURES_TABLE" ]]; then
+                        ERROR_DETAILS+="### 🚨 Build Status: No successful builds"$'\n\n'
+                        ERROR_DETAILS+="No canisters were successfully built and compared. Please check the workflow logs for more information."$'\n\n'
+                      fi
+                    else
+                      ERROR_DETAILS+="### 🚨 Build Status: No successful builds"$'\n\n'
+                      ERROR_DETAILS+="No canisters were successfully built and compared. Please check the workflow logs for more information."$'\n\n'
+                    fi
+                  fi
+
+                  # Add note about artifact ZIP files and hash differences
+                  ARTIFACT_SECTION+="*[View built WASM files](${ARTIFACT_BASE_URL}) (note that the displayed \`sha256:...\` hashes **WILL NOT** match the module hash, as the files are compressed into a zip archive)*\n\n"
+
+                  FINAL_ERROR_SECTION="${ERROR_SECTION}${ERROR_DETAILS}"
+
+                  # Export all components for comment assembly
+                  EOF_MARKER=$(mktemp -u EEEEEEXXXXXX)
+                  echo "error_section<<$EOF_MARKER" >> $GITHUB_OUTPUT
+                  echo -e "$FINAL_ERROR_SECTION" >> $GITHUB_OUTPUT
+                  echo "$EOF_MARKER" >> $GITHUB_OUTPUT
+
+                  EOF_MARKER=$(mktemp -u BBBBBBXXXXXX)
+                  echo "build_failures_table<<$EOF_MARKER" >> $GITHUB_OUTPUT
+                  echo -e "$BUILD_FAILURES_TABLE" >> $GITHUB_OUTPUT
+                  echo "$EOF_MARKER" >> $GITHUB_OUTPUT
+
+                  EOF_MARKER=$(mktemp -u CCCCCCCXXXXX)
+                  echo "changed_table<<$EOF_MARKER" >> $GITHUB_OUTPUT
+                  echo -e "$CHANGED_TABLE" >> $GITHUB_OUTPUT
+                  echo "$EOF_MARKER" >> $GITHUB_OUTPUT
+
+                  EOF_MARKER=$(mktemp -u UUUUUUUXXXXX)
+                  echo "unchanged_table<<$EOF_MARKER" >> $GITHUB_OUTPUT
+                  echo -e "$UNCHANGED_TABLE" >> $GITHUB_OUTPUT
+                  echo "$EOF_MARKER" >> $GITHUB_OUTPUT
+
+                  EOF_MARKER=$(mktemp -u AAAAAAAXXXX)
+                  echo "artifact_section<<$EOF_MARKER" >> $GITHUB_OUTPUT
+                  echo -e "$ARTIFACT_SECTION" >> $GITHUB_OUTPUT
+                  echo "$EOF_MARKER" >> $GITHUB_OUTPUT
+
+                  echo "has_errors=$HAS_ERRORS" >> $GITHUB_OUTPUT
+                  echo "changed_items_count=${#changed_items[@]}" >> $GITHUB_OUTPUT
+                  echo "unchanged_items_count=${#unchanged_items[@]}" >> $GITHUB_OUTPUT
+                  echo "error_items_count=${#error_items[@]}" >> $GITHUB_OUTPUT
+                  echo "current_date=$CURRENT_DATE" >> $GITHUB_OUTPUT
+                  echo "current_user=${{ github.event.pull_request.user.login }}" >> $GITHUB_OUTPUT
+
+                  # Debug output
+                  echo "Debug: Build Failures=${#error_items[@]}, Changed=${#changed_items[@]}, Unchanged=${#unchanged_items[@]}, HasErrors=$HAS_ERRORS"
+
+            - name: Post or Update Comment
+              uses: peter-evans/create-or-update-comment@v4
+              with:
+                  token: ${{ secrets.GITHUB_TOKEN }}
+                  repository: ${{ github.repository }}
+                  issue-number: ${{ github.event.pull_request.number }}
+                  comment-id: 'canister-hash-comparison-${{ github.event.pull_request.number }}'
+                  edit-mode: replace
+                  body: |
+                      ## 📦 Canister Module Hashes Comparison
+
+                      **PR:** [#${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}](${{ github.event.pull_request.html_url }})
+                      **Author:** [@${{ steps.comparison_data.outputs.current_user }}](${{ github.event.pull_request.user.html_url }})
+
+                      ${{ steps.comparison_data.outputs.error_section != '' && steps.comparison_data.outputs.error_section || '' }}
+
+                      ${{ steps.comparison_data.outputs.build_failures_table != '' && steps.comparison_data.outputs.build_failures_table || '' }}
+
+                      ${{ steps.comparison_data.outputs.changed_table != '' && steps.comparison_data.outputs.changed_table || '' }}
+
+                      ${{ steps.comparison_data.outputs.unchanged_table != '' && steps.comparison_data.outputs.unchanged_table || '' }}
+
+                      ${{ steps.comparison_data.outputs.changed_items_count == 0 && steps.comparison_data.outputs.unchanged_items_count > 0 && steps.comparison_data.outputs.has_errors == 'false' && '✅ *All successfully compared canister module hashes remained the same.*' || '' }}
+
+                      ${{ steps.comparison_data.outputs.artifact_section != '' && steps.comparison_data.outputs.artifact_section || '' }}

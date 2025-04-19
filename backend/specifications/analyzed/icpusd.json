@@ -1,0 +1,139 @@
+{
+    "canisterName": "icpusd",
+    "actorName": "ICPUSD",
+    "category": "core",
+    "functions": [
+        {
+            "name": "exchange",
+            "flag": {
+                "isQuery": false,
+                "callerRequired": true
+            },
+            "argTypes": {
+                "icpToUsd": {
+                    "origin": "Bool",
+                    "singular": {
+                        "name": "Bool"
+                    },
+                    "entries": [],
+                    "isArray": false,
+                    "isOptional": false,
+                    "isAsync": false
+                },
+                "amount": {
+                    "origin": "Nat",
+                    "singular": {
+                        "name": "Nat"
+                    },
+                    "entries": [],
+                    "isArray": false,
+                    "isOptional": false,
+                    "isAsync": false
+                }
+            },
+            "returnType": {
+                "origin": "async Nat",
+                "singular": {
+                    "name": "Nat"
+                },
+                "entries": [],
+                "isArray": false,
+                "isOptional": false,
+                "isAsync": true
+            }
+        }
+    ],
+    "imports": {
+        "XRC": {
+            "origin": "import XRC \"canister:xrc\";",
+            "name": "XRC",
+            "category": "attribute",
+            "relativePath": "canister:xrc",
+            "depth": 1
+        },
+        "IndicatorInterface": {
+            "origin": "import IndicatorInterface \"../../periphery/indicator/Interface\";",
+            "name": "IndicatorInterface",
+            "category": "interface",
+            "relativePath": "../../periphery/indicator/Interface",
+            "depth": 5
+        },
+        "E": {
+            "origin": "import E \"../../common/Errors\";",
+            "name": "E",
+            "category": "common",
+            "relativePath": "../../common/Errors",
+            "depth": 4
+        },
+        "Cycles": {
+            "origin": "import Cycles \"mo:base/ExperimentalCycles\";",
+            "name": "Cycles",
+            "category": "base",
+            "relativePath": "mo:base/ExperimentalCycles",
+            "depth": 2
+        },
+        "Nat64": {
+            "origin": "import Nat64 \"mo:base/Nat64\";",
+            "name": "Nat64",
+            "category": "base",
+            "relativePath": "mo:base/Nat64",
+            "depth": 2
+        },
+        "Nat32": {
+            "origin": "import Nat32 \"mo:base/Nat32\";",
+            "name": "Nat32",
+            "category": "base",
+            "relativePath": "mo:base/Nat32",
+            "depth": 2
+        },
+        "Principal": {
+            "origin": "import Principal \"mo:base/Principal\";",
+            "name": "Principal",
+            "category": "base",
+            "relativePath": "mo:base/Principal",
+            "depth": 2
+        }
+    },
+    "actorDependencies": [
+        "XRC",
+        "IndicatorInterface",
+        "E",
+        "Cycles",
+        "Nat64",
+        "Nat32",
+        "Principal"
+    ],
+    "interfaceDependencies": [],
+    "typeDefinitions": {
+        "Bool": {
+            "origin": "Bool",
+            "singular": {
+                "name": "Bool"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+        },
+        "Nat": {
+            "origin": "Nat",
+            "singular": {
+                "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+        },
+        "async Nat": {
+            "origin": "async Nat",
+            "singular": {
+                "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": true
+        }
+    }
+}

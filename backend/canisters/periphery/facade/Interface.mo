@@ -1,0 +1,27 @@
+import User "users/User";
+import Users "users/Users";
+import Base "../../library/Base";
+import Configs "../../library/Configs";
+import Format "../../library/Format";
+import Pagination "../../library/Pagination";
+
+module {
+    public type Facade = actor {
+        shiftToMidnight : shared (Nat) -> async ();
+        initialize : shared () -> async ();
+        setConfigs : shared ([(Configs.Key, Configs.SharableValue)]) -> async ();
+        putConfigs : shared ([(Configs.Key, Configs.SharableValue)]) -> async ();
+        register : shared (Text, Nat, ?Principal) -> async ();
+        editUsername : shared (Text) -> async ();
+        editLocation : shared (?Text) -> async ();
+        editAvatar : shared (?Format.Picture) -> async ();
+        editLinks : shared ([Format.Hyperlink]) -> async ();
+        getConfig : query (Configs.Key) -> async Configs.SharableValue;
+        getConfigs : query () -> async Configs.Sharable;
+        getUserIdentifier : query (User.IdentifierVariant) -> async User.Identifier;
+        getUsersCount : query () -> async Nat;
+        getUser : query (Principal) -> async User.Sharable;
+        getUsers : query (Users.Filter, Base.Sort<Users.Sort>) -> async [User.Sharable];
+        getUsersPagination : query (Users.Filter, Base.Sort<Users.Sort>, Nat, Nat) -> async Pagination.Pagination<User.Sharable>;
+    };
+};

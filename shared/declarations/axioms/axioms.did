@@ -1,0 +1,518 @@
+type Value_2 = 
+ variant {
+   infinity;
+   value: ValueProp_2;
+ };
+type Value_1 = 
+ variant {
+   infinity;
+   value: ValueProp_1;
+ };
+type ValueProp_2 = 
+ variant {
+   exclusive: nat;
+   inclusive: nat;
+ };
+type ValueProp_1 = 
+ variant {
+   exclusive: int;
+   inclusive: int;
+ };
+type ValueProp = 
+ variant {
+   exclusive: float64;
+   inclusive: float64;
+ };
+type Value = 
+ variant {
+   infinity;
+   value: ValueProp;
+ };
+type Time__2 = int;
+type Time__1 = int;
+type Time = int;
+type TernaryVote__1 = 
+ record {
+   choice: Choice;
+   value: nat;
+ };
+type TernaryVote = 
+ record {
+   choice: Choice;
+   value: nat;
+ };
+type Status__1 = 
+ variant {
+   Approved;
+   Executed;
+   Expired;
+   Failed;
+   Rejected;
+   Requested;
+ };
+type Status = 
+ variant {
+   Approved;
+   Executed;
+   Expired;
+   Failed;
+   Rejected;
+   Requested;
+ };
+type Sort__4 = 
+ variant {
+   negativity;
+   popularity;
+   positivity;
+   recent;
+ };
+type Sort__3 = 
+ variant {
+   alphabetical;
+   popularity;
+   recent;
+ };
+type Sort__2 = 
+ variant {
+   difference;
+   recent;
+ };
+type Sort__1 = 
+ variant {
+   controversy;
+   negativity;
+   neutrality;
+   popularity;
+   positivity;
+   recent;
+ };
+type Sort_3 = 
+ record {
+   by: Sort__4;
+   order: Order;
+ };
+type Sort_2 = 
+ record {
+   by: Sort__3;
+   order: Order;
+ };
+type Sort_1 = 
+ record {
+   by: Sort__2;
+   order: Order;
+ };
+type Sort = 
+ record {
+   by: Sort__1;
+   order: Order;
+ };
+type Sharable__9 = 
+ record {
+   balance: SharableE8S__1;
+   lastWithdrawAt: Time;
+   revenue: SharableE8S__1;
+ };
+type Sharable__8 = vec SharableEvidence;
+type Sharable__7 = 
+ record {
+   callerVote: opt BinaryVote__2;
+   choice: BinaryChoice__1;
+   form: Form;
+   hypothesisId: nat;
+   id: nat;
+   publishDate: int;
+   publisher: principal;
+   votes: SharableBinaryVotes__1;
+ };
+type Sharable__6 = vec SharableField;
+type Sharable__5 = 
+ record {
+   callerRole: opt Role;
+   creationDate: Time__2;
+   description: text;
+   hypothesisIds: vec nat;
+   members: vec principal;
+   name: text;
+ };
+type Sharable__4 = vec SharableFlag;
+type Sharable__3 = 
+ record {
+   callerVote: opt BinaryVote__1;
+   category: Category;
+   id: nat;
+   reason: text;
+   requestDate: Time__1;
+   requester: principal;
+   status: Status__1;
+   votes: SharableBinaryVotes;
+ };
+type Sharable__2 = vec SharableHypothesis;
+type Sharable__12 = 
+ record {
+   callerRevenue: opt SharableE8S__2;
+   ranks: SharableRanks;
+ };
+type Sharable__11 = vec SharablePayout;
+type Sharable__10 = 
+ vec record {
+       Key;
+       SharableValue;
+     };
+type Sharable__1 = 
+ record {
+   axioms: SharableCount;
+   callerAxiom: opt bool;
+   callerBookmark: opt bool;
+   callerVote: opt TernaryVote__1;
+   content: text;
+   evidenceIds: vec nat;
+   fieldId: text;
+   id: nat;
+   publishDate: int;
+   publisher: principal;
+   votes: SharableTernaryVotes;
+ };
+type SharableValue = 
+ variant {
+   Bool: bool;
+   Date: SharableDate;
+   Duration: nat;
+   E8S: SharableE8S;
+   Float: float64;
+   Nat: nat;
+   Proportion: SharableProportion;
+   RangeFloat: SharableRange;
+   RangeInt: SharableRange_1;
+   RangeNat: SharableRange_2;
+   Text: text;
+ };
+type SharableTernaryVotes = 
+ record {
+   powered: OneSideSharable;
+   regular: OneSideSharable;
+ };
+type SharableRanks = vec SharableRank;
+type SharableRank = 
+ record {
+   averageRank: float64;
+   hypothesisId: nat;
+   poweredEntry: Entry;
+   regularEntry: Entry;
+ };
+type SharableRange_2 = 
+ record {
+   Value_2;
+   Value_2;
+ };
+type SharableRange_1 = 
+ record {
+   Value_1;
+   Value_1;
+ };
+type SharableRange = 
+ record {
+   Value;
+   Value;
+ };
+type SharableProportion = 
+ record {
+   nat;
+   nat;
+ };
+type SharablePayout = 
+ record {
+   callerRevenue: opt SharableE8S__2;
+   ranks: SharableRanks;
+ };
+type SharableHypothesis = 
+ record {
+   axioms: SharableCount;
+   callerAxiom: opt bool;
+   callerBookmark: opt bool;
+   callerVote: opt TernaryVote__1;
+   content: text;
+   evidenceIds: vec nat;
+   fieldId: text;
+   id: nat;
+   publishDate: int;
+   publisher: principal;
+   votes: SharableTernaryVotes;
+ };
+type SharableFlag = 
+ record {
+   callerVote: opt BinaryVote__1;
+   category: Category;
+   id: nat;
+   reason: text;
+   requestDate: Time__1;
+   requester: principal;
+   status: Status__1;
+   votes: SharableBinaryVotes;
+ };
+type SharableField = 
+ record {
+   callerRole: opt Role;
+   creationDate: Time__2;
+   description: text;
+   hypothesisIds: vec nat;
+   members: vec principal;
+   name: text;
+ };
+type SharableEvidence = 
+ record {
+   callerVote: opt BinaryVote__2;
+   choice: BinaryChoice__1;
+   form: Form;
+   hypothesisId: nat;
+   id: nat;
+   publishDate: int;
+   publisher: principal;
+   votes: SharableBinaryVotes__1;
+ };
+type SharableEarning = 
+ record {
+   balance: SharableE8S__1;
+   lastWithdrawAt: Time;
+   revenue: SharableE8S__1;
+ };
+type SharableE8S__2 = nat;
+type SharableE8S__1 = nat;
+type SharableE8S = nat;
+type SharableDate = nat;
+type SharableCount = nat;
+type SharableBinaryVotes__1 = 
+ record {
+   powered: OneSideSharable__1;
+   regular: OneSideSharable__1;
+ };
+type SharableBinaryVotes = 
+ record {
+   powered: OneSideSharable__1;
+   regular: OneSideSharable__1;
+ };
+type Sharable = 
+ record {
+   axioms: vec nat;
+   bookmarks: vec nat;
+   earning: SharableEarning;
+   evidences: vec nat;
+   hypotheses: vec nat;
+   joinedFields: vec text;
+   votedEvidences: vec record {
+                         nat;
+                         BinaryVote;
+                       };
+   votedHypotheses: vec record {
+                          nat;
+                          TernaryVote;
+                        };
+ };
+type Role = 
+ variant {
+   Guest;
+   Member;
+ };
+type Picture = record {"blob": blob;};
+type Pagination_3 = 
+ record {
+   is: nat;
+   of: nat;
+   result: vec Sharable__7;
+ };
+type Pagination_2 = 
+ record {
+   is: nat;
+   of: nat;
+   result: vec Sharable__5;
+ };
+type Pagination_1 = 
+ record {
+   is: nat;
+   of: nat;
+   result: vec Sharable__3;
+ };
+type Pagination = 
+ record {
+   is: nat;
+   of: nat;
+   result: vec Sharable__1;
+ };
+type Order = 
+ variant {
+   ascending;
+   descending;
+ };
+type OneSideSharable__1 = 
+ record {
+   nat;
+   nat;
+ };
+type OneSideSharable = 
+ record {
+   nat;
+   nat;
+   nat;
+ };
+type Note = 
+ record {
+   content: text;
+   extended: bool;
+ };
+type Key = text;
+type Hyperlink = 
+ record {
+   anchorText: text;
+   url: text;
+ };
+type Header = 
+ record {
+   category: Category;
+   id: nat;
+ };
+type Format = 
+ variant {
+   Hyperlink: Hyperlink;
+   Note: Note;
+   Picture: Picture;
+ };
+type Form = vec Format;
+type Filter__3 = 
+ record {
+   containsPattern: opt text;
+   onSide: opt BinaryChoice;
+   publishedBy: opt principal;
+   publishedIn: opt nat;
+   votedBy: opt principal;
+ };
+type Filter__2 = 
+ record {
+   containsPattern: opt text;
+   joinedBy: opt principal;
+ };
+type Filter__1 = 
+ record {
+   requestedBy: opt principal;
+   requestedIn: opt Category__1;
+   votedBy: opt principal;
+   withStatus: opt Status;
+ };
+type Filter = 
+ record {
+   axiomsFrom: opt principal;
+   bookmarksFrom: opt principal;
+   containsPattern: opt text;
+   publishedAt: opt nat;
+   publishedBy: opt principal;
+   publishedIn: opt text;
+   votedBy: opt principal;
+ };
+type Entry = 
+ record {
+   rank: nat;
+   score: nat;
+ };
+type Choice__1 = 
+ variant {
+   Negative;
+   Positive;
+ };
+type Choice = 
+ variant {
+   Negative;
+   Neutral;
+   Positive;
+ };
+type Category__1 = 
+ variant {
+   Evidence;
+   Hypothesis;
+ };
+type Category = 
+ variant {
+   Evidence;
+   Hypothesis;
+ };
+type BinaryVote__2 = 
+ record {
+   choice: Choice__1;
+   value: nat;
+ };
+type BinaryVote__1 = 
+ record {
+   choice: Choice__1;
+   value: nat;
+ };
+type BinaryVote = 
+ record {
+   choice: Choice__1;
+   value: nat;
+ };
+type BinaryChoice__1 = 
+ variant {
+   Negative;
+   Positive;
+ };
+type BinaryChoice = 
+ variant {
+   Negative;
+   Positive;
+ };
+type Axioms = 
+ service {
+   addToAxioms: (nat) -> ();
+   addToBookmarks: (nat) -> ();
+   createField: (text, text) -> ();
+   /// PUBLIC ////// ASSERTERS ////////////
+   expectUserNotFound: (principal) -> () query;
+   getAgePayout: (nat, nat) -> (Sharable__12) query;
+   getAgePayouts: (nat) -> (Sharable__11) query;
+   getAgesPayout: (nat) -> (Sharable__11) query;
+   getAgesPayouts: () -> (vec Sharable__11) query;
+   /// PUBLIC ////// ACCESSORS ////////////
+   getConfig: (Key) -> (SharableValue) query;
+   getConfigs: () -> (Sharable__10) query;
+   getEarning: (principal) -> (Sharable__9) query;
+   getEarnings: (principal) -> (vec Sharable__9) query;
+   getEvidence: (nat) -> (Sharable__7) query;
+   getEvidences: (Filter__3, Sort_3) -> (Sharable__8) query;
+   getEvidencesPagination: (Filter__3, Sort_3, nat, nat) ->
+    (Pagination_3) query;
+   getField: (text) -> (Sharable__5) query;
+   getFields: (Filter__2, Sort_2) -> (Sharable__6) query;
+   getFieldsPagination: (Filter__2, Sort_2, nat, nat) -> (Pagination_2) query;
+   getFlag: (Header) -> (Sharable__3) query;
+   getFlags: (Filter__1, Sort_1) -> (Sharable__4) query;
+   getFlagsPagination: (Filter__1, Sort_1, nat, nat) -> (Pagination_1) query;
+   getHypotheses: (Filter, Sort) -> (Sharable__2) query;
+   getHypothesesPagination: (Filter, Sort, nat, nat) -> (Pagination) query;
+   getHypothesis: (nat) -> (Sharable__1) query;
+   getUser: (principal) -> (Sharable) query;
+   /// PROTECTED ////// MODIFIERS ////////////
+   initialize: () -> ();
+   /// PUBLIC ////// MODIFIERS ////////////
+   joinField: (text) -> ();
+   leaveField: (text) -> ();
+   publishEvidence: (nat, Form, Choice__1) -> (nat);
+   publishHypothesis: (text, text) -> (nat);
+   putConfigs: (vec record {
+                      Key;
+                      SharableValue;
+                    }) -> ();
+   register: (principal) -> ();
+   removeEvidenceVote: (nat) -> ();
+   removeFlagVote: (Header) -> ();
+   removeFromAxioms: (nat) -> ();
+   removeFromBookmarks: (nat) -> ();
+   removeHypothesisVote: (nat) -> ();
+   requestFlag: (Header, text) -> ();
+   setConfigs: (vec record {
+                      Key;
+                      SharableValue;
+                    }) -> ();
+   shiftToMidnight: (nat) -> ();
+   voteEvidence: (nat, Choice__1) -> ();
+   voteFlag: (Header, Choice__1) -> ();
+   voteHypothesis: (nat, Choice) -> ();
+   withdrawAll: () -> ();
+ };
+service : () -> Axioms

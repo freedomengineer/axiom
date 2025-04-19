@@ -1,0 +1,132 @@
+{
+    "title": "Axiom",
+    "description": "A Free Thought Platform",
+    "language": "en-us",
+    "locale": "en-US",
+    "siteUrl": "https://rzar2-kqaaa-aaaak-quedq-cai.icp0.io",
+    "siteRepo": "https://github.com/freedomengineer/axiom_old",
+    "siteLogo": "/images/acorn.png",
+    "siteBanner": "/images/banner.png",
+    "socials": {
+        "GitHub": "https://",
+        "Instagram": "https://",
+        "Reddit": "https://",
+        "Telegram": "https://",
+        "TikTok": "https://",
+        "Twitter": "https://"
+    },
+    "routes": {
+        "Home": {
+            "url": "/",
+            "description": "A Free Thought Platform"
+        },
+        "Login": {
+            "url": "/login",
+            "description": "Start A Journey Towards Axiom"
+        },
+        "Search": {
+            "url": "/search",
+            "description": "Search in Axiom"
+        },
+        "Truth Feed": {
+            "url": "/feed",
+            "description": "Truth Feed Dashboard",
+            "routes": {
+                "Post Hypothesis": {
+                    "url": "/feed/post",
+                    "description": "Post Hypothesis"
+                },
+                "Fields": {
+                    "url": "/feed/fields",
+                    "description": "All Fields"
+                },
+                "Evidences": {
+                    "url": "/feed/evidences",
+                    "description": "All Evidences",
+                    "routes": {
+                        "Post Evidence": {
+                            "url": "/feed/evidences/post",
+                            "description": "Post Evidence"
+                        }
+                    }
+                },
+                "Payout History": {
+                    "url": "/feed/history",
+                    "description": "Payout History"
+                },
+                "Flag Dashboard": {
+                    "url": "/feed/flags",
+                    "description": "Flag Dashboard"
+                }
+            }
+        },
+        "ACE Dashboard": {
+            "url": "/dashboard",
+            "description": "Axiom Dashboard",
+            "routes": {
+                "Open Proposal": {
+                    "url": "/dashboard/open",
+                    "description": "Open A Proposal"
+                },
+                "Proposals": {
+                    "url": "/dashboard/proposals",
+                    "description": "All Proposals"
+                },
+                "Custodians": {
+                    "url": "/dashboard/custodians",
+                    "description": "Custodians Of The DAO"
+                }
+            }
+        },
+        "Assets": {
+            "url": "/assets",
+            "description": "Assets Dashboard",
+            "routes": {
+                "Memberships": {
+                    "url": "/assets/memberships",
+                    "description": "Membership Sales"
+                }
+            }
+        },
+        "School": {
+            "url": "/school",
+            "description": "Knowledge Base Dashboard",
+            "routes": {
+                "Axiom FAQ": {
+                    "url": "/school/axiom_faq",
+                    "description": "Axiom FAQ"
+                },
+                "Roadmap": {
+                    "url": "/school/roadmap",
+                    "description": "Axiom Roadmap"
+                },
+                "Whitepaper": {
+                    "url": "/school/whitepaper",
+                    "description": "Axiom Whitepaper"
+                }
+            }
+        },
+        "My Profile": {
+            "url": "/profile",
+            "description": "Profile Dashboard",
+            "routes": {
+                "My Assets": {
+                    "url": "/profile/my_assets",
+                    "description": "My Assets"
+                },
+                "My Bookmarks": {
+                    "url": "/profile/my_bookmarks",
+                    "description": "My Bookmarks"
+                },
+                "My Ballots": {
+                    "url": "/profile/my_ballots",
+                    "description": "My Ballots"
+                },
+                "My Votes": {
+                    "url": "/profile/my_votes",
+                    "description": "My Votes Dashboard"
+                }
+            }
+        }
+    }
+}
