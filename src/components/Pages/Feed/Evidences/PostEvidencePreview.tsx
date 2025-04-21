@@ -57,8 +57,10 @@ const PostEvidencePreview = ({
             'Posted evidence successfully!'
         )
         setLoading(false)
-        onSubmit?.(UnwrapVariant(item.choice) as EVote)
-        if (res.success) navigate(build(['feed', item.hypothesisId]))
+        if (res.success) {
+            onSubmit?.(UnwrapVariant(item.choice) as EVote)
+            navigate(build(['feed', item.hypothesisId]))
+        }
     }
 
     return (

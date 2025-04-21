@@ -53,6 +53,7 @@ export const formatCanisterDate = (
         return format(milliseconds, 'en-GB')
     }
     return new Date(milliseconds).toLocaleDateString('en-GB', {
+        timeZone: 'UTC',
         year: 'numeric',
         month: 'long',
         day: 'numeric',
@@ -81,6 +82,7 @@ export const formatCanisterDateTime = (
     const [dateType, dateValue] = UnwrapVariant(timestamp)
     const milliseconds = dateType === 'nano' ? Number(dateValue / NANO_TO_MILLI) : dateValue
     return new Date(milliseconds).toLocaleString('en-GB', {
+        timeZone: 'UTC',
         year: 'numeric',
         month: 'long',
         day: 'numeric',

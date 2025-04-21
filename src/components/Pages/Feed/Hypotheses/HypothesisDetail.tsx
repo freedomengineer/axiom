@@ -120,9 +120,9 @@ const HypothesisDetail = ({ item }: { item: DAxioms.SharableHypothesis }) => {
                 />
             </Popup>
             <div className="gap-medium flex h-full w-full flex-col overflow-x-hidden rounded-lg border border-cold-600 border-opacity-50 hover:border-opacity-100">
-                <div className="flex h-60 flex-col place-items-center items-center bg-hypothesis">
-                    <p className="text-medium my-auto flex h-60 items-center whitespace-pre-line break-words text-center font-semibold text-primary-900/80 hover:text-primary-800">
-                        {localItem?.content}
+                <div className="max-h-auto flex min-h-60 flex-col place-items-center items-center bg-hypothesis">
+                    <p className="text-medium p-normal my-auto flex h-full items-center whitespace-pre-line break-words text-center font-semibold text-primary-900/80 hover:text-primary-800">
+                        {localItem?.content.trim()}
                     </p>
                     <Divider
                         bgColor="bg-cold-800"

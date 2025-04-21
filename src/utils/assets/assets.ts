@@ -81,12 +81,14 @@ export const computeAllocationsChartData = (
     const outer: Record<string, ChartData[]> = {}
 
     for (const { actorVariant, allocated, balance } of allocations) {
-        const key = UnwrapVariant(actorVariant) as keyof typeof ALLOCATIONS
-        const { total, hexColor, circulatingColor, reservingColor, balanceColor } = ALLOCATIONS[key]
+        const key = UnwrapVariant(actorVariant)
+        if (key === 'Facade') continue
+        const { total, hexColor, circulatingColor, reservingColor, balanceColor } =
+            ALLOCATIONS[key as keyof typeof ALLOCATIONS]
         const allocatedValue = e8s.toNumber(allocated)
         const balanceValue = e8s.toNumber(balance)
         const circulatingValue = e8s.toNumber(
-            e8s.sub(e8s.fromNumber(total), e8s.sub(allocated, balance))
+            e8s.sub(e8s.fromNumber(total), e8s.add(allocated, balance))
         )
 
         inner[key] = { label: `${key} Max Supply`, value: total, color: hexColor }

@@ -236,8 +236,8 @@ const OpenProposalPreview = ({
         }
         setLoading(false)
         if (res.success) {
-            if (onSubmit) onSubmit(category)
-            else navigate(build(['dashboard', 'proposals', res.result]))
+            onSubmit?.(category)
+            navigate(build(['dashboard', 'proposals', res.result]))
         }
     }
 

@@ -12,6 +12,17 @@ export const CONFIGURABLE_ACTORS = [
     'Affiliate',
     'Treasury',
 ] as const
+export const DEPLOYABLE_ACTORS = [
+    'DAO',
+    'Axioms',
+    'Facade',
+    'Escrow',
+    'Sales',
+    'Split',
+    'Treasury',
+    'Affiliate',
+    'ICPUSD',
+] as const
 export const CONFIGS_TYPES = [
     'E8S',
     'Nat',

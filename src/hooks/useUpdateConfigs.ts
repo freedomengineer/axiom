@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { error } from '@libs/toastify'
-import { CONFIGS_TYPES, CONFIGURABLE_ACTORS, DEFAULT_CONFIGS } from '@utils/indicator/configs'
+import { CONFIGS_TYPES, DEFAULT_CONFIGS, DEPLOYABLE_ACTORS } from '@utils/indicator/configs'
 import { DDAO } from 'shared/types/services'
 import * as SERVICES from 'shared/utils/services'
 import { UnwrapVariant, Variant } from 'shared/utils/typings'
 
-type FetchedConfigs = Record<(typeof CONFIGURABLE_ACTORS)[number], DDAO.SharableConfigs>
+type FetchedConfigs = Record<(typeof DEPLOYABLE_ACTORS)[number], DDAO.SharableConfigs>
 
 const bigintToString = (value: any): any => {
     if (typeof value === 'bigint') return value.toString()
@@ -17,12 +17,12 @@ const bigintToString = (value: any): any => {
 }
 
 const useUpdateConfigs = (
-    selectedActor: (typeof CONFIGURABLE_ACTORS)[number] | null,
+    selectedActor: (typeof DEPLOYABLE_ACTORS)[number] | null,
     configs: DDAO.ActorsConfigs,
     setConfigs: (configs: DDAO.ActorsConfigs) => void
 ) => {
     const [fetchedConfigs, setFetchedConfigs] = useState<FetchedConfigs>(
-        CONFIGURABLE_ACTORS.reduce((acc, actor) => ({ ...acc, [actor]: [] }), {} as FetchedConfigs)
+        DEPLOYABLE_ACTORS.reduce((acc, actor) => ({ ...acc, [actor]: [] }), {} as FetchedConfigs)
     )
     const [key, setKey] = useState<string>('')
     const [value, setValue] = useState<DDAO.SharableValue | null>(null)
@@ -33,9 +33,9 @@ const useUpdateConfigs = (
             setIsLoading(true)
             try {
                 const configsData: DDAO.SharableConfigs[] = await Promise.all(
-                    CONFIGURABLE_ACTORS.map((actor) => (SERVICES as any)[actor].call().getConfigs())
+                    DEPLOYABLE_ACTORS.map((actor) => (SERVICES as any)[actor].call().getConfigs())
                 )
-                const formattedConfigs = CONFIGURABLE_ACTORS.reduce(
+                const formattedConfigs = DEPLOYABLE_ACTORS.reduce(
                     (acc, actor, index) => ({
                         ...acc,
                         [actor]: configsData[index].map(([key, value]) => [
