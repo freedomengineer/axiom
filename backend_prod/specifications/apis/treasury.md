@@ -6,7 +6,7 @@
 - Attributes: `Allocation`, `Allocations`, `Actor`, `ACORNTypes`
 - Interfaces: `ACORNInterface`, `IndicatorInterface`
 - Commons: `E`
-- Libraries: `Configs`, `E8S`
+- Libraries: `Configs`, `E8S`, `Map`
 - Bases: `Principal`
 ## Modifiers
 
