@@ -700,6 +700,13 @@
       "relativePath": "../../library/E8S",
       "depth": 4
     },
+    "Map": {
+      "origin": "import Map \"../../library/Map\";",
+      "name": "Map",
+      "category": "library",
+      "relativePath": "../../library/Map",
+      "depth": 4
+    },
     "Principal": {
       "origin": "import Principal \"mo:base/Principal\";",
       "name": "Principal",
@@ -718,6 +725,7 @@
     "E",
     "Configs",
     "E8S",
+    "Map",
     "Principal"
   ],
   "interfaceDependencies": [

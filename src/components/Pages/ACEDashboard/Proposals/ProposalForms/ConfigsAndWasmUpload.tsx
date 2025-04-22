@@ -7,7 +7,7 @@ import Select from '@components/Primitives/Select'
 import useUpdateConfigs from '@hooks/useUpdateConfigs'
 import useUploadWasm from '@hooks/useUploadWasm'
 import cn from '@libs/class'
-import { CONFIGS_TYPES, CONFIGURABLE_ACTORS } from '@utils/indicator/configs'
+import { CONFIGS_TYPES, DEPLOYABLE_ACTORS } from '@utils/indicator/configs'
 import { DDAO } from 'shared/types/services'
 import { UnwrapVariant } from 'shared/utils/typings'
 
@@ -30,7 +30,7 @@ const ConfigsAndWasmUpload = ({
     rawCommitments: Record<string, Commitment>
     setRawCommitments: (commitments: Record<string, Commitment>) => void
 }) => {
-    const [selectedActor, setSelectedActor] = useState<(typeof CONFIGURABLE_ACTORS)[number] | null>(
+    const [selectedActor, setSelectedActor] = useState<(typeof DEPLOYABLE_ACTORS)[number] | null>(
         null
     )
 
@@ -57,7 +57,7 @@ const ConfigsAndWasmUpload = ({
     return (
         <>
             <div className="gap-small flex w-full overflow-x-scroll md:overflow-visible">
-                {CONFIGURABLE_ACTORS.map((actor) => (
+                {DEPLOYABLE_ACTORS.map((actor) => (
                     <button
                         key={actor}
                         onClick={() => setSelectedActor(actor)}

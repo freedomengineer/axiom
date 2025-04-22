@@ -57,8 +57,10 @@ const PostHypothesisPreview = ({
             'Posted hypothesis successfully!'
         )
         setLoading(false)
-        onSubmit?.()
-        if (res.success) navigate(build(['feed', res.result]))
+        if (res.success) {
+            onSubmit?.()
+            navigate(build(['feed', res.result]))
+        }
     }
 
     return (

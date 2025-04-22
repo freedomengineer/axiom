@@ -102,7 +102,7 @@ module {
     public func init(principal : Principal) : Self = {
         principal;
         var args = [];
-        var commitHash = "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+        var commitHash = "593d4687448ceb4282a7493c51494e1fff17b460"
     };
 
     /// PUBLIC ////// MODIFIERS ////////////
