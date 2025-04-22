@@ -409,7 +409,13 @@ shared ({ caller = indicator }) actor class Axioms() = this {
     };
 
     public shared ({ caller }) func publishHypothesis(fieldId : Text, content : Text) : async Nat {
+        let MAX_HYPOTHESIS_LENGTH : Nat = Configs.Nat(configs, "MAX_HYPOTHESIS_LENGTH");
         let HYPOTHESIS_PUBLISH_FEE : E8S.E8S = Configs.E8S(configs, "HYPOTHESIS_PUBLISH_FEE");
+
+        let contentLength : Nat = Text.size(content);
+        if (contentLength > MAX_HYPOTHESIS_LENGTH) E.f(#NOT_VALID("Hypothesis"), "The hypothesis content has " # debug_show contentLength # " characters, exceeds the limit of " # debug_show MAX_HYPOTHESIS_LENGTH # " characters");
+        if (contentLength == 0) E.f(#NOT_VALID("Hypothesis"), "The hypothesis content is empty");
+
         let user : User.User = Users.user(users, caller);
         let field : Field.Field = Fields.field(fields, fieldId);
         Field.expectMember(field, caller);
