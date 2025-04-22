@@ -33,15 +33,17 @@ const ConfigsUpdateForm = ({
         handleTypeChange,
         handleAddNewConfig,
         handleRemoveConfig,
-    } = useUpdateConfigs(selectedActor, configs, setForm)
+    } = useUpdateConfigs(selectedActor, configs, setForm, false)
 
     const hasConfigs = (actor: string) =>
         (configs.find(([variant]) => UnwrapVariant(variant) === actor)?.[1] ?? []).length > 0
 
     return (
         <>
-            <div className="gap-small flex w-full overflow-x-auto md:overflow-x-hidden">
-                {CONFIGURABLE_ACTORS.map((actor) => (
+            <div className="gap-small flex w-full overflow-x-scroll md:overflow-visible">
+                {CONFIGURABLE_ACTORS.filter(
+                    (actor) => !['ICPUSD', 'Treasury', 'Affiliate'].includes(actor)
+                ).map((actor) => (
                     <button
                         key={actor}
                         onClick={() => setSelectedActor(actor)}
@@ -49,9 +51,9 @@ const ConfigsUpdateForm = ({
                         className="button relative w-full border border-cold-800 bg-opacity-0 text-cold-800 hover:bg-cold-800 hover:text-white aria-selected:bg-cold-800 aria-selected:text-white"
                     >
                         {actor}
-                        <div className="absolute -right-0.5 -top-3 z-10 flex items-center justify-center -space-x-3">
+                        <div className="absolute -right-0.5 -top-3 z-10 flex items-center justify-center -space-x-2">
                             {hasConfigs(actor) && (
-                                <ConfigsIcon className="p-extratiny h-7 w-7 rounded-full border-[1.5px] border-white bg-primary-700 stroke-2 text-white" />
+                                <ConfigsIcon className="p-extratiny h-5 w-5 rounded-full border-[1.5px] border-white bg-primary-700 stroke-2 text-white md:h-6 md:w-6" />
                             )}
                         </div>
                     </button>
