@@ -1,6 +1,6 @@
 'use client'
 import { PieChart } from '@mui/x-charts/PieChart'
-import { useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 
 import AcornIcon from '@components/Assets/acorn.svg'
 import AdoptIcon from '@components/Assets/adopt.svg'
@@ -69,6 +69,16 @@ const HypothesisDetail = ({ item }: { item: DAxioms.SharableHypothesis }) => {
         success('Copied share link to clipboard')
         setTimeout(() => setCopied(false), 3000)
     }
+
+    const positiveFilter = useMemo(
+        () => ({ onSide: 'Positive', publishedIn: item.id.toString() }),
+        []
+    )
+    const negativeFilter = useMemo(
+        () => ({ onSide: 'Negative', publishedIn: item.id.toString() }),
+        []
+    )
+    const commonSort = useMemo(() => ({ by: 'positivity', order: 'descending' }), [])
 
     const voteKeys = Object.keys(VOTES) as EVote[]
     const regularVotes = localItem.votes.regular.map((vote: bigint, index: number) => ({
@@ -363,12 +373,12 @@ const HypothesisDetail = ({ item }: { item: DAxioms.SharableHypothesis }) => {
                     </div>
                     <div className="px-normal mb-normal gap-normal flex w-full items-stretch justify-between">
                         <div className="gap-normal flex w-1/2 flex-col items-center">
-                            <InfiniteScrollWrapper<DAxioms.SharableEvidence>
+                            <InfiniteScrollWrapper
                                 ref={positiveEvidencesRef}
                                 query={Axioms.call(agent, true).getEvidencesPagination}
                                 name="evidence"
-                                hardFilter={{ onSide: 'Positive', publishedIn: localItem.id }}
-                                hardSort={{ sortBy: 'positivity', order: 'descending' }}
+                                hardFilter={positiveFilter}
+                                hardSort={commonSort}
                                 size={2n}
                                 LayoutComponent={EvidencesLayout}
                                 className="h-full w-full"
@@ -380,12 +390,12 @@ const HypothesisDetail = ({ item }: { item: DAxioms.SharableHypothesis }) => {
                             borderColor="border-cold-800"
                         />
                         <div className="gap-normal flex w-1/2 flex-col items-center">
-                            <InfiniteScrollWrapper<DAxioms.SharableEvidence>
+                            <InfiniteScrollWrapper
                                 ref={negativeEvidencesRef}
                                 query={Axioms.call(agent, true).getEvidencesPagination}
                                 name="evidence"
-                                hardFilter={{ onSide: 'Negative', publishedIn: localItem.id }}
-                                hardSort={{ sortBy: 'positivity', order: 'descending' }}
+                                hardFilter={negativeFilter}
+                                hardSort={commonSort}
                                 size={2n}
                                 LayoutComponent={EvidencesLayout}
                                 className="h-full w-full"

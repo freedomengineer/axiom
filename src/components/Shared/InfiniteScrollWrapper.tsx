@@ -151,7 +151,7 @@ const InfiniteScrollWrapper = forwardRef(
 
         useEffect(() => {
             initItems()
-        }, [hardFilter, hardSort, initItems])
+        }, [hardFilter, hardSort])
 
         useEffect(() => {
             const target = observerTarget.current
