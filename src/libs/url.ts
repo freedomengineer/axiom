@@ -1,4 +1,10 @@
-import { DefaultVariant, Primitive, isNullish, parsePrimitive } from 'shared/utils/typings'
+import {
+    FILTER_SORT_DECS,
+    PartialFilterInput,
+    QueryName,
+    StringifiedFilter,
+} from 'shared/default/filter_sort'
+import { DefaultVariant, isNullish, parsePrimitive } from 'shared/utils/typings'
 
 export const build = (
     segments: (string | number | bigint)[],
@@ -32,27 +38,4 @@ export const updateUrl = (newKey: string, newValue: string | number): string => 
     const params = url.searchParams
     params.set(newKey, newValue.toString())
     return `${url.pathname}?${params.toString()}`
-}
-
-export const parseFilter = <T>(
-    defaultObj: {
-        [P in keyof T]: Primitive | (T[P] extends object ? Array<DText> : never)
-    },
-    url: URLSearchParams
-): T => {
-    const obj = {} as T
-    for (const [key, value] of Object.entries(defaultObj) as any) {
-        obj[key as keyof T] = parsePrimitive(value, url.get(key)) as any
-    }
-    return obj
-}
-export const parseSort = <T>(
-    defaultObj: { [P in keyof T]: Array<DText> },
-    url: URLSearchParams
-): T => {
-    const obj = {} as T
-    for (const [key, value] of Object.entries(defaultObj) as any) {
-        obj[key as keyof T] = DefaultVariant(value, url.get(key)) as any
-    }
-    return obj
 }

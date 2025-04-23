@@ -4,7 +4,7 @@ import DownIcon from '@components/Assets/down.svg'
 import UpIcon from '@components/Assets/up.svg'
 import Spinner from '@components/Primitives/Spinner'
 import cn from '@libs/class'
-import { buildFilter, buildSort } from 'shared/default/filter_sort'
+import { QueryName, parseFilterFromObj, parseSortFromObj } from 'shared/default/filter_sort'
 
 export enum SortDirection {
     ASC,
@@ -20,8 +20,7 @@ export type TableWrapperProps<T> = {
         items: T[]
         sort?: SortType
     }>
-    filter: any
-    sort: any
+    name: QueryName
     hardFilter?: any
     hardSort?: any
     hardSortType?: SortType
@@ -41,8 +40,7 @@ const TableWrapper = forwardRef(
     <T,>(
         {
             LayoutComponent,
-            filter,
-            sort,
+            name,
             hardFilter = {},
             hardSort = {},
             hardSortType,
@@ -79,8 +77,8 @@ const TableWrapper = forwardRef(
         const loadItems = async (pageSize: bigint) => {
             setLoading(true)
 
-            const f = buildFilter<T>(filter, hardFilter)
-            const s = buildSort<T>(sort, hardSort)
+            const f = parseFilterFromObj(name, hardFilter)
+            const s = parseSortFromObj(name, hardSort)
             const p = 1n
 
             await query(f, s, p, pageSize)
@@ -90,8 +88,8 @@ const TableWrapper = forwardRef(
         const loadMore = async () => {
             setLoading(true)
 
-            const f = buildFilter<T>(filter, hardFilter)
-            const s = buildSort<T>(sort, hardSort)
+            const f = parseFilterFromObj(name, hardFilter)
+            const s = parseSortFromObj(name, hardSort)
             const p = 1n
 
             await query(f, s, p, items!.is * size + size)

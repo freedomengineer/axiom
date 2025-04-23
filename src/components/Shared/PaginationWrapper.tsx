@@ -2,26 +2,26 @@ import { ComponentType, useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
 import Spinner from '@components/Primitives/Spinner'
+import useFilterSort from '@hooks/useFilterSort'
 import { error } from '@libs/toastify'
-import { parseFilter, parseSort } from '@libs/url'
+import { QueryName, parseFilterFromObj, parseSortFromObj } from 'shared/default/filter_sort'
 
 import FilterSort from './FilterSort'
 import Pagination from './Pagination'
 
-const PaginationWrapper = <T,>({
+const PaginationWrapper = <T, N extends QueryName>({
     LayoutComponent,
-    filter,
-    sort,
+    name,
     size = 12n,
     query,
 }: {
     LayoutComponent: ComponentType<{ items: T[] } & object>
-    filter: any
-    sort: any
+    name: N
     size?: bigint
     query: (filter: any, sort: any, page: bigint, size: bigint) => Promise<Pagination<T>>
 }) => {
     const [searchParams, setSearchParams] = useSearchParams()
+    const filterSortData = useFilterSort(name)
 
     const [items, setItems] = useState<Pagination<T>>()
     const [loading, setLoading] = useState<boolean>(false)
@@ -29,8 +29,8 @@ const PaginationWrapper = <T,>({
     useEffect(() => {
         setLoading(true)
 
-        const f = parseFilter<T>(filter, searchParams)
-        const s = parseSort<T>(sort, searchParams)
+        const f = parseFilterFromObj(name, filterSortData.filter)
+        const s = parseSortFromObj(name, filterSortData.sort)
         const p = BigInt(searchParams.get('page') ?? '1')
 
         query(f, s, p, size)
@@ -48,7 +48,7 @@ const PaginationWrapper = <T,>({
                 <Spinner className="mx-auto my-auto flex h-10 w-10" />
             ) : (
                 <div className="gap-medium flex flex-col items-center justify-center">
-                    <FilterSort filter={filter} sort={sort} />
+                    <FilterSort {...filterSortData} />
                     <LayoutComponent items={items.result} />
                     <Pagination
                         is={items.is}

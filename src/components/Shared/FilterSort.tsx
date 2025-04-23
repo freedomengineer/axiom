@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useState } from 'react'
 
 import ArrowsDown from '@components/Assets/arrows_down.svg'
 import ArrowsUp from '@components/Assets/arrows_up.svg'
@@ -7,28 +6,21 @@ import ArrowsUpDown from '@components/Assets/arrows_up_down.svg'
 import CloseIcon from '@components/Assets/close.svg'
 import PlusIcon from '@components/Assets/plus.svg'
 import useAuth from '@hooks/useAuth'
+import { FilterSortContext } from '@hooks/useFilterSort'
+import { FILTER_SORT_DECS, QueryName } from 'shared/default/filter_sort'
 import { Primitive } from 'shared/utils/typings'
 
-const FilterSort = ({ filter, sort }: { filter: any; sort: any }) => {
+const FilterSort = <T extends QueryName>({
+    name,
+    filter,
+    sort,
+    setFilter,
+    setSort,
+}: FilterSortContext<T>) => {
     const { principal } = useAuth()
-    const [searchParams, setSearchParams] = useSearchParams()
 
     const [open, setOpen] = useState<'filter' | 'by' | 'order' | null>(null)
-    const [filterSelected, setFilterSelected] = useState<Record<string, string>>({})
-    const [sortSelected, setSortSelected] = useState<Record<string, string>>({ by: '', order: '' })
-
-    const updateRoute = () => {
-        const params = new URLSearchParams(searchParams.toString())
-        Object.entries(filterSelected).forEach(([key, value]) => {
-            if (value) params.set(key, value)
-            else params.delete(key)
-        })
-        Object.entries(sortSelected).forEach(([key, value]) => {
-            if (value) params.set(key, value)
-            else params.delete(key)
-        })
-        setSearchParams(params)
-    }
+    const [filterSelected, setFilterSelected] = useState<FilterSortContext<T>['filter']>(filter)
 
     const handleFilterChange = (key: string, value: string) => {
         setFilterSelected((prev) => {
@@ -38,46 +30,20 @@ const FilterSort = ({ filter, sort }: { filter: any; sort: any }) => {
         })
     }
     const handleSortChange = (key: string, value: string) => {
-        setSortSelected((prev) => ({ ...prev, [key]: value }))
-        const params = new URLSearchParams(searchParams.toString())
-        params.set(key, value)
-        setSearchParams(params)
+        setSort({ ...sort, [key]: value })
+        setOpen(null)
     }
-
     const removeFilter = (key: string) => {
-        setFilterSelected((prev) => {
-            const { [key]: _, ...updated } = prev
-            return updated
-        })
-        const params = new URLSearchParams(searchParams.toString())
-        params.delete(key)
-        setSearchParams(params)
+        const { [key]: _, ...updated } = filter
+        setFilterSelected(updated)
+        setFilter(updated)
     }
-
-    useEffect(() => {
-        const initialFilterSelected: Record<string, string> = {}
-        const initialSortSelected: Record<string, string> = {
-            by: sort.by[0],
-            order: sort.order[0],
-        }
-
-        searchParams.forEach((value, key) => {
-            if (filter[key] !== undefined) {
-                initialFilterSelected[key] = value
-            } else if (sort[key] !== undefined) {
-                initialSortSelected[key] = value
-            }
-        })
-
-        setFilterSelected(initialFilterSelected)
-        setSortSelected(initialSortSelected)
-    }, [searchParams, filter, sort])
 
     return (
         <div className="text-tiny z-40 w-full font-light text-cold-800">
             <div className="mb-medium gap-small flex flex-col justify-between md:flex-row">
                 <div className="gap-small relative flex flex-wrap ">
-                    {Object.entries(filterSelected).map(([key, value]) => (
+                    {Object.entries(filterSelected).map(([key, value]: any) => (
                         <button
                             key={key}
                             onClick={() => removeFilter(key)}
@@ -103,7 +69,7 @@ const FilterSort = ({ filter, sort }: { filter: any; sort: any }) => {
                     </button>
                     {open === 'filter' && (
                         <div className="gap-small p-medium absolute left-0 top-8 z-10 flex w-fit flex-col rounded border bg-white md:top-10">
-                            {Object.entries(filter).map(([key, value]) => (
+                            {Object.entries(FILTER_SORT_DECS[name].filter).map(([key, value]) => (
                                 <div
                                     key={key}
                                     className="gap-small grid w-full grid-cols-3 items-center md:w-[420px]"
@@ -172,7 +138,7 @@ const FilterSort = ({ filter, sort }: { filter: any; sort: any }) => {
                             ))}
                             <button
                                 className="py-small px-medium mx-auto mt-4 flex w-min items-center text-nowrap rounded border border-cold-600 hover:bg-cold-100"
-                                onClick={updateRoute}
+                                onClick={() => (setFilter(filterSelected), setOpen(null))}
                             >
                                 Apply changes
                             </button>
@@ -186,11 +152,11 @@ const FilterSort = ({ filter, sort }: { filter: any; sort: any }) => {
                             onClick={() => setOpen(open === 'by' ? null : 'by')}
                         >
                             <ArrowsUpDown className="mr-small h-4 w-4" />
-                            <span>{sortSelected.by}</span>
+                            <span>{sort.by}</span>
                         </button>
                         {open === 'by' && (
                             <div className="px-medium py-small top-large absolute left-0 right-auto top-8 z-10 w-[200px] rounded border bg-white md:left-auto md:right-0 md:top-10">
-                                {sort.by.map((variant: string) => (
+                                {FILTER_SORT_DECS[name].sort.by.map((variant) => (
                                     <button
                                         key={variant}
                                         className="text-small px-normal py-tiny w-full rounded-lg text-left hover:bg-cold-100"
@@ -207,16 +173,16 @@ const FilterSort = ({ filter, sort }: { filter: any; sort: any }) => {
                             className="text-small px-normal py-tiny flex items-center rounded-lg border border-cold-600 hover:bg-cold-100"
                             onClick={() => setOpen(open === 'order' ? null : 'order')}
                         >
-                            {sortSelected.order === 'ascending' ? (
+                            {sort.order === 'ascending' ? (
                                 <ArrowsUp className="mr-small h-4 w-4" />
                             ) : (
                                 <ArrowsDown className="mr-small h-4 w-4" />
                             )}
-                            <span>{sortSelected.order}</span>
+                            <span>{sort.order}</span>
                         </button>
                         {open === 'order' && (
                             <div className="px-medium py-small top-large absolute left-0 right-auto top-8 z-10 w-[200px] rounded border bg-white md:left-auto md:right-0 md:top-10">
-                                {sort.order.map((variant: string) => (
+                                {FILTER_SORT_DECS[name].sort.order.map((variant) => (
                                     <button
                                         key={variant}
                                         className="text-small px-normal py-tiny w-full rounded-lg text-left hover:bg-cold-100"

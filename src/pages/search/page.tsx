@@ -12,16 +12,7 @@ import siteMetadata from '@data/siteMetadata.json'
 import useAuth from '@hooks/useAuth'
 import { error } from '@libs/toastify'
 import { build } from '@libs/url'
-import {
-    buildEvidenceFilter,
-    buildEvidenceSort,
-    buildFieldFilter,
-    buildFieldSort,
-    buildHypothesisFilter,
-    buildHypothesisSort,
-    buildUserFilter,
-    buildUserSort,
-} from 'shared/default/filter_sort'
+import { parseFilterFromObj, parseSortFromObj } from 'shared/default/filter_sort'
 import { DAxioms, DFacade } from 'shared/types/services'
 import { Axioms, Facade } from 'shared/utils/services'
 
@@ -50,32 +41,32 @@ const SearchPage = () => {
         Promise.all([
             Axioms.call(agent)
                 .getHypothesesPagination(
-                    buildHypothesisFilter({ containsPattern }),
-                    buildHypothesisSort({ by: 'recent', order: 'descending' }),
+                    parseFilterFromObj('hypothesis', { containsPattern }),
+                    parseSortFromObj('hypothesis', { by: 'recent', order: 'descending' }),
                     1n,
                     4n
                 )
                 .catch(error),
             Axioms.call(agent)
                 .getEvidencesPagination(
-                    buildEvidenceFilter({ containsPattern }),
-                    buildEvidenceSort({ by: 'recent', order: 'descending' }),
+                    parseFilterFromObj('evidence', { containsPattern }),
+                    parseSortFromObj('evidence', { by: 'recent', order: 'descending' }),
                     1n,
                     4n
                 )
                 .catch(error),
             Axioms.call(agent)
                 .getFieldsPagination(
-                    buildFieldFilter({ containsPattern }),
-                    buildFieldSort({ by: 'popularity', order: 'descending' }),
+                    parseFilterFromObj('field', { containsPattern }),
+                    parseSortFromObj('field', { by: 'popularity', order: 'descending' }),
                     1n,
                     4n
                 )
                 .catch(error),
             Facade.call(agent)
                 .getUsersPagination(
-                    buildUserFilter({ containsPattern }),
-                    buildUserSort({ by: 'capitalRaised', order: 'descending' }),
+                    parseFilterFromObj('user', { containsPattern }),
+                    parseSortFromObj('user', { by: 'capitalRaised', order: 'descending' }),
                     1n,
                     4n
                 )

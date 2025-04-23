@@ -28,7 +28,6 @@ import cn from '@libs/class'
 import { convertDate } from '@libs/date'
 import { promise } from '@libs/toastify'
 import { MILLIS_IN_A_DAY, NANO_TO_MILLI } from 'shared/constants'
-import { NOMINEE_FILTER, NOMINEE_SORT } from 'shared/default/filter_sort'
 import { DDAO } from 'shared/types/services'
 import e8s from 'shared/utils/e8s'
 import { DAO } from 'shared/utils/services'
@@ -407,8 +406,7 @@ const NomineesTable = () => {
                 ref={tableRef}
                 LayoutComponent={NomineeLayout as any}
                 query={DAO.call(agent, true).getNomineesPagination}
-                filter={NOMINEE_FILTER}
-                sort={NOMINEE_SORT}
+                name="nominee"
                 hardSort={{ order: 'descending', by: 'token' }}
                 hardSortType={{ column: 3, direction: SortDirection.DESC }}
                 size={10n}

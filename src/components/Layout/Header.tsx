@@ -56,7 +56,7 @@ const Header = ({
     const [openMenu, setOpenMenu] = useState<{ [key: string]: string | null }>({})
     const [open, setOpen] = useState<EPopup | null>(null)
 
-    const [pattern, setPattern] = useState<string>(new Date().toISOString())
+    const [pattern, setPattern] = useState<string>('')
 
     const [now, setNow] = useState<number>(Date.now())
     const [pem, setPem] = useState<{ input: string; identity: Identity | null }>({
@@ -289,7 +289,8 @@ const Header = ({
                                         deleteAllConfigsCache(),
                                         deleteAllPackagesCache(),
                                         deleteAllStatusCache(),
-                                        deleteAllUsernamesCache()
+                                        deleteAllUsernamesCache(),
+                                        localStorage.clear()
                                     )}
                                 >
                                     Clean up all cache

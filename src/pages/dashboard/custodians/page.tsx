@@ -9,7 +9,7 @@ import useAuth from '@hooks/useAuth'
 import useConfigs from '@hooks/useConfigs'
 import { formatTime } from '@libs/date'
 import { MILLIS_IN_A_DAY } from 'shared/constants'
-import { buildNomineeFilter, buildNomineeSort } from 'shared/default/filter_sort'
+import { parseFilterFromObj, parseSortFromObj } from 'shared/default/filter_sort'
 import { DDAO } from 'shared/types/services'
 import e8s from 'shared/utils/e8s'
 import { DAO } from 'shared/utils/services'
@@ -36,8 +36,8 @@ const CustodiansPage = () => {
                 DAO.call().getDaysInPeriod(),
                 DAO.call(agent)
                     .getNomineesPagination(
-                        buildNomineeFilter({ isCustodian: 'true' } as any),
-                        buildNomineeSort({ by: 'token', order: 'descending' }),
+                        parseFilterFromObj('nominee', { isCustodian: 'true' } as any),
+                        parseSortFromObj('nominee', { by: 'token', order: 'descending' }),
                         1n,
                         100n
                     )

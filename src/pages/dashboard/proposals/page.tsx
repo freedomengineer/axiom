@@ -1,10 +1,10 @@
 import ProposalCard from '@components/Pages/ACEDashboard/Proposals/ProposalCard'
+import FilterSort from '@components/Shared/FilterSort'
+import InfiniteScrollWrapper from '@components/Shared/InfiniteScrollWrapper'
 import PageMetadata from '@components/Shared/PageMetadata'
-import PaginationWrapper from '@components/Shared/PaginationWrapper'
 import siteMetadata from '@data/siteMetadata.json'
 import useAuth from '@hooks/useAuth'
-import { PROPOSAL_FILTER, PROPOSAL_SORT } from 'shared/default/filter_sort'
-import { DDAO } from 'shared/types/services'
+import useFilterSort from '@hooks/useFilterSort'
 import { DAO } from 'shared/utils/services'
 
 const title = 'Proposals'
@@ -17,11 +17,13 @@ const pageMetadata: Metadata = {
 
 const ProposalsPage = () => {
     const { agent } = useAuth()
+    const filterSortData = useFilterSort('proposal')
 
     return (
         <>
             <PageMetadata {...pageMetadata} />
-            <PaginationWrapper<DDAO.SharableProposal>
+            <FilterSort {...filterSortData} />
+            <InfiniteScrollWrapper
                 LayoutComponent={({ items }) => (
                     <div className="gap-medium flex w-full flex-wrap justify-center">
                         {items.map((item, i) => (
@@ -29,9 +31,12 @@ const ProposalsPage = () => {
                         ))}
                     </div>
                 )}
+                name="proposal"
+                hardFilter={filterSortData.filter}
+                hardSort={filterSortData.sort}
                 query={DAO.call(agent, true).getProposalsPagination}
-                filter={PROPOSAL_FILTER}
-                sort={PROPOSAL_SORT}
+                className="h-full"
+                size={4n}
             />
         </>
     )

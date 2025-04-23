@@ -4,8 +4,7 @@ import InfiniteScrollWrapper from '@components/Shared/InfiniteScrollWrapper'
 import PageMetadata from '@components/Shared/PageMetadata'
 import siteMetadata from '@data/siteMetadata.json'
 import useAuth from '@hooks/useAuth'
-import { FIELD_FILTER, FIELD_SORT } from 'shared/default/filter_sort'
-import { DAxioms } from 'shared/types/services'
+import useFilterSort from '@hooks/useFilterSort'
 import { Axioms } from 'shared/utils/services'
 
 const title = 'Fields'
@@ -18,13 +17,14 @@ const pageMetadata: Metadata = {
 
 const FieldsPage = () => {
     const { agent } = useAuth()
+    const filterSortData = useFilterSort('field')
 
     return (
         <>
             <PageMetadata {...pageMetadata} />
             <div className="gap-medium flex flex-col items-center justify-center">
-                <FilterSort filter={FIELD_FILTER} sort={FIELD_SORT} />
-                <InfiniteScrollWrapper<DAxioms.SharableField>
+                <FilterSort {...filterSortData} />
+                <InfiniteScrollWrapper
                     LayoutComponent={({ items }) => (
                         <div className="gap-medium mx-auto flex w-full max-w-full flex-wrap justify-center md:max-w-[1500px]">
                             {items.map((item, i) => (
@@ -32,9 +32,10 @@ const FieldsPage = () => {
                             ))}
                         </div>
                     )}
+                    name="field"
+                    hardFilter={filterSortData.filter}
+                    hardSort={filterSortData.sort}
                     query={Axioms.call(agent, true).getFieldsPagination}
-                    filter={FIELD_FILTER}
-                    sort={FIELD_SORT}
                     className="h-full"
                     size={12n}
                 />

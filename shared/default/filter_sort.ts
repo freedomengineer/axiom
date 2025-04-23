@@ -1,163 +1,185 @@
+import { ActorMethod } from '@dfinity/agent'
+
 import { ECategory, EStatus } from '@utils/dashboard/proposal'
 import { DAxioms, DDAO, DFacade } from 'shared/types/services'
-import { DefaultVariant, Primitive, parsePrimitive } from 'shared/utils/typings'
+import { DefaultVariant, Primitive, isNullish, parsePrimitive } from 'shared/utils/typings'
 
-export const HYPOTHESIS_FILTER = {
-    axiomsFrom: Primitive.Principal,
-    publishedBy: Primitive.Principal,
-    publishedAt: Primitive.Nat,
-    publishedIn: Primitive.Text,
-    votedBy: Primitive.Principal,
-    bookmarksFrom: Primitive.Principal,
-    containsPattern: Primitive.Text,
-}
-export const EVIDENCE_FILTER = {
-    publishedBy: Primitive.Principal,
-    publishedIn: Primitive.Nat,
-    votedBy: Primitive.Principal,
-    onSide: ['Positive', 'Negative'],
-    containsPattern: Primitive.Text,
-}
-export const FIELD_FILTER = {
-    joinedBy: Primitive.Principal,
-    containsPattern: Primitive.Text,
-}
-export const USER_FILTER = {
-    hasCapitalRaised: Primitive.Nat,
-    containsPattern: Primitive.Text,
-}
-export const NOMINEE_FILTER = {
-    votedBy: Primitive.Principal,
-    isCustodian: Primitive.Boolean,
-}
-export const PROPOSAL_FILTER = {
-    votedBy: Primitive.Principal,
-    proposedBy: Primitive.Principal,
-    proposedIn: Object.keys(ECategory),
-    withStatus: Object.keys(EStatus),
-}
-export const FLAG_FILTER = {
-    requestedBy: Primitive.Principal,
-    requestedIn: ['Hypothesis', 'Evidence'],
-    votedBy: Primitive.Principal,
-    withStatus: ['Requested', 'Approved', 'Rejected', 'Expired', 'Executed', 'Failed'],
-}
-
-export const HYPOTHESIS_SORT = {
-    by: ['popularity', 'recent', 'positivity', 'neutrality', 'negativity', 'controversy'],
-    order: ['descending', 'ascending'],
-}
-export const EVIDENCE_SORT = {
-    by: ['popularity', 'recent', 'positivity', 'negativity'],
-    order: ['descending', 'ascending'],
-}
-export const FIELD_SORT = {
-    by: ['popularity', 'recent', 'alphabetical'],
-    order: ['descending', 'ascending'],
-}
-export const USER_SORT = {
-    by: ['capitalRaised', 'recent', 'alphabetical'],
-    order: ['descending', 'ascending'],
-}
-export const NOMINEE_SORT = {
-    by: ['token', 'voter'],
-    order: ['descending', 'ascending'],
-}
-export const PROPOSAL_SORT = {
-    by: ['updated', 'recent', 'acornReward', 'icpReward'],
-    order: ['descending', 'ascending'],
-}
-export const FLAG_SORT = {
-    by: ['recent', 'difference'],
-    order: ['descending', 'ascending'],
-}
-
-///
-
-type PartialFilterInput<T> = {
+export type PartialFilterInput<T> = {
     [K in keyof T]?: T[K] extends [] | [infer U] ? U | null : never
 }
-type SortInput<T> = {
+export type StringifiedFilter<T> = {
+    [K in keyof T]?: T[K] extends [] | [infer U] ? string | null : never
+}
+export type StringifiedSort<T> = {
     by: T extends { by: infer U } ? ExtractKeys<U> : never
     order: 'ascending' | 'descending'
 }
+export type ExtractFilterSort<T> =
+    T extends ActorMethod<infer A, any> ? { filter: A[0]; sort: A[1] } : never
 
-export const buildFilter = <T>(
-    defaultObj: {
-        [P in keyof T]: Primitive | (T[P] extends object ? Array<DText> : never)
+export type QueryMap = {
+    hypothesis: DAxioms.Axioms['getHypotheses']
+    field: DAxioms.Axioms['getFields']
+    evidence: DAxioms.Axioms['getEvidences']
+    user: DFacade.Facade['getUsers']
+    nominee: DDAO.DAO['getNominees']
+    proposal: DDAO.DAO['getProposals']
+    flag: DAxioms.Axioms['getFlags']
+}
+export type QueryName = keyof QueryMap
+
+export type FilterSort = {
+    [K in QueryName]: ExtractFilterSort<QueryMap[K]>
+}
+export type StringifiedFilterSort = {
+    [K in QueryName]: {
+        filter: StringifiedFilter<FilterSort[K]['filter']>
+        sort: StringifiedSort<FilterSort[K]['sort']>
+    }
+}
+
+export const FILTER_SORT_DECS = {
+    hypothesis: {
+        filter: {
+            axiomsFrom: Primitive.Principal,
+            publishedBy: Primitive.Principal,
+            publishedAt: Primitive.Nat,
+            publishedIn: Primitive.Text,
+            votedBy: Primitive.Principal,
+            bookmarksFrom: Primitive.Principal,
+            containsPattern: Primitive.Text,
+        },
+        sort: {
+            by: ['popularity', 'recent', 'positivity', 'neutrality', 'negativity', 'controversy'],
+            order: ['descending', 'ascending'],
+        },
     },
-    input: PartialFilterInput<T>
-): T => {
-    const obj = {} as T
-    for (const [key, value] of Object.entries(defaultObj) as any) {
-        obj[key as keyof T] = parsePrimitive(value, (input as any)[key]) as any
+    field: {
+        filter: {
+            joinedBy: Primitive.Principal,
+            containsPattern: Primitive.Text,
+        },
+        sort: {
+            by: ['popularity', 'recent', 'alphabetical'],
+            order: ['descending', 'ascending'],
+        },
+    },
+    evidence: {
+        filter: {
+            publishedBy: Primitive.Principal,
+            publishedIn: Primitive.Nat,
+            votedBy: Primitive.Principal,
+            onSide: ['Positive', 'Negative'],
+            containsPattern: Primitive.Text,
+        },
+        sort: {
+            by: ['popularity', 'recent', 'positivity', 'negativity'],
+            order: ['descending', 'ascending'],
+        },
+    },
+    user: {
+        filter: {
+            hasCapitalRaised: Primitive.Nat,
+            containsPattern: Primitive.Text,
+        },
+        sort: {
+            by: ['capitalRaised', 'recent', 'alphabetical'],
+            order: ['descending', 'ascending'],
+        },
+    },
+    nominee: {
+        filter: {
+            votedBy: Primitive.Principal,
+            isCustodian: Primitive.Boolean,
+        },
+        sort: {
+            by: ['token', 'voter'],
+            order: ['descending', 'ascending'],
+        },
+    },
+    proposal: {
+        filter: {
+            votedBy: Primitive.Principal,
+            proposedBy: Primitive.Principal,
+            proposedIn: Object.keys(ECategory),
+            withStatus: Object.keys(EStatus),
+        },
+        sort: {
+            by: ['updated', 'recent', 'acornReward', 'icpReward'],
+            order: ['descending', 'ascending'],
+        },
+    },
+    flag: {
+        filter: {
+            requestedBy: Primitive.Principal,
+            requestedIn: ['Hypothesis', 'Evidence'],
+            votedBy: Primitive.Principal,
+            withStatus: ['Requested', 'Approved', 'Rejected', 'Expired', 'Executed', 'Failed'],
+        },
+        sort: {
+            by: ['recent', 'difference'],
+            order: ['descending', 'ascending'],
+        },
+    },
+} as const
+
+///
+
+export const parseFilterFromObj = <T extends QueryName>(
+    name: T,
+    obj: StringifiedFilter<FilterSort[T]['filter']>
+): FilterSort[T]['filter'] => {
+    const res = {} as any
+    for (const [key, value] of Object.entries(FILTER_SORT_DECS[name].filter) as any) {
+        res[key] = parsePrimitive(value, (obj as any)[key])
     }
-    return obj
+    return res
 }
-export const buildSort = <T>(
-    defaultObj: { [P in keyof T]: Array<DText> },
-    input: SortInput<T>
-): T => {
-    const obj = {} as T
-    for (const [key, value] of Object.entries(defaultObj) as any) {
-        obj[key as keyof T] = DefaultVariant(value, (input as any)[key]) as any
+export const parseSortFromObj = <T extends keyof FilterSort>(
+    name: T,
+    obj: StringifiedSort<FilterSort[T]['sort']>
+): FilterSort[T]['sort'] => {
+    const res = {} as any
+    for (const [key, value] of Object.entries(FILTER_SORT_DECS[name].sort) as any) {
+        res[key] = DefaultVariant(value, (obj as any)[key])
     }
-    return obj
+    return res
 }
 
-export const buildHypothesisFilter = (
-    input: PartialFilterInput<DAxioms.Filter>
-): DAxioms.Filter => {
-    return buildFilter(HYPOTHESIS_FILTER, input)
+export const parseFilterFromUrl = <T extends QueryName>(name: T, url: URLSearchParams): T => {
+    const res = {} as T
+    for (const [key, value] of Object.entries(FILTER_SORT_DECS[name].filter) as any) {
+        res[key as keyof T] = parsePrimitive(value, url.get(key)) as any
+    }
+    return res
 }
-export const buildHypothesisSort = (input: SortInput<DAxioms.Sort>): DAxioms.Sort => {
-    return buildSort(HYPOTHESIS_SORT, input)
-}
-
-export const buildFieldFilter = (
-    input: PartialFilterInput<DAxioms.Filter__2>
-): DAxioms.Filter__2 => {
-    return buildFilter(FIELD_FILTER, input)
-}
-export const buildFieldSort = (input: SortInput<DAxioms.Sort_2>): DAxioms.Sort_2 => {
-    return buildSort(FIELD_SORT, input)
+export const parseSortFromUrl = <T extends QueryName>(name: T, url: URLSearchParams): T => {
+    const res = {} as T
+    for (const [key, value] of Object.entries(FILTER_SORT_DECS[name].sort) as any) {
+        res[key as keyof T] = DefaultVariant(value, url.get(key)) as any
+    }
+    return res
 }
 
-export const buildEvidenceFilter = (
-    input: PartialFilterInput<DAxioms.Filter__3>
-): DAxioms.Filter__3 => {
-    return buildFilter(EVIDENCE_FILTER, input)
+export const parsePartialFilterFromUrl = <T extends QueryName>(
+    name: T,
+    url: URLSearchParams
+): PartialFilterInput<FilterSort[T]['filter']> => {
+    const res = {} as any
+    for (const [key] of Object.entries(FILTER_SORT_DECS[name].filter) as any) {
+        const param = url.get(key)
+        if (!isNullish(param)) res[key] = param
+    }
+    return res as PartialFilterInput<FilterSort[T]['filter']>
 }
-export const buildEvidenceSort = (input: SortInput<DAxioms.Sort_3>): DAxioms.Sort_3 => {
-    return buildSort(EVIDENCE_SORT, input)
-}
-
-export const buildUserFilter = (input: PartialFilterInput<DFacade.Filter>): DFacade.Filter => {
-    return buildFilter(USER_FILTER, input)
-}
-export const buildUserSort = (input: SortInput<DFacade.Sort>): DFacade.Sort => {
-    return buildSort(USER_SORT, input)
-}
-
-export const buildNomineeFilter = (input: PartialFilterInput<DDAO.Filter__1>): DDAO.Filter__1 => {
-    return buildFilter(NOMINEE_FILTER, input)
-}
-export const buildNomineeSort = (input: SortInput<DDAO.Sort_1>): DDAO.Sort_1 => {
-    return buildSort(NOMINEE_SORT, input)
-}
-
-export const buildProposalFilter = (input: PartialFilterInput<DDAO.Filter>): DDAO.Filter => {
-    return buildFilter(PROPOSAL_FILTER, input)
-}
-export const buildProposalSort = (input: SortInput<DDAO.Sort>): DDAO.Sort => {
-    return buildSort(PROPOSAL_SORT, input)
-}
-
-export const buildFlagFilter = (
-    input: PartialFilterInput<DAxioms.Filter__1>
-): DAxioms.Filter__1 => {
-    return buildFilter(FLAG_FILTER, input)
-}
-export const buildFlagSort = (input: SortInput<DAxioms.Sort_1>): DAxioms.Sort_1 => {
-    return buildSort(FLAG_SORT, input)
+export const parsePartialSortFromUrl = <T extends QueryName>(
+    name: T,
+    url: URLSearchParams
+): PartialFilterInput<FilterSort[T]['sort']> => {
+    const res = {} as any
+    for (const [key] of Object.entries(FILTER_SORT_DECS[name].sort) as any) {
+        const param = url.get(key)
+        if (!isNullish(param)) res[key] = param
+    }
+    return res as PartialFilterInput<FilterSort[T]['sort']>
 }

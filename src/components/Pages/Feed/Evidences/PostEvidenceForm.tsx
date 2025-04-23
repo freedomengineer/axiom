@@ -269,7 +269,7 @@ const PostEvidenceForm = ({ configs, form, side, setForm, setSide, onForward }) 
                                     </div>
                                     <p
                                         className={cn(
-                                            'text-tiny',
+                                            '!text-tiny',
                                             !validNoteLength && 'text-red-700'
                                         )}
                                     >

@@ -18,16 +18,7 @@ import { EPackages, ParsedPackages, parseAchievements, parseMemberships } from '
 import { cacheUsername } from '@hooks/useUsername'
 import cn from '@libs/class'
 import { buildBlobImage } from '@libs/url'
-import {
-    buildEvidenceFilter,
-    buildEvidenceSort,
-    buildFieldFilter,
-    buildFieldSort,
-    buildHypothesisFilter,
-    buildHypothesisSort,
-    buildProposalFilter,
-    buildProposalSort,
-} from 'shared/default/filter_sort'
+import { parseFilterFromObj, parseSortFromObj } from 'shared/default/filter_sort'
 import { DAxioms, DDAO, DFacade, DSales } from 'shared/types/services'
 import { Axioms, DAO, Facade, Sales } from 'shared/utils/services'
 import { Unwrap } from 'shared/utils/typings'
@@ -131,40 +122,62 @@ const ProfileLayout = ({ id }: { id?: string }) => {
                 case ETab.Axioms:
                     Axioms.call(agent)
                         .getHypotheses(
-                            buildHypothesisFilter({ axiomsFrom: profilePrincipal.toText() }),
-                            buildHypothesisSort({ by: 'recent', order: 'descending' })
+                            parseFilterFromObj('hypothesis', {
+                                axiomsFrom: profilePrincipal.toText(),
+                            }),
+                            parseSortFromObj('hypothesis', {
+                                by: 'recent',
+                                order: 'descending',
+                            })
                         )
                         .then((res) => setUserData((prev) => ({ ...prev, [ETab.Axioms]: res })))
                     break
                 case ETab.Fields:
                     Axioms.call(agent)
                         .getFields(
-                            buildFieldFilter({ joinedBy: profilePrincipal.toText() }),
-                            buildFieldSort({ by: 'recent', order: 'descending' })
+                            parseFilterFromObj('field', {
+                                joinedBy: profilePrincipal.toText(),
+                            }),
+                            parseSortFromObj('field', { by: 'recent', order: 'descending' })
                         )
                         .then((res) => setUserData((prev) => ({ ...prev, [ETab.Fields]: res })))
                     break
                 case ETab.Hypotheses:
                     Axioms.call(agent)
                         .getHypotheses(
-                            buildHypothesisFilter({ publishedBy: profilePrincipal.toText() }),
-                            buildHypothesisSort({ by: 'recent', order: 'descending' })
+                            parseFilterFromObj('hypothesis', {
+                                publishedBy: profilePrincipal.toText(),
+                            }),
+                            parseSortFromObj('hypothesis', {
+                                by: 'recent',
+                                order: 'descending',
+                            })
                         )
                         .then((res) => setUserData((prev) => ({ ...prev, [ETab.Hypotheses]: res })))
                     break
                 case ETab.Evidences:
                     Axioms.call(agent)
                         .getEvidences(
-                            buildEvidenceFilter({ publishedBy: profilePrincipal.toText() }),
-                            buildEvidenceSort({ by: 'recent', order: 'descending' })
+                            parseFilterFromObj('evidence', {
+                                publishedBy: profilePrincipal.toText(),
+                            }),
+                            parseSortFromObj('evidence', {
+                                by: 'recent',
+                                order: 'descending',
+                            })
                         )
                         .then((res) => setUserData((prev) => ({ ...prev, [ETab.Evidences]: res })))
                     break
                 case ETab.Proposals:
                     DAO.call(agent)
                         .getProposals(
-                            buildProposalFilter({ proposedBy: profilePrincipal.toText() }),
-                            buildProposalSort({ by: 'recent', order: 'descending' })
+                            parseFilterFromObj('proposal', {
+                                proposedBy: profilePrincipal.toText(),
+                            }),
+                            parseSortFromObj('proposal', {
+                                by: 'recent',
+                                order: 'descending',
+                            })
                         )
                         .then((res) => setUserData((prev) => ({ ...prev, [ETab.Proposals]: res })))
                     break

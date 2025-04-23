@@ -8,7 +8,7 @@ import siteMetadata from '@data/siteMetadata.json'
 import useAuth, { PageStatus } from '@hooks/useAuth'
 import cn from '@libs/class'
 import { formatDate } from '@libs/date'
-import { buildHypothesisFilter, buildHypothesisSort } from 'shared/default/filter_sort'
+import { parseFilterFromObj, parseSortFromObj } from 'shared/default/filter_sort'
 import { DAxioms } from 'shared/types/services'
 import { Axioms } from 'shared/utils/services'
 
@@ -33,8 +33,13 @@ const FieldPage = () => {
                 Axioms.call(agent).getField(decodeURIComponent(field!)).then(setItem),
                 Axioms.call(agent)
                     .getHypothesesPagination(
-                        buildHypothesisFilter({ publishedIn: decodeURIComponent(field!) }),
-                        buildHypothesisSort({ by: 'popularity', order: 'descending' }),
+                        parseFilterFromObj('hypothesis', {
+                            publishedIn: decodeURIComponent(field!),
+                        }),
+                        parseSortFromObj('hypothesis', {
+                            by: 'popularity',
+                            order: 'descending',
+                        }),
                         1n,
                         100n
                     )

@@ -8,17 +8,6 @@ import PageMetadata from '@components/Shared/PageMetadata'
 import PaginationWrapper from '@components/Shared/PaginationWrapper'
 import siteMetadata from '@data/siteMetadata.json'
 import useAuth, { PageStatus } from '@hooks/useAuth'
-import {
-    EVIDENCE_FILTER,
-    EVIDENCE_SORT,
-    FIELD_FILTER,
-    FIELD_SORT,
-    HYPOTHESIS_FILTER,
-    HYPOTHESIS_SORT,
-    USER_FILTER,
-    USER_SORT,
-} from 'shared/default/filter_sort'
-import { DAxioms, DFacade } from 'shared/types/services'
 import { Axioms, Facade } from 'shared/utils/services'
 
 const title = 'Search'
@@ -33,26 +22,10 @@ const SpecificSearchPage = () => {
     }
 
     const queries = {
-        hypotheses: {
-            query: Axioms.call(agent, true).getHypothesesPagination,
-            filter: HYPOTHESIS_FILTER,
-            sort: HYPOTHESIS_SORT,
-        },
-        evidences: {
-            query: Axioms.call(agent, true).getEvidencesPagination,
-            filter: EVIDENCE_FILTER,
-            sort: EVIDENCE_SORT,
-        },
-        fields: {
-            query: Axioms.call(agent, true).getFieldsPagination,
-            filter: FIELD_FILTER,
-            sort: FIELD_SORT,
-        },
-        users: {
-            query: Facade.call(agent, true).getUsersPagination,
-            filter: USER_FILTER,
-            sort: USER_SORT,
-        },
+        hypotheses: Axioms.call(agent, true).getHypothesesPagination,
+        evidences: Axioms.call(agent, true).getEvidencesPagination,
+        fields: Axioms.call(agent, true).getFieldsPagination,
+        users: Facade.call(agent, true).getUsersPagination,
     }
     const pageMetadata: Metadata = {
         url: siteMetadata.siteUrl + metadata.url,
@@ -76,6 +49,7 @@ const SpecificSearchPage = () => {
                         )}
                     </div>
                 )}
+                name={type}
                 {...queries[type!]}
             />
         </>

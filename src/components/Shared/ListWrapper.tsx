@@ -1,20 +1,18 @@
 import { ComponentType, useEffect, useState } from 'react'
 
 import Spinner from '@components/Primitives/Spinner'
-import { buildFilter, buildSort } from 'shared/default/filter_sort'
+import { QueryName, parseFilterFromObj, parseSortFromObj } from 'shared/default/filter_sort'
 
 const ListWrapper = <T,>({
     LayoutComponent,
-    filter,
-    sort,
+    name,
     hardFilter = {},
     hardSort = {},
     size = 4n,
     query,
 }: {
     LayoutComponent: ComponentType<{ items: T[] }>
-    filter: any
-    sort: any
+    name: QueryName
     hardFilter?: any
     hardSort?: any
     size?: bigint
@@ -27,8 +25,8 @@ const ListWrapper = <T,>({
     useEffect(() => {
         setLoading(true)
 
-        const f = buildFilter<T>(filter, { ...hardFilter, containsPattern: pattern })
-        const s = buildSort<T>(sort, hardSort)
+        const f = parseFilterFromObj(name, { ...hardFilter, containsPattern: pattern })
+        const s = parseSortFromObj(name, hardSort)
         const p = 1n
 
         query(f, s, p, size)
@@ -39,8 +37,8 @@ const ListWrapper = <T,>({
     const loadMore = async () => {
         setLoading(true)
 
-        const f = buildFilter<T>(filter, { ...hardFilter, containsPattern: pattern })
-        const s = buildSort<T>(sort, hardSort)
+        const f = parseFilterFromObj(name, { ...hardFilter, containsPattern: pattern })
+        const s = parseSortFromObj(name, hardSort)
         const p = 1n
 
         await query(f, s, p, items!.is * size + size)
