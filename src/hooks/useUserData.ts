@@ -1,7 +1,7 @@
 import { Principal } from '@dfinity/principal'
 import { useEffect, useState } from 'react'
 
-import { buildFieldFilter, buildFieldSort } from 'shared/default/filter_sort'
+import { parseFilterFromObj, parseSortFromObj } from 'shared/default/filter_sort'
 import { DAffiliate, DAxioms, DDAO } from 'shared/types/services'
 import { Affiliate, Axioms, DAO, Escrow } from 'shared/utils/services'
 
@@ -53,8 +53,8 @@ const _fetchUserData = async (principal: Principal): Promise<MemoryData | null> 
                 Escrow.call().getClaimableAmount(principal),
                 Axioms.call()
                     .getFieldsPagination(
-                        buildFieldFilter({ joinedBy: principal.toText() } as any),
-                        buildFieldSort({ by: 'popularity', order: 'descending' }),
+                        parseFilterFromObj('field', { joinedBy: principal.toText() }),
+                        parseSortFromObj('field', { by: 'popularity', order: 'descending' }),
                         1n,
                         10000n
                     )
@@ -91,8 +91,11 @@ const _fetchSpecificUserData = async <K extends UserDataKey>(
                 case 'fields':
                     memoryCache.fields = await Axioms.call()
                         .getFieldsPagination(
-                            buildFieldFilter({ joinedBy: principal.toText() } as any),
-                            buildFieldSort({ by: 'popularity', order: 'descending' }),
+                            parseFilterFromObj('field', { joinedBy: principal.toText() }),
+                            parseSortFromObj('field', {
+                                by: 'popularity',
+                                order: 'descending',
+                            }),
                             1n,
                             10000n
                         )

@@ -8,16 +8,16 @@ import cn from '@libs/class'
 
 const Popup = ({
     open,
-    onClose,
     title,
+    onClose,
     href,
     Icon,
     className,
     children,
 }: {
     open: boolean
-    onClose: () => void
     title: string
+    onClose?: () => void
     href?: string
     Icon?: React.ReactNode
     className?: string
@@ -41,7 +41,7 @@ const Popup = ({
         <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black bg-opacity-50 text-cold-700">
             <div
                 className={cn(
-                    'relative h-fit max-h-[95dvh] max-w-[95vw] rounded-lg bg-white shadow-lg md:max-w-[85vw]',
+                    'relative h-fit max-w-[95vw] rounded-lg bg-white shadow-lg md:max-w-[85vw]',
                     className
                 )}
             >
@@ -66,12 +66,14 @@ const Popup = ({
                                 <NewTabIcon className="h-3 w-3 stroke-[1.5px] md:h-4 md:w-4" />
                             </Link>
                         )}
-                        <button onClick={onClose}>
-                            <CloseIcon className="p-small h-7 w-7 rounded-full stroke-1 hover:bg-cold-100 md:h-8 md:w-8 md:stroke-[1.5px]" />
-                        </button>
+                        {onClose && (
+                            <button onClick={onClose}>
+                                <CloseIcon className="p-small h-7 w-7 rounded-full stroke-1 hover:bg-cold-100 md:h-8 md:w-8 md:stroke-[1.5px]" />
+                            </button>
+                        )}
                     </div>
                 </div>
-                <div className="py-semilarge px-extralarge mx-auto h-auto max-h-[90vh] w-full max-w-[95vw] overflow-y-auto md:max-w-[85vw]">
+                <div className="py-semilarge px-extralarge mx-auto h-auto max-h-[80dvh] w-full max-w-[95vw] overflow-y-auto md:max-w-[85vw]">
                     {children}
                 </div>
             </div>

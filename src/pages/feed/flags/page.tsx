@@ -4,8 +4,7 @@ import InfiniteScrollWrapper from '@components/Shared/InfiniteScrollWrapper'
 import PageMetadata from '@components/Shared/PageMetadata'
 import siteMetadata from '@data/siteMetadata.json'
 import useAuth from '@hooks/useAuth'
-import { FLAG_FILTER, FLAG_SORT } from 'shared/default/filter_sort'
-import { DAxioms } from 'shared/types/services'
+import useFilterSort from '@hooks/useFilterSort'
 import { Axioms } from 'shared/utils/services'
 
 const title = 'Flag Dashboard'
@@ -18,13 +17,14 @@ const pageMetadata: Metadata = {
 
 const FlagsPage = () => {
     const { agent } = useAuth()
+    const filterSortData = useFilterSort('flag')
 
     return (
         <>
             <PageMetadata {...pageMetadata} />
             <div className="gap-medium flex flex-col items-center justify-center">
-                <FilterSort filter={FLAG_FILTER} sort={FLAG_SORT} />
-                <InfiniteScrollWrapper<DAxioms.SharableFlag>
+                <FilterSort {...filterSortData} />
+                <InfiniteScrollWrapper
                     LayoutComponent={({ items }) => (
                         <div className="gap-medium mx-auto flex w-full max-w-full flex-wrap justify-center">
                             {items.map((item, i) => (
@@ -32,9 +32,10 @@ const FlagsPage = () => {
                             ))}
                         </div>
                     )}
+                    name="flag"
+                    hardFilter={filterSortData.filter}
+                    hardSort={filterSortData.sort}
                     query={Axioms.call(agent, true).getFlagsPagination}
-                    filter={FLAG_FILTER}
-                    sort={FLAG_SORT}
                     className="h-full"
                     size={12n}
                 />

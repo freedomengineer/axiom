@@ -488,9 +488,10 @@ shared ({ caller = indicator }) actor class DAO() = this {
                 if (Proportion.gte(positiveProportion, APPROVAL_THRESHOLD)) {
                     Proposal.approved(proposal);
                     Proposals.removeRetry(proposals, proposalId);
+
                     switch (proposal.detachment) {
                         case (#Code(detachment)) await Indicator.enqueueUpgradeTask(proposalId, proposal.proposer, detachment.actorsConfigs);
-                        case (_) {}
+                        case (_) Proposals.lock(proposals, proposalId)
                     };
                     return
                 };

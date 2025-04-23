@@ -47,7 +47,7 @@ const Sidebar = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
     const fields = useSpecificUserData(principal ?? null, 'fields')
     const location = useLocation()
 
-    const [opens, setOpens] = useState<boolean[]>([false, false])
+    const [opens, setOpens] = useState<boolean[]>([true, true])
     const [pattern, setPattern] = useState<string>('')
     const [limit, setLimit] = useState(FIELD_LIMIT)
 
@@ -72,7 +72,7 @@ const Sidebar = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
                 onClick={onClose}
             />
             <aside
-                className="aria-expanded:px-medium md:px-medium pb-semilarge pt-medium gap-small fixed left-0 top-auto z-[999] flex h-[calc(100vh-3rem)] w-0 flex-shrink-0 -translate-x-full flex-col overflow-y-auto text-nowrap border-r border-black/15 bg-white px-0 font-normal text-cold-800 transition-all duration-300 ease-in-out aria-expanded:w-[250px] aria-expanded:translate-x-0 md:static md:h-[calc(100vh-3.5rem)] md:w-[250px] md:translate-x-0"
+                className="aria-expanded:px-medium md:px-medium pb-semilarge pt-medium gap-small fixed left-0 top-auto z-[999] flex h-[calc(100dvh-3rem)] w-0 flex-shrink-0 -translate-x-full flex-col overflow-y-auto text-nowrap border-r border-black/15 bg-white px-0 font-normal text-cold-800 transition-all duration-300 ease-in-out aria-expanded:w-[250px] aria-expanded:translate-x-0 md:static md:h-[calc(100dvh-3.5rem)] md:w-[250px] md:translate-x-0"
                 aria-expanded={open}
             >
                 {MAIN_ROUTES.map(({ name, IconComponent }) => (
@@ -86,7 +86,6 @@ const Sidebar = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
                             Icon={IconComponent}
                             href={`${siteMetadata.routes[name].url}${
                                 {
-                                    'Truth Feed': '?publishedAt=2&by=popularity',
                                     'ACE Dashboard': '?actor=Indicator',
                                     'My Profile': `/${principal?.toText()}`,
                                 }?.[name] ?? ''

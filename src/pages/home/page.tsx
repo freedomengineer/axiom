@@ -19,7 +19,7 @@ const HomePage = () => {
     const navigate = useNavigate()
 
     useEffect(() => {
-        navigate(build(['feed'], { publishedAt: '2', by: 'popularity' }), { replace: true })
+        navigate(build(['feed']), { replace: true })
     }, [])
 
     return null

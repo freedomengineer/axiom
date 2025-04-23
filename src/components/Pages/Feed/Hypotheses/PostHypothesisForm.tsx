@@ -4,8 +4,10 @@ import { useState } from 'react'
 
 import CloseIcon from '@components/Assets/close.svg'
 import SearchableSelect from '@components/Primitives/SearchableSelect'
+import { LongHypothesis, NoFieldsSubscribed } from '@components/Shared/Alerts'
 import Divider from '@components/Shared/Divider'
 import useAuth from '@hooks/useAuth'
+import useConfigs from '@hooks/useConfigs'
 import { useSpecificUserData } from '@hooks/useUserData'
 import cn from '@libs/class'
 
@@ -24,9 +26,12 @@ const PostHypothesisForm = ({
     setContent: (content: string) => void
     onForward: () => void
 }) => {
+    const configs = useConfigs('Axioms')
+
     const { principal } = useAuth()
-    const fields = useSpecificUserData(principal ?? null, 'fields') ?? []
+    const fields = useSpecificUserData(principal ?? null, 'fields')
     const [pattern, setPattern] = useState<string>('')
+    const [longHypothesisWarning, setLongHypothesisWarning] = useState<boolean>(false)
 
     const activeFields = !fields
         ? []
@@ -34,8 +39,16 @@ const PostHypothesisForm = ({
           ? fields.filter((field) => field.name.toLowerCase().includes(pattern.toLowerCase()))
           : fields
 
+    const validLength = content.length <= configs?.['MAX_HYPOTHESIS_LENGTH'][1]
+
     return (
         <div className="gap-normal flex w-full flex-col place-items-center items-center text-cold-800">
+            {longHypothesisWarning && (
+                <LongHypothesis
+                    onClose={() => setLongHypothesisWarning(false)}
+                    onConfirm={() => onForward()}
+                />
+            )}
             <div className="gap-normal flex w-full flex-col justify-center">
                 <p className="text-medium text-center font-light">
                     Which field would your hypothesis be posted in?
@@ -67,7 +80,7 @@ const PostHypothesisForm = ({
                                 >
                                     <div className="pointer-events-none my-auto">
                                         <FieldInline
-                                            item={fields!.find((e) => e.name === field)!}
+                                            item={fields.find((e) => e.name === field)!}
                                             className="text-primary-800"
                                         />
                                     </div>
@@ -79,6 +92,8 @@ const PostHypothesisForm = ({
                                     <CloseIcon className="h-full w-full stroke-[1.5px]" />
                                 </button>
                             </div>
+                        ) : fields !== null && fields.length === 0 ? (
+                            <NoFieldsSubscribed />
                         ) : (
                             activeFields.map((item, i) => (
                                 <button
@@ -98,13 +113,13 @@ const PostHypothesisForm = ({
                 </div>
                 <div className="block md:hidden">
                     <SearchableSelect
-                        options={fields!.map((field) => ({ label: field.name }))}
+                        options={(fields ?? []).map((field) => ({ label: field.name }))}
                         value={field}
                         onChange={(value) => setField(value)}
                         placeholder={
-                            fields!.length === 0 ? 'No fields available' : 'Select a field'
+                            fields?.length === 0 ? 'No fields available' : 'Select a field'
                         }
-                        disabled={fields!.length === 0}
+                        disabled={fields?.length === 0}
                         customizable={false}
                     />
                 </div>
@@ -123,6 +138,15 @@ const PostHypothesisForm = ({
                     onChange={(e) => setContent(e.target.value)}
                     className="input h-32"
                 />
+                <p
+                    className={cn(
+                        '!text-tiny',
+                        content.length > 300 && 'text-yellow-800',
+                        !validLength && 'text-red-700'
+                    )}
+                >
+                    {content.length} / {configs?.['MAX_HYPOTHESIS_LENGTH'][1].toString()}
+                </p>
             </div>
             <Divider
                 className="!py-medium mx-auto w-4/5"
@@ -132,14 +156,19 @@ const PostHypothesisForm = ({
             />
             <button
                 className="button w-auto min-w-36 bg-cold-700 hover:bg-cold-800 md:min-w-48"
-                onClick={() => onForward()}
-                disabled={!content || !field}
+                onClick={() => {
+                    if (content.length > 300) setLongHypothesisWarning(true)
+                    else onForward()
+                }}
+                disabled={!content || !field || !validLength}
             >
                 {!field
                     ? 'Select a field'
                     : !content
                       ? 'Write something'
-                      : 'Preview your Hypothesis'}
+                      : !validLength
+                        ? 'Hypothesis too long'
+                        : 'Preview your Hypothesis'}
             </button>
         </div>
     )

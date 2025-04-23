@@ -31,7 +31,7 @@ const PostHypothesisPage = () => {
                 >
                     Back to Feed
                 </Link>
-                <Heading text="Open Proposal" />
+                <Heading text="Post Hypothesis" />
             </div>
             <PostHypothesis id={field} />
         </>

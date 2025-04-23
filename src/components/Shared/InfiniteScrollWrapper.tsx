@@ -10,42 +10,41 @@ import {
     useRef,
     useState,
 } from 'react'
-import { useSearchParams } from 'react-router-dom'
 
 import Spinner from '@components/Primitives/Spinner'
-import { parseFilter, parseSort } from '@libs/url'
-import { buildFilter, buildSort } from 'shared/default/filter_sort'
+import {
+    QueryName,
+    StringifiedFilterSort,
+    parseFilterFromObj,
+    parseSortFromObj,
+} from 'shared/default/filter_sort'
 
 export type InfiniteScrollWrapperHandle = {
     refresh: () => void
 }
-export type InfiniteScrollWrapperProps<T> = {
+export type InfiniteScrollWrapperProps<T, N extends QueryName> = {
     LayoutComponent: ComponentType<{ items: T[] }>
-    filter: any
-    sort: any
-    hardFilter?: any
-    hardSort?: any
+    name: N
+    hardFilter: StringifiedFilterSort[N]['filter']
+    hardSort: StringifiedFilterSort[N]['sort']
     size?: bigint
     className?: string
     query: (filter: any, sort: any, page: bigint, size: bigint) => Promise<Pagination<T>>
 }
 
 const InfiniteScrollWrapper = forwardRef(
-    <T,>(
+    <T, N extends QueryName>(
         {
             LayoutComponent,
-            filter,
-            sort,
+            name,
             hardFilter,
             hardSort,
             size = 12n,
             className,
             query,
-        }: InfiniteScrollWrapperProps<T>,
+        }: InfiniteScrollWrapperProps<T, N>,
         ref: Ref<InfiniteScrollWrapperHandle>
     ) => {
-        const [searchParams] = useSearchParams()
-
         const [items, setItems] = useState<T[]>([])
         const [loading, setLoading] = useState<boolean>(false)
         const [hasMore, setHasMore] = useState<boolean>(true)
@@ -77,6 +76,7 @@ const InfiniteScrollWrapper = forwardRef(
                 setLoading(true)
 
                 if (isMounted.current) setJustAppended(false)
+                else return
 
                 if (shouldAppend) {
                     wasAppending.current = true
@@ -88,14 +88,10 @@ const InfiniteScrollWrapper = forwardRef(
                 }
 
                 try {
-                    const f = hardFilter
-                        ? buildFilter(filter, hardFilter)
-                        : parseFilter(filter, searchParams)
-                    const s = hardSort ? buildSort(sort, hardSort) : parseSort(sort, searchParams)
+                    const f = parseFilterFromObj(name, hardFilter)
+                    const s = parseSortFromObj(name, hardSort)
 
                     const newData = await query(f, s, pageToLoad, size)
-
-                    if (!isMounted.current) return
 
                     const results = newData?.result ?? []
                     const currentCount = BigInt(newData?.is ?? pageToLoad)
@@ -133,7 +129,7 @@ const InfiniteScrollWrapper = forwardRef(
                 }
             },
 
-            [query, filter, sort, hardFilter, hardSort, size, searchParams]
+            [query, hardFilter, hardSort, size]
         )
 
         const initItems = useCallback(() => {
@@ -154,16 +150,8 @@ const InfiniteScrollWrapper = forwardRef(
         }))
 
         useEffect(() => {
-            if (!initialLoadDone.current) {
-                initItems()
-            }
-        }, [initItems])
-
-        useEffect(() => {
-            if (!hardFilter && !hardSort && initialLoadDone.current) {
-                initItems()
-            }
-        }, [searchParams, hardFilter, hardSort, initItems])
+            initItems()
+        }, [hardFilter, hardSort, initItems])
 
         useEffect(() => {
             const target = observerTarget.current
@@ -212,14 +200,6 @@ const InfiniteScrollWrapper = forwardRef(
             <div className={className}>
                 {items.length > 0 && <LayoutComponent items={items} />}
 
-                {justAppended && !loading && (
-                    <div className="mb-4 mt-6 border-t border-gray-200" key="append-marker">
-                        <span className="text-tiny px-small mx-auto -mt-2.5 block w-fit bg-white text-center text-gray-500">
-                            New items loaded
-                        </span>
-                    </div>
-                )}
-
                 <div
                     ref={observerTarget}
                     className="py-medium flex min-h-[50px] w-full flex-col items-center justify-center"
@@ -235,8 +215,8 @@ const InfiniteScrollWrapper = forwardRef(
             </div>
         )
     }
-) as <T>(
-    props: InfiniteScrollWrapperProps<T> & { ref?: Ref<InfiniteScrollWrapperHandle> }
+) as <T, N extends QueryName>(
+    props: InfiniteScrollWrapperProps<T, N> & { ref?: Ref<InfiniteScrollWrapperHandle> }
 ) => JSX.Element
 
 export default InfiniteScrollWrapper

@@ -132,9 +132,6 @@ export const getStatusAndCache = async (actor: Actor): Promise<ActorStatus | nul
 }
 export const deleteAllStatusCache = (): void => {
     memoryCache.clear()
-    try {
-        localStorage.clear()
-    } catch {}
 }
 
 const useStatus = (actor: Actor): ActorStatus | null => {

@@ -87,7 +87,7 @@ jobs:
                   echo "Deploying dependencies..."
                   ./scripts/bash/deploy_icp.sh || echo "::warning::Failed to deploy ICP"
                   dfx deploy internet_identity --mode=reinstall --yes || echo "::warning::Failed to deploy internet_identity"
-                  dfx deploy xrc --mode=reinstall --yes || echo "::warning::Failed to deploy xrc"
+                  dfx deploy xrc --specified-id=uf6dk-hyaaa-aaaaq-qaaaq-cai --mode=reinstall --yes || echo "::warning::Failed to deploy xrc"
 
                   # Try to build each canister individually without deploying to collect hashes
                   echo "Building canisters to collect hashes..."
@@ -170,7 +170,7 @@ jobs:
                   echo "Deploying dependencies..."
                   ./scripts/bash/deploy_icp.sh || echo "::warning::Failed to deploy ICP"
                   dfx deploy internet_identity --mode=reinstall --yes || echo "::warning::Failed to deploy internet_identity"
-                  dfx deploy xrc --mode=reinstall --yes || echo "::warning::Failed to deploy xrc"
+                  dfx deploy xrc --specified-id=uf6dk-hyaaa-aaaaq-qaaaq-cai --mode=reinstall --yes || echo "::warning::Failed to deploy xrc"
 
                   # JSON file to store all hashes and build status
                   echo "{" > wasm-artifacts-info.json

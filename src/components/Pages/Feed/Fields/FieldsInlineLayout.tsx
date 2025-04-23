@@ -2,7 +2,6 @@
 
 import ListWrapper from '@components/Shared/ListWrapper'
 import useAuth from '@hooks/useAuth'
-import { FIELD_FILTER, FIELD_SORT } from 'shared/default/filter_sort'
 import { DAxioms } from 'shared/types/services'
 import { Axioms } from 'shared/utils/services'
 
@@ -31,8 +30,7 @@ const FieldsInlineLayout = ({
         <ListWrapper<DAxioms.SharableField>
             LayoutComponent={Layout}
             query={Axioms.call(agent, true).getFieldsPagination}
-            filter={FIELD_FILTER}
-            sort={FIELD_SORT}
+            name="field"
             hardFilter={hardFilter}
             hardSort={hardSort}
         />

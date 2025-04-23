@@ -112,9 +112,6 @@ export const getConfigs = async (actor: Actor): Promise<ActorConfigs | null> => 
 }
 export const deleteAllConfigsCache = (): void => {
     memoryCache.clear()
-    try {
-        localStorage.clear()
-    } catch {}
 }
 
 const useConfigs = (actor: Actor): ActorConfigs | null => {

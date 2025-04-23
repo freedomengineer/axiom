@@ -29,7 +29,6 @@ import { success } from '@libs/toastify'
 import { build } from '@libs/url'
 import { EVote as EEvidenceVote } from '@utils/feed/evidence'
 import { EVote, VOTES } from '@utils/feed/hypothesis'
-import { EVIDENCE_FILTER, EVIDENCE_SORT } from 'shared/default/filter_sort'
 import { DAxioms } from 'shared/types/services'
 import { Axioms } from 'shared/utils/services'
 import { valueOf } from 'shared/utils/tokens'
@@ -367,8 +366,7 @@ const HypothesisDetail = ({ item }: { item: DAxioms.SharableHypothesis }) => {
                             <InfiniteScrollWrapper<DAxioms.SharableEvidence>
                                 ref={positiveEvidencesRef}
                                 query={Axioms.call(agent, true).getEvidencesPagination}
-                                filter={EVIDENCE_FILTER}
-                                sort={EVIDENCE_SORT}
+                                name="evidence"
                                 hardFilter={{ onSide: 'Positive', publishedIn: localItem.id }}
                                 hardSort={{ sortBy: 'positivity', order: 'descending' }}
                                 size={2n}
@@ -385,8 +383,7 @@ const HypothesisDetail = ({ item }: { item: DAxioms.SharableHypothesis }) => {
                             <InfiniteScrollWrapper<DAxioms.SharableEvidence>
                                 ref={negativeEvidencesRef}
                                 query={Axioms.call(agent, true).getEvidencesPagination}
-                                filter={EVIDENCE_FILTER}
-                                sort={EVIDENCE_SORT}
+                                name="evidence"
                                 hardFilter={{ onSide: 'Negative', publishedIn: localItem.id }}
                                 hardSort={{ sortBy: 'positivity', order: 'descending' }}
                                 size={2n}

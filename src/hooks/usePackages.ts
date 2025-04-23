@@ -249,9 +249,6 @@ export const getPackagesAndCache = async <E extends EPackages>(
 }
 export const deleteAllPackagesCache = (): void => {
     memoryCache.clear()
-    try {
-        localStorage.clear()
-    } catch {}
 }
 
 const usePackages = <E extends EPackages>(e: E, configs: any): ParsedPackages<E> | null => {

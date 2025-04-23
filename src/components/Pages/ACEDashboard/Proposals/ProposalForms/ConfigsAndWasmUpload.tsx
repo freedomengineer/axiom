@@ -45,7 +45,7 @@ const ConfigsAndWasmUpload = ({
         handleTypeChange,
         handleAddNewConfig,
         handleRemoveConfig,
-    } = useUpdateConfigs(selectedActor, configs, setConfigs)
+    } = useUpdateConfigs(selectedActor, configs, setConfigs, true)
     const { fileInputRef, currentCommitment, handleFileChange, handleRemoveCommitment } =
         useUploadWasm(selectedActor, commitments, setCommitments, rawCommitments, setRawCommitments)
 

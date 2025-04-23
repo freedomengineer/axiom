@@ -1,12 +1,14 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { error } from '@libs/toastify'
-import { CONFIGS_TYPES, DEFAULT_CONFIGS, DEPLOYABLE_ACTORS } from '@utils/indicator/configs'
+import { CONFIGS_TYPES, CONFIGURABLE_ACTORS, DEFAULT_CONFIGS } from '@utils/indicator/configs'
 import { DDAO } from 'shared/types/services'
 import * as SERVICES from 'shared/utils/services'
 import { UnwrapVariant, Variant } from 'shared/utils/typings'
 
-type FetchedConfigs = Record<(typeof DEPLOYABLE_ACTORS)[number], DDAO.SharableConfigs>
+import { getConfigs } from './useConfigs'
+
+type FetchedConfigs = Record<(typeof CONFIGURABLE_ACTORS)[number], DDAO.SharableConfigs>
 
 const bigintToString = (value: any): any => {
     if (typeof value === 'bigint') return value.toString()
@@ -17,12 +19,13 @@ const bigintToString = (value: any): any => {
 }
 
 const useUpdateConfigs = (
-    selectedActor: (typeof DEPLOYABLE_ACTORS)[number] | null,
+    selectedActor: (typeof CONFIGURABLE_ACTORS)[number] | null,
     configs: DDAO.ActorsConfigs,
-    setConfigs: (configs: DDAO.ActorsConfigs) => void
+    setConfigs: (configs: DDAO.ActorsConfigs) => void,
+    allowEmpty: boolean
 ) => {
     const [fetchedConfigs, setFetchedConfigs] = useState<FetchedConfigs>(
-        DEPLOYABLE_ACTORS.reduce((acc, actor) => ({ ...acc, [actor]: [] }), {} as FetchedConfigs)
+        CONFIGURABLE_ACTORS.reduce((acc, actor) => ({ ...acc, [actor]: [] }), {} as FetchedConfigs)
     )
     const [key, setKey] = useState<string>('')
     const [value, setValue] = useState<DDAO.SharableValue | null>(null)
@@ -32,22 +35,28 @@ const useUpdateConfigs = (
         const fetchConfigData = async () => {
             setIsLoading(true)
             try {
-                const configsData: DDAO.SharableConfigs[] = await Promise.all(
-                    DEPLOYABLE_ACTORS.map((actor) => (SERVICES as any)[actor].call().getConfigs())
-                )
-                const formattedConfigs = DEPLOYABLE_ACTORS.reduce(
-                    (acc, actor, index) => ({
-                        ...acc,
-                        [actor]: configsData[index].map(([key, value]) => [
-                            key,
-                            bigintToString(value) as DDAO.SharableValue,
-                        ]),
-                    }),
-                    {} as FetchedConfigs
-                )
-                setFetchedConfigs(formattedConfigs)
+                const configsData: [(typeof CONFIGURABLE_ACTORS)[number], any][] =
+                    await Promise.all(
+                        CONFIGURABLE_ACTORS.map(
+                            (actor) =>
+                                getConfigs(actor).then((res) =>
+                                    !res
+                                        ? [actor, []]
+                                        : [
+                                              actor,
+                                              bigintToString(
+                                                  Object.entries(res).map(([key, value]) => [
+                                                      key,
+                                                      Variant(value as any),
+                                                  ])
+                                              ),
+                                          ]
+                                ) as any
+                        )
+                    ).then((res) => res.filter(([_, configs]) => allowEmpty || configs.length > 0))
+                setFetchedConfigs(Object.fromEntries(configsData) as FetchedConfigs)
             } catch (err) {
-                error('Failed to fetch configs')
+                console.error(err)
             } finally {
                 setIsLoading(false)
             }

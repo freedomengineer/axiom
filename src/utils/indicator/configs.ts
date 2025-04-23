@@ -2,15 +2,16 @@ import { DIndicator } from 'shared/types/services'
 
 export const UPDATE_LEVELS = ['Patch', 'Minor', 'Major'] as const
 export const CONFIGURABLE_ACTORS = [
-    'DAO',
-    'Sales',
-    'Escrow',
-    'Split',
-    'Facade',
     'Indicator',
+    'DAO',
     'Axioms',
-    'Affiliate',
+    'Facade',
+    'Escrow',
+    'Sales',
+    'Split',
     'Treasury',
+    'Affiliate',
+    'ICPUSD',
 ] as const
 export const DEPLOYABLE_ACTORS = [
     'DAO',
