@@ -1,6 +1,10 @@
 import { Accordion, AccordionBody, AccordionHeader, Tooltip } from '@material-tailwind/react'
 import { useEffect, useState } from 'react'
 
+import PlusIcon from '@components/Assets/plus.svg'
+import RefreshIcon from '@components/Assets/refresh.svg'
+import Deposit from '@components/Shared/Deposit'
+import Popup from '@components/Shared/Popup'
 import useAuth from '@hooks/useAuth'
 import useConfigs from '@hooks/useConfigs'
 import cn from '@libs/class'
@@ -23,6 +27,7 @@ const PurchasePackage = ({ choices, setChoice, handlePrev, handleNext }: StepPro
         choices[ESteps.Package]
     )
     const [balance, setBalance] = useState<bigint>(0n)
+    const [isOpenDeposit, setIsOpenDeposit] = useState<boolean>(false)
     const [slippage, setSlippage] = useState<number>(5) // 5%
 
     useEffect(() => {
@@ -40,21 +45,27 @@ const PurchasePackage = ({ choices, setChoice, handlePrev, handleNext }: StepPro
 
     return (
         <>
-            <div className="gap-small text-small flex flex-col text-cold-600">
+            <Popup
+                open={isOpenDeposit}
+                onClose={() => setIsOpenDeposit(false)}
+                title={`Deposit ICP`}
+                className="w-auto"
+            >
+                <Deposit token="ICP" />
+            </Popup>
+            <div className="gap-small text-small flex flex-col text-cold-700">
                 <span>
-                    You are buying a membership in the Axiom free thought platform. The ACORNs that
-                    you receive by doing so are for use on the platform and are not considered to
-                    have any value outside of this utility.
+                    You are buying a membership in the Axiom free thought platform. ACORNs are for
+                    use on Axiom and are not considered to have any value outside of this platform.
+                    However Acorns do trade on other ICP platforms.
                 </span>
                 <span>
-                    {
-                        "Membership packages are paid in ICP tokens in consistent with a fixed USD price. Here's "
-                    }
+                    {"Membership packages are priced in USD and purchased with ICP tokens. Here's "}
                     <a
                         href="https://coinbase.com/price/icp"
                         target="_blank"
                         rel="noreferrer"
-                        className="underline decoration-cold-600/50 decoration-2 underline-offset-4 hover:text-cold-800 hover:decoration-cold-800/100"
+                        className="underline decoration-cold-700/50 decoration-2 underline-offset-4 hover:decoration-cold-800/100"
                     >
                         how to get some ICP
                     </a>
@@ -62,26 +73,50 @@ const PurchasePackage = ({ choices, setChoice, handlePrev, handleNext }: StepPro
                     of each membership sale goes directly to the member who recruited you.
                 </span>
                 <span>
-                    Note that{' '}
-                    {proportion.toString(
-                        configs?.['ACORN_LIQUID_MINT_PROPORTION'][1] as Proportion
-                    )}{' '}
-                    of your Acorns will in liquid form and{' '}
-                    {proportion.toString(
-                        configs?.['ACORN_BURIED_MINT_PROPORTION'][1] as Proportion
-                    )}{' '}
-                    will be staked for 89 days.
+                    Note that 50% of your ACORNs will in liquid form and 50% will be staked for 89
+                    days.
                 </span>
-                <span>Packages are only purchasable once per account.</span>
+                <span>
+                    Packages can be upgraded when you accumulate ACORNs. If you want a larger stake
+                    in Axiom, and more advantage in 'mining crypto with your mind' then buy a larger
+                    membership package now.
+                </span>
             </div>
-            <div className="gap-extratiny flex h-max flex-col">
-                <p className="text-small mb-2 ml-auto font-light">
-                    Current Price: 1 ICP ={' '}
-                    <span className="text-medium font-bold text-primary-600">
-                        {e8s.toNumber(currentPrice)}
-                    </span>{' '}
-                    USD
-                </p>
+            <div className="gap-extratiny mb-normal flex h-max flex-col">
+                <div className="p-small flex flex-col items-start justify-center rounded-lg border border-cold-200 bg-cold-800 text-white/80 md:flex-row md:items-center md:justify-between">
+                    <p className="text-small gap-small flex items-center font-normal">
+                        Your Balance:{' '}
+                        <span className="text-medium font-bold text-white">
+                            {e8s.toNumber(balance)}
+                        </span>{' '}
+                        ICP
+                        <button
+                            className="gap-tiny px-small md:py-extratiny text-tiny flex w-min items-center rounded-lg bg-white/100 py-0 font-normal text-cold-800 hover:bg-white/50"
+                            onClick={() => setIsOpenDeposit(true)}
+                        >
+                            <PlusIcon className="h-3 w-3 stroke-[1.5px] md:h-4 md:w-4" />
+                            Deposit
+                        </button>
+                        <button
+                            className="gap-tiny px-small md:py-extratiny text-tiny flex w-min items-center rounded-lg bg-white/100 py-0 font-normal text-cold-800 hover:bg-white/50"
+                            onClick={() => {
+                                ICP.call()
+                                    .icrc1_balance_of({ owner: principal!, subaccount: [] })
+                                    .then(setBalance)
+                            }}
+                        >
+                            <RefreshIcon className="h-3 w-3 stroke-[2px] md:h-4 md:w-4" />
+                            Refresh
+                        </button>
+                    </p>
+                    <p className="text-small gap-small flex items-center font-normal">
+                        Current Price: 1 ICP ={' '}
+                        <span className="text-medium font-bold text-white">
+                            {e8s.toNumber(currentPrice)}
+                        </span>{' '}
+                        USD
+                    </p>
+                </div>
                 {configs &&
                     packages.map((p) => {
                         const usdPrice = e8s.toNumber(p.capitalRaised)
@@ -112,9 +147,9 @@ const PurchasePackage = ({ choices, setChoice, handlePrev, handleNext }: StepPro
                             <Accordion
                                 key={p.capitalRaised}
                                 open={isSelected}
-                                disabled={
-                                    e8s.toNumber(balance) < icpToPay || choices[ESteps.Checkout]
-                                }
+                                // disabled={
+                                //     e8s.toNumber(balance) < icpToPay || choices[ESteps.Checkout]
+                                // }
                                 icon={
                                     <>
                                         <p
@@ -170,7 +205,7 @@ const PurchasePackage = ({ choices, setChoice, handlePrev, handleNext }: StepPro
                                         'border-b-0 font-medium transition-colors',
                                         isSelected
                                             ? 'text-primary-600 group-hover:pointer-events-none group-hover:text-primary-600'
-                                            : 'text-cold-600 hover:text-cold-800 group-hover:cursor-pointer'
+                                            : 'text-cold-700 hover:text-cold-800 group-hover:cursor-pointer'
                                     )}
                                 >
                                     <div className="gap-medium text-normal flex items-center">
@@ -305,12 +340,16 @@ const PurchasePackage = ({ choices, setChoice, handlePrev, handleNext }: StepPro
                         setChoice(selectedPackage)
                         handleNext()
                     }}
-                    disabled={!selectedPackage || choices[ESteps.Checkout]}
+                    disabled={
+                        !selectedPackage ||
+                        balance < selectedPackage.icpToPay ||
+                        choices[ESteps.Checkout]
+                    }
                 >
-                    {balance === 0n
-                        ? 'Insufficient balance'
-                        : !selectedPackage
-                          ? 'Choose a package'
+                    {!selectedPackage
+                        ? 'Choose a package'
+                        : balance < selectedPackage.icpToPay
+                          ? 'Insufficient balance'
                           : 'Continue with ' + selectedPackage.package.metadata.name}
                 </button>
             </div>

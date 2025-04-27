@@ -59,7 +59,7 @@ const CheckoutRegistration = ({ choices, setChoice, handlePrev, handleNext }: St
                 </span>
                 <span>
                     If you have no referrer or refer yourself, the funds will be directed instead to
-                    the treasury of Dashboard.
+                    the founder of Axiom.
                 </span>
             </div>
             <div className="gap-medium flex flex-col">

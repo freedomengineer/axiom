@@ -43,7 +43,7 @@ const ProposalCard = ({ item, className }: { item: DDAO.SharableProposal; classN
     return (
         <div
             className={cn(
-                'text-small gap-medium relative my-auto flex h-min w-full flex-col rounded-lg border border-cold-600 border-opacity-50 font-normal hover:border-opacity-100',
+                'text-small gap-medium relative my-auto flex h-min w-full flex-col rounded-lg border border-cold-600 border-opacity-50 font-normal text-cold-800 hover:border-opacity-100',
                 className
             )}
         >
@@ -83,7 +83,7 @@ const ProposalCard = ({ item, className }: { item: DDAO.SharableProposal; classN
             >
                 <span className="text-medium">{localItem.title}</span>
             </Link>
-            <p className="px-large text-small whitespace-pre-wrap text-cold-600">
+            <p className="px-large text-small whitespace-pre-wrap text-cold-700">
                 {localItem.content}
             </p>
             {category !== ECategory.Worker && (

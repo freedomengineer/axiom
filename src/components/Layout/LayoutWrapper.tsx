@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { ToastContainer } from 'react-toastify'
 
 import { AlphaStage } from '@components/Shared/Alerts'
-import useLocalStorage, { getLocalConfig } from '@hooks/useLocalStorage'
+import useLocalStorage from '@hooks/useLocalStorage'
 
 import Header from './Header'
 import Middleware from './Middleware'

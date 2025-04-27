@@ -118,12 +118,12 @@ const Header = ({
                         <SearchIcon className="right-medium peer absolute h-5 w-5 stroke-[1.5px] text-black/10 peer-aria-selected:text-primary-700" />
                         {open === EPopup.Search && pattern && (
                             <div className="fixed left-1/2 top-[3.25rem] mx-auto w-[90%] -translate-x-1/2 transform rounded-lg border border-black/10 bg-white shadow-lg md:absolute md:left-0 md:top-12 md:w-full md:translate-x-0">
-                                <div className="px-normal flex flex-col py-1.5">
-                                    <span className="text-tiny font-display font-medium text-cold-800">
+                                <div className="px-medium py-small flex flex-col">
+                                    <span className="text-normal font-display font-semibold text-primary-700">
                                         Feed
                                     </span>
                                     <Link
-                                        className="text-tiny px-normal rounded-lg py-1.5 font-light hover:bg-black/5"
+                                        className="text-tiny px-normal py-small rounded-lg font-light hover:bg-black/5"
                                         href={build(['search', 'hypotheses'], {
                                             containsPattern: pattern,
                                         })}
@@ -131,7 +131,7 @@ const Header = ({
                                         {`Search "${pattern}" in Hypotheses`}
                                     </Link>
                                     <Link
-                                        className="text-tiny px-normal rounded-lg py-1.5 font-light hover:bg-black/5"
+                                        className="text-tiny px-normal py-small rounded-lg font-light hover:bg-black/5"
                                         href={build(['search', 'fields'], {
                                             containsPattern: pattern,
                                         })}
@@ -139,7 +139,7 @@ const Header = ({
                                         {`Search "${pattern}" in Fields`}
                                     </Link>
                                     <Link
-                                        className="text-tiny px-normal rounded-lg py-1.5 font-light hover:bg-black/5"
+                                        className="text-tiny px-normal py-small rounded-lg font-light hover:bg-black/5"
                                         href={build(['search', 'evidences'], {
                                             containsPattern: pattern,
                                         })}
@@ -147,11 +147,11 @@ const Header = ({
                                         {`Search "${pattern}" in Evidences`}
                                     </Link>
                                     <hr className="my-tiny border-black/10" />
-                                    <span className="text-tiny font-display font-medium text-cold-800">
+                                    <span className="text-normal font-display font-semibold text-primary-700">
                                         Axiom ACE
                                     </span>
                                     <Link
-                                        className="text-tiny px-normal rounded-lg py-1.5 font-light hover:bg-black/5"
+                                        className="text-tiny px-normal py-small rounded-lg font-light hover:bg-black/5"
                                         href={build(['search', 'proposals'], {
                                             containsPattern: pattern,
                                         })}
@@ -159,7 +159,7 @@ const Header = ({
                                         {`Search "${pattern}" in Proposals`}
                                     </Link>
                                     <Link
-                                        className="text-tiny px-normal rounded-lg py-1.5 font-light hover:bg-black/5"
+                                        className="text-tiny px-normal py-small rounded-lg font-light hover:bg-black/5"
                                         href={build(['search', 'configs'], {
                                             containsPattern: pattern,
                                         })}
@@ -167,18 +167,20 @@ const Header = ({
                                         {`Search "${pattern}" in Configs`}
                                     </Link>
                                     <hr className="my-tiny border-black/10" />
-                                    <span className="text-tiny font-display font-medium text-cold-800">
+                                    <span className="text-normal font-display font-semibold text-primary-700">
                                         Users
                                     </span>
                                     <Link
-                                        className="text-tiny px-normal rounded-lg py-1.5 font-light hover:bg-black/5"
-                                        href={build(['search'], { containsPattern: pattern })}
+                                        className="text-tiny px-normal py-small rounded-lg font-light hover:bg-black/5"
+                                        href={build(['search', 'users'], {
+                                            containsPattern: pattern,
+                                        })}
                                     >
                                         {`Search "${pattern}" in Users`}
                                     </Link>
                                     <hr className="my-tiny border-black/10" />
                                     <Link
-                                        className="text-tiny px-normal rounded-lg py-1.5 font-light hover:bg-black/5"
+                                        className="text-tiny px-normal py-small rounded-lg font-light hover:bg-black/5"
                                         href={build(['search'], { containsPattern: pattern })}
                                     >
                                         {`Search All`}
@@ -355,7 +357,7 @@ const Header = ({
                     Icon={<EditIcon className="h-6 w-6 !stroke-[1.5px] md:h-7 md:w-7" />}
                     className="w-full md:w-4/5"
                 >
-                    <PostHypothesis onSubmit={() => setOpen(null)} />
+                    <PostHypothesis onSubmit={() => setOpen(null)} isPopup={true} />
                 </Popup>
             )}
             {principal && user && (

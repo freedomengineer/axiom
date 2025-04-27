@@ -13,6 +13,7 @@ const Popup = ({
     href,
     Icon,
     className,
+    zIndex = 9999,
     children,
 }: {
     open: boolean
@@ -21,6 +22,7 @@ const Popup = ({
     href?: string
     Icon?: React.ReactNode
     className?: string
+    zIndex?: number
     children: React.ReactNode
 }) => {
     if (!open) return null
@@ -38,7 +40,10 @@ const Popup = ({
     if (!visible) return null
 
     return createPortal(
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black bg-opacity-50 text-cold-700">
+        <div
+            className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 text-cold-700"
+            style={{ zIndex }}
+        >
             <div
                 className={cn(
                     'relative h-fit max-w-[95vw] rounded-lg bg-white shadow-lg md:max-w-[85vw]',

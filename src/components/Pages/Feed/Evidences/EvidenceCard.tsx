@@ -55,7 +55,7 @@ const EvidenceCard = ({
     return (
         <div
             className={cn(
-                'text-small relative my-auto flex h-min w-full flex-col rounded-lg border border-cold-600 border-opacity-50 font-normal hover:border-opacity-100 md:w-[420px]',
+                'text-small relative my-auto flex h-min w-full flex-col rounded-lg border border-cold-600 border-opacity-50 font-normal text-cold-800 hover:border-opacity-100 md:w-[420px]',
                 className
             )}
         >
@@ -86,7 +86,7 @@ const EvidenceCard = ({
                 {formObject.Note && (
                     <div className="mx-auto h-auto w-fit">
                         <p className="text-tiny whitespace-pre-line  break-words text-center">
-                            {formObject.Note.content}
+                            {formObject.Note.content.trim()}
                         </p>
                     </div>
                 )}
@@ -99,7 +99,7 @@ const EvidenceCard = ({
                         size="small"
                         icon="forward"
                     >
-                        {formObject.Hyperlink.anchorText}
+                        {formObject.Hyperlink.anchorText.trim()}
                     </Link>
                 )}
             </div>

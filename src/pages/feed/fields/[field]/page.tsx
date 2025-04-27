@@ -52,9 +52,9 @@ const FieldPage = () => {
 
     return (
         <>
-            <PageMetadata {...pageMetadata} />
+            <PageMetadata {...pageMetadata} key={field} />
             {item && (
-                <div className="gap-large flex flex-col">
+                <div className="gap-large flex flex-col" key={field}>
                     <Description text={item.description} />
                     <div className="w-full overflow-x-auto rounded-lg border border-cold-300 md:overflow-hidden">
                         <table className="min-w-full border-collapse">

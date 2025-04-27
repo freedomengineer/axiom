@@ -89,11 +89,16 @@ const HypothesisCard = ({
                 />
             </Popup>
 
-            <div className="gap-medium flex h-[110px] place-items-center items-center bg-hypothesis md:h-[125px] xl:h-[140px]">
-                <p className="text-medium p-truncate-4 p-tiny my-auto h-min max-h-full w-full whitespace-pre-line break-words text-center font-semibold text-primary-900/80 hover:text-primary-800">
-                    {localItem.content}
+            <Link
+                className="gap-medium group relative flex h-[110px] place-items-center items-center bg-hypothesis md:h-[125px] xl:h-[140px]"
+                href={build(['feed', item.id])}
+                title={localItem.content.trim()}
+            >
+                <div className="absolute h-full w-full bg-black opacity-0 group-hover:opacity-10" />
+                <p className="text-medium p-truncate-4 p-tiny my-auto h-min max-h-full w-full whitespace-pre-line break-words text-center font-semibold text-primary-900/85">
+                    {localItem.content.trim()}
                 </p>
-            </div>
+            </Link>
             <div className="text-tiny grid grid-cols-7 font-normal text-white">
                 <HypothesisVote
                     choice={EVote.Positive}

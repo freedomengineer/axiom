@@ -16,7 +16,8 @@ const FilterSort = <T extends QueryName>({
     sort,
     setFilter,
     setSort,
-}: FilterSortContext<T>) => {
+    disableFilter = false,
+}: FilterSortContext<T> & { disableFilter?: boolean }) => {
     const { principal } = useAuth()
 
     const [open, setOpen] = useState<'filter' | 'by' | 'order' | null>(null)
@@ -42,7 +43,10 @@ const FilterSort = <T extends QueryName>({
     return (
         <div className="text-tiny z-40 w-full font-light text-cold-800">
             <div className="mb-medium gap-small flex flex-col justify-between md:flex-row">
-                <div className="gap-small relative flex flex-wrap ">
+                <div
+                    className="gap-small relative flex flex-wrap aria-disabled:pointer-events-none aria-disabled:opacity-50"
+                    aria-disabled={disableFilter}
+                >
                     {Object.entries(filterSelected).map(([key, value]: any) => (
                         <button
                             key={key}

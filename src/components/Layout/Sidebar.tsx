@@ -1,9 +1,10 @@
 'use client'
 
 import { Accordion, AccordionBody, AccordionHeader } from '@material-tailwind/react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 
+import AcornColouredIcon from '@components/Assets/acorn_coloured.svg'
 import AxiomACEIcon from '@components/Assets/axiom_ace.svg'
 import FooterDecoration2 from '@components/Assets/footer_decoration2.svg'
 import ForwardIcon from '@components/Assets/forward.svg'
@@ -21,6 +22,7 @@ import Link from '@components/Shared/Link'
 import siteMetadata from '@data/siteMetadata.json'
 import useAuth from '@hooks/useAuth'
 import { useSpecificUserData } from '@hooks/useUserData'
+import { formatTime } from '@libs/date'
 
 const MAIN_ROUTES = [
     {
@@ -63,6 +65,19 @@ const Sidebar = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
         setOpens(newOpens)
     }
 
+    const [remainingTime, setRemainingTime] = useState<number>(
+        new Date().setUTCHours(24, 0, 0, 0) - Date.now()
+    )
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setRemainingTime((prev) => {
+                if (prev <= 1000) return 24 * 60 * 60 * 1000
+                else return prev - 1000
+            })
+        }, 1000)
+        return () => clearInterval(interval)
+    }, [])
+
     return (
         <>
             <div
@@ -72,13 +87,14 @@ const Sidebar = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
                 onClick={onClose}
             />
             <aside
-                className="aria-expanded:px-medium md:px-medium pb-semilarge pt-medium gap-small fixed left-0 top-auto z-[999] flex h-[calc(100dvh-3rem)] w-0 flex-shrink-0 -translate-x-full flex-col overflow-y-auto text-nowrap border-r border-black/15 bg-white px-0 font-normal text-cold-800 transition-all duration-300 ease-in-out aria-expanded:w-[250px] aria-expanded:translate-x-0 md:static md:h-[calc(100dvh-3.5rem)] md:w-[250px] md:translate-x-0"
+                className="pt-semilarge pt-medium gap-small fixed left-0 top-auto z-[999] flex h-[calc(100dvh-3rem)] w-0 flex-shrink-0 -translate-x-full flex-col overflow-y-auto text-nowrap border-r border-black/15 bg-white px-0 font-normal text-cold-800 transition-all duration-300 ease-in-out aria-expanded:w-[250px] aria-expanded:translate-x-0 md:static md:h-[calc(100dvh-3.5rem)] md:w-[250px] md:translate-x-0"
                 aria-expanded={open}
             >
                 {MAIN_ROUTES.map(({ name, IconComponent }) => (
                     <Accordion
                         key={name}
                         open={location.pathname.includes(siteMetadata.routes[name].url)}
+                        className="px-medium"
                     >
                         <Link
                             className="py-normal px-medium gap-normal w-full rounded-lg font-normal hover:bg-cold-800 hover:text-white aria-checked:bg-cold-800 aria-checked:text-white"
@@ -130,6 +146,7 @@ const Sidebar = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
                             className={`mx-auto h-4 w-4 stroke-[2px] transition-transform ${opens[0] ? 'rotate-90' : ''}`}
                         />
                     }
+                    className="px-medium"
                 >
                     <AccordionHeader
                         onClick={() => {
@@ -173,6 +190,7 @@ const Sidebar = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
                             className={`mx-auto h-4 w-4 stroke-[2px] transition-transform ${opens[1] ? 'rotate-90' : ''}`}
                         />
                     }
+                    className="px-medium"
                 >
                     <AccordionHeader
                         onClick={() => handleOpen(1)}
@@ -201,73 +219,29 @@ const Sidebar = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
                         </div>
                     </AccordionBody>
                 </Accordion>
-                <div className="gap-medium mt-auto flex flex-col items-center pt-20">
-                    <div className="relative">
-                        <FooterDecoration2 className="absolute -top-11 left-0 w-8 stroke-2 text-hot-600" />
-                        <div className="gap-normal grid h-min grid-cols-3 grid-rows-2 text-cold-800/85">
-                            <a
-                                href={siteMetadata.socials['GitHub']}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="w-6 hover:opacity-80 md:w-7"
-                            >
-                                <GitHubIcon />
-                            </a>
-                            <a
-                                href={siteMetadata.socials['Instagram']}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="w-6 hover:opacity-80 md:w-7"
-                            >
-                                <InstagramIcon />
-                            </a>
-                            <a
-                                href={siteMetadata.socials['Reddit']}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="w-6 hover:opacity-80 md:w-7"
-                            >
-                                <RedditIcon />
-                            </a>
-                            <a
-                                href={siteMetadata.socials['Telegram']}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="w-6 hover:opacity-80 md:w-7"
-                            >
-                                <TelegramIcon />
-                            </a>
-                            <a
-                                href={siteMetadata.socials['TikTok']}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="w-6 hover:opacity-80 md:w-7"
-                            >
-                                <TikTokIcon />
-                            </a>
-                            <a
-                                href={siteMetadata.socials['Twitter']}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="w-6 hover:opacity-80 md:w-7"
-                            >
-                                <TwitterIcon />
-                            </a>
-                        </div>
+                <div className="gap-small mt-auto flex w-full flex-col">
+                    <div className="px-normal flex items-end justify-between">
+                        <AcornColouredIcon className="w-12 translate-y-7 md:w-16 md:translate-y-10" />
+                        <span className="text-semilarge font-display font-bold leading-none">
+                            Acorn Drop
+                        </span>
                     </div>
-                    <div className="gap-extratiny flex flex-col items-center">
-                        <p className="text-small font-display font-semibold text-primary-700">
-                            Test your hypothesis.
-                        </p>
-                        <Link
-                            href={siteMetadata.routes['Truth Feed'].url}
-                            className="pre-underline text-tiny decoration-cold-800/50 hover:decoration-cold-800/100"
-                            size="small"
-                            icon="forward"
-                            onNavigate={onClose}
-                        >
-                            Take part, earn Acorns
-                        </Link>
+                    <div className="gap-small py-normal flex w-full flex-col items-end bg-cold-900 font-display font-bold leading-none text-white">
+                        <span className="text-semilarge mr-normal">
+                            {`${Math.floor(Math.max(0, Math.floor(remainingTime / 1000)) / 3600)
+                                .toString()
+                                .padStart(2, '0')}:${Math.floor(
+                                (Math.max(0, Math.floor(remainingTime / 1000)) % 3600) / 60
+                            )
+                                .toString()
+                                .padStart(
+                                    2,
+                                    '0'
+                                )}:${(Math.max(0, Math.floor(remainingTime / 1000)) % 60).toString().padStart(2, '0')}`}
+                        </span>
+                        <span className="text-extratiny w-full text-center font-normal">
+                            12,000 Acorns drop every day on Axiom
+                        </span>
                     </div>
                 </div>
             </aside>

@@ -247,7 +247,7 @@ const ProfileLayout = ({ id }: { id?: string }) => {
                 <div className="flex">
                     <div className="gap-small flex w-min flex-col items-center">
                         <button
-                            className="p-tiny flex h-60 w-60 items-center justify-center rounded-lg border-2 border-dashed border-hot-200 border-opacity-0 object-cover hover:border-opacity-100 disabled:hover:border-opacity-0"
+                            className="p-tiny flex h-40 w-40 items-center justify-center rounded-lg border-2 border-dashed border-hot-200 border-opacity-0 object-cover hover:border-opacity-100 disabled:hover:border-opacity-0 md:h-60 md:w-60"
                             onClick={() => setOpen(EPopup.Avatar)}
                             disabled={!editable}
                         >

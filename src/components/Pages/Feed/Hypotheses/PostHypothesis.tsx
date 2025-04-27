@@ -15,7 +15,15 @@ enum EStep {
     Preview,
 }
 
-const PostHypothesis = ({ id, onSubmit }: { id?: string; onSubmit?: () => void }) => {
+const PostHypothesis = ({
+    id,
+    onSubmit,
+    isPopup = false,
+}: {
+    id?: string
+    onSubmit?: () => void
+    isPopup?: boolean
+}) => {
     const { agent, principal } = useAuth()
 
     const [fieldId, setFieldId] = useState<string | undefined>(id)
@@ -40,6 +48,7 @@ const PostHypothesis = ({ id, onSubmit }: { id?: string; onSubmit?: () => void }
                 setField={setFieldId}
                 setContent={setContent}
                 onForward={() => setStep(EStep.Preview)}
+                onClosePopup={isPopup ? onSubmit : undefined}
             />
         ),
         [EStep.Preview]: principal ? (

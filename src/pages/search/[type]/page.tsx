@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom'
+import { useParams, useSearchParams } from 'react-router-dom'
 
 import EvidenceCard from '@components/Pages/Feed/Evidences/EvidenceCard'
 import FieldCard from '@components/Pages/Feed/Fields/FieldCard'
@@ -14,8 +14,9 @@ const title = 'Search'
 const metadata = siteMetadata.routes[title]
 
 const SpecificSearchPage = () => {
-    const { agent, setPageStatus } = useAuth()
+    const [searchParams] = useSearchParams()
     const { type } = useParams<{ type: 'hypotheses' | 'evidences' | 'fields' | 'users' }>()
+    const { agent, setPageStatus } = useAuth()
 
     if (!type || !['hypotheses', 'evidences', 'fields', 'users'].includes(type)) {
         setPageStatus(PageStatus.NotFound)
@@ -32,11 +33,13 @@ const SpecificSearchPage = () => {
         title: `Search ${type} | ${siteMetadata.title}`,
         description: metadata.description,
     }
+    const containsPattern = searchParams.get('containsPattern')
 
     return (
         <>
-            <PageMetadata {...pageMetadata} />
-            <PaginationWrapper<any>
+            <PageMetadata {...pageMetadata} key={type} />
+            <PaginationWrapper
+                key={type}
                 LayoutComponent={({ items }: any) => (
                     <div className="gap-medium flex flex-wrap justify-center">
                         {items.map((item: any) =>
@@ -49,8 +52,16 @@ const SpecificSearchPage = () => {
                         )}
                     </div>
                 )}
-                name={type}
-                {...queries[type!]}
+                name={
+                    {
+                        hypotheses: 'hypothesis',
+                        evidences: 'evidence',
+                        fields: 'field',
+                        users: 'user',
+                    }[type!]
+                }
+                query={queries[type!]}
+                hardFilter={containsPattern ? { containsPattern } : {}}
             />
         </>
     )
