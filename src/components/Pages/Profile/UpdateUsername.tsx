@@ -31,7 +31,7 @@ const UpdateUsername = ({ onSubmit }: { onSubmit: () => void }) => {
 
     const update = async () => {
         setLoading(true)
-        await promise(
+        const approve = await promise(
             ACORN.call(agent).icrc2_approve({
                 amount: configs!['UPDATE_USERNAME_FEE'][1] as bigint,
                 spender: { owner: Treasury.principal, subaccount: [] },
@@ -45,6 +45,10 @@ const UpdateUsername = ({ onSubmit }: { onSubmit: () => void }) => {
             'Approving ACORN to Axiom Treasury',
             'Approved ACORN to Axiom Treasury successfully!'
         )
+        if (!approve.success) {
+            setLoading(false)
+            return
+        }
         const res = await promise(
             Facade.call(agent).editUsername(newUsername),
             'Updating username',

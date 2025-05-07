@@ -2,12 +2,21 @@ import { DAxioms } from 'shared/types/services'
 
 import HypothesisCard from '../Feed/Hypotheses/HypothesisCard'
 
-const HypothesesTab = ({ hypotheses }: { hypotheses: DAxioms.SharableHypothesis[] }) => {
+const HypothesesTab = ({
+    hypotheses,
+    type,
+}: {
+    hypotheses: DAxioms.SharableHypothesis[]
+    type: 'Published' | 'Voted'
+}) => {
     if (hypotheses.length === 0) {
         return (
-            <p className="text-normal text-center font-light text-cold-800">
-                User has no published hypotheses yet
-            </p>
+            <div className="flex h-full w-full flex-col items-center justify-center text-center">
+                <p className="text-small font-light text-cold-700">
+                    User has not {type === 'Published' ? 'published' : 'voted on'} any hypotheses
+                    yet.
+                </p>
+            </div>
         )
     }
 

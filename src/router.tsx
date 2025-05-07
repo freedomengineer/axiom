@@ -3,9 +3,9 @@ import { Outlet, RouteObject, createBrowserRouter } from 'react-router-dom'
 import Error from '@components/Layout/Error'
 import LayoutWrapper from '@components/Layout/LayoutWrapper'
 import Layout from '@layout'
-import MembershipsPage from '@pages/assets/memberships/page'
-import AssetsPage from '@pages/assets/page'
+import AssetsPage from '@pages/dashboard/assets/page'
 import CustodiansPage from '@pages/dashboard/custodians/page'
+import MembershipsPage from '@pages/dashboard/memberships/page'
 import OpenProposalPage from '@pages/dashboard/open/page'
 import DashboardPage from '@pages/dashboard/page'
 import ProposalPage from '@pages/dashboard/proposals/[proposal]/page'
@@ -26,6 +26,7 @@ import HomePage from '@pages/home/page'
 import LoginPage from '@pages/login/page'
 import PublicProfilePage from '@pages/profile/[principal]/page'
 import MyAssetsPage from '@pages/profile/my_assets/page'
+import MyBookmarksPage from '@pages/profile/my_bookmarks/page'
 import ProfilePage from '@pages/profile/page'
 import SpecificSearchPage from '@pages/search/[type]/page'
 import SearchPage from '@pages/search/page'
@@ -119,13 +120,7 @@ const routes: RouteObject[] = [
                             { path: ':proposal', element: <ProposalPage /> },
                         ],
                     },
-                ],
-            },
-            {
-                path: 'assets',
-                element: <Outlet />,
-                children: [
-                    { index: true, element: <AssetsPage /> },
+                    { path: 'assets', element: <AssetsPage /> },
                     { path: 'memberships', element: <MembershipsPage /> },
                 ],
             },
@@ -136,6 +131,7 @@ const routes: RouteObject[] = [
                     { index: true, element: <ProfilePage /> },
                     { path: ':principal', element: <PublicProfilePage /> },
                     { path: 'my_assets', element: <MyAssetsPage /> },
+                    { path: 'my_bookmarks', element: <MyBookmarksPage /> },
                 ],
             },
             {

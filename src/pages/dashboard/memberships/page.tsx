@@ -1,10 +1,10 @@
 import { useState } from 'react'
 
 import PackageIcon from '@components/Assets/package.svg'
-import Achievement from '@components/Pages/Assets/Memberships/Achievement'
-import AchievementDetails from '@components/Pages/Assets/Memberships/AchievementDetails'
-import Membership from '@components/Pages/Assets/Memberships/Membership'
-import MembershipDetails from '@components/Pages/Assets/Memberships/MembershipDetails'
+import Achievement from '@components/Pages/ACEDashboard/Memberships/Achievement'
+import AchievementDetails from '@components/Pages/ACEDashboard/Memberships/AchievementDetails'
+import Membership from '@components/Pages/ACEDashboard/Memberships/Membership'
+import MembershipDetails from '@components/Pages/ACEDashboard/Memberships/MembershipDetails'
 import PageMetadata from '@components/Shared/PageMetadata'
 import Popup from '@components/Shared/Popup'
 import siteMetadata from '@data/siteMetadata.json'
@@ -12,7 +12,7 @@ import useConfigs from '@hooks/useConfigs'
 import usePackages, { EPackages, ParsedPackages } from '@hooks/usePackages'
 
 const title = 'Memberships'
-const metadata = siteMetadata.routes['Assets'].routes[title]
+const metadata = siteMetadata.routes['ACE Dashboard'].routes[title]
 const pageMetadata: Metadata = {
     url: siteMetadata.siteUrl + metadata.url,
     title: `${title} | ${siteMetadata.title}`,

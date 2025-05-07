@@ -163,7 +163,7 @@ const PostHypothesisForm = ({
                     borderColor="border-cold-800"
                 />
                 <button
-                    className="button w-auto min-w-36 bg-cold-700 hover:bg-cold-800 md:min-w-48"
+                    className="button w-auto min-w-36 bg-cold-800 md:min-w-48"
                     onClick={() => {
                         if (content.length > 333) setLongHypothesisWarning(true)
                         else onForward()

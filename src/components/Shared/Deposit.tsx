@@ -13,14 +13,14 @@ import { ACORN, ICP } from 'shared/utils/services'
 
 export const TOKENS = {
     ACORN: {
-        ColouredIcon: <AcornColouredIcon className="h-10 md:h-16" />,
+        ColouredIcon: <AcornColouredIcon className="w-8 md:w-12" />,
         BigIcon: <AcornIcon className="h-6 w-6 md:h-7 md:w-7" />,
         SmallIcon: <AcornIcon className="h-4 w-4 -translate-y-[2px] md:h-5 md:w-5" />,
         path: '/images/acorn.png',
         Ledger: ACORN,
     },
     ICP: {
-        ColouredIcon: <IcpColouredIcon className="h-6 md:h-10" />,
+        ColouredIcon: <IcpColouredIcon className="w-8 md:w-12" />,
         BigIcon: <IcpIcon className="h-6 w-6 fill-current stroke-0 md:h-7 md:w-7" />,
         SmallIcon: (
             <IcpIcon className="h-4 w-4 fill-current stroke-0 text-opacity-0 md:h-5 md:w-5" />

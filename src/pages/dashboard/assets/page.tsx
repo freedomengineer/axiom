@@ -14,8 +14,8 @@ import {
 } from '@utils/assets/assets'
 import { Split, Treasury } from 'shared/utils/services'
 
-const title = 'Assets'
-const metadata = siteMetadata.routes[title]
+const title = 'Token Charts'
+const metadata = siteMetadata.routes['ACE Dashboard'].routes[title]
 const pageMetadata: Metadata = {
     url: siteMetadata.siteUrl + metadata.url,
     title: `${title} | ${siteMetadata.title}`,

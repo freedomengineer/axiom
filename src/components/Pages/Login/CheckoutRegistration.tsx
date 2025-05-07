@@ -16,10 +16,11 @@ const CheckoutRegistration = ({ choices, setChoice, handlePrev, handleNext }: St
     const { agent, referrer, refreshUser } = useAuth()
 
     const [loading, setLoading] = useState<boolean>(false)
+    const [isSufficient, setIsSufficient] = useState(true)
 
     const sendTransaction = async () => {
         setLoading(true)
-        await promise(
+        const approve = await promise(
             ICP.call(agent).icrc2_approve({
                 amount: choices[ESteps.Package]!.icpToPay,
                 spender: { owner: Split.principal, subaccount: [] },
@@ -33,6 +34,10 @@ const CheckoutRegistration = ({ choices, setChoice, handlePrev, handleNext }: St
             'Approving ICP to Axiom Split',
             'Approved ICP to Axiom Split successfully!'
         )
+        if (!approve.success) {
+            setLoading(false)
+            return
+        }
         await promise(
             Facade.call(agent)
                 .register(
@@ -52,7 +57,7 @@ const CheckoutRegistration = ({ choices, setChoice, handlePrev, handleNext }: St
 
     return (
         <>
-            <div className="gap-small text-small flex flex-col text-cold-600">
+            <div className="gap-small text-small flex flex-col text-cold-700">
                 <span>
                     50% of this payment will be directed to the member who you indicate most
                     responsible for recruiting you to Axiom.
@@ -64,7 +69,7 @@ const CheckoutRegistration = ({ choices, setChoice, handlePrev, handleNext }: St
             </div>
             <div className="gap-medium flex flex-col">
                 <div className="gap-tiny flex flex-col">
-                    <p className="text-small text-cold-600">Username</p>
+                    <p className="text-small text-cold-700">Username</p>
                     <input
                         type="text"
                         value={choices[ESteps.Username]}
@@ -73,7 +78,7 @@ const CheckoutRegistration = ({ choices, setChoice, handlePrev, handleNext }: St
                     />
                 </div>
                 <div className="gap-tiny flex flex-col">
-                    <p className="text-small text-cold-600">Package</p>
+                    <p className="text-small text-cold-700">Package</p>
                     <input
                         type="text"
                         value={`${choices[ESteps.Package]?.package?.metadata.name} (${choices[ESteps.Package]?.package?.metadata.symbol}) - ${valueOf(choices[ESteps.Package]?.icpToPay ?? 0)} ICP`}
@@ -82,7 +87,7 @@ const CheckoutRegistration = ({ choices, setChoice, handlePrev, handleNext }: St
                     />
                 </div>
                 <div className="gap-tiny flex flex-col">
-                    <p className="text-small text-cold-600">Referrer</p>
+                    <p className="text-small text-cold-700">Referrer</p>
                     <input
                         type="text"
                         value={referrer?.toText() ?? 'No Referrer'}
@@ -91,11 +96,12 @@ const CheckoutRegistration = ({ choices, setChoice, handlePrev, handleNext }: St
                     />
                 </div>
                 <div className="gap-tiny flex flex-col">
-                    <p className="text-small text-cold-600">Balance Changes</p>
+                    <p className="text-small text-cold-700">Balance Changes</p>
                     <BalanceChanges
                         token="ICP"
                         amount={choices[ESteps.Package]?.icpToPay ?? 0n}
                         sign="-"
+                        setIsSufficient={setIsSufficient}
                     />
                     <BalanceChanges
                         token="ACORN"
@@ -106,7 +112,7 @@ const CheckoutRegistration = ({ choices, setChoice, handlePrev, handleNext }: St
             </div>
             <div className="gap-small flex items-center justify-between">
                 <button
-                    className="button w-auto min-w-36 bg-cold-700 hover:bg-cold-800 md:min-w-48"
+                    className="button w-auto min-w-36 bg-cold-800 md:min-w-48"
                     onClick={handlePrev}
                 >
                     Back
@@ -118,7 +124,8 @@ const CheckoutRegistration = ({ choices, setChoice, handlePrev, handleNext }: St
                         loading ||
                         !choices[ESteps.Package] ||
                         !choices[ESteps.Username] ||
-                        choices[ESteps.Checkout]
+                        choices[ESteps.Checkout] ||
+                        !isSufficient
                     }
                 >
                     {loading ? (
@@ -127,6 +134,8 @@ const CheckoutRegistration = ({ choices, setChoice, handlePrev, handleNext }: St
                         'Choose a username'
                     ) : !choices[ESteps.Package] ? (
                         'Choose a package'
+                    ) : !isSufficient ? (
+                        <span>Insufficient ICP balance</span>
                     ) : (
                         <>
                             Pay {e8s.toString(choices[ESteps.Package]?.icpToPay)}{' '}

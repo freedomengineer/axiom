@@ -34,10 +34,6 @@ const MAIN_ROUTES = [
         IconComponent: <AxiomACEIcon className="p-extratiny w-[22px] stroke-2 md:w-[26px]" />,
     },
     {
-        name: 'Assets',
-        IconComponent: <SchoolIcon className="p-extratiny w-[22px] stroke-2 md:w-[26px]" />,
-    },
-    {
         name: 'My Profile',
         IconComponent: <ProfileIcon className="p-extratiny w-5 stroke-2 md:w-6" />,
     },
@@ -49,9 +45,20 @@ const Sidebar = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
     const fields = useSpecificUserData(principal ?? null, 'fields')
     const location = useLocation()
 
-    const [opens, setOpens] = useState<boolean[]>([true, true])
+    const [opens, setOpens] = useState<boolean[]>([true, true, true])
     const [pattern, setPattern] = useState<string>('')
     const [limit, setLimit] = useState(FIELD_LIMIT)
+
+    const targetTime = new Date().setUTCHours(24, 0, 0, 0)
+    const [remainingTime, setRemainingTime] = useState<number>(targetTime - Date.now())
+    useEffect(() => {
+        const interval = setInterval(() => {
+            const newRemaining = targetTime - Date.now()
+            setRemainingTime(newRemaining > 0 ? newRemaining : 0)
+        }, 1000)
+
+        return () => clearInterval(interval)
+    }, [targetTime])
 
     const activeFields = !fields
         ? []
@@ -64,19 +71,6 @@ const Sidebar = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
         newOpens[index] = !opens[index]
         setOpens(newOpens)
     }
-
-    const [remainingTime, setRemainingTime] = useState<number>(
-        new Date().setUTCHours(24, 0, 0, 0) - Date.now()
-    )
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setRemainingTime((prev) => {
-                if (prev <= 1000) return 24 * 60 * 60 * 1000
-                else return prev - 1000
-            })
-        }, 1000)
-        return () => clearInterval(interval)
-    }, [])
 
     return (
         <>
@@ -154,7 +148,7 @@ const Sidebar = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
                         }}
                         className="px-medium rounded-lg border-b-0 py-0 hover:bg-cold-800/15"
                     >
-                        <span className="py-normal text-normal font-normal text-cold-800">
+                        <span className="py-normal text-small font-normal text-cold-800">
                             MY FIELDS
                         </span>
                     </AccordionHeader>
@@ -182,7 +176,7 @@ const Sidebar = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
                         </div>
                     </AccordionBody>
                 </Accordion>
-                <hr className="border-t border-black/15" />
+                <hr className="border-black/7 border-t" />
                 <Accordion
                     open={opens[1]}
                     icon={
@@ -196,7 +190,7 @@ const Sidebar = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
                         onClick={() => handleOpen(1)}
                         className="px-medium rounded-lg border-b-0 py-0 hover:bg-cold-800/15"
                     >
-                        <span className="py-normal text-normal font-normal text-cold-800">
+                        <span className="py-normal text-small font-normal text-cold-800">
                             SCHOOL
                         </span>
                     </AccordionHeader>
@@ -206,7 +200,8 @@ const Sidebar = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
                                 ([subname, subdata]) => (
                                     <Link
                                         key={subname}
-                                        href={(subdata as any).url}
+                                        // href={(subdata as any).url}
+                                        href="https://axiom.show/faq"
                                         className="pre-underline text-tiny gap-normal mb-1 flex place-items-center items-center text-left font-normal decoration-cold-800/50 hover:decoration-cold-800/100"
                                         icon="forward"
                                         size="small"
@@ -216,6 +211,41 @@ const Sidebar = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
                                     </Link>
                                 )
                             )}
+                        </div>
+                    </AccordionBody>
+                </Accordion>
+                <hr className="border-black/7 border-t" />
+                <Accordion
+                    open={opens[2]}
+                    icon={
+                        <ForwardIcon
+                            className={`mx-auto h-4 w-4 stroke-[2px] transition-transform ${opens[1] ? 'rotate-90' : ''}`}
+                        />
+                    }
+                    className="px-medium"
+                >
+                    <AccordionHeader
+                        onClick={() => handleOpen(2)}
+                        className="px-medium rounded-lg border-b-0 py-0 hover:bg-cold-800/15"
+                    >
+                        <span className="py-normal text-small font-normal text-cold-800">
+                            SOCIAL LINKS
+                        </span>
+                    </AccordionHeader>
+                    <AccordionBody className="gap-normal flex flex-col items-center justify-center py-0">
+                        <div className="gap-tiny px-medium flex w-full flex-col justify-start">
+                            {Object.entries(siteMetadata.socials).map(([subname, subdata]) => (
+                                <Link
+                                    key={subname}
+                                    href={subdata}
+                                    className="pre-underline text-tiny gap-normal mb-1 flex place-items-center items-center text-left font-normal decoration-cold-800/50 hover:decoration-cold-800/100"
+                                    icon="forward"
+                                    size="small"
+                                    openInNewTab
+                                >
+                                    {subname}
+                                </Link>
+                            ))}
                         </div>
                     </AccordionBody>
                 </Accordion>

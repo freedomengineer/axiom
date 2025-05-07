@@ -34,10 +34,11 @@ const PostHypothesisPreview = ({
 
     const [terms, setTerms] = useState<[boolean, boolean]>([false, false])
     const [loading, setLoading] = useState(false)
+    const [isSufficient, setIsSufficient] = useState(true)
 
     const post = async () => {
         setLoading(true)
-        await promise(
+        const approve = await promise(
             ACORN.call(agent).icrc2_approve({
                 amount: configs!['HYPOTHESIS_PUBLISH_FEE'][1] as bigint,
                 spender: { owner: Treasury.principal, subaccount: [] },
@@ -51,6 +52,10 @@ const PostHypothesisPreview = ({
             'Approving ACORN to Axiom Treasury',
             'Approved ACORN to Axiom Treasury successfully!'
         )
+        if (!approve.success) {
+            setLoading(false)
+            return
+        }
         const res = await promise(
             Axioms.call(agent).publishHypothesis(item.fieldId, item.content),
             'Posting hypothesis',
@@ -87,6 +92,7 @@ const PostHypothesisPreview = ({
                     token="ACORN"
                     amount={configs?.['HYPOTHESIS_PUBLISH_FEE'][1] as bigint}
                     sign="-"
+                    setIsSufficient={setIsSufficient}
                 />
                 <div
                     className={cn(
@@ -139,7 +145,7 @@ const PostHypothesisPreview = ({
                 />
                 <div className="gap-small mt-auto flex justify-between">
                     <button
-                        className="button w-auto min-w-36 bg-cold-700 hover:bg-cold-800 md:min-w-48"
+                        className="button w-auto min-w-36 bg-cold-800 md:min-w-48"
                         onClick={() => onBack()}
                     >
                         Back to Form
@@ -147,10 +153,12 @@ const PostHypothesisPreview = ({
                     <button
                         className="button w-auto min-w-36 md:min-w-48"
                         onClick={post}
-                        disabled={!terms[0] || !terms[1] || loading}
+                        disabled={!terms[0] || !terms[1] || !isSufficient || loading}
                     >
                         {loading ? (
                             <Spinner color="white" className="h-4 w-4 md:h-5 md:w-5" />
+                        ) : !isSufficient ? (
+                            <span>Insufficient ACORN balance</span>
                         ) : (
                             <>
                                 Post with{' '}

@@ -91,14 +91,14 @@ const PurchasePackage = ({ choices, setChoice, handlePrev, handleNext }: StepPro
                         </span>{' '}
                         ICP
                         <button
-                            className="gap-tiny px-small md:py-extratiny text-tiny flex w-min items-center rounded-lg bg-white/100 py-0 font-normal text-cold-800 hover:bg-white/50"
+                            className="gap-tiny px-small md:py-extratiny text-tiny flex w-min items-center rounded-lg bg-white/100 py-0 font-normal text-cold-800 hover:bg-white/75"
                             onClick={() => setIsOpenDeposit(true)}
                         >
                             <PlusIcon className="h-3 w-3 stroke-[1.5px] md:h-4 md:w-4" />
                             Deposit
                         </button>
                         <button
-                            className="gap-tiny px-small md:py-extratiny text-tiny flex w-min items-center rounded-lg bg-white/100 py-0 font-normal text-cold-800 hover:bg-white/50"
+                            className="gap-tiny px-small md:py-extratiny text-tiny flex w-min items-center rounded-lg bg-white/100 py-0 font-normal text-cold-800 hover:bg-white/75"
                             onClick={() => {
                                 ICP.call()
                                     .icrc1_balance_of({ owner: principal!, subaccount: [] })
@@ -157,23 +157,24 @@ const PurchasePackage = ({ choices, setChoice, handlePrev, handleNext }: StepPro
                                                 '!text-normal hidden border-b-0 font-medium transition-colors md:block',
                                                 isSelected
                                                     ? 'text-primary-600 group-hover:pointer-events-none group-hover:text-primary-600'
-                                                    : 'text-cold-500 group-hover:cursor-pointer group-hover:text-cold-700'
+                                                    : 'text-cold-700 group-hover:cursor-pointer group-hover:text-cold-800'
                                             )}
                                         >
-                                            {usdPrice} * (
+                                            {/* {usdPrice} * (
                                             {proportion.toString(
                                                 configs?.[
                                                     'PRICE_ADJUSTMENT_PROPORTION'
                                                 ][1] as Proportion
                                             )}
-                                            ) = {adjustedUsdPrice} USD
+                                            ) ={' '} */}
+                                            {adjustedUsdPrice} USD
                                         </p>
                                         <p
                                             className={cn(
                                                 '!text-normal block border-b-0 font-medium transition-colors md:hidden',
                                                 isSelected
                                                     ? 'text-primary-600 group-hover:pointer-events-none group-hover:text-primary-600'
-                                                    : 'text-cold-500 group-hover:cursor-pointer group-hover:text-cold-700'
+                                                    : 'text-cold-700 group-hover:cursor-pointer group-hover:text-cold-800'
                                             )}
                                         >
                                             ${adjustedUsdPrice} * (
@@ -220,7 +221,7 @@ const PurchasePackage = ({ choices, setChoice, handlePrev, handleNext }: StepPro
                                         </p>
                                     </div>
                                 </AccordionHeader>
-                                <AccordionBody className="gap-small flex w-full flex-col place-items-center items-center pt-0 md:flex-row md:justify-between">
+                                <AccordionBody className="gap-small flex w-full flex-col place-items-center items-center pt-0 font-normal md:flex-row md:justify-between">
                                     <div className="mr-auto flex flex-col place-items-center items-start">
                                         <span>You will be rewarded with:</span>
                                         <li>
@@ -260,7 +261,7 @@ const PurchasePackage = ({ choices, setChoice, handlePrev, handleNext }: StepPro
                                                     fill="none"
                                                     viewBox="0 0 24 24"
                                                     stroke="currentColor"
-                                                    className="h-4 w-4 cursor-pointer md:h-5 md:w-5"
+                                                    className="h-4 w-4 cursor-pointer stroke-[1.5px] md:h-5 md:w-5"
                                                 >
                                                     <path
                                                         strokeLinecap="round"
@@ -281,7 +282,7 @@ const PurchasePackage = ({ choices, setChoice, handlePrev, handleNext }: StepPro
                                                     fill="none"
                                                     viewBox="0 0 24 24"
                                                     stroke="currentColor"
-                                                    className="h-4 w-4 cursor-pointer md:h-5 md:w-5"
+                                                    className="h-4 w-4 cursor-pointer stroke-[1.5px] md:h-5 md:w-5"
                                                 >
                                                     <path
                                                         strokeLinecap="round"
@@ -308,7 +309,7 @@ const PurchasePackage = ({ choices, setChoice, handlePrev, handleNext }: StepPro
                                                     fill="none"
                                                     viewBox="0 0 24 24"
                                                     stroke="currentColor"
-                                                    className="h-4 w-4 cursor-pointer md:h-5 md:w-5"
+                                                    className="h-4 w-4 cursor-pointer stroke-[1.5px] md:h-5 md:w-5"
                                                 >
                                                     <path
                                                         strokeLinecap="round"
@@ -329,7 +330,7 @@ const PurchasePackage = ({ choices, setChoice, handlePrev, handleNext }: StepPro
             </div>
             <div className="gap-small flex items-center justify-between">
                 <button
-                    className="button w-auto min-w-36 bg-cold-700 hover:bg-cold-800 md:min-w-48"
+                    className="button w-auto min-w-36 bg-cold-800 md:min-w-48"
                     onClick={handlePrev}
                 >
                     Back

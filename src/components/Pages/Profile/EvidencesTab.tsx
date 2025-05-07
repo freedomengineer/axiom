@@ -4,12 +4,21 @@ import { DAxioms } from 'shared/types/services'
 
 import EvidenceCard from '../Feed/Evidences/EvidenceCard'
 
-const EvidencesTab = ({ evidences }: { evidences: DAxioms.SharableEvidence[] }) => {
+const EvidencesTab = ({
+    evidences,
+    type,
+}: {
+    evidences: DAxioms.SharableEvidence[]
+    type: 'Published' | 'Voted'
+}) => {
     if (evidences.length === 0) {
         return (
-            <p className="text-normal text-center font-light text-cold-800">
-                User has no published evidences yet
-            </p>
+            <div className="flex h-full w-full flex-col items-center justify-center text-center">
+                <p className="text-small font-light text-cold-700">
+                    User has not {type === 'Published' ? 'published' : 'voted on'} any evidences
+                    yet.
+                </p>
+            </div>
         )
     }
 

@@ -100,7 +100,7 @@ const ProposalTimeline = ({
         <Stepper
             activeStep={timeline.length - 1}
             activeLineClassName="bg-primary-800"
-            className="mb-semilarge mt-extralarge mx-auto w-[90%]"
+            className="mb-semilarge mt-extralarge z-0 mx-auto w-[90%]"
         >
             {renders.map(({ Icon, title, description }, index) => (
                 <Step

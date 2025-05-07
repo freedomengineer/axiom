@@ -18,12 +18,13 @@ const UpdateLocation = ({ location, onSubmit }: { location: string; onSubmit: ()
 
     const [newLocation, setNewLocation] = useState<string>('')
     const [loading, setLoading] = useState<number>()
+    const [isSufficient, setIsSufficient] = useState(true)
 
     const update = async () => {
         if (newLocation.length === 0) return
 
         setLoading(1)
-        await promise(
+        const approve = await promise(
             ACORN.call(agent).icrc2_approve({
                 amount: configs?.['UPDATE_LOCATION_FEE'][1] as bigint,
                 spender: { owner: Treasury.principal, subaccount: [] },
@@ -37,6 +38,10 @@ const UpdateLocation = ({ location, onSubmit }: { location: string; onSubmit: ()
             'Approving ACORN to Axiom Treasury',
             'Approved ACORN to Axiom Treasury successfully!'
         )
+        if (!approve.success) {
+            setLoading(undefined)
+            return
+        }
         const res = await promise(
             Facade.call(agent).editLocation([newLocation]),
             'Updating location',
@@ -79,20 +84,17 @@ const UpdateLocation = ({ location, onSubmit }: { location: string; onSubmit: ()
                               : 'border-red-400 focus:ring-red-600'
                     )}
                 />
-                {newLocation.length > 0 && (
+                {newLocation.length > 0 && (isTooShort || isTooLong) && (
                     <div className="text-tiny flex w-full flex-col text-left">
                         {isTooShort && <span className="text-red-600">Location is too short</span>}
                         {isTooLong && <span className="text-red-600">Location is too long</span>}
                     </div>
                 )}
             </div>
-            {(location.length > 0 || newLocation.length > 0) && (
+            {!(location.length && !newLocation.length) && (
                 <BalanceChanges
-                    amount={
-                        location.length && !newLocation.length
-                            ? 0n
-                            : (configs?.['UPDATE_LOCATION_FEE'][1] as bigint)
-                    }
+                    amount={configs?.['UPDATE_LOCATION_FEE'][1] as bigint}
+                    setIsSufficient={setIsSufficient}
                 />
             )}
             <div className="flex w-full justify-between">
@@ -113,10 +115,18 @@ const UpdateLocation = ({ location, onSubmit }: { location: string; onSubmit: ()
                 <button
                     className="button w-auto min-w-36 md:min-w-48"
                     onClick={update}
-                    disabled={loading === 1 || newLocation.length === 0 || isTooShort || isTooLong}
+                    disabled={
+                        loading === 1 ||
+                        newLocation.length === 0 ||
+                        isTooShort ||
+                        isTooLong ||
+                        !isSufficient
+                    }
                 >
                     {loading === 1 ? (
                         <Spinner color="white" className="h-4 w-4 md:h-5 md:w-5" />
+                    ) : !isSufficient ? (
+                        <span>Insufficient ACORN balance</span>
                     ) : (
                         <>
                             Update with {valueOf(configs?.['UPDATE_LOCATION_FEE'][1] as bigint)}{' '}

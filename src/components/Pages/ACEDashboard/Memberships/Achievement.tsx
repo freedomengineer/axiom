@@ -24,7 +24,7 @@ const Achievement = ({
                 <p className="px-medium py-small rounded-full bg-gradient-to-r from-primary-700 to-cold-700">
                     {
                         {
-                            Referral: <>{} REFERRALS</>,
+                            Referral: <>{item.qualifyingThreshold} REFERRALS</>,
                             OctupleBurial: (
                                 <>{e8s.toString(item.qualifyingThreshold as bigint)} ACORN</>
                             ),

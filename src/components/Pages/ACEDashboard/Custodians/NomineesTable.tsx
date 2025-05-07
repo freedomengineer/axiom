@@ -336,20 +336,19 @@ const NomineesTable = () => {
                     handleExitElection={handleExitElection}
                 />
             </Popup>
-            <h2 className="text-semilarge font-display font-bold text-primary-700">Top Nominees</h2>
             {userData && (
                 <div className="gap-small flex w-full flex-col items-center justify-between md:flex-row">
                     <div className="gap-small flex w-full md:w-fit">
                         {nominee ? (
                             <>
                                 <button
-                                    className="button h-full w-full bg-cold-700 hover:bg-cold-800 md:w-36"
+                                    className="button h-full w-full bg-cold-800 md:w-36"
                                     onClick={() => setOpen(EPopup.UpdateTitle)}
                                 >
                                     Update title
                                 </button>
                                 <button
-                                    className="button h-full w-full bg-primary-700 hover:bg-primary-800 md:w-36"
+                                    className="button h-full w-full md:w-36"
                                     onClick={() => setOpen(EPopup.ExitElection)}
                                 >
                                     Exit election
@@ -357,7 +356,7 @@ const NomineesTable = () => {
                             </>
                         ) : (
                             <button
-                                className="button h-full w-full bg-primary-700 hover:bg-primary-800 md:w-[294px]"
+                                className="button h-full w-full md:w-[294px]"
                                 onClick={() => setOpen(EPopup.EnterElection)}
                             >
                                 Enter election
@@ -368,13 +367,13 @@ const NomineesTable = () => {
                         {newBallots ? (
                             <>
                                 <button
-                                    className="button h-full w-full bg-cold-700 hover:bg-cold-800 md:w-36"
+                                    className="button h-full w-full bg-cold-800 md:w-36"
                                     onClick={() => setNewBallots(undefined)}
                                 >
                                     Exit selection
                                 </button>
                                 <button
-                                    className="button h-full w-full bg-primary-700 hover:bg-primary-800 md:w-36"
+                                    className="button h-full w-full md:w-36"
                                     onClick={handleConfirmSelection}
                                     disabled={loading === ELoading.ConfirmSelection}
                                 >
@@ -387,7 +386,7 @@ const NomineesTable = () => {
                             </>
                         ) : (
                             <button
-                                className="button h-full w-full bg-primary-700 hover:bg-primary-800 md:w-[294px]"
+                                className="button h-full w-full md:w-[294px]"
                                 onClick={() =>
                                     setNewBallots(
                                         new Set(userData!.ballots.map(([p]) => p.toText()))

@@ -1,0 +1,22 @@
+import MyBookmarksLayout from '@components/Pages/Profile/MyBookmarks/MyBookmarksLayout'
+import PageMetadata from '@components/Shared/PageMetadata'
+import siteMetadata from '@data/siteMetadata.json'
+
+const title = 'My Bookmarks'
+const metadata = siteMetadata.routes['My Profile'].routes[title]
+const metadataPage: Metadata = {
+    url: siteMetadata.siteUrl + metadata.url,
+    title: `${title} | ${siteMetadata.title}`,
+    description: metadata.description,
+}
+
+const MyBookmarksPage = () => {
+    return (
+        <>
+            <PageMetadata {...metadataPage} />
+            <MyBookmarksLayout />
+        </>
+    )
+}
+
+export default MyBookmarksPage

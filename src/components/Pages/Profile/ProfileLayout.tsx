@@ -19,7 +19,7 @@ import { cacheUsername } from '@hooks/useUsername'
 import cn from '@libs/class'
 import { buildBlobImage } from '@libs/url'
 import { parseFilterFromObj, parseSortFromObj } from 'shared/default/filter_sort'
-import { DAxioms, DDAO, DFacade, DSales } from 'shared/types/services'
+import { DAxioms, DDAO, DFacade } from 'shared/types/services'
 import { Axioms, DAO, Facade, Sales } from 'shared/utils/services'
 import { Unwrap } from 'shared/utils/typings'
 
@@ -48,6 +48,54 @@ enum ETab {
     Evidences = 'Evidences',
     Proposals = 'Proposals',
 }
+enum EFullTab {
+    Packages = 'Packages',
+    Axioms = 'Axioms',
+    Fields = 'Fields',
+    PublishedHypotheses = 'PublishedHypotheses',
+    VotedHypotheses = 'VotedHypotheses',
+    PublishedEvidences = 'PublishedEvidences',
+    VotedEvidences = 'VotedEvidences',
+    OpenedProposals = 'OpenedProposals',
+    VotedProposals = 'VotedProposals',
+}
+
+const parseTabFromFullTab = (tab: EFullTab): ETab => {
+    switch (tab) {
+        case EFullTab.Packages:
+            return ETab.Packages
+        case EFullTab.Axioms:
+            return ETab.Axioms
+        case EFullTab.Fields:
+            return ETab.Fields
+        case EFullTab.PublishedHypotheses:
+        case EFullTab.VotedHypotheses:
+            return ETab.Hypotheses
+        case EFullTab.PublishedEvidences:
+        case EFullTab.VotedEvidences:
+            return ETab.Evidences
+        case EFullTab.OpenedProposals:
+        case EFullTab.VotedProposals:
+            return ETab.Proposals
+    }
+}
+const parseFullTabFromTab = (tab: ETab): EFullTab => {
+    switch (tab) {
+        case ETab.Packages:
+            return EFullTab.Packages
+        case ETab.Axioms:
+            return EFullTab.Axioms
+        case ETab.Fields:
+            return EFullTab.Fields
+        case ETab.Hypotheses:
+            return EFullTab.PublishedHypotheses
+        case ETab.Evidences:
+            return EFullTab.PublishedEvidences
+        case ETab.Proposals:
+            return EFullTab.OpenedProposals
+    }
+}
+
 const ProfileLayout = ({ id }: { id?: string }) => {
     const salesConfigs = useConfigs('Sales')
     const [searchParams, setSearchPrams] = useSearchParams()
@@ -55,19 +103,25 @@ const ProfileLayout = ({ id }: { id?: string }) => {
     const { agent, principal, refreshUser, setPageStatus } = useAuth()
     const [profileUser, setProfileUser] = useState<DFacade.Sharable>()
     const [userData, setUserData] = useState<{
-        [ETab.Packages]: ParsedPackages<EPackages> | null
-        [ETab.Axioms]: DAxioms.SharableHypothesis[] | null
-        [ETab.Fields]: DAxioms.SharableField[] | null
-        [ETab.Hypotheses]: DAxioms.SharableHypothesis[] | null
-        [ETab.Evidences]: DAxioms.SharableEvidence[] | null
-        [ETab.Proposals]: DDAO.SharableProposal[] | null
+        [EFullTab.Packages]: ParsedPackages<EPackages> | null
+        [EFullTab.Axioms]: DAxioms.SharableHypothesis[] | null
+        [EFullTab.Fields]: DAxioms.SharableField[] | null
+        [EFullTab.PublishedHypotheses]: DAxioms.SharableHypothesis[] | null
+        [EFullTab.VotedHypotheses]: DAxioms.SharableHypothesis[] | null
+        [EFullTab.PublishedEvidences]: DAxioms.SharableEvidence[] | null
+        [EFullTab.VotedEvidences]: DAxioms.SharableEvidence[] | null
+        [EFullTab.OpenedProposals]: DDAO.SharableProposal[] | null
+        [EFullTab.VotedProposals]: DDAO.SharableProposal[] | null
     }>({
-        [ETab.Packages]: null,
-        [ETab.Axioms]: null,
-        [ETab.Fields]: null,
-        [ETab.Hypotheses]: null,
-        [ETab.Evidences]: null,
-        [ETab.Proposals]: null,
+        [EFullTab.Packages]: null,
+        [EFullTab.Axioms]: null,
+        [EFullTab.Fields]: null,
+        [EFullTab.PublishedHypotheses]: null,
+        [EFullTab.VotedHypotheses]: null,
+        [EFullTab.PublishedEvidences]: null,
+        [EFullTab.VotedEvidences]: null,
+        [EFullTab.OpenedProposals]: null,
+        [EFullTab.VotedProposals]: null,
     })
     const [open, setOpen] = useState<EPopup>()
     const [loading, setLoading] = useState(true)
@@ -97,15 +151,17 @@ const ProfileLayout = ({ id }: { id?: string }) => {
         ])
     }, [])
 
+    const fullTab = (searchParams.get('tab') ?? ETab.Packages) as EFullTab
+    const tab = parseTabFromFullTab(fullTab)
+
     useEffect(() => {
         try {
-            const tab = searchParams.get('tab') as ETab
-            if (!salesConfigs || userData[tab] !== null) return
+            if (!salesConfigs || userData[fullTab] !== null) return
 
             setLoading(true)
 
-            switch (tab) {
-                case ETab.Packages:
+            switch (fullTab) {
+                case EFullTab.Packages:
                     Promise.all([
                         Sales.call().getOwnedPackages(profilePrincipal),
                         Sales.call().getOwnedAchievementPackages(profilePrincipal),
@@ -119,20 +175,7 @@ const ProfileLayout = ({ id }: { id?: string }) => {
                         }))
                     )
                     break
-                case ETab.Axioms:
-                    Axioms.call(agent)
-                        .getHypotheses(
-                            parseFilterFromObj('hypothesis', {
-                                axiomsFrom: profilePrincipal.toText(),
-                            }),
-                            parseSortFromObj('hypothesis', {
-                                by: 'recent',
-                                order: 'descending',
-                            })
-                        )
-                        .then((res) => setUserData((prev) => ({ ...prev, [ETab.Axioms]: res })))
-                    break
-                case ETab.Fields:
+                case EFullTab.Fields:
                     Axioms.call(agent)
                         .getFields(
                             parseFilterFromObj('field', {
@@ -140,53 +183,58 @@ const ProfileLayout = ({ id }: { id?: string }) => {
                             }),
                             parseSortFromObj('field', { by: 'recent', order: 'descending' })
                         )
-                        .then((res) => setUserData((prev) => ({ ...prev, [ETab.Fields]: res })))
+                        .then((res) => setUserData((prev) => ({ ...prev, [EFullTab.Fields]: res })))
                     break
-                case ETab.Hypotheses:
+                case EFullTab.Axioms:
+                case EFullTab.PublishedHypotheses:
+                case EFullTab.VotedHypotheses:
                     Axioms.call(agent)
                         .getHypotheses(
                             parseFilterFromObj('hypothesis', {
-                                publishedBy: profilePrincipal.toText(),
+                                [{
+                                    [EFullTab.Axioms]: 'axiomsFrom',
+                                    [EFullTab.PublishedHypotheses]: 'publishedBy',
+                                    [EFullTab.VotedHypotheses]: 'votedBy',
+                                }[fullTab]]: profilePrincipal.toText(),
                             }),
-                            parseSortFromObj('hypothesis', {
-                                by: 'recent',
-                                order: 'descending',
-                            })
+                            parseSortFromObj('hypothesis', { by: 'recent', order: 'descending' })
                         )
-                        .then((res) => setUserData((prev) => ({ ...prev, [ETab.Hypotheses]: res })))
+                        .then((res) => setUserData((prev) => ({ ...prev, [fullTab]: res })))
                     break
-                case ETab.Evidences:
+                case EFullTab.PublishedEvidences:
+                case EFullTab.VotedEvidences:
                     Axioms.call(agent)
                         .getEvidences(
                             parseFilterFromObj('evidence', {
-                                publishedBy: profilePrincipal.toText(),
+                                [{
+                                    [EFullTab.PublishedEvidences]: 'publishedBy',
+                                    [EFullTab.VotedEvidences]: 'votedBy',
+                                }[fullTab]]: profilePrincipal.toText(),
                             }),
-                            parseSortFromObj('evidence', {
-                                by: 'recent',
-                                order: 'descending',
-                            })
+                            parseSortFromObj('evidence', { by: 'recent', order: 'descending' })
                         )
-                        .then((res) => setUserData((prev) => ({ ...prev, [ETab.Evidences]: res })))
+                        .then((res) => setUserData((prev) => ({ ...prev, [fullTab]: res })))
                     break
-                case ETab.Proposals:
+                case EFullTab.OpenedProposals:
+                case EFullTab.VotedProposals:
                     DAO.call(agent)
                         .getProposals(
                             parseFilterFromObj('proposal', {
-                                proposedBy: profilePrincipal.toText(),
+                                [{
+                                    [EFullTab.OpenedProposals]: 'proposedBy',
+                                    [EFullTab.VotedProposals]: 'votedBy',
+                                }[fullTab]]: profilePrincipal.toText(),
                             }),
-                            parseSortFromObj('proposal', {
-                                by: 'recent',
-                                order: 'descending',
-                            })
+                            parseSortFromObj('proposal', { by: 'recent', order: 'descending' })
                         )
-                        .then((res) => setUserData((prev) => ({ ...prev, [ETab.Proposals]: res })))
+                        .then((res) => setUserData((prev) => ({ ...prev, [fullTab]: res })))
                     break
             }
         } catch {
         } finally {
             setLoading(false)
         }
-    }, [salesConfigs, searchParams])
+    }, [salesConfigs, fullTab])
 
     if (!profileUser) return null
 
@@ -199,11 +247,7 @@ const ProfileLayout = ({ id }: { id?: string }) => {
                     title="Update Username"
                     className="w-full md:w-2/5"
                 >
-                    <UpdateUsername
-                        onSubmit={() => {
-                            refreshUser(), setOpen(undefined)
-                        }}
-                    />
+                    <UpdateUsername onSubmit={() => (refreshUser(), setOpen(undefined))} />
                 </Popup>
                 <Popup
                     open={open === EPopup.Links}
@@ -213,9 +257,7 @@ const ProfileLayout = ({ id }: { id?: string }) => {
                 >
                     <UpdateLinks
                         links={profileUser.links}
-                        onSubmit={() => {
-                            refreshUser(), setOpen(undefined)
-                        }}
+                        onSubmit={() => (refreshUser(), setOpen(undefined))}
                     />
                 </Popup>
                 <Popup
@@ -226,9 +268,7 @@ const ProfileLayout = ({ id }: { id?: string }) => {
                 >
                     <UpdateLocation
                         location={profileUser.location}
-                        onSubmit={() => {
-                            refreshUser(), setOpen(undefined)
-                        }}
+                        onSubmit={() => (refreshUser(), setOpen(undefined))}
                     />
                 </Popup>
                 <Popup
@@ -239,9 +279,7 @@ const ProfileLayout = ({ id }: { id?: string }) => {
                 >
                     <UpdateAvatar
                         avatar={Unwrap(profileUser.avatar)?.blob as Uint8Array}
-                        onSubmit={() => {
-                            refreshUser(), setOpen(undefined)
-                        }}
+                        onSubmit={() => (refreshUser(), setOpen(undefined))}
                     />
                 </Popup>
                 <div className="flex">
@@ -333,54 +371,238 @@ const ProfileLayout = ({ id }: { id?: string }) => {
                     )}
                 </div>
             </div>
-            <Tabs value={searchParams.get('tab') ?? ETab.Packages}>
+            <Tabs value={tab}>
                 <TabsHeader
-                    className="overflow-x-auto rounded-none border-b border-primary-50 bg-transparent p-0"
+                    className="overflow-x-auto overflow-y-hidden rounded-none border-b border-primary-50 bg-transparent p-0"
                     indicatorProps={{
                         className:
                             'bg-transparent border-b-2 border-primary-700 shadow-none rounded-none',
                     }}
                 >
-                    {Object.keys(ETab).map((tab) => (
-                        <Tab
-                            key={tab}
-                            value={tab}
-                            onClick={() => setSearchPrams({ tab })}
-                            className={cn(
-                                'text-normal font-normal',
-                                searchParams.get('tab') === tab ? 'text-primary-700' : ''
-                            )}
-                        >
-                            <span className="text-normal font-normal">{tab}</span>
-                        </Tab>
-                    ))}
+                    {Object.keys(ETab).map((currentTab) => {
+                        const parsedFullTab = parseFullTabFromTab(currentTab as ETab)
+                        return (
+                            <Tab
+                                key={currentTab}
+                                value={currentTab}
+                                onClick={() => setSearchPrams({ tab: parsedFullTab })}
+                                className={cn(
+                                    'text-normal font-normal',
+                                    tab === currentTab && 'text-primary-700'
+                                )}
+                            >
+                                <span className="text-normal text-nowrap font-normal">
+                                    {currentTab}{' '}
+                                    {![ETab.Hypotheses, ETab.Evidences, ETab.Proposals].includes(
+                                        currentTab as ETab
+                                    ) &&
+                                        userData[parsedFullTab] !== null &&
+                                        `(${userData[parsedFullTab]!.length})`}
+                                </span>
+                            </Tab>
+                        )
+                    })}
                 </TabsHeader>
                 <TabsBody>
                     <TabPanel
-                        key={searchParams.get('tab') ?? ETab.Packages}
-                        value={searchParams.get('tab') ?? ETab.Packages}
-                        className="gap-medium mt-medium p-medium flex w-full flex-col items-center"
+                        key={tab}
+                        value={tab}
+                        className={cn(
+                            'gap-medium flex w-full flex-col items-center',
+                            ![ETab.Hypotheses, ETab.Evidences, ETab.Proposals].includes(tab) &&
+                                'mt-medium p-medium'
+                        )}
                     >
-                        {loading || !userData[searchParams.get('tab') as ETab] ? (
-                            <Spinner className="mx-auto h-8 w-8 md:h-10 md:w-10" />
-                        ) : (
+                        {
                             {
-                                [ETab.Packages]: (
-                                    <PackagesTab packages={userData[ETab.Packages]!} />
-                                ),
-                                [ETab.Axioms]: <AxiomsTab axioms={userData[ETab.Axioms]!} />,
-                                [ETab.Fields]: <FieldsTab fields={userData[ETab.Fields]!} />,
+                                [ETab.Packages]:
+                                    loading || !userData[tab as unknown as EFullTab] ? (
+                                        <Spinner className="mx-auto h-8 w-8 md:h-10 md:w-10" />
+                                    ) : (
+                                        <PackagesTab packages={userData[EFullTab.Packages]!} />
+                                    ),
+                                [ETab.Axioms]:
+                                    loading || !userData[tab as unknown as EFullTab] ? (
+                                        <Spinner className="mx-auto h-8 w-8 md:h-10 md:w-10" />
+                                    ) : (
+                                        <AxiomsTab axioms={userData[EFullTab.Axioms]!} />
+                                    ),
+                                [ETab.Fields]:
+                                    loading || !userData[tab as unknown as EFullTab] ? (
+                                        <Spinner className="mx-auto h-8 w-8 md:h-10 md:w-10" />
+                                    ) : (
+                                        <FieldsTab fields={userData[EFullTab.Fields]!} />
+                                    ),
                                 [ETab.Hypotheses]: (
-                                    <HypothesesTab hypotheses={userData[ETab.Hypotheses]!} />
+                                    <Tabs value={fullTab} className="w-full">
+                                        <TabsHeader
+                                            className="overflow-x-auto overflow-y-hidden rounded-none border-b border-primary-50 bg-transparent p-0"
+                                            indicatorProps={{
+                                                className:
+                                                    'bg-transparent border-b-2 border-primary-700 shadow-none rounded-none',
+                                            }}
+                                        >
+                                            {['Published', 'Voted'].map((prefix) => {
+                                                const parsedFullTab =
+                                                    `${prefix}Hypotheses` as EFullTab
+                                                return (
+                                                    <Tab
+                                                        key={parsedFullTab}
+                                                        value={parsedFullTab}
+                                                        onClick={() =>
+                                                            setSearchPrams({ tab: parsedFullTab })
+                                                        }
+                                                        className={cn(
+                                                            'text-normal font-normal',
+                                                            fullTab === parsedFullTab &&
+                                                                'text-primary-700'
+                                                        )}
+                                                    >
+                                                        <span className="text-normal text-nowrap font-normal">
+                                                            {prefix}{' '}
+                                                            {userData[parsedFullTab] !== null &&
+                                                                `(${userData[parsedFullTab]!.length})`}
+                                                        </span>
+                                                    </Tab>
+                                                )
+                                            })}
+                                        </TabsHeader>
+                                        <TabsBody>
+                                            <TabPanel
+                                                key={fullTab}
+                                                value={fullTab}
+                                                className="gap-medium mt-medium p-medium flex w-full flex-col items-center"
+                                            >
+                                                {loading || !userData[fullTab] ? (
+                                                    <Spinner className="mx-auto h-8 w-8 md:h-10 md:w-10" />
+                                                ) : (
+                                                    <HypothesesTab
+                                                        hypotheses={userData[fullTab]!}
+                                                        type={
+                                                            fullTab.includes('Published')
+                                                                ? 'Published'
+                                                                : 'Voted'
+                                                        }
+                                                    />
+                                                )}
+                                            </TabPanel>
+                                        </TabsBody>
+                                    </Tabs>
                                 ),
                                 [ETab.Evidences]: (
-                                    <EvidencesTab evidences={userData[ETab.Evidences]!} />
+                                    <Tabs value={fullTab} className="w-full">
+                                        <TabsHeader
+                                            className="overflow-x-auto overflow-y-hidden rounded-none border-b border-primary-50 bg-transparent p-0"
+                                            indicatorProps={{
+                                                className:
+                                                    'bg-transparent border-b-2 border-primary-700 shadow-none rounded-none',
+                                            }}
+                                        >
+                                            {['Published', 'Voted'].map((prefix) => {
+                                                const parsedFullTab =
+                                                    `${prefix}Evidences` as EFullTab
+                                                return (
+                                                    <Tab
+                                                        key={parsedFullTab}
+                                                        value={parsedFullTab}
+                                                        onClick={() =>
+                                                            setSearchPrams({ tab: parsedFullTab })
+                                                        }
+                                                        className={cn(
+                                                            'text-normal font-normal',
+                                                            fullTab === parsedFullTab &&
+                                                                'text-primary-700'
+                                                        )}
+                                                    >
+                                                        <span className="text-normal text-nowrap font-normal">
+                                                            {prefix}{' '}
+                                                            {userData[parsedFullTab] !== null &&
+                                                                `(${userData[parsedFullTab]!.length})`}
+                                                        </span>
+                                                    </Tab>
+                                                )
+                                            })}
+                                        </TabsHeader>
+                                        <TabsBody>
+                                            <TabPanel
+                                                key={fullTab}
+                                                value={fullTab}
+                                                className="gap-medium mt-medium p-medium flex w-full flex-col items-center"
+                                            >
+                                                {loading || !userData[fullTab] ? (
+                                                    <Spinner className="mx-auto h-8 w-8 md:h-10 md:w-10" />
+                                                ) : (
+                                                    <EvidencesTab
+                                                        evidences={userData[fullTab]!}
+                                                        type={
+                                                            fullTab.includes('Published')
+                                                                ? 'Published'
+                                                                : 'Voted'
+                                                        }
+                                                    />
+                                                )}
+                                            </TabPanel>
+                                        </TabsBody>
+                                    </Tabs>
                                 ),
                                 [ETab.Proposals]: (
-                                    <ProposalsTab proposals={userData[ETab.Proposals]!} />
+                                    <Tabs value={fullTab} className="w-full">
+                                        <TabsHeader
+                                            className="overflow-x-auto overflow-y-hidden rounded-none border-b border-primary-50 bg-transparent p-0"
+                                            indicatorProps={{
+                                                className:
+                                                    'bg-transparent border-b-2 border-primary-700 shadow-none rounded-none',
+                                            }}
+                                        >
+                                            {['Opened', 'Voted'].map((prefix) => {
+                                                const parsedFullTab =
+                                                    `${prefix}Proposals` as EFullTab
+                                                return (
+                                                    <Tab
+                                                        key={parsedFullTab}
+                                                        value={parsedFullTab}
+                                                        onClick={() =>
+                                                            setSearchPrams({ tab: parsedFullTab })
+                                                        }
+                                                        className={cn(
+                                                            'text-normal font-normal',
+                                                            fullTab === parsedFullTab &&
+                                                                'text-primary-700'
+                                                        )}
+                                                    >
+                                                        <span className="text-normal text-nowrap font-normal">
+                                                            {prefix}{' '}
+                                                            {userData[parsedFullTab] !== null &&
+                                                                `(${userData[parsedFullTab]!.length})`}
+                                                        </span>
+                                                    </Tab>
+                                                )
+                                            })}
+                                        </TabsHeader>
+                                        <TabsBody>
+                                            <TabPanel
+                                                key={fullTab}
+                                                value={fullTab}
+                                                className="gap-medium mt-medium p-medium flex w-full flex-col items-center"
+                                            >
+                                                {loading || !userData[fullTab] ? (
+                                                    <Spinner className="mx-auto h-8 w-8 md:h-10 md:w-10" />
+                                                ) : (
+                                                    <ProposalsTab
+                                                        proposals={userData[fullTab]!}
+                                                        type={
+                                                            fullTab.includes('Opened')
+                                                                ? 'Opened'
+                                                                : 'Voted'
+                                                        }
+                                                    />
+                                                )}
+                                            </TabPanel>
+                                        </TabsBody>
+                                    </Tabs>
                                 ),
-                            }[searchParams.get('tab') ?? ETab.Packages]
-                        )}
+                            }[tab]
+                        }
                     </TabPanel>
                 </TabsBody>
             </Tabs>

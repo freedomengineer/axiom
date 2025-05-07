@@ -48,7 +48,7 @@ const FieldPage = () => {
         } catch {
             setPageStatus(PageStatus.NotFound)
         }
-    }, [])
+    }, [field])
 
     return (
         <>

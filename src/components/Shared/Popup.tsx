@@ -78,7 +78,7 @@ const Popup = ({
                         )}
                     </div>
                 </div>
-                <div className="py-semilarge px-extralarge mx-auto h-auto max-h-[80dvh] w-full max-w-[95vw] overflow-y-auto md:max-w-[85vw]">
+                <div className="py-semilarge px-extralarge mx-auto h-auto max-h-[80dvh] w-full overflow-y-auto">
                     {children}
                 </div>
             </div>

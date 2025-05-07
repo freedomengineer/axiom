@@ -28,6 +28,7 @@ const CustodiansPage = () => {
 
     const [custodians, setCustodians] = useState<DDAO.SharableNominee[]>([])
     const [electionCountdown, setElectionCountdown] = useState<number>(0)
+    const [expandedCustodian, setExpandedCustodian] = useState<string | null>(null)
 
     useEffect(() => {
         if (!configs) return
@@ -41,7 +42,9 @@ const CustodiansPage = () => {
                         1n,
                         100n
                     )
-                    .then((res) => setCustodians(res.result)),
+                    .then((res) => {
+                        setCustodians(res.result)
+                    }),
             ])
             const periodDuration = configs['PERIOD_DURATION'][1] as bigint
             const daysElapsed = daysInPeriod > periodDuration ? periodDuration - 1n : daysInPeriod
@@ -55,46 +58,49 @@ const CustodiansPage = () => {
         return () => clearInterval(interval)
     }, [])
 
+    const handleToggleExpand = (custodianId: string) => {
+        setExpandedCustodian((prev) => (prev === custodianId ? null : custodianId))
+    }
+
     return (
         <>
             <PageMetadata {...pageMetadata} />
             <div className="gap-medium flex w-full flex-col items-center">
-                <h2 className="text-semilarge font-display font-bold text-primary-700">
-                    Custodians
-                </h2>
                 <div className="gap-normal flex w-full flex-col md:flex-row">
-                    <div className="gap-normal grid w-full grid-cols-2 grid-rows-1 md:w-fit md:grid-cols-1 md:grid-rows-2">
-                        <div className="py-normal px-semilarge flex w-full flex-col items-center justify-evenly rounded-lg bg-cold-50 shadow-md">
-                            <h3 className="text-medium text-nowrap font-display font-semibold text-primary-700">
-                                Next Election
-                            </h3>
-                            <span className="text-small text-nowrap font-normal text-cold-800">
-                                {formatTime({ milli: electionCountdown }, true, true, false)}
-                            </span>
-                        </div>
-                        <div className="py-normal px-semilarge flex w-full flex-col items-center justify-evenly rounded-lg bg-cold-50 shadow-md">
-                            <h3 className="text-medium text-nowrap font-display font-semibold text-primary-700">
-                                Custodian Payout
-                            </h3>
-                            <span className="text-small text-nowrap font-normal text-cold-800">
-                                <span className="font-semibold">
-                                    {e8s.toString(
-                                        configs?.['PERIOD_CUSTODIAN_PAYOUT'][1] as bigint
-                                    )}
-                                </span>{' '}
-                                ACORN /{' '}
-                                <span className="font-semibold">
-                                    {configs?.['PERIOD_DURATION'][1].toString()}
-                                </span>{' '}
-                                days
-                            </span>
-                        </div>
+                    <div className="py-normal px-semilarge flex w-full flex-col items-center justify-between rounded-lg bg-cold-800 md:flex-row">
+                        <h3 className="text-medium text-nowrap font-display font-semibold text-white">
+                            Next Election
+                        </h3>
+                        <span className="text-small text-nowrap font-normal text-white">
+                            {formatTime({ milli: electionCountdown }, true, true, false)}
+                        </span>
                     </div>
-                    <div className="gap-normal flex flex-col overflow-x-hidden md:flex-row md:overflow-x-auto">
-                        {custodians.map((item, i) => (
-                            <CustodianCard key={i} item={item} />
-                        ))}
+                    <div className="py-normal px-semilarge flex w-full flex-col items-center justify-between rounded-lg bg-cold-800 md:flex-row">
+                        <h3 className="text-medium text-nowrap font-display font-semibold text-white">
+                            Custodian Payout
+                        </h3>
+                        <span className="text-small text-nowrap font-normal text-white">
+                            <span className="font-semibold">
+                                {e8s.toString(configs?.['PERIOD_CUSTODIAN_PAYOUT'][1] as bigint)}
+                            </span>{' '}
+                            ACORN /{' '}
+                            <span className="font-semibold">
+                                {configs?.['PERIOD_DURATION'][1].toString()}
+                            </span>{' '}
+                            days
+                        </span>
                     </div>
+                </div>
+                <div className="gap-normal flex w-full flex-col md:flex-row">
+                    {custodians.map((item) => (
+                        <div key={item.principal.toText()} className="w-full">
+                            <CustodianCard
+                                item={item}
+                                isExpanded={expandedCustodian === item.principal.toText()}
+                                onToggle={() => handleToggleExpand(item.principal.toText())}
+                            />
+                        </div>
+                    ))}
                 </div>
                 <Divider
                     direction="horizontal"

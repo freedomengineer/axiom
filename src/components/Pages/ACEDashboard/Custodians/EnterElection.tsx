@@ -49,7 +49,7 @@ const EnterElection = ({ onSubmit }: { onSubmit: () => void }) => {
                               : 'border-red-400 focus:ring-red-600'
                     )}
                 />
-                {title.length > 0 && (
+                {title.length > 0 && (isTooShort || isTooLong) && (
                     <div className="text-tiny flex w-full flex-col text-left">
                         {isTooShort && <span className="text-red-600">Title is too short</span>}
                         {isTooLong && <span className="text-red-600">Title is too long</span>}

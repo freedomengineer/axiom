@@ -1,10 +1,11 @@
-import { Dispatch, SetStateAction, useMemo } from 'react'
+import { Dispatch, SetStateAction, useMemo, useState } from 'react'
 
 import AcornIcon from '@components/Assets/acorn.svg'
 import ICPIcon from '@components/Assets/icp.svg'
 import Divider from '@components/Shared/Divider'
 import { GeneralForm } from '@utils/dashboard/proposal'
-import { amountOf, valueOf } from 'shared/utils/tokens'
+import { N_DECIMALS } from 'shared/constants'
+import e8s from 'shared/utils/e8s'
 
 const OpenProposalDetachmentForm = ({
     form,
@@ -17,6 +18,16 @@ const OpenProposalDetachmentForm = ({
     onBack: () => void
     onForward: () => void
 }) => {
+    const [acornReward, setAcornReward] = useState<string>(() => {
+        const str = e8s.toString(form.acornReward[0])
+        if (str === '0' && form.acornReward[1]) return ''
+        return str
+    })
+    const [icpReward, setIcpReward] = useState<string>(() => {
+        const str = e8s.toString(form.icpReward[0])
+        if (str === '0' && form.icpReward[1]) return ''
+        return str
+    })
     const validForm = useMemo(() => form.title[0].length > 0 && form.content[0].length > 0, [form])
 
     return (
@@ -52,19 +63,26 @@ const OpenProposalDetachmentForm = ({
                     <div className="gap-small grid grid-cols-2">
                         <div className="relative flex">
                             <input
-                                type="number"
+                                type="text"
                                 placeholder="Enter Acorn Reward"
-                                value={valueOf(form.acornReward[0])}
+                                value={acornReward}
                                 disabled={!form.acornReward[1]}
-                                onChange={(e) =>
+                                onChange={(e) => {
+                                    let val = e.target.value.replace(/,/g, '.')
+                                    if (!/^\d*\.?\d*$/.test(val)) return
+                                    const [intPart, decPart] = val.split('.')
+                                    if (decPart && decPart.length > N_DECIMALS) {
+                                        val = `${intPart}.${decPart.slice(0, N_DECIMALS)}`
+                                    }
+                                    setAcornReward(val)
                                     setForm((prev) => ({
                                         ...prev!,
                                         acornReward: [
-                                            amountOf(Number(e.target.value)),
+                                            e8s.fromNumber(Number(val)),
                                             prev!.acornReward[1],
                                         ],
                                     }))
-                                }
+                                }}
                                 aria-selected={!!form.acornReward[0]}
                                 className="input z-10 w-full rounded-l-md rounded-r-none"
                             />
@@ -74,19 +92,26 @@ const OpenProposalDetachmentForm = ({
                         </div>
                         <div className="relative flex">
                             <input
-                                type="number"
+                                type="text"
                                 placeholder="Enter ICP Reward"
-                                value={valueOf(form.icpReward[0])}
+                                value={icpReward}
                                 disabled={!form.icpReward[1]}
-                                onChange={(e) =>
+                                onChange={(e) => {
+                                    let val = e.target.value.replace(/,/g, '.')
+                                    if (!/^\d*\.?\d*$/.test(val)) return
+                                    const [intPart, decPart] = val.split('.')
+                                    if (decPart && decPart.length > N_DECIMALS) {
+                                        val = `${intPart}.${decPart.slice(0, N_DECIMALS)}`
+                                    }
+                                    setIcpReward(val)
                                     setForm((prev) => ({
                                         ...prev!,
                                         icpReward: [
-                                            amountOf(Number(e.target.value)),
+                                            e8s.fromNumber(Number(val)),
                                             prev!.icpReward[1],
                                         ],
                                     }))
-                                }
+                                }}
                                 aria-selected={!!form.icpReward[0]}
                                 className="input z-10 w-full rounded-l-md rounded-r-none"
                             />
@@ -105,13 +130,13 @@ const OpenProposalDetachmentForm = ({
             />
             <div className="gap-small flex w-full justify-between">
                 <button
-                    className="button w-auto min-w-36 bg-cold-700 hover:bg-cold-800 md:min-w-48"
+                    className="button w-auto min-w-36 bg-cold-800 md:min-w-48"
                     onClick={() => onBack()}
                 >
                     Back to Technical Form
                 </button>
                 <button
-                    className="button w-auto min-w-36 bg-cold-700 hover:bg-cold-800 md:min-w-48"
+                    className="button w-auto min-w-36 bg-cold-800 md:min-w-48"
                     onClick={() => onForward()}
                     disabled={!validForm}
                 >

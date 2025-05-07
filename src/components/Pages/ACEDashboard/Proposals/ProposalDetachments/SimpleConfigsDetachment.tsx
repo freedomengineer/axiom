@@ -31,11 +31,11 @@ const SimpleConfigsDetachment = ({
                     </tr>
                 </thead>
                 <tbody>
-                    {Object.entries(actorConfigs).map(([key, config], index) => {
-                        const isLastRow = index === Object.keys(actorConfigs).length - 1
+                    {Object.entries(actorConfigs).map(([key, config], i) => {
+                        const isLastRow = i === Object.keys(actorConfigs).length - 1
 
                         return (
-                            <tr key={index} className="group cursor-pointer hover:bg-cold-50">
+                            <tr key={i} className="group cursor-pointer hover:bg-cold-50">
                                 <td
                                     className={cn(
                                         '!text-tiny py-small px-normal group relative text-nowrap bg-cold-50 text-left font-semibold text-cold-600',

@@ -5,9 +5,11 @@ import FieldCard from '../Feed/Fields/FieldCard'
 const FieldsTab = ({ fields }: { fields: DAxioms.SharableField[] }) => {
     if (fields.length === 0) {
         return (
-            <p className="text-normal text-center font-light text-cold-800">
-                User has no joined fields yet
-            </p>
+            <div className="flex h-full w-full flex-col items-center justify-center text-center">
+                <p className="text-small font-light text-cold-700">
+                    User has not joined any fields yet.
+                </p>
+            </div>
         )
     }
 

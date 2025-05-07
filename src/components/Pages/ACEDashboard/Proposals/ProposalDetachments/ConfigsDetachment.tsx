@@ -73,27 +73,27 @@ const ConfigsDetachment = ({
                 </thead>
                 <tbody>
                     {(!loading || !showOldValue) &&
-                        detachment.actorsConfigs.map(([actorVariant, configs], index) =>
-                            configs.map(([key, value], subIndex) => {
+                        detachment.actorsConfigs.map(([actorVariant, configs], i) =>
+                            configs.map(([key, value], j) => {
                                 const isLastRow =
-                                    index === detachment.actorsConfigs.length - 1 &&
-                                    subIndex === configs.length - 1
+                                    i === detachment.actorsConfigs.length - 1 &&
+                                    j === configs.length - 1
                                 const actorName = UnwrapVariant(actorVariant)
 
                                 return (
                                     <tr
-                                        key={`${index}-${subIndex}`}
+                                        key={`${i}-${j}`}
                                         className="group cursor-pointer hover:bg-cold-50 aria-disabled:cursor-auto"
                                         aria-disabled={!onClick}
                                         onClick={() => onClick?.(actorName, key, value)}
                                     >
-                                        {subIndex === 0 && (
+                                        {j === 0 && (
                                             <td
                                                 rowSpan={Object.keys(configs).length}
                                                 className={cn(
                                                     '!text-tiny py-small px-normal group relative text-nowrap bg-cold-50 text-left font-semibold text-cold-600',
                                                     'border-b border-r border-cold-300',
-                                                    (subIndex === configs.length - 1 ||
+                                                    (j === configs.length - 1 ||
                                                         configs.length === 1) &&
                                                         'border-b-0'
                                                 )}

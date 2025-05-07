@@ -114,7 +114,7 @@ const PostEvidenceForm = ({ configs, form, side, setForm, setSide, onForward }) 
                                                 configs?.[`EVIDENCE_${key.toUpperCase()}_FEE`][1]
                                             )}
                                         </span>
-                                        <AcornIcon className="h-4 stroke-[1.5px] md:h-5 xl:h-6" />
+                                        <AcornIcon className="h-4 -translate-y-0.5 stroke-[1.5px] md:h-5" />
                                     </div>
                                 </div>
                                 <span className="text-tiny mb-auto text-left font-light">
@@ -292,7 +292,7 @@ const PostEvidenceForm = ({ configs, form, side, setForm, setSide, onForward }) 
                 borderColor="border-cold-800"
             />
             <button
-                className="button w-auto min-w-36 bg-cold-700 hover:bg-cold-800 md:min-w-48"
+                className="button w-auto min-w-36 bg-cold-800 md:min-w-48"
                 onClick={() => onForward()}
                 disabled={!side || !selectedFormat || !validNoteLength || !noEmptyFields}
             >

@@ -36,14 +36,14 @@ const BalanceChanges = ({
     const [isOpenDeposit, setIsOpenDeposit] = useState<boolean>(false)
 
     useEffect(() => {
-        if (localBalance !== undefined) return
+        if (isOpenDeposit) return
         ;(async () => {
             const balance: bigint = await (token === 'ICP' ? ICP : ACORN)
                 .call()
                 .icrc1_balance_of({ owner: principal!, subaccount: [] })
             setLocalBalance(balance)
             setBalance?.(balance)
-            setIsSufficient?.(amount >= balance)
+            setIsSufficient?.(sign === '+' ? amount >= balance : amount <= balance)
         })()
     }, [isOpenDeposit])
 

@@ -1,6 +1,5 @@
 import { ActorMethod } from '@dfinity/agent'
 
-import { ECategory, EStatus } from '@utils/dashboard/proposal'
 import { DAxioms, DDAO, DFacade } from 'shared/types/services'
 import { DefaultVariant, Primitive, isNullish, parsePrimitive } from 'shared/utils/typings'
 
@@ -101,8 +100,16 @@ export const FILTER_SORT_DECS = {
         filter: {
             votedBy: Primitive.Principal,
             proposedBy: Primitive.Principal,
-            proposedIn: Object.keys(ECategory),
-            withStatus: Object.keys(EStatus),
+            proposedIn: ['Code', 'Field', 'Worker', 'Configs'],
+            withStatus: [
+                'Failed',
+                'Approved',
+                'Rejected',
+                'Proposed',
+                'Executed',
+                'Retried',
+                'Expired',
+            ],
         },
         sort: {
             by: ['updated', 'recent', 'acornReward', 'icpReward'],

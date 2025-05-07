@@ -56,18 +56,19 @@ export default class Actor<T> implements IActor<T> {
         const actor = createActor<T>(this.principal, this.idlFactory, {
             agent: agent ?? createAgent(undefined),
         })
-        return new Proxy(actor, {
-            get: (target, prop, receiver) => {
-                const originalMethod = Reflect.get(target, prop, receiver)
+        // return new Proxy(actor, {
+        //     get: (target, prop, receiver) => {
+        //         const originalMethod = Reflect.get(target, prop, receiver)
 
-                if (typeof originalMethod === 'function') {
-                    return async (...args: any[]) =>
-                        withRetry(() => originalMethod.apply(target, args), showToast)
-                }
+        //         if (typeof originalMethod === 'function') {
+        //             return async (...args: any[]) =>
+        //                 withRetry(() => originalMethod.apply(target, args), showToast)
+        //         }
 
-                return originalMethod
-            },
-        })
+        //         return originalMethod
+        //     },
+        // })
+        return actor
     }
 
     constructor(id: string, idlFactory: InterfaceFactory) {

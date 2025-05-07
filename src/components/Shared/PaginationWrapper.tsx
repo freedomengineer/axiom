@@ -69,7 +69,7 @@ const PaginationWrapper = <T, N extends QueryName>({
                         is={items.is}
                         of={items.of}
                         onPageChange={(i: bigint) =>
-                            setSearchParams({ ...searchParams, page: i.toString() })
+                            setSearchParams({ ...hardFilter, page: i.toString() })
                         }
                     />
                 </div>

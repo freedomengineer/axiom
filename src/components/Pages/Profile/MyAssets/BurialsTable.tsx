@@ -6,7 +6,8 @@ import AcornIcon from '@components/Assets/acorn.svg'
 import Spinner from '@components/Primitives/Spinner'
 import Popup from '@components/Shared/Popup'
 import useAuth from '@hooks/useAuth'
-import useUserData, { refreshSpecificUserData } from '@hooks/useUserData'
+import { refreshSpecificUserData } from '@hooks/useUserData'
+import cn from '@libs/class'
 import { formatDate, formatDateTime } from '@libs/date'
 import { promise } from '@libs/toastify'
 import { COEFFICIENTS } from '@utils/escrow/burial'
@@ -61,26 +62,26 @@ const BurialsTable = ({
                 title="Bury ACORN"
                 open={open}
                 onClose={() => setOpen(false)}
-                className="w-full md:w-4/5"
+                className="w-full md:w-4/5 md:min-w-[1100px]"
                 Icon={<AcornIcon className="h-6 w-6 md:h-7 md:w-7" />}
             >
                 <Bury onBury={async () => Promise.all([fetchBurials(), refreshBalances()])} />
             </Popup>
             <div className="gap-normal grid w-full grid-cols-2 grid-rows-2 items-center md:grid-cols-4 md:grid-rows-1">
-                <div className="text-small py-small px-medium gap-normal flex w-full items-center justify-between text-nowrap rounded-lg bg-cold-50 shadow-md">
-                    <span className="text-cold-800">Voting pwr.</span>
-                    <span className="font-semibold text-cold-800">
+                <div className="text-small py-small px-medium gap-normal flex w-full items-center justify-between text-nowrap rounded-lg border border-cold-300 bg-cold-50">
+                    <span className="font-semibold text-cold-700">Voting pwr.</span>
+                    <span className="font-semibold text-cold-700">
                         {valueOf(votingPower ?? 0n)}
                     </span>
                 </div>
                 <button className="button h-full bg-cold-800" onClick={() => setOpen(true)}>
                     Bury ACORN
                 </button>
-                <div className="text-small py-small px-medium gap-normal flex w-full items-center justify-between text-nowrap rounded-lg bg-cold-50 shadow-md">
-                    <span className="text-cold-800">Buried amt.</span>
-                    <span className="font-semibold text-cold-800">
+                <div className="text-small py-small px-medium gap-normal flex w-full items-center justify-between text-nowrap rounded-lg border border-cold-300 bg-cold-50">
+                    <span className="font-semibold text-cold-700">Buried amt.</span>
+                    <span className="font-semibold text-cold-700">
                         {valueOf((buriedAmount ?? 0n) - (expiredAmount ?? 0n))}{' '}
-                        <span className="font-normal text-red-600">
+                        <span className="font-normal text-red-700">
                             (-{valueOf(expiredAmount ?? 0n)})
                         </span>
                     </span>
@@ -110,67 +111,122 @@ const BurialsTable = ({
                     </div>
                 </button>
             </div>
-            <div className="overflow-y-auto rounded-lg shadow-md md:overflow-hidden">
-                <table className="min-w-full divide-y divide-cold-200">
-                    <thead className="bg-cold-50">
-                        <tr>
-                            {[
-                                'No.',
-                                'Type',
-                                'Amt.',
-                                'Pwr.',
-                                'Issued date',
-                                'Expiry date',
-                                'Claimable int.',
-                            ].map((head) => (
-                                <th
-                                    key={head}
-                                    scope="col"
-                                    className="text-tiny py-small px-medium text-left font-semibold text-cold-700"
-                                >
-                                    {head}
-                                </th>
-                            ))}
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-cold-200 bg-white text-left">
-                        {burials?.map((burial, i) => (
-                            <tr key={i} className="hover:bg-cold-50">
-                                <td className="text-tiny py-normal px-medium whitespace-nowrap text-cold-600">
-                                    {i + 1}
-                                </td>
-                                <td className="text-tiny py-normal px-medium whitespace-nowrap text-cold-600">
-                                    {burial.coefficient.toString()}x (
-                                    {COEFFICIENTS[burial.coefficient.toString()]})
-                                </td>
-                                <td className="text-tiny py-normal px-medium whitespace-nowrap font-semibold text-cold-900">
-                                    {valueOf(burial.amount)}
-                                </td>
-                                <td className="text-tiny py-normal px-medium whitespace-nowrap font-semibold text-cold-900">
-                                    {valueOf(burial.amount * burial.coefficient)}
-                                </td>
-                                <td className="text-tiny py-normal px-medium whitespace-nowrap text-cold-600">
-                                    {formatDateTime({ nano: burial.issueDate })}
-                                    <span className="hidden font-semibold text-cold-600 md:inline">
-                                        {' '}
-                                        ({formatDate({ nano: burial.issueDate }, true)})
-                                    </span>
-                                </td>
-                                <td className="text-tiny py-normal px-medium whitespace-nowrap text-cold-600">
-                                    {formatDateTime({ nano: burial.expiryDate })}
-                                    <span className="hidden font-semibold text-cold-600 md:inline">
-                                        {' '}
-                                        ({formatDate({ nano: burial.expiryDate }, true)})
-                                    </span>
-                                </td>
-                                <td className="text-tiny py-normal px-medium whitespace-nowrap font-semibold text-cold-900">
-                                    {valueOf(burial.claimableInterest)}
-                                </td>
+            {burials?.length !== 0 && (
+                <div className="w-full overflow-x-auto rounded-lg border border-cold-300 md:overflow-hidden">
+                    <table className="min-w-full border-collapse">
+                        <thead className="bg-cold-50">
+                            <tr>
+                                {[
+                                    'No.',
+                                    'Type',
+                                    'Amt.',
+                                    'Pwr.',
+                                    'Issued date',
+                                    'Expiry date',
+                                    'Claimable int.',
+                                ].map((title, i) => (
+                                    <th
+                                        key={i}
+                                        scope="col"
+                                        className={cn(
+                                            'text-small px-normal py-small select-none text-nowrap bg-cold-100',
+                                            'border-b border-r border-cold-300',
+                                            i === 0 && 'border-l-0',
+                                            i === 6 && 'border-r-0'
+                                        )}
+                                    >
+                                        <div className="flex w-full items-center justify-center font-semibold text-cold-700">
+                                            <span>{title}</span>
+                                        </div>
+                                    </th>
+                                ))}
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
+                        </thead>
+                        <tbody className="divide-y divide-cold-200 bg-white text-left">
+                            {burials?.map((burial, i) => {
+                                const isLastRow = i === burials.length - 1
+
+                                return (
+                                    <tr key={i} className="group hover:bg-cold-50">
+                                        <td
+                                            className={cn(
+                                                '!text-tiny py-small px-normal group relative text-nowrap bg-cold-50 text-left font-semibold text-cold-600',
+                                                'border-b border-r border-cold-300',
+                                                isLastRow && 'border-b-0'
+                                            )}
+                                        >
+                                            {i + 1}
+                                        </td>
+                                        <td
+                                            className={cn(
+                                                '!text-tiny py-small px-normal text-nowrap text-cold-600',
+                                                'border-b border-r border-cold-300',
+                                                isLastRow && 'border-b-0'
+                                            )}
+                                        >
+                                            {burial.coefficient.toString()}x (
+                                            {COEFFICIENTS[burial.coefficient.toString()]})
+                                        </td>
+                                        <td
+                                            className={cn(
+                                                '!text-tiny py-small px-normal text-nowrap font-semibold text-cold-600',
+                                                'border-b border-r border-cold-300',
+                                                isLastRow && 'border-b-0'
+                                            )}
+                                        >
+                                            {valueOf(burial.amount)}
+                                        </td>
+                                        <td
+                                            className={cn(
+                                                '!text-tiny py-small px-normal text-nowrap font-semibold text-cold-600',
+                                                'border-b border-r border-cold-300',
+                                                isLastRow && 'border-b-0'
+                                            )}
+                                        >
+                                            {valueOf(burial.amount * burial.coefficient)}
+                                        </td>
+                                        <td
+                                            className={cn(
+                                                '!text-tiny py-small px-normal text-nowrap text-cold-600',
+                                                'border-b border-r border-cold-300',
+                                                isLastRow && 'border-b-0'
+                                            )}
+                                        >
+                                            {formatDateTime({ nano: burial.issueDate })}
+                                            <span className="hidden font-semibold text-cold-600 md:inline">
+                                                {' '}
+                                                ({formatDate({ nano: burial.issueDate }, true)})
+                                            </span>
+                                        </td>
+                                        <td
+                                            className={cn(
+                                                '!text-tiny py-small px-normal text-nowrap text-cold-600',
+                                                'border-b border-r border-cold-300',
+                                                isLastRow && 'border-b-0'
+                                            )}
+                                        >
+                                            {formatDateTime({ nano: burial.expiryDate })}
+                                            <span className="hidden font-semibold text-cold-600 md:inline">
+                                                {' '}
+                                                ({formatDate({ nano: burial.expiryDate }, true)})
+                                            </span>
+                                        </td>
+                                        <td
+                                            className={cn(
+                                                '!text-tiny py-small px-normal text-nowrap font-semibold text-cold-600',
+                                                'border-b border-cold-300',
+                                                isLastRow && 'border-b-0'
+                                            )}
+                                        >
+                                            {valueOf(burial.claimableInterest)}
+                                        </td>
+                                    </tr>
+                                )
+                            })}
+                        </tbody>
+                    </table>
+                </div>
+            )}
         </div>
     )
 }

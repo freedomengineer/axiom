@@ -43,6 +43,7 @@ const OpenProposalPreview = ({
 
     const [terms, setTerms] = useState<[boolean, boolean]>([false, false])
     const [loading, setLoading] = useState(false)
+    const [isSufficient, setIsSufficient] = useState(true)
 
     const fee = !configs
         ? 0n
@@ -55,7 +56,7 @@ const OpenProposalPreview = ({
 
     const retry = async () => {
         setLoading(true)
-        await promise(
+        const approve = await promise(
             ACORN.call(agent).icrc2_approve({
                 amount: fee,
                 spender: { owner: Treasury.principal, subaccount: [] },
@@ -69,6 +70,10 @@ const OpenProposalPreview = ({
             'Approving ACORN to Axiom Treasury',
             'Approved ACORN to Axiom Treasury successfully!'
         )
+        if (!approve.success) {
+            setLoading(false)
+            return
+        }
         let res
         switch (category) {
             case ECategory.Configs: {
@@ -283,7 +288,12 @@ const OpenProposalPreview = ({
             />
             <div className="text-tiny gap-normal flex w-full flex-col md:w-2/5">
                 <p className="text-medium text-center font-light">Confirmation</p>
-                <BalanceChanges token="ACORN" amount={fee} sign="-" />
+                <BalanceChanges
+                    token="ACORN"
+                    amount={fee}
+                    sign="-"
+                    setIsSufficient={setIsSufficient}
+                />
                 <div
                     className={cn(
                         'gap-normal flex items-center text-cold-700 text-opacity-100',
@@ -335,7 +345,7 @@ const OpenProposalPreview = ({
                 />
                 <div className="gap-small mt-auto flex justify-between">
                     <button
-                        className="button w-auto min-w-36 bg-cold-700 hover:bg-cold-800 md:min-w-48"
+                        className="button w-auto min-w-36 bg-cold-800 md:min-w-48"
                         onClick={() => onBack()}
                     >
                         Back to General Form
@@ -343,10 +353,12 @@ const OpenProposalPreview = ({
                     <button
                         className="button w-auto min-w-36 md:min-w-48"
                         onClick={isNullish(id) ? post : retry}
-                        disabled={!terms[0] || !terms[1] || loading}
+                        disabled={!terms[0] || !terms[1] || !isSufficient || loading}
                     >
                         {loading ? (
                             <Spinner color="white" className="h-4 w-4 md:h-5 md:w-5" />
+                        ) : !isSufficient ? (
+                            <span>Insufficient ACORN balance</span>
                         ) : (
                             <>
                                 Post with {valueOf(fee)}{' '}

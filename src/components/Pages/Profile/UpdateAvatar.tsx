@@ -26,6 +26,7 @@ const UpdateAvatar = ({ onSubmit, avatar }: { onSubmit: () => void; avatar: Opt<
 
     const [newAvatar, setNewAvatar] = useState<Opt<Uint8Array>>()
     const [loading, setLoading] = useState<ELoading | undefined>(undefined)
+    const [isSufficient, setIsSufficient] = useState(true)
 
     const uploadImage = useUploadImage(setNewAvatar, (loading) =>
         setLoading(loading ? ELoading.Uploading : undefined)
@@ -35,7 +36,7 @@ const UpdateAvatar = ({ onSubmit, avatar }: { onSubmit: () => void; avatar: Opt<
         if (!newAvatar) return
 
         setLoading(ELoading.Updating)
-        await promise(
+        const approve = await promise(
             ACORN.call(agent).icrc2_approve({
                 amount: configs?.['UPDATE_AVATAR_FEE'][1] as bigint,
                 spender: { owner: Treasury.principal, subaccount: [] },
@@ -49,6 +50,10 @@ const UpdateAvatar = ({ onSubmit, avatar }: { onSubmit: () => void; avatar: Opt<
             'Approving ACORN to Axiom Treasury',
             'Approved ACORN to Axiom Treasury successfully!'
         )
+        if (!approve.success) {
+            setLoading(undefined)
+            return
+        }
         const res = await promise(
             Facade.call(agent).editAvatar([{ blob: newAvatar }]),
             'Updating avatar',
@@ -105,11 +110,10 @@ const UpdateAvatar = ({ onSubmit, avatar }: { onSubmit: () => void; avatar: Opt<
                     </div>
                 )}
             </label>
-            {(avatar || newAvatar) && (
+            {!(avatar && !newAvatar) && (
                 <BalanceChanges
-                    amount={
-                        avatar && !newAvatar ? 0n : (configs?.['UPDATE_AVATAR_FEE'][1] as bigint)
-                    }
+                    amount={configs?.['UPDATE_AVATAR_FEE'][1] as bigint}
+                    setIsSufficient={setIsSufficient}
                 />
             )}
             <div className="flex w-full justify-between">
@@ -130,10 +134,12 @@ const UpdateAvatar = ({ onSubmit, avatar }: { onSubmit: () => void; avatar: Opt<
                 <button
                     className="button w-auto min-w-36 md:min-w-48"
                     onClick={update}
-                    disabled={loading === ELoading.Updating || !newAvatar}
+                    disabled={loading === ELoading.Updating || !newAvatar || !isSufficient}
                 >
                     {loading === ELoading.Updating ? (
                         <Spinner color="white" className="h-4 w-4 md:h-5 md:w-5" />
+                    ) : !isSufficient ? (
+                        <span>Insufficient ACORN balance</span>
                     ) : (
                         <>
                             Update with {valueOf(configs?.['UPDATE_AVATAR_FEE'][1] as bigint)}{' '}

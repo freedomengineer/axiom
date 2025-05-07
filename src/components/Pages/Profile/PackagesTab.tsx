@@ -1,14 +1,13 @@
 import { useState } from 'react'
 
 import PackageIcon from '@components/Assets/package.svg'
+import Achievement from '@components/Pages/ACEDashboard/Memberships/Achievement'
+import AchievementDetails from '@components/Pages/ACEDashboard/Memberships/AchievementDetails'
+import Membership from '@components/Pages/ACEDashboard/Memberships/Membership'
+import MembershipDetails from '@components/Pages/ACEDashboard/Memberships/MembershipDetails'
 import Popup from '@components/Shared/Popup'
 import { EPackages, ParsedPackages } from '@hooks/usePackages'
 import { DSales } from 'shared/types/services'
-
-import Achievement from '../Assets/Memberships/Achievement'
-import AchievementDetails from '../Assets/Memberships/AchievementDetails'
-import Membership from '../Assets/Memberships/Membership'
-import MembershipDetails from '../Assets/Memberships/MembershipDetails'
 
 const PackagesTab = ({ packages }: { packages: ParsedPackages<EPackages> }) => {
     const [selectedPackage, setSelectedPackage] = useState<
@@ -17,8 +16,8 @@ const PackagesTab = ({ packages }: { packages: ParsedPackages<EPackages> }) => {
 
     if (packages.length === 0) {
         return (
-            <p className="text-normal text-center font-light text-cold-800">
-                User has no packages yet
+            <p className="text-small font-light text-cold-700">
+                User has not purchased any packages yet.
             </p>
         )
     }
