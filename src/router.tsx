@@ -10,6 +10,7 @@ import OpenProposalPage from '@pages/dashboard/open/page'
 import DashboardPage from '@pages/dashboard/page'
 import ProposalPage from '@pages/dashboard/proposals/[proposal]/page'
 import ProposalsPage from '@pages/dashboard/proposals/page'
+import Top10Page from '@pages/dashboard/top10/page'
 import EvidencePage from '@pages/feed/[hypothesis]/evidences/[evidence]/page'
 import PostEvidencePage from '@pages/feed/[hypothesis]/evidences/post/page'
 import HypothesisPage from '@pages/feed/[hypothesis]/page'
@@ -122,6 +123,7 @@ const routes: RouteObject[] = [
                     },
                     { path: 'assets', element: <AssetsPage /> },
                     { path: 'memberships', element: <MembershipsPage /> },
+                    { path: 'top10', element: <Top10Page /> },
                 ],
             },
             {

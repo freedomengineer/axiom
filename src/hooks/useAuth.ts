@@ -101,12 +101,12 @@ export const useAuthClient = () => {
                 const urlParams = new URLSearchParams(location.search)
                 const ref: string = urlParams.get('ref')!
                 setReferrer(Principal.fromText(ref))
-                sessionStorage.setItem('ref', ref)
+                localStorage.setItem('ref', ref)
                 return
             } catch {}
         }
         try {
-            const ref = sessionStorage.getItem('ref')!
+            const ref = localStorage.getItem('ref')!
             setReferrer(Principal.fromText(ref))
         } catch {}
     }, [pemIdentity])
@@ -121,6 +121,7 @@ export const useAuthClient = () => {
         if (isAuthenticated === false) {
             if (
                 pathname === '/login' ||
+                pathname === '/profile/undefined' ||
                 pathname.includes('/profile/my_') ||
                 pathname.includes('/post') ||
                 pathname.includes('/open')
@@ -160,11 +161,19 @@ export const useAuthClient = () => {
         const identity = client.getIdentity()
         const agent = createAgent(identity)
         const principal = identity.getPrincipal()
+        const isAnonymous = principal.isAnonymous()
 
-        await refreshUser(principal)
-        setIsAuthenticated(isAuthenticated)
-        setAgent(agent)
-        setPrincipal(principal)
+        if (isAnonymous) {
+            setUser(null)
+            setIsAuthenticated(false)
+            setAgent(null)
+            setPrincipal(null)
+        } else {
+            await refreshUser(principal)
+            setIsAuthenticated(isAuthenticated)
+            setAgent(agent)
+            setPrincipal(principal)
+        }
         setAuthClient(client)
         setIsLoading(false)
     }

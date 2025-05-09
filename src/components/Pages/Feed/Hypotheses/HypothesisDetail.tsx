@@ -1,6 +1,6 @@
 'use client'
 import { PieChart } from '@mui/x-charts/PieChart'
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 import AcornIcon from '@components/Assets/acorn.svg'
 import AdoptIcon from '@components/Assets/adopt.svg'
@@ -43,6 +43,10 @@ const HypothesisDetail = ({ item }: { item: DAxioms.SharableHypothesis }) => {
     const { agent, principal } = useAuth()
     const positiveEvidencesRef = useRef<InfiniteScrollWrapperHandle>(null)
     const negativeEvidencesRef = useRef<InfiniteScrollWrapperHandle>(null)
+    const evidenceContainerRef = useRef<HTMLDivElement>(null)
+    const [activeSide, setActiveSide] = useState<EEvidenceVote>(EEvidenceVote.Positive)
+    const [touchStart, setTouchStart] = useState<number | null>(null)
+    const [isMobile, setIsMobile] = useState(false)
 
     const {
         publisher,
@@ -93,6 +97,42 @@ const HypothesisDetail = ({ item }: { item: DAxioms.SharableHypothesis }) => {
     }))
     const someVote = localItem.votes.regular.some((vote) => vote !== 0n)
 
+    const handleTouchStart = (e: React.TouchEvent) => {
+        setTouchStart(e.touches[0].clientX)
+    }
+
+    const handleTouchEnd = (e: React.TouchEvent) => {
+        if (touchStart === null) return
+
+        const touchEnd = e.changedTouches[0].clientX
+        const diff = touchStart - touchEnd
+
+        if (Math.abs(diff) > 50) {
+            if (diff > 0) {
+                setActiveSide(EEvidenceVote.Negative)
+            } else {
+                setActiveSide(EEvidenceVote.Positive)
+            }
+        }
+
+        setTouchStart(null)
+    }
+
+    const handleTouchMove = (e: React.TouchEvent) => {
+        if (touchStart !== null && Math.abs(touchStart - e.touches[0].clientX) > 10) {
+            e.preventDefault()
+        }
+    }
+
+    useEffect(() => {
+        const checkIsMobile = () => {
+            setIsMobile(window.innerWidth < 1024)
+        }
+        checkIsMobile()
+        window.addEventListener('resize', checkIsMobile)
+        return () => window.removeEventListener('resize', checkIsMobile)
+    }, [])
+
     return (
         <>
             <Popup
@@ -128,7 +168,7 @@ const HypothesisDetail = ({ item }: { item: DAxioms.SharableHypothesis }) => {
                     onSubmit={() => setFlagOpen(false)}
                 />
             </Popup>
-            <div className="gap-medium flex h-full w-full flex-col overflow-x-hidden rounded-lg border border-cold-600 border-opacity-50 hover:border-opacity-100">
+            <div className="gap-medium relative flex h-full w-full flex-col rounded-lg border border-cold-600 border-opacity-50 hover:border-opacity-100">
                 <div className="max-h-auto flex min-h-60 flex-col place-items-center items-center bg-hypothesis">
                     <p className="text-medium p-normal my-auto flex h-full items-center whitespace-pre-line break-words text-center font-semibold text-primary-900/80 hover:text-primary-800">
                         {localItem?.content.trim()}
@@ -371,36 +411,123 @@ const HypothesisDetail = ({ item }: { item: DAxioms.SharableHypothesis }) => {
                                 )
                         )}
                     </div>
-                    <div className="px-normal mb-normal gap-normal flex w-full items-stretch justify-between">
-                        <div className="gap-normal flex w-1/2 flex-col items-center">
-                            <InfiniteScrollWrapper
-                                ref={positiveEvidencesRef}
-                                query={Axioms.call(agent, true).getEvidencesPagination}
-                                name="evidence"
-                                hardFilter={positiveFilter}
-                                hardSort={commonSort}
-                                size={2n}
-                                LayoutComponent={EvidencesLayout}
-                                className="h-full w-full"
-                            />
-                        </div>
-                        <Divider
-                            direction="vertical"
-                            bgColor="bg-cold-800"
-                            borderColor="border-cold-800"
-                        />
-                        <div className="gap-normal flex w-1/2 flex-col items-center">
-                            <InfiniteScrollWrapper
-                                ref={negativeEvidencesRef}
-                                query={Axioms.call(agent, true).getEvidencesPagination}
-                                name="evidence"
-                                hardFilter={negativeFilter}
-                                hardSort={commonSort}
-                                size={2n}
-                                LayoutComponent={EvidencesLayout}
-                                className="h-full w-full"
-                            />
-                        </div>
+
+                    <div className="px-normal mb-normal gap-normal w-full">
+                        {!isMobile && (
+                            <div className="px-normal mb-normal gap-normal flex w-full items-stretch justify-between">
+                                <div className="gap-normal flex w-1/2 flex-col items-center">
+                                    <InfiniteScrollWrapper
+                                        ref={positiveEvidencesRef}
+                                        query={Axioms.call(agent, true).getEvidencesPagination}
+                                        name="evidence"
+                                        hardFilter={positiveFilter}
+                                        hardSort={commonSort}
+                                        size={2n}
+                                        LayoutComponent={EvidencesLayout}
+                                        className="h-full w-full"
+                                    />
+                                </div>
+                                <Divider
+                                    direction="vertical"
+                                    bgColor="bg-cold-800"
+                                    borderColor="border-cold-800"
+                                />
+                                <div className="gap-normal flex w-1/2 flex-col items-center">
+                                    <InfiniteScrollWrapper
+                                        ref={negativeEvidencesRef}
+                                        query={Axioms.call(agent, true).getEvidencesPagination}
+                                        name="evidence"
+                                        hardFilter={negativeFilter}
+                                        hardSort={commonSort}
+                                        size={2n}
+                                        LayoutComponent={EvidencesLayout}
+                                        className="h-full w-full"
+                                    />
+                                </div>
+                            </div>
+                        )}
+                        {isMobile && (
+                            <div className="h-full w-full">
+                                <div className="text-small py-normal sticky top-0 z-10 w-full bg-white">
+                                    <div
+                                        className={cn(
+                                            'flex w-[200%] transition-transform duration-300 ease-in-out',
+                                            activeSide === EEvidenceVote.Positive
+                                                ? 'translate-x-0'
+                                                : '-translate-x-1/2'
+                                        )}
+                                    >
+                                        <p className="w-1/2 pr-5 text-right">
+                                            swipe right to see{' '}
+                                            <span
+                                                className={cn(
+                                                    'font-semibold',
+                                                    VOTES[EEvidenceVote.Negative].textColor
+                                                )}
+                                            >
+                                                negative side
+                                            </span>{' '}
+                                            →
+                                        </p>
+                                        <p className="w-1/2 pl-5 text-left">
+                                            ← swipe left to see{' '}
+                                            <span
+                                                className={cn(
+                                                    'font-semibold',
+                                                    VOTES[EEvidenceVote.Positive].textColor
+                                                )}
+                                            >
+                                                positive side
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div
+                                    ref={evidenceContainerRef}
+                                    className="w-full overflow-x-hidden"
+                                    onTouchStart={handleTouchStart}
+                                    onTouchEnd={handleTouchEnd}
+                                >
+                                    <div
+                                        className={cn(
+                                            'flex w-[200%] transition-transform duration-300 ease-in-out',
+                                            activeSide === EEvidenceVote.Positive
+                                                ? 'translate-x-0'
+                                                : '-translate-x-1/2'
+                                        )}
+                                    >
+                                        <div className="w-1/2 flex-shrink-0 px-1">
+                                            <InfiniteScrollWrapper
+                                                ref={positiveEvidencesRef}
+                                                query={
+                                                    Axioms.call(agent, true).getEvidencesPagination
+                                                }
+                                                name="evidence"
+                                                hardFilter={positiveFilter}
+                                                hardSort={commonSort}
+                                                size={2n}
+                                                LayoutComponent={EvidencesLayout}
+                                                className="h-full w-full"
+                                            />
+                                        </div>
+                                        <div className="w-1/2 flex-shrink-0 px-1">
+                                            <InfiniteScrollWrapper
+                                                ref={negativeEvidencesRef}
+                                                query={
+                                                    Axioms.call(agent, true).getEvidencesPagination
+                                                }
+                                                name="evidence"
+                                                hardFilter={negativeFilter}
+                                                hardSort={commonSort}
+                                                size={2n}
+                                                LayoutComponent={EvidencesLayout}
+                                                className="h-full w-full"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

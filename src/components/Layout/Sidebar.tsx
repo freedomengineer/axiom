@@ -21,6 +21,7 @@ import FieldInline from '@components/Pages/Feed/Fields/FieldInline'
 import Link from '@components/Shared/Link'
 import siteMetadata from '@data/siteMetadata.json'
 import useAuth from '@hooks/useAuth'
+import useLocalStorage from '@hooks/useLocalStorage'
 import { useSpecificUserData } from '@hooks/useUserData'
 import { formatTime } from '@libs/date'
 
@@ -45,7 +46,9 @@ const Sidebar = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
     const fields = useSpecificUserData(principal ?? null, 'fields')
     const location = useLocation()
 
-    const [opens, setOpens] = useState<boolean[]>([true, true, true])
+    const [toggle1, setToggle1] = useLocalStorage('sideBarToggle1')
+    const [toggle2, setToggle2] = useLocalStorage('sideBarToggle2')
+    const [toggle3, setToggle3] = useLocalStorage('sideBarToggle3')
     const [pattern, setPattern] = useState<string>('')
     const [limit, setLimit] = useState(FIELD_LIMIT)
 
@@ -67,9 +70,17 @@ const Sidebar = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
           : fields
 
     const handleOpen = (index: number) => {
-        const newOpens = [...opens]
-        newOpens[index] = !opens[index]
-        setOpens(newOpens)
+        switch (index) {
+            case 0:
+                setToggle1(!toggle1)
+                break
+            case 1:
+                setToggle2(!toggle2)
+                break
+            case 2:
+                setToggle3(!toggle3)
+                break
+        }
     }
 
     return (
@@ -116,7 +127,11 @@ const Sidebar = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
                                     ([subname, subdata]) => (
                                         <Link
                                             key={subname}
-                                            href={(subdata as any).url}
+                                            href={`${(subdata as any).url}${
+                                                {
+                                                    'Top 10': '?key=acornHolders',
+                                                }?.[subname] ?? ''
+                                            }`}
                                             className="px-normal py-tiny flex rounded-lg hover:bg-cold-800 hover:text-white aria-checked:bg-cold-800 aria-checked:text-white"
                                             aria-checked={location.pathname.includes(
                                                 (subdata as any).url
@@ -134,10 +149,10 @@ const Sidebar = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
                 ))}
                 <hr className="border-t border-black/15" />
                 <Accordion
-                    open={opens[0]}
+                    open={toggle1}
                     icon={
                         <ForwardIcon
-                            className={`mx-auto h-4 w-4 stroke-[2px] transition-transform ${opens[0] ? 'rotate-90' : ''}`}
+                            className={`mx-auto h-4 w-4 stroke-[2px] transition-transform ${toggle1 ? 'rotate-90' : ''}`}
                         />
                     }
                     className="px-medium"
@@ -178,10 +193,10 @@ const Sidebar = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
                 </Accordion>
                 <hr className="border-black/7 border-t" />
                 <Accordion
-                    open={opens[1]}
+                    open={toggle2}
                     icon={
                         <ForwardIcon
-                            className={`mx-auto h-4 w-4 stroke-[2px] transition-transform ${opens[1] ? 'rotate-90' : ''}`}
+                            className={`mx-auto h-4 w-4 stroke-[2px] transition-transform ${toggle2 ? 'rotate-90' : ''}`}
                         />
                     }
                     className="px-medium"
@@ -216,10 +231,10 @@ const Sidebar = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
                 </Accordion>
                 <hr className="border-black/7 border-t" />
                 <Accordion
-                    open={opens[2]}
+                    open={toggle3}
                     icon={
                         <ForwardIcon
-                            className={`mx-auto h-4 w-4 stroke-[2px] transition-transform ${opens[1] ? 'rotate-90' : ''}`}
+                            className={`mx-auto h-4 w-4 stroke-[2px] transition-transform ${toggle3 ? 'rotate-90' : ''}`}
                         />
                     }
                     className="px-medium"

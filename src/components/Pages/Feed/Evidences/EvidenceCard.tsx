@@ -132,8 +132,8 @@ const EvidenceCard = ({
                     </span>
                 </Link>
                 <div className="hidden w-full md:order-4 md:block" />
-                <div className="order-4 ml-auto flex w-20 flex-shrink-0 place-items-center items-center justify-between md:order-5 md:ml-0 md:w-32">
-                    <div className="gap-tiny flex items-center">
+                <div className="order-4 ml-auto flex w-28 flex-shrink-0 place-items-center items-center justify-between md:order-5 md:ml-0 md:w-32">
+                    <div className="gap-small flex items-center">
                         <EvidenceVote
                             choice={EVote.Positive}
                             vote={vote}
@@ -141,11 +141,11 @@ const EvidenceCard = ({
                             loading={votesLoading[EVote.Positive]}
                             className="h-3.5 w-3.5 md:h-4 md:w-4"
                         />
-                        <p className="text-tiny hidden font-light text-white md:block">
+                        <p className="text-tiny font-light text-white">
                             {localItem.votes.regular[0]}
                         </p>
                     </div>
-                    <div className="gap-tiny flex items-center">
+                    <div className="gap-small flex items-center">
                         <EvidenceVote
                             choice={EVote.Negative}
                             vote={vote}
@@ -153,7 +153,7 @@ const EvidenceCard = ({
                             loading={votesLoading[EVote.Negative]}
                             className="h-3.5 w-3.5 md:h-4 md:w-4"
                         />
-                        <p className="text-tiny hidden font-light text-white md:block">
+                        <p className="text-tiny font-light text-white">
                             {localItem.votes.regular[1]}
                         </p>
                     </div>

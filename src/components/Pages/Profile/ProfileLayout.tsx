@@ -134,9 +134,10 @@ const ProfileLayout = ({ id }: { id?: string }) => {
 
     const profilePrincipal: Principal = id ? Principal.fromText(id) : principal!
     const editable = profilePrincipal?.toText() === principal?.toText()
+    const fullTab = (searchParams.get('tab') ?? ETab.Packages) as EFullTab
+    const tab = parseTabFromFullTab(fullTab)
 
     useEffect(() => {
-        if (searchParams.get('tab') === null) setSearchPrams({ tab: ETab.Packages })
         Promise.all([
             (editable ? refreshUser() : Facade.call(null, true).getUser(profilePrincipal)).then(
                 (res) => {
@@ -150,9 +151,6 @@ const ProfileLayout = ({ id }: { id?: string }) => {
             ),
         ])
     }, [])
-
-    const fullTab = (searchParams.get('tab') ?? ETab.Packages) as EFullTab
-    const tab = parseTabFromFullTab(fullTab)
 
     useEffect(() => {
         try {

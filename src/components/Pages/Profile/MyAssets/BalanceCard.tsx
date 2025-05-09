@@ -27,7 +27,7 @@ const BalanceCard = ({
     const { ColouredIcon, BigIcon } = TOKENS[token]
 
     return (
-        <div className="py-normal px-medium flex w-full items-center justify-between rounded-lg bg-cold-800 text-white">
+        <div className="py-normal px-medium flex w-full items-center justify-between rounded-lg border border-cold-300 bg-cold-50">
             <Popup
                 open={open === EPopup.Deposit}
                 onClose={() => {
@@ -54,20 +54,20 @@ const BalanceCard = ({
             </Popup>
             <div className="gap-medium flex items-center">
                 {ColouredIcon}
-                <span className="text-lg font-bold text-white md:text-2xl">
+                <span className="text-xl font-bold text-cold-800 md:text-4xl">
                     {valueOf(balance ?? 0n)}
                 </span>
             </div>
             <div className="gap-tiny flex w-fit flex-col items-end">
                 <button
-                    className="text-tiny px-normal gap-medium py-small flex h-full w-full items-center justify-end text-nowrap rounded-lg bg-white/100 font-normal text-cold-800 hover:bg-white/75"
+                    className="text-tiny px-normal gap-medium py-small flex h-full w-full items-center justify-end text-nowrap rounded-lg bg-cold-800 font-normal text-white hover:bg-opacity-80"
                     onClick={() => setOpen(EPopup.Deposit)}
                 >
                     Deposit
                     <CircleArrowLeft className="w-4 stroke-[1.5px] md:w-5" />
                 </button>
                 <button
-                    className="text-tiny px-normal gap-medium py-small flex h-full w-full items-center justify-end text-nowrap rounded-lg bg-white/100 font-normal text-primary-800 hover:bg-white/75"
+                    className="text-tiny px-normal gap-medium py-small flex h-full w-full items-center justify-end text-nowrap rounded-lg bg-primary-700 font-normal text-white hover:bg-opacity-80"
                     onClick={() => setOpen(EPopup.Transfer)}
                 >
                     Transfer

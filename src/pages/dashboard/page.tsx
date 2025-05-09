@@ -27,30 +27,28 @@ const DashboardPage = () => {
         UnwrapDVariant<DIndicator.SharableValue>
     > | null>(null)
 
-    const actor = searchParams.get('actor') as (typeof DEPLOYABLE_ACTORS)[number]
+    const actorParam = (searchParams.get('actor') ??
+        'Indicator') as (typeof DEPLOYABLE_ACTORS)[number]
     const pageMetadata: Metadata = {
         url: siteMetadata.siteUrl + metadata.url,
-        title: `${actor ?? 'Indicator'} Dashboard | ${siteMetadata.title}`,
+        title: `${actorParam ?? 'Indicator'} Dashboard | ${siteMetadata.title}`,
         description: metadata.description,
     }
 
     useEffect(() => {
-        if (!actor || !(SERVICES as any)[actor]) setSearchPrams({ actor: 'Indicator' })
-    }, [SERVICES])
-    useEffect(() => {
         setStatus(null)
         setConfigs(null)
 
-        const actor = searchParams.get('actor') as (typeof DEPLOYABLE_ACTORS)[number]
-        if (!actor || !(SERVICES as any)[actor]) return
-
-        Promise.all([getStatus(actor as Actor).then(setStatus), getConfigs(actor).then(setConfigs)])
-    }, [searchParams])
+        Promise.all([
+            getStatus(actorParam as Actor).then(setStatus),
+            getConfigs(actorParam).then(setConfigs),
+        ])
+    }, [actorParam])
 
     return (
         <>
             <PageMetadata {...pageMetadata} />
-            <Tabs value={searchParams.get('actor') ?? 'Indicator'}>
+            <Tabs value={actorParam}>
                 <TabsHeader
                     className="overflow-x-auto rounded-none border-b border-primary-50 bg-transparent p-0"
                     indicatorProps={{
@@ -65,7 +63,7 @@ const DashboardPage = () => {
                             onClick={() => setSearchPrams({ actor })}
                             className={cn(
                                 'text-normal font-normal',
-                                searchParams.get('actor') === actor ? 'text-primary-700' : ''
+                                actorParam === actor ? 'text-primary-700' : ''
                             )}
                         >
                             <span className="text-normal font-normal">{actor}</span>
@@ -74,8 +72,8 @@ const DashboardPage = () => {
                 </TabsHeader>
                 <TabsBody>
                     <TabPanel
-                        key={searchParams.get('actor') ?? 'Indicator'}
-                        value={searchParams.get('actor') ?? 'Indicator'}
+                        key={actorParam}
+                        value={actorParam}
                         className="gap-medium mt-medium flex w-full flex-col flex-wrap items-center"
                     >
                         {!status ? (

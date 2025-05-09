@@ -10,8 +10,8 @@
     "socials": {
         "GitHub": "https://github.com/freedomengineer",
         "X (Twitter)": "https://x.com/axiom_info",
-        "Discord": "https://discord.gg/qsZK9ggzaH",
-        "YouTube": "https://www.youtube.com/@axiomdao"
+        "YouTube": "https://www.youtube.com/@axiom_show",
+        "Discord": "https://discord.gg/qsZK9ggzaH"
     },
     "routes": {
         "Home": {
@@ -74,13 +74,17 @@
                     "url": "/dashboard/custodians",
                     "description": "Custodians of The Axiom DAO (ACE)"
                 },
+                "Top 10": {
+                    "url": "/dashboard/top10",
+                    "description": "Leaderboard of The Axiom"
+                },
                 "Token Charts": {
                     "url": "/dashboard/assets",
-                    "description": "Token Charts"
+                    "description": "Token Charts of The Axiom"
                 },
                 "Memberships": {
                     "url": "/dashboard/memberships",
-                    "description": "Memberships Sales"
+                    "description": "Memberships Sales of The Axiom"
                 }
             }
         },
