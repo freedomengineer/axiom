@@ -8,7 +8,7 @@ import Tree "../Tree";
 
 import List "mo:base/List";
 import Iter "mo:base/Iter";
-import Nat "mo:base/Nat";
+import Int "mo:base/Int";
 import Float "mo:base/Float";
 
 module {
@@ -16,7 +16,8 @@ module {
 
     private type Compare<T> = Base.Compare<T>;
     private type Key<T> = Tree.Key<T>;
-
+    private type List<T> = List.List<T>;
+    private type Iter<T> = Iter.Iter<T>;
     private type SharableDouble<T> = Double.Sharable<T>;
     private type Double<T> = Double.Sharable<T>;
     private type Variant<T> = Double.Variant<T>;
@@ -25,11 +26,11 @@ module {
     private type Ranking<T> = DoubleRankTree.Ranking<T>;
     private type Entry = DoubleRank.Entry;
 
-    private let { NatKey } = Tree;
+    private let { IntKey } = Tree;
 
     /// PUBLIC ////// DECLARATIONS ////////////
 
-    public func getAverageRankTreeFromArray<T>(arr : [T], scores : T -> (Nat, Nat), compare : Compare<T>) : ClusterTree<Float, Ranking<T>> {
+    public func getAverageRankTreeFromArray<T>(arr : [T], scores : T -> (Int, Int), compare : Compare<T>) : ClusterTree<Float, Ranking<T>> {
         let __ : Self<T> = new<T>();
         for (key in arr.vals()) {
             let (a, b) = scores(key);
@@ -37,7 +38,17 @@ module {
         };
         getAverageRankTree(__, compare)
     };
-    public func getAverageRankTreeFromIter<T>(iter : Iter.Iter<T>, scores : T -> ?(Nat, Nat), compare : Compare<T>) : ClusterTree<Float, Ranking<T>> {
+    public func getAverageRankTreeFromList<T>(list : List<T>, scores : T -> ?(Int, Int), compare : Compare<T>) : ClusterTree<Float, Ranking<T>> {
+        let __ : Self<T> = new<T>();
+        for (key in List.toIter(list)) {
+            switch (scores(key)) {
+                case (?(a, b)) put(__, a, b, key);
+                case (null) {}
+            }
+        };
+        getAverageRankTree(__, compare)
+    };
+    public func getAverageRankTreeFromIter<T>(iter : Iter<T>, scores : T -> ?(Int, Int), compare : Compare<T>) : ClusterTree<Float, Ranking<T>> {
         let __ : Self<T> = new<T>();
         for (key in iter) {
             switch (scores(key)) {
@@ -50,26 +61,26 @@ module {
 
     /// LIBRARY ////// DOUBLE CLUSTER TREE ////////////
 
-    private type Self<T> = Double<ClusterTree<Nat, T>>;
+    private type Self<T> = Double<ClusterTree<Int, T>>;
 
     public type DoubleClusterTree<T> = Self<T>;
     public func new<T>() : Self<T> = {
-        a = ClusterTree.new<Nat, T>();
-        b = ClusterTree.new<Nat, T>()
+        a = ClusterTree.new<Int, T>();
+        b = ClusterTree.new<Int, T>()
     };
 
     /// PUBLIC ////// MODIFIERS ////////////
 
-    public func put<T>(__ : Self<T>, value1 : Nat, value2 : Nat, key : T) {
-        ClusterTree.put(__.a, NatKey(value1), key);
-        ClusterTree.put(__.b, NatKey(value2), key)
+    public func put<T>(__ : Self<T>, value1 : Int, value2 : Int, key : T) {
+        ClusterTree.put(__.a, IntKey(value1), key);
+        ClusterTree.put(__.b, IntKey(value2), key)
     };
 
     /// PUBLIC ////// ACCESSORS ////////////
 
     public func getAverageRankTree<T>(__ : Self<T>, compare : Compare<T>) : ClusterTree<Float, Ranking<T>> {
-        let a : [(Nat, Cluster<T>)] = ClusterTree.getCompressedEntries(__.a, #descending);
-        let b : [(Nat, Cluster<T>)] = ClusterTree.getCompressedEntries(__.b, #descending);
+        let a : [(Int, Cluster<T>)] = ClusterTree.getCompressedEntries(__.a, #descending);
+        let b : [(Int, Cluster<T>)] = ClusterTree.getCompressedEntries(__.b, #descending);
         let s = DoubleRankTree.new<T>();
         for (rank in a.keys()) {
             for (key in List.toIter(a[rank].1)) {

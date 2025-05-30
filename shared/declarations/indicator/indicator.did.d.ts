@@ -20,6 +20,8 @@ export interface Account {
   'owner' : Principal,
   'subaccount' : [] | [Uint8Array | number[]],
 }
+export type Achievement = { 'OctupleBurial' : null } |
+  { 'Referral' : null };
 export type ActorVariant = { 'DAO' : null } |
   { 'Sales' : null } |
   { 'Escrow' : null } |
@@ -59,7 +61,12 @@ export interface Affiliate {
   'getConfig' : ActorMethod<[Key], SharableValue>,
   'getConfigs' : ActorMethod<[], Sharable__3>,
   'getEarning' : ActorMethod<[Principal], Sharable__7>,
-  'getUser' : ActorMethod<[Principal], Sharable__31>,
+  'getTop' : ActorMethod<[{ 'Referrals' : null }], TopNonPagination>,
+  'getTopPagination' : ActorMethod<
+    [{ 'Referrals' : null }, bigint, bigint],
+    TopPagination
+  >,
+  'getUser' : ActorMethod<[Principal], Sharable__32>,
   'initialize' : ActorMethod<[], undefined>,
   'putConfigs' : ActorMethod<[Array<[Key, SharableValue]>], undefined>,
   'setConfigs' : ActorMethod<[Array<[Key, SharableValue]>], undefined>,
@@ -97,43 +104,70 @@ export interface Axioms {
   'addToAxioms' : ActorMethod<[bigint], undefined>,
   'addToBookmarks' : ActorMethod<[bigint], undefined>,
   'createField' : ActorMethod<[string, string], undefined>,
+  'editHypothesis' : ActorMethod<[bigint, string], undefined>,
   'expectUserNotFound' : ActorMethod<[Principal], undefined>,
-  'getAgePayout' : ActorMethod<[bigint, bigint], Sharable__30>,
-  'getAgePayouts' : ActorMethod<[bigint], Sharable__29>,
-  'getAgesPayout' : ActorMethod<[bigint], Sharable__29>,
-  'getAgesPayouts' : ActorMethod<[], Array<Sharable__29>>,
+  'follow' : ActorMethod<[Principal], undefined>,
+  'getAgePayout' : ActorMethod<[bigint, bigint], Sharable__31>,
+  'getAgePayouts' : ActorMethod<[bigint], Sharable__30>,
+  'getAgesPayout' : ActorMethod<[bigint], Sharable__30>,
+  'getAgesPayouts' : ActorMethod<[], Array<Sharable__30>>,
   'getConfig' : ActorMethod<[Key], SharableValue>,
   'getConfigs' : ActorMethod<[], Sharable__3>,
   'getEarning' : ActorMethod<[Principal], Sharable__7>,
-  'getEvidence' : ActorMethod<[bigint], Sharable__27>,
-  'getEvidences' : ActorMethod<[Filter__6, Sort_6], Sharable__28>,
+  'getEvidence' : ActorMethod<[bigint], Sharable__28>,
+  'getEvidences' : ActorMethod<[Filter__6, Sort_6], Sharable__29>,
   'getEvidencesPagination' : ActorMethod<
     [Filter__6, Sort_6, bigint, bigint],
     Pagination_6
   >,
-  'getField' : ActorMethod<[string], Sharable__25>,
-  'getFields' : ActorMethod<[Filter__5, Sort_5], Sharable__26>,
+  'getField' : ActorMethod<[string], Sharable__26>,
+  'getFields' : ActorMethod<[Filter__5, Sort_5], Sharable__27>,
   'getFieldsPagination' : ActorMethod<
     [Filter__5, Sort_5, bigint, bigint],
     Pagination_5
   >,
-  'getFlag' : ActorMethod<[Header], Sharable__23>,
-  'getFlags' : ActorMethod<[Filter__4, Sort_4], Sharable__24>,
+  'getFlag' : ActorMethod<[Header], Sharable__24>,
+  'getFlags' : ActorMethod<[Filter__4, Sort_4], Sharable__25>,
   'getFlagsPagination' : ActorMethod<
     [Filter__4, Sort_4, bigint, bigint],
     Pagination_4
   >,
-  'getHypotheses' : ActorMethod<[Filter__3, Sort_3], Sharable__22>,
+  'getHypotheses' : ActorMethod<[Filter__3, Sort_3], Sharable__23>,
   'getHypothesesPagination' : ActorMethod<
     [Filter__3, Sort_3, bigint, bigint],
     Pagination_3
   >,
-  'getHypothesis' : ActorMethod<[bigint], Sharable__21>,
-  'getUser' : ActorMethod<[Principal], Sharable__20>,
+  'getHypothesis' : ActorMethod<[bigint], Sharable__22>,
+  'getTop' : ActorMethod<
+    [
+      { 'HypothesisPublishers' : null } |
+        { 'AcornEarners' : null } |
+        { 'HypothesisVoters' : null } |
+        { 'EvidenceVoters' : null } |
+        { 'EvidencePublishers' : null },
+    ],
+    TopNonPagination
+  >,
+  'getTopPagination' : ActorMethod<
+    [
+      { 'HypothesisPublishers' : null } |
+        { 'AcornEarners' : null } |
+        { 'HypothesisVoters' : null } |
+        { 'EvidenceVoters' : null } |
+        { 'EvidencePublishers' : null },
+      bigint,
+      bigint,
+    ],
+    TopPagination
+  >,
+  'getUser' : ActorMethod<[Principal], Sharable__21>,
   'initialize' : ActorMethod<[], undefined>,
   'joinField' : ActorMethod<[string], undefined>,
   'leaveField' : ActorMethod<[string], undefined>,
-  'publishEvidence' : ActorMethod<[bigint, Form, Choice__2], bigint>,
+  'publishEvidence' : ActorMethod<
+    [bigint, Form, Choice__2, [] | [bigint]],
+    bigint
+  >,
   'publishHypothesis' : ActorMethod<[string, string], bigint>,
   'putConfigs' : ActorMethod<[Array<[Key, SharableValue]>], undefined>,
   'register' : ActorMethod<[Principal], undefined>,
@@ -145,6 +179,7 @@ export interface Axioms {
   'requestFlag' : ActorMethod<[Header, string], undefined>,
   'setConfigs' : ActorMethod<[Array<[Key, SharableValue]>], undefined>,
   'shiftToMidnight' : ActorMethod<[bigint], undefined>,
+  'unfollow' : ActorMethod<[Principal], undefined>,
   'voteEvidence' : ActorMethod<[bigint, Choice__2], undefined>,
   'voteFlag' : ActorMethod<[Header, Choice__2], undefined>,
   'voteHypothesis' : ActorMethod<[bigint, Choice__1], undefined>,
@@ -190,21 +225,21 @@ export interface DAO {
   'expectUserNotFound' : ActorMethod<[Principal], undefined>,
   'getConfig' : ActorMethod<[Key], SharableValue>,
   'getConfigs' : ActorMethod<[], Sharable__3>,
-  'getDaysInPeriod' : ActorMethod<[], Sharable__19>,
+  'getDaysInPeriod' : ActorMethod<[], Sharable__20>,
   'getEarning' : ActorMethod<[Principal], [Sharable__7, Sharable__7]>,
-  'getNominee' : ActorMethod<[Principal], Sharable__17>,
-  'getNominees' : ActorMethod<[Filter__2, Sort_2], Sharable__18>,
+  'getNominee' : ActorMethod<[Principal], Sharable__18>,
+  'getNominees' : ActorMethod<[Filter__2, Sort_2], Sharable__19>,
   'getNomineesPagination' : ActorMethod<
     [Filter__2, Sort_2, bigint, bigint],
     Pagination_2
   >,
-  'getProposal' : ActorMethod<[bigint], Sharable__15>,
-  'getProposals' : ActorMethod<[Filter__1, Sort_1], Sharable__16>,
+  'getProposal' : ActorMethod<[bigint], Sharable__16>,
+  'getProposals' : ActorMethod<[Filter__1, Sort_1], Sharable__17>,
   'getProposalsPagination' : ActorMethod<
     [Filter__1, Sort_1, bigint, bigint],
     Pagination_1
   >,
-  'getUser' : ActorMethod<[Principal], Sharable__14>,
+  'getUser' : ActorMethod<[Principal], Sharable__15>,
   'initialize' : ActorMethod<[], undefined>,
   'initializeCodeUploadSession' : ActorMethod<
     [string, UpdateLevel, ReleaseNotes, Sharable],
@@ -283,20 +318,29 @@ export interface Entry { 'rank' : bigint, 'score' : bigint }
 export interface Escrow {
   'bury' : ActorMethod<[bigint, Option], undefined>,
   'expectUserNotFound' : ActorMethod<[Principal], undefined>,
-  'getBurials' : ActorMethod<[Principal], Sharable__13>,
+  'getBurials' : ActorMethod<[Principal], Sharable__14>,
   'getBuriedAmount' : ActorMethod<[Principal], bigint>,
   'getClaimableAmount' : ActorMethod<[Principal], bigint>,
   'getConfig' : ActorMethod<[Key], SharableValue>,
   'getConfigs' : ActorMethod<[], Sharable__3>,
   'getExpiredAmount' : ActorMethod<[Principal], bigint>,
   'getInterestAmount' : ActorMethod<[Principal], bigint>,
-  'getUser' : ActorMethod<[Principal], Sharable__12>,
+  'getTop' : ActorMethod<
+    [{ 'PoweredVoters' : null } | { 'AcornBuriers' : null }],
+    TopNonPagination
+  >,
+  'getTopPagination' : ActorMethod<
+    [{ 'PoweredVoters' : null } | { 'AcornBuriers' : null }, bigint, bigint],
+    TopPagination
+  >,
+  'getUser' : ActorMethod<[Principal], Sharable__13>,
   'getVotingPower' : ActorMethod<[Principal], bigint>,
   'initialize' : ActorMethod<[], undefined>,
   'putConfigs' : ActorMethod<[Array<[Key, SharableValue]>], undefined>,
   'register' : ActorMethod<[Principal, bigint], undefined>,
   'setConfigs' : ActorMethod<[Array<[Key, SharableValue]>], undefined>,
   'shiftToMidnight' : ActorMethod<[bigint], undefined>,
+  'transferFounderBurial' : ActorMethod<[Principal, Principal], undefined>,
   'withdrawAll' : ActorMethod<[], undefined>,
 }
 export interface Facade {
@@ -306,9 +350,9 @@ export interface Facade {
   'editUsername' : ActorMethod<[string], undefined>,
   'getConfig' : ActorMethod<[Key], SharableValue>,
   'getConfigs' : ActorMethod<[], Sharable__3>,
-  'getUser' : ActorMethod<[Principal], Sharable__11>,
+  'getUser' : ActorMethod<[Principal], Sharable__12>,
   'getUserIdentifier' : ActorMethod<[IdentifierVariant], Identifier>,
-  'getUsers' : ActorMethod<[Filter, Sort], Array<Sharable__11>>,
+  'getUsers' : ActorMethod<[Filter, Sort], Array<Sharable__12>>,
   'getUsersCount' : ActorMethod<[], bigint>,
   'getUsersPagination' : ActorMethod<
     [Filter, Sort, bigint, bigint],
@@ -319,6 +363,7 @@ export interface Facade {
   'register' : ActorMethod<[string, bigint, [] | [Principal]], undefined>,
   'setConfigs' : ActorMethod<[Array<[Key, SharableValue]>], undefined>,
   'shiftToMidnight' : ActorMethod<[bigint], undefined>,
+  'updateCapitalRaised' : ActorMethod<[Principal, bigint], undefined>,
 }
 export interface Filter {
   'containsPattern' : [] | [string],
@@ -335,29 +380,32 @@ export interface Filter__2 {
   'isCustodian' : [] | [boolean],
 }
 export interface Filter__3 {
+  'q' : [] | [string],
+  'age' : [] | [bigint],
+  'field' : [] | [string],
   'axiomsFrom' : [] | [Principal],
-  'publishedAt' : [] | [bigint],
-  'publishedBy' : [] | [Principal],
-  'publishedIn' : [] | [string],
-  'votedBy' : [] | [Principal],
+  'voter' : [] | [Principal],
+  'publisher' : [] | [Principal],
+  'userFollowedPublishers' : [] | [Principal],
   'bookmarksFrom' : [] | [Principal],
-  'containsPattern' : [] | [string],
+  'userJoinedFields' : [] | [Principal],
 }
 export interface Filter__4 {
   'votedBy' : [] | [Principal],
   'requestedBy' : [] | [Principal],
   'requestedIn' : [] | [Category__1],
+  'withStatus' : [] | [Status__1],
 }
 export interface Filter__5 {
   'joinedBy' : [] | [Principal],
   'containsPattern' : [] | [string],
 }
 export interface Filter__6 {
-  'publishedBy' : [] | [Principal],
-  'publishedIn' : [] | [bigint],
-  'votedBy' : [] | [Principal],
-  'containsPattern' : [] | [string],
-  'onSide' : [] | [BinaryChoice],
+  'q' : [] | [string],
+  'voter' : [] | [Principal],
+  'publisher' : [] | [Principal],
+  'side' : [] | [BinaryChoice],
+  'hypothesis' : [] | [bigint],
 }
 export type Form = Array<Format>;
 export type Format = { 'Note' : Note } |
@@ -460,37 +508,37 @@ export type Order = { 'descending' : null } |
 export interface Pagination {
   'is' : bigint,
   'of' : bigint,
-  'result' : Array<Sharable__11>,
+  'result' : Array<Sharable__12>,
 }
 export interface Pagination_1 {
   'is' : bigint,
   'of' : bigint,
-  'result' : Array<Sharable__15>,
+  'result' : Array<Sharable__16>,
 }
 export interface Pagination_2 {
   'is' : bigint,
   'of' : bigint,
-  'result' : Array<Sharable__17>,
+  'result' : Array<Sharable__18>,
 }
 export interface Pagination_3 {
   'is' : bigint,
   'of' : bigint,
-  'result' : Array<Sharable__21>,
+  'result' : Array<Sharable__22>,
 }
 export interface Pagination_4 {
   'is' : bigint,
   'of' : bigint,
-  'result' : Array<Sharable__23>,
+  'result' : Array<Sharable__24>,
 }
 export interface Pagination_5 {
   'is' : bigint,
   'of' : bigint,
-  'result' : Array<Sharable__25>,
+  'result' : Array<Sharable__26>,
 }
 export interface Pagination_6 {
   'is' : bigint,
   'of' : bigint,
-  'result' : Array<Sharable__27>,
+  'result' : Array<Sharable__28>,
 }
 export interface Picture { 'blob' : Uint8Array | number[] }
 export type ProposalVariant = { 'Code' : null } |
@@ -501,21 +549,40 @@ export type ReleaseNotes = Array<Changes>;
 export type Role = { 'Guest' : null } |
   { 'Member' : null };
 export interface Sales {
+  'addAchievementPackage' : ActorMethod<
+    [Achievement, string, string, string],
+    undefined
+  >,
   'addPackage' : ActorMethod<[bigint, string, string, string], undefined>,
   'computeAcornToMint' : ActorMethod<[bigint], ACORNToMint>,
+  'deployAchievementPackage' : ActorMethod<[Achievement], undefined>,
+  'deployPackage' : ActorMethod<[bigint], undefined>,
   'expectPackageFound' : ActorMethod<[bigint], bigint>,
   'expectPackageNotFound' : ActorMethod<[bigint], undefined>,
+  'getAchievementPackagePrincipals' : ActorMethod<
+    [],
+    Array<[Achievement, Principal]>
+  >,
+  'getAchievementPackages' : ActorMethod<[], Sharable__11>,
   'getConfig' : ActorMethod<[Key], SharableValue>,
   'getConfigs' : ActorMethod<[], Sharable__3>,
-  'getDeployedPackages' : ActorMethod<[], Sharable__10>,
+  'getOwnedAchievementPackages' : ActorMethod<[Principal], Sharable__11>,
   'getOwnedPackages' : ActorMethod<[Principal], Sharable__10>,
   'getPackagePrincipals' : ActorMethod<[], Array<[bigint, Principal]>>,
   'getPackages' : ActorMethod<[], Sharable__10>,
+  'initialize' : ActorMethod<[], undefined>,
+  'mintAchievementPackage' : ActorMethod<[Achievement], undefined>,
   'mintPackage' : ActorMethod<[Principal, bigint], bigint>,
   'putConfigs' : ActorMethod<[Array<[Key, SharableValue]>], undefined>,
   'setConfigs' : ActorMethod<[Array<[Key, SharableValue]>], undefined>,
+  'upgradePackage' : ActorMethod<[], undefined>,
 }
 export type Sharable = Array<SharableCommitment>;
+export interface SharableAchievementPackage {
+  'principal' : [] | [Principal],
+  'metadata' : Dip721NonFungibleToken,
+  'achievement' : Achievement,
+}
 export interface SharableAllocation {
   'balance' : bigint,
   'allocated' : bigint,
@@ -592,6 +659,8 @@ export interface SharableEvidence {
   'publishDate' : bigint,
   'form' : Form,
   'publisher' : Principal,
+  'repliedTo' : [] | [bigint],
+  'replies' : Array<bigint>,
   'choice' : BinaryChoice__1,
   'hypothesisId' : bigint,
 }
@@ -606,6 +675,7 @@ export interface SharableField__1 {
 }
 export interface SharableFlag {
   'id' : bigint,
+  'status' : Status__2,
   'requester' : Principal,
   'callerVote' : [] | [BinaryVote__1],
   'votes' : SharableBinaryVotes,
@@ -695,7 +765,8 @@ export type SharableValue = { 'E8S' : SharableE8S } |
 export type SharableWorker = {};
 export type Sharable__1 = string;
 export type Sharable__10 = Array<SharablePackage>;
-export interface Sharable__11 {
+export type Sharable__11 = Array<SharableAchievementPackage>;
+export interface Sharable__12 {
   'principal' : Principal,
   'username' : string,
   'links' : Array<Hyperlink>,
@@ -704,9 +775,9 @@ export interface Sharable__11 {
   'location' : string,
   'avatar' : [] | [Picture],
 }
-export interface Sharable__12 { 'burials' : SharableBurials }
-export type Sharable__13 = Array<SharableBurial>;
-export interface Sharable__14 {
+export interface Sharable__13 { 'burials' : SharableBurials }
+export type Sharable__14 = Array<SharableBurial>;
+export interface Sharable__15 {
   'ballots' : Array<[Principal, bigint]>,
   'referendums' : List,
   'icpEarning' : SharableEarning__1,
@@ -716,7 +787,7 @@ export interface Sharable__14 {
   'proposalVotes' : Array<[bigint, Delegable__1]>,
   'proposals' : List,
 }
-export interface Sharable__15 {
+export interface Sharable__16 {
   'id' : bigint,
   'title' : string,
   'icpReward' : bigint,
@@ -733,23 +804,23 @@ export interface Sharable__15 {
   'detachment' : SharableDetachment,
   'timeline' : Array<Milestone>,
 }
-export type Sharable__16 = Array<SharableProposal>;
-export interface Sharable__17 {
+export type Sharable__17 = Array<SharableProposal>;
+export interface Sharable__18 {
   'title' : string,
   'principal' : Principal,
   'ballots' : [bigint, bigint],
   'isCustodian' : boolean,
   'callerBallot' : [] | [bigint],
 }
-export type Sharable__18 = Array<SharableNominee>;
-export type Sharable__19 = bigint;
+export type Sharable__19 = Array<SharableNominee>;
 export interface Sharable__2 {
   'updateLevel' : UpdateLevel__1,
   'releaseNotes' : ReleaseNotes,
   'commitments' : SharableCommitments,
   'commitHash' : string,
 }
-export interface Sharable__20 {
+export type Sharable__20 = bigint;
+export interface Sharable__21 {
   'evidences' : Array<bigint>,
   'earning' : SharableEarning__2,
   'joinedFields' : Array<string>,
@@ -758,8 +829,10 @@ export interface Sharable__20 {
   'bookmarks' : Array<bigint>,
   'hypotheses' : Array<bigint>,
   'votedEvidences' : Array<[bigint, BinaryVote]>,
+  'followers' : Array<Principal>,
+  'following' : Array<Principal>,
 }
-export interface Sharable__21 {
+export interface Sharable__22 {
   'id' : bigint,
   'content' : string,
   'axioms' : SharableCount,
@@ -772,9 +845,10 @@ export interface Sharable__21 {
   'fieldId' : string,
   'evidenceIds' : Array<bigint>,
 }
-export type Sharable__22 = Array<SharableHypothesis>;
-export interface Sharable__23 {
+export type Sharable__23 = Array<SharableHypothesis>;
+export interface Sharable__24 {
   'id' : bigint,
+  'status' : Status__2,
   'requester' : Principal,
   'callerVote' : [] | [BinaryVote__1],
   'votes' : SharableBinaryVotes,
@@ -782,8 +856,8 @@ export interface Sharable__23 {
   'requestDate' : Time__5,
   'reason' : string,
 }
-export type Sharable__24 = Array<SharableFlag>;
-export interface Sharable__25 {
+export type Sharable__25 = Array<SharableFlag>;
+export interface Sharable__26 {
   'members' : Array<Principal>,
   'hypothesisIds' : Array<bigint>,
   'callerRole' : [] | [Role],
@@ -791,25 +865,27 @@ export interface Sharable__25 {
   'description' : string,
   'creationDate' : Time__6,
 }
-export type Sharable__26 = Array<SharableField__1>;
-export interface Sharable__27 {
+export type Sharable__27 = Array<SharableField__1>;
+export interface Sharable__28 {
   'id' : bigint,
   'callerVote' : [] | [BinaryVote__2],
   'votes' : SharableBinaryVotes__1,
   'publishDate' : bigint,
   'form' : Form,
   'publisher' : Principal,
+  'repliedTo' : [] | [bigint],
+  'replies' : Array<bigint>,
   'choice' : BinaryChoice__1,
   'hypothesisId' : bigint,
 }
-export type Sharable__28 = Array<SharableEvidence>;
-export type Sharable__29 = Array<SharablePayout>;
+export type Sharable__29 = Array<SharableEvidence>;
 export type Sharable__3 = Array<[Key, SharableValue]>;
-export interface Sharable__30 {
+export type Sharable__30 = Array<SharablePayout>;
+export interface Sharable__31 {
   'ranks' : SharableRanks,
   'callerRevenue' : [] | [SharableE8S__3],
 }
-export interface Sharable__31 {
+export interface Sharable__32 {
   'referrer' : [] | [Principal],
   'earning' : SharableEarning__3,
   'referrals' : SharableCount__1,
@@ -893,6 +969,14 @@ export type StatusVariant = { 'Failed' : null } |
   { 'Executed' : null } |
   { 'Retried' : null } |
   { 'Expired' : null };
+export type Status__1 = { 'Approved' : null } |
+  { 'Rejected' : null } |
+  { 'Requested' : null } |
+  { 'Expired' : null };
+export type Status__2 = { 'Approved' : null } |
+  { 'Rejected' : null } |
+  { 'Requested' : null } |
+  { 'Expired' : null };
 export interface TernaryVote { 'value' : bigint, 'choice' : Choice__1 }
 export interface TernaryVote__1 { 'value' : bigint, 'choice' : Choice__1 }
 export interface TernaryVote__2 { 'value' : bigint, 'choice' : Choice__1 }
@@ -903,6 +987,17 @@ export type Time__3 = bigint;
 export type Time__4 = bigint;
 export type Time__5 = bigint;
 export type Time__6 = bigint;
+export interface TopNonPagination {
+  'result' : TopResult,
+  'callerRank' : [] | [bigint],
+}
+export interface TopPagination {
+  'is' : bigint,
+  'of' : bigint,
+  'result' : TopResult,
+  'callerRank' : [] | [bigint],
+}
+export type TopResult = Array<[Principal, bigint]>;
 export interface TransferArgs {
   'to' : Account,
   'fee' : [] | [bigint],
@@ -946,6 +1041,10 @@ export type TransferResult = { 'Ok' : bigint } |
 export interface Treasury {
   'claim' : ActorMethod<[Principal, bigint], undefined>,
   'delegatedClaim' : ActorMethod<[Variant, Principal, bigint], undefined>,
+  'delegatedExternalTransfer' : ActorMethod<
+    [Variant, Principal, bigint],
+    undefined
+  >,
   'externalMint' : ActorMethod<[Principal, bigint], undefined>,
   'externalTransfer' : ActorMethod<[Principal, bigint], undefined>,
   'getAllocated' : ActorMethod<[Variant], Sharable__4>,

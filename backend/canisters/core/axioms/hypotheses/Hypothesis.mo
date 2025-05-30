@@ -2,6 +2,8 @@ import Set "../../../library/Set";
 import List "../../../library/List";
 import Count "../../../library/Count";
 
+import E "../../../common/Errors";
+
 import TernaryVotes "../../../library/votes/TernaryVotes";
 
 import Time "mo:base/Time";
@@ -26,7 +28,7 @@ module {
     private type Self = Hypothesis;
 
     public type Hypothesis = {
-        content : Text;
+        var content : Text;
         publisher : Principal;
         var publishDate : Int;
         fieldId : Text;
@@ -49,7 +51,7 @@ module {
     };
 
     public func init(content : Text, publisher : Principal, fieldId : Text, getNow : () -> Int) : Self = {
-        content;
+        var content;
         publisher;
         var publishDate = getNow();
         fieldId;
@@ -58,7 +60,7 @@ module {
         axioms = Count.new()
     };
     public func fromFounder(founder : Principal, getNow : () -> Int) : Self = {
-        content = "Axiom is a decentralized protocol";
+        var content = "Axiom is a decentralized protocol";
         publisher = founder;
         var publishDate = getNow();
         fieldId = "Axiom governance";
@@ -78,6 +80,10 @@ module {
     };
     public func removeVote(__ : Self, voter : Principal, vote : TernaryVote) {
         TernaryVotes.remove(__.votes, voter, vote)
+    };
+
+    public func updateContent(__ : Self, content : Text) {
+        __.content := content
     };
 
     public func addedToAxiom(__ : Self) {
@@ -105,6 +111,7 @@ module {
     public func toSharable(__ : Self, id : Nat, getCallerVote : Nat -> ?TernaryVote, getCallerAxiom : Nat -> ?Bool, getCallerBookmark : Nat -> ?Bool) : Sharable = {
         __ with
         id;
+        content = __.content;
         publishDate = __.publishDate;
         votes = TernaryVotes.toSharable(__.votes);
         axioms = Count.toSharable(__.axioms);
@@ -112,5 +119,12 @@ module {
         callerVote = getCallerVote(id);
         callerAxiom = getCallerAxiom(id);
         callerBookmark = getCallerBookmark(id)
+    };
+
+    /// PUBLIC ////// ASSERTORS ////////////
+
+    public func expectPublisher(__ : Self, publisher : Principal) {
+        if (__.publisher == publisher) return;
+        E.f(#NOT_TOBE("Hypothesis Publisher"), "The caller must be the publisher of the hypothesis to perform this action")
     }
 }

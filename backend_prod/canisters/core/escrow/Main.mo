@@ -2,7 +2,6 @@ import Burials "burials/Burials";
 import Burial "burials/Burial";
 import Users "users/Users";
 import User "users/User";
-
 import TreasuryInterface "../treasury/Interface";
 import IndicatorInterface "../../periphery/indicator/Interface";
 
@@ -12,6 +11,7 @@ import E "../../common/Errors";
 import E8S "../../library/E8S";
 import Configs "../../library/Configs";
 import Iter "../../library/Iter";
+import Pagination "../../library/Pagination";
 import Proportion "../../library/Proportion";
 
 import Principal "mo:base/Principal";
@@ -103,6 +103,15 @@ shared ({ caller = indicator }) actor class Escrow() = this {
     };
     public query func getConfigs() : async Configs.Sharable {
         Configs.getConfigs(configs)
+    };
+
+    public query ({ caller }) func getTop(category : { #PoweredVoters; #AcornBuriers }) : async Pagination.TopNonPagination {
+        let result : Pagination.TopResult = Users.getTop(users, category);
+        Pagination.topNonPaginate(result, caller)
+    };
+    public query ({ caller }) func getTopPagination(category : { #PoweredVoters; #AcornBuriers }, page : Nat, limit : Nat) : async Pagination.TopPagination {
+        let result : Pagination.TopResult = Users.getTop(users, category);
+        Pagination.topPaginate(result, page, limit, caller)
     };
 
     public query func getUser(principal : Principal) : async User.Sharable {

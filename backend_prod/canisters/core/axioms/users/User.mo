@@ -30,7 +30,7 @@ module {
     private type FlagHeader = Flag.Header;
 
     private let { NatKey } = Map;
-    private let { NatVal; TextVal } = Set;
+    private let { NatVal; TextVal; PrincipalVal } = Set;
     private let { Key = FlagKey } = Flag;
 
     /// PUBLIC ////// DECLARATIONS ////////////
@@ -63,6 +63,8 @@ module {
     public type User = {
         mintEarning : Earning;
         transferEarning : Earning;
+        followers : Set<Principal>;
+        following : Set<Principal>;
         axioms : Set<Nat>;
         bookmarks : Set<Nat>;
         joinedFields : Set<Text>;
@@ -74,6 +76,8 @@ module {
     };
     public type Sharable = {
         earning : SharableEarning;
+        followers : [Principal];
+        following : [Principal];
         axioms : [Nat];
         bookmarks : [Nat];
         joinedFields : [Text];
@@ -86,6 +90,8 @@ module {
     public func init() : Self = {
         mintEarning = Earning.new();
         transferEarning = Earning.new();
+        followers = Set.new<Principal>();
+        following = Set.new<Principal>();
         axioms = Set.new<Nat>();
         bookmarks = Set.new<Nat>();
         joinedFields = Set.new();
@@ -98,6 +104,8 @@ module {
     public func fromFounder() : Self = {
         mintEarning = Earning.new();
         transferEarning = Earning.new();
+        followers = Set.new<Principal>();
+        following = Set.new<Principal>();
         axioms = Set.new<Nat>();
         bookmarks = Set.new<Nat>();
         joinedFields = Set.make(TextVal("Axiom governance"));
@@ -109,6 +117,19 @@ module {
     };
 
     /// PUBLIC ////// MODIFIERS ////////////
+
+    public func addFollower(__ : Self, follower : Principal) {
+        Set.put(__.followers, PrincipalVal(follower))
+    };
+    public func removeFollower(__ : Self, follower : Principal) {
+        Set.delete(__.followers, PrincipalVal(follower))
+    };
+    public func addFollowing(__ : Self, following : Principal) {
+        Set.put(__.following, PrincipalVal(following))
+    };
+    public func removeFollowing(__ : Self, following : Principal) {
+        Set.delete(__.following, PrincipalVal(following))
+    };
 
     public func addAxiom(__ : Self, hypothesisId : Nat) {
         Set.put(__.axioms, NatVal(hypothesisId))
@@ -201,6 +222,9 @@ module {
     };
 
     public func isPoweredVoter(__ : Self, id : Nat) : Bool = Map.unwrap(__.votedHypotheses, NatKey(id)).value > 1;
+    public func followerFound(__ : Self, follower : Principal) : Bool = Set.includes(__.followers, PrincipalVal(follower));
+    public func followingFound(__ : Self, following : Principal) : Bool = Set.includes(__.following, PrincipalVal(following));
+    public func joinedFieldFound(__ : Self, field : Text) : Bool = Set.includes(__.joinedFields, TextVal(field));
     public func axiomFound(__ : Self, hypothesisId : Nat) : Bool = Set.includes(__.axioms, NatVal(hypothesisId));
     public func bookmarkFound(__ : Self, hypothesisId : Nat) : Bool = Set.includes(__.bookmarks, NatVal(hypothesisId));
 
@@ -227,6 +251,8 @@ module {
 
     public func toSharable(__ : Self) : Sharable = {
         earning = getEarning(__);
+        followers = Set.toArray(__.followers);
+        following = Set.toArray(__.following);
         axioms = Set.toArray(__.axioms);
         bookmarks = Set.toArray(__.bookmarks);
         joinedFields = Set.toArray(__.joinedFields);
@@ -238,6 +264,22 @@ module {
 
     /// PUBLIC ////// ASSERTERS ////////////
 
+    public func expectFollowerFound(__ : Self, follower : Principal) {
+        if (followerFound(__, follower)) return;
+        E.f(#NOT_EXISTED("Follower"), "Follower " # debug_show follower # " has not existed in User")
+    };
+    public func expectFollowerNotFound(__ : Self, follower : Principal) {
+        if (not followerFound(__, follower)) return;
+        E.f(#ALREADY_EXISTED("Follower"), "Follower " # debug_show follower # " has already existed in User")
+    };
+    public func expectFollowingFound(__ : Self, following : Principal) {
+        if (followingFound(__, following)) return;
+        E.f(#NOT_EXISTED("Following"), "Following " # debug_show following # " has not existed in User")
+    };
+    public func expectFollowingNotFound(__ : Self, following : Principal) {
+        if (not followingFound(__, following)) return;
+        E.f(#ALREADY_EXISTED("Following"), "Following " # debug_show following # " has already existed in User")
+    };
     public func expectAxiomFound(__ : Self, hypothesisId : Nat) {
         if (axiomFound(__, hypothesisId)) return;
         E.f(#NOT_EXISTED("Axiom"), "Axiom " # debug_show hypothesisId # " has not existed in User")

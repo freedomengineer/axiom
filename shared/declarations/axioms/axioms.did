@@ -28,6 +28,23 @@ type Value =
    infinity;
    value: ValueProp;
  };
+type TopResult = 
+ vec record {
+       principal;
+       nat;
+     };
+type TopPagination = 
+ record {
+   callerRank: opt nat;
+   is: nat;
+   of: nat;
+   result: TopResult;
+ };
+type TopNonPagination = 
+ record {
+   callerRank: opt nat;
+   result: TopResult;
+ };
 type Time__2 = int;
 type Time__1 = int;
 type Time = int;
@@ -44,18 +61,14 @@ type TernaryVote =
 type Status__1 = 
  variant {
    Approved;
-   Executed;
    Expired;
-   Failed;
    Rejected;
    Requested;
  };
 type Status = 
  variant {
    Approved;
-   Executed;
    Expired;
-   Failed;
    Rejected;
    Requested;
  };
@@ -122,6 +135,8 @@ type Sharable__7 =
    id: nat;
    publishDate: int;
    publisher: principal;
+   repliedTo: opt nat;
+   replies: vec nat;
    votes: SharableBinaryVotes__1;
  };
 type Sharable__6 = vec SharableField;
@@ -267,6 +282,8 @@ type SharableEvidence =
    id: nat;
    publishDate: int;
    publisher: principal;
+   repliedTo: opt nat;
+   replies: vec nat;
    votes: SharableBinaryVotes__1;
  };
 type SharableEarning = 
@@ -296,6 +313,8 @@ type Sharable =
    bookmarks: vec nat;
    earning: SharableEarning;
    evidences: vec nat;
+   followers: vec principal;
+   following: vec principal;
    hypotheses: vec nat;
    joinedFields: vec text;
    votedEvidences: vec record {
@@ -378,11 +397,11 @@ type Format =
 type Form = vec Format;
 type Filter__3 = 
  record {
-   containsPattern: opt text;
-   onSide: opt BinaryChoice;
-   publishedBy: opt principal;
-   publishedIn: opt nat;
-   votedBy: opt principal;
+   hypothesis: opt nat;
+   publisher: opt principal;
+   q: opt text;
+   side: opt BinaryChoice;
+   voter: opt principal;
  };
 type Filter__2 = 
  record {
@@ -398,18 +417,20 @@ type Filter__1 =
  };
 type Filter = 
  record {
+   age: opt nat;
    axiomsFrom: opt principal;
    bookmarksFrom: opt principal;
-   containsPattern: opt text;
-   publishedAt: opt nat;
-   publishedBy: opt principal;
-   publishedIn: opt text;
-   votedBy: opt principal;
+   field: opt text;
+   publisher: opt principal;
+   q: opt text;
+   userFollowedPublishers: opt principal;
+   userJoinedFields: opt principal;
+   voter: opt principal;
  };
 type Entry = 
  record {
-   rank: nat;
-   score: nat;
+   rank: int;
+   score: int;
  };
 type Choice__1 = 
  variant {
@@ -462,8 +483,10 @@ type Axioms =
    addToAxioms: (nat) -> ();
    addToBookmarks: (nat) -> ();
    createField: (text, text) -> ();
+   editHypothesis: (nat, text) -> ();
    /// PUBLIC ////// ASSERTERS ////////////
    expectUserNotFound: (principal) -> () query;
+   follow: (principal) -> ();
    getAgePayout: (nat, nat) -> (Sharable__12) query;
    getAgePayouts: (nat) -> (Sharable__11) query;
    getAgesPayout: (nat) -> (Sharable__11) query;
@@ -472,7 +495,6 @@ type Axioms =
    getConfig: (Key) -> (SharableValue) query;
    getConfigs: () -> (Sharable__10) query;
    getEarning: (principal) -> (Sharable__9) query;
-   getEarnings: (principal) -> (vec Sharable__9) query;
    getEvidence: (nat) -> (Sharable__7) query;
    getEvidences: (Filter__3, Sort_3) -> (Sharable__8) query;
    getEvidencesPagination: (Filter__3, Sort_3, nat, nat) ->
@@ -486,13 +508,29 @@ type Axioms =
    getHypotheses: (Filter, Sort) -> (Sharable__2) query;
    getHypothesesPagination: (Filter, Sort, nat, nat) -> (Pagination) query;
    getHypothesis: (nat) -> (Sharable__1) query;
+   getTop:
+    (variant {
+       AcornEarners;
+       EvidencePublishers;
+       EvidenceVoters;
+       HypothesisPublishers;
+       HypothesisVoters;
+     }) -> (TopNonPagination) query;
+   getTopPagination:
+    (variant {
+       AcornEarners;
+       EvidencePublishers;
+       EvidenceVoters;
+       HypothesisPublishers;
+       HypothesisVoters;
+     }, nat, nat) -> (TopPagination) query;
    getUser: (principal) -> (Sharable) query;
    /// PROTECTED ////// MODIFIERS ////////////
    initialize: () -> ();
    /// PUBLIC ////// MODIFIERS ////////////
    joinField: (text) -> ();
    leaveField: (text) -> ();
-   publishEvidence: (nat, Form, Choice__1) -> (nat);
+   publishEvidence: (nat, Form, Choice__1, opt nat) -> (nat);
    publishHypothesis: (text, text) -> (nat);
    putConfigs: (vec record {
                       Key;
@@ -510,6 +548,7 @@ type Axioms =
                       SharableValue;
                     }) -> ();
    shiftToMidnight: (nat) -> ();
+   unfollow: (principal) -> ();
    voteEvidence: (nat, Choice__1) -> ();
    voteFlag: (Header, Choice__1) -> ();
    voteHypothesis: (nat, Choice) -> ();

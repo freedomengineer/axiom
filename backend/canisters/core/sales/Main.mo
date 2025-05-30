@@ -4,14 +4,16 @@ import AchievementPackage "achievement_packages/AchievementPackage";
 import AchievementPackages "achievement_packages/AchievementPackages";
 
 import EscrowBurial "../escrow/burials/Burial";
+import FacadeUser "../../periphery/facade/users/User";
 
 import DIP721 "../dip721/Main";
 import DIP721Interface "../dip721/Interface";
 
-import TreasuryInterface "../treasury/Interface";
 import AffiliateInterface "../affiliate/Interface";
 import EscrowInterface "../escrow/Interface";
+import FacadeInterface "../../periphery/facade/Interface";
 import IndicatorInterface "../../periphery/indicator/Interface";
+import TreasuryInterface "../treasury/Interface";
 
 import E "../../common/Errors";
 
@@ -19,13 +21,14 @@ import Array "../../library/Array";
 import Base "../../library/Base";
 import Configs "../../library/Configs";
 import E8S "../../library/E8S";
+import List "../../library/List";
 import Proportion "../../library/Proportion";
 
 import Nat "mo:base/Nat";
 import Principal "mo:base/Principal";
-import List "mo:base/List";
 import ExperimentalCycles "mo:base/ExperimentalCycles";
 import Debug "mo:base/Debug";
+import Error "mo:base/Error";
 
 shared ({ caller = indicator }) actor class Sales() = this {
     private stable let Indicator : IndicatorInterface.Indicator = actor (Principal.toText(indicator));
@@ -137,6 +140,54 @@ shared ({ caller = indicator }) actor class Sales() = this {
         ignore await _deployAchievementPackage(package)
     };
 
+    type ForceUpdateCapitalRaisedResult = {
+        success : [Text];
+        failed : [(Text, Text)];
+        unchanged : [Text]
+    };
+    public shared ({ caller }) func forceUpdateCapitalRaised() : async ForceUpdateCapitalRaisedResult {
+        await Indicator.expectAuthorized(caller, [#Founder]);
+        let Facade : FacadeInterface.Facade = await Indicator.Facade();
+        let users : [FacadeUser.Identifier] = await Facade.getUsersIdentifier();
+        var usersCapitalRaised : List.List<(FacadeUser.Identifier, async [Package.Sharable])> = List.nil();
+        for (user in users.vals()) {
+            let packagesFuture : async [Package.Sharable] = getOwnedPackages(user.principal);
+            usersCapitalRaised := List.push<(FacadeUser.Identifier, async [Package.Sharable])>((user, packagesFuture), usersCapitalRaised)
+        };
+
+        var success : List.List<Text> = List.nil();
+        var failed : List.List<(Text, Text)> = List.nil();
+        var unchanged : List.List<Text> = List.nil();
+        var updatesFutures : List.List<(Text, async ())> = List.nil();
+
+        for ((user, packagesFuture) in List.toIter(List.reverse(usersCapitalRaised))) {
+            let ownedPackages : [Package.Sharable] = await packagesFuture;
+            var highestCapitalRaised : Nat = 0;
+            for (package in ownedPackages.vals()) {
+                if (package.capitalRaised > highestCapitalRaised) highestCapitalRaised := package.capitalRaised
+            };
+            switch (highestCapitalRaised > user.capitalRaised) {
+                case (true) updatesFutures := List.push<(Text, async ())>((user.username, Facade.updateCapitalRaised(user.principal, highestCapitalRaised)), updatesFutures);
+                case (false) unchanged := List.push<Text>(user.username, unchanged)
+            }
+        };
+
+        for ((username, updateFuture) in List.toIter(List.reverse(updatesFutures))) {
+            try {
+                await updateFuture;
+                success := List.push<Text>(username, success)
+            } catch (e) {
+                failed := List.push<(Text, Text)>((username, Error.message(e)), failed)
+            }
+        };
+
+        {
+            success = List.toArray(success);
+            failed = List.toArray(failed);
+            unchanged = List.toArray(unchanged)
+        }
+    };
+
     /// PUBLIC ////// MODIFIERS ////////////
 
     public shared ({ caller }) func upgradePackage() : async () {
@@ -153,8 +204,11 @@ shared ({ caller = indicator }) actor class Sales() = this {
         let capitalRaised : Nat = E8S.getScaleBy(acornE8S, Proportion.getInverse(acornScaled)).val;
 
         let packagesToMint : [(Nat, Package.Package)] = Packages.getPackagesToMint(packages, capitalRaised);
+        var highestCapitalRaised : Nat = 0;
 
         for ((capitalRaised, package) in packagesToMint.vals()) {
+            if (capitalRaised > highestCapitalRaised) highestCapitalRaised := capitalRaised;
+
             let NFT : DIP721.Dip721NFT = switch (package.principal) {
                 case (?p) actor (Principal.toText(p));
                 case (null) await _deployPackage(package)
@@ -167,7 +221,10 @@ shared ({ caller = indicator }) actor class Sales() = this {
                     case (#Ok(_)) {}
                 }
             }
-        }
+        };
+
+        let Facade : FacadeInterface.Facade = await Indicator.Facade();
+        await Facade.updateCapitalRaised(caller, highestCapitalRaised)
     };
 
     public shared ({ caller }) func mintAchievementPackage(achievement : AchievementPackage.Achievement) : async () {
@@ -246,15 +303,23 @@ shared ({ caller = indicator }) actor class Sales() = this {
         Packages.getPackages(packages)
     };
     public shared func getOwnedPackages(principal : Principal) : async Packages.Sharable {
-        var ownedPackages : List.List<Package.Sharable> = List.nil();
-        for (sharablePackage in Packages.getDeployedPackages(packages).vals()) {
-            let unwrappedPrincipal : Principal = Base.unwrap(sharablePackage.principal);
-            let NFT : DIP721Interface.DIP721 = actor (Principal.toText(unwrappedPrincipal));
+        let deployedPackages = Packages.getDeployedPackages(packages);
+        var futures : List.List<(Package.Sharable, async [Nat64])> = List.nil();
 
-            let ids = await NFT.getTokenIdsForUserDip721(principal);
-            if (ids.size() > 0) ownedPackages := List.push(sharablePackage, ownedPackages)
+        for (package in deployedPackages.vals()) {
+            let NFT : DIP721Interface.DIP721 = actor (Principal.toText(Base.unwrap(package.principal)));
+            let tokenIdsFuture = NFT.getTokenIdsForUserDip721(principal);
+            futures := List.push<(Package.Sharable, async [Nat64])>((package, tokenIdsFuture), futures)
         };
-        List.toArray(ownedPackages)
+
+        var ownedPackagesList : List.List<Package.Sharable> = List.nil();
+        for ((package, future) in List.toIter(List.reverse(futures))) {
+            let tokenIds = await future;
+            if (tokenIds.size() > 0) {
+                ownedPackagesList := List.push(package, ownedPackagesList)
+            }
+        };
+        return List.toArray(ownedPackagesList)
     };
 
     public query func getAchievementPackagePrincipals() : async [(AchievementPackage.Achievement, Principal)] {

@@ -332,6 +332,45 @@
       }
     },
     {
+      "name": "editHypothesis",
+      "flag": {
+        "isQuery": false,
+        "callerRequired": true
+      },
+      "argTypes": {
+        "hypothesisId": {
+          "origin": "Nat",
+          "singular": {
+            "name": "Nat"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        },
+        "content": {
+          "origin": "Text",
+          "singular": {
+            "name": "Text"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async ()",
+        "singular": {
+          "name": "()"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
       "name": "publishEvidence",
       "flag": {
         "isQuery": false,
@@ -368,6 +407,16 @@
           "entries": [],
           "isArray": false,
           "isOptional": false,
+          "isAsync": false
+        },
+        "repliedTo": {
+          "origin": "?Nat",
+          "singular": {
+            "name": "Nat"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": true,
           "isAsync": false
         }
       },
@@ -748,28 +797,10 @@
       }
     },
     {
-      "name": "withdrawAll",
+      "name": "follow",
       "flag": {
         "isQuery": false,
         "callerRequired": true
-      },
-      "argTypes": {},
-      "returnType": {
-        "origin": "async ()",
-        "singular": {
-          "name": "()"
-        },
-        "entries": [],
-        "isArray": false,
-        "isOptional": false,
-        "isAsync": true
-      }
-    },
-    {
-      "name": "getEarnings",
-      "flag": {
-        "isQuery": true,
-        "callerRequired": false
       },
       "argTypes": {
         "principal": {
@@ -784,13 +815,59 @@
         }
       },
       "returnType": {
-        "origin": "async [Earning.Sharable]",
+        "origin": "async ()",
         "singular": {
-          "name": "Sharable",
-          "parent": "Earning"
+          "name": "()"
         },
         "entries": [],
-        "isArray": true,
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
+      "name": "unfollow",
+      "flag": {
+        "isQuery": false,
+        "callerRequired": true
+      },
+      "argTypes": {
+        "principal": {
+          "origin": "Principal",
+          "singular": {
+            "name": "Principal"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async ()",
+        "singular": {
+          "name": "()"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
+      "name": "withdrawAll",
+      "flag": {
+        "isQuery": false,
+        "callerRequired": true
+      },
+      "argTypes": {},
+      "returnType": {
+        "origin": "async ()",
+        "singular": {
+          "name": "()"
+        },
+        "entries": [],
+        "isArray": false,
         "isOptional": false,
         "isAsync": true
       }
@@ -1563,6 +1640,128 @@
       }
     },
     {
+      "name": "getTop",
+      "flag": {
+        "isQuery": true,
+        "callerRequired": true
+      },
+      "argTypes": {
+        "category": {
+          "origin": "{ #HypothesisPublishers; #EvidencePublishers; #HypothesisVoters; #EvidenceVoters; #AcornEarners }",
+          "singular": {
+            "name": "()"
+          },
+          "entries": [
+            [
+              "#HypothesisPublishers",
+              null
+            ],
+            [
+              "#EvidencePublishers",
+              null
+            ],
+            [
+              "#HypothesisVoters",
+              null
+            ],
+            [
+              "#EvidenceVoters",
+              null
+            ],
+            [
+              "#AcornEarners",
+              null
+            ]
+          ],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async Pagination.TopNonPagination",
+        "singular": {
+          "name": "TopNonPagination",
+          "parent": "Pagination"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
+      "name": "getTopPagination",
+      "flag": {
+        "isQuery": true,
+        "callerRequired": true
+      },
+      "argTypes": {
+        "category": {
+          "origin": "{ #HypothesisPublishers; #EvidencePublishers; #HypothesisVoters; #EvidenceVoters; #AcornEarners }",
+          "singular": {
+            "name": "()"
+          },
+          "entries": [
+            [
+              "#HypothesisPublishers",
+              null
+            ],
+            [
+              "#EvidencePublishers",
+              null
+            ],
+            [
+              "#HypothesisVoters",
+              null
+            ],
+            [
+              "#EvidenceVoters",
+              null
+            ],
+            [
+              "#AcornEarners",
+              null
+            ]
+          ],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        },
+        "page": {
+          "origin": "Nat",
+          "singular": {
+            "name": "Nat"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        },
+        "limit": {
+          "origin": "Nat",
+          "singular": {
+            "name": "Nat"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async Pagination.TopPagination",
+        "singular": {
+          "name": "TopPagination",
+          "parent": "Pagination"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
       "name": "getAgePayout",
       "flag": {
         "isQuery": true,
@@ -1685,7 +1884,7 @@
       "name": "getUser",
       "flag": {
         "isQuery": true,
-        "callerRequired": false
+        "callerRequired": true
       },
       "argTypes": {
         "principal": {
@@ -2157,7 +2356,6 @@
     "BinaryVotes",
     "Flag",
     "TernaryVotes",
-    "Earning",
     "Field",
     "Fields",
     "Base",
@@ -2168,7 +2366,8 @@
     "Flags",
     "Payout",
     "Payouts",
-    "User"
+    "User",
+    "Earning"
   ],
   "typeDefinitions": {
     "Nat": {
@@ -2608,6 +2807,16 @@
       "isOptional": false,
       "isAsync": false
     },
+    "?Nat": {
+      "origin": "?Nat",
+      "singular": {
+        "name": "Nat"
+      },
+      "entries": [],
+      "isArray": false,
+      "isOptional": true,
+      "isAsync": false
+    },
     "Flag.Header": {
       "origin": "Flag.Header",
       "singular": {
@@ -2676,56 +2885,6 @@
       "isArray": false,
       "isOptional": false,
       "isAsync": false
-    },
-    "async [Earning.Sharable]": {
-      "origin": "async [Earning.Sharable]",
-      "singular": {
-        "name": "()"
-      },
-      "entries": [
-        [
-          "revenue",
-          {
-            "origin": "SharableE8S",
-            "singular": {
-              "name": "Nat"
-            },
-            "entries": [],
-            "isArray": false,
-            "isOptional": false,
-            "isAsync": false
-          }
-        ],
-        [
-          "balance",
-          {
-            "origin": "SharableE8S",
-            "singular": {
-              "name": "Nat"
-            },
-            "entries": [],
-            "isArray": false,
-            "isOptional": false,
-            "isAsync": false
-          }
-        ],
-        [
-          "lastWithdrawAt",
-          {
-            "origin": "Time",
-            "singular": {
-              "name": "Time"
-            },
-            "entries": [],
-            "isArray": false,
-            "isOptional": false,
-            "isAsync": false
-          }
-        ]
-      ],
-      "isArray": true,
-      "isOptional": false,
-      "isAsync": true
     },
     "Configs.Key": {
       "origin": "Configs.Key",
@@ -3948,7 +4107,7 @@
       },
       "entries": [
         [
-          "publishedAt",
+          "age",
           {
             "origin": "?Nat",
             "singular": {
@@ -3961,7 +4120,7 @@
           }
         ],
         [
-          "publishedIn",
+          "field",
           {
             "origin": "?Text",
             "singular": {
@@ -3974,7 +4133,7 @@
           }
         ],
         [
-          "publishedBy",
+          "publisher",
           {
             "origin": "?Principal",
             "singular": {
@@ -3987,7 +4146,7 @@
           }
         ],
         [
-          "votedBy",
+          "voter",
           {
             "origin": "?Principal",
             "singular": {
@@ -4026,7 +4185,33 @@
           }
         ],
         [
-          "containsPattern",
+          "userJoinedFields",
+          {
+            "origin": "?Principal",
+            "singular": {
+              "name": "Principal"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": true,
+            "isAsync": false
+          }
+        ],
+        [
+          "userFollowedPublishers",
+          {
+            "origin": "?Principal",
+            "singular": {
+              "name": "Principal"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": true,
+            "isAsync": false
+          }
+        ],
+        [
+          "q",
           {
             "origin": "?Text",
             "singular": {
@@ -5099,6 +5284,32 @@
             "isOptional": true,
             "isAsync": false
           }
+        ],
+        [
+          "repliedTo",
+          {
+            "origin": "?Nat",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": true,
+            "isAsync": false
+          }
+        ],
+        [
+          "replies",
+          {
+            "origin": "[Nat]",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": true,
+            "isOptional": false,
+            "isAsync": false
+          }
         ]
       ],
       "isArray": false,
@@ -5112,7 +5323,7 @@
       },
       "entries": [
         [
-          "publishedIn",
+          "hypothesis",
           {
             "origin": "?Nat",
             "singular": {
@@ -5125,7 +5336,7 @@
           }
         ],
         [
-          "publishedBy",
+          "publisher",
           {
             "origin": "?Principal",
             "singular": {
@@ -5138,7 +5349,7 @@
           }
         ],
         [
-          "votedBy",
+          "voter",
           {
             "origin": "?Principal",
             "singular": {
@@ -5151,7 +5362,7 @@
           }
         ],
         [
-          "onSide",
+          "side",
           {
             "origin": "?BinaryChoice",
             "singular": {
@@ -5173,7 +5384,7 @@
           }
         ],
         [
-          "containsPattern",
+          "q",
           {
             "origin": "?Text",
             "singular": {
@@ -5596,6 +5807,32 @@
             "isOptional": true,
             "isAsync": false
           }
+        ],
+        [
+          "repliedTo",
+          {
+            "origin": "?Nat",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": true,
+            "isAsync": false
+          }
+        ],
+        [
+          "replies",
+          {
+            "origin": "[Nat]",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": true,
+            "isOptional": false,
+            "isAsync": false
+          }
         ]
       ],
       "isArray": true,
@@ -5951,6 +6188,32 @@
                   ],
                   "isArray": false,
                   "isOptional": true,
+                  "isAsync": false
+                }
+              ],
+              [
+                "repliedTo",
+                {
+                  "origin": "?Nat",
+                  "singular": {
+                    "name": "Nat"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": true,
+                  "isAsync": false
+                }
+              ],
+              [
+                "replies",
+                {
+                  "origin": "[Nat]",
+                  "singular": {
+                    "name": "Nat"
+                  },
+                  "entries": [],
+                  "isArray": true,
+                  "isOptional": false,
                   "isAsync": false
                 }
               ]
@@ -6949,6 +7212,191 @@
       "isOptional": false,
       "isAsync": false
     },
+    "{ #HypothesisPublishers; #EvidencePublishers; #HypothesisVoters; #EvidenceVoters; #AcornEarners }": {
+      "origin": "{ #HypothesisPublishers; #EvidencePublishers; #HypothesisVoters; #EvidenceVoters; #AcornEarners }",
+      "singular": {
+        "name": "()"
+      },
+      "entries": [
+        [
+          "#HypothesisPublishers",
+          null
+        ],
+        [
+          "#EvidencePublishers",
+          null
+        ],
+        [
+          "#HypothesisVoters",
+          null
+        ],
+        [
+          "#EvidenceVoters",
+          null
+        ],
+        [
+          "#AcornEarners",
+          null
+        ]
+      ],
+      "isArray": false,
+      "isOptional": false,
+      "isAsync": false
+    },
+    "async Pagination.TopNonPagination": {
+      "origin": "async Pagination.TopNonPagination",
+      "singular": {
+        "name": "()"
+      },
+      "entries": [
+        [
+          "result",
+          {
+            "origin": "TopResult",
+            "singular": {
+              "name": "()"
+            },
+            "entries": [
+              [
+                null,
+                {
+                  "origin": "Principal",
+                  "singular": {
+                    "name": "Principal"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                null,
+                {
+                  "origin": "Nat",
+                  "singular": {
+                    "name": "Nat"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ]
+            ],
+            "isArray": true,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "callerRank",
+          {
+            "origin": "?Nat",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": true,
+            "isAsync": false
+          }
+        ]
+      ],
+      "isArray": false,
+      "isOptional": false,
+      "isAsync": true
+    },
+    "async Pagination.TopPagination": {
+      "origin": "async Pagination.TopPagination",
+      "singular": {
+        "name": "()"
+      },
+      "entries": [
+        [
+          "result",
+          {
+            "origin": "TopResult",
+            "singular": {
+              "name": "()"
+            },
+            "entries": [
+              [
+                null,
+                {
+                  "origin": "Principal",
+                  "singular": {
+                    "name": "Principal"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                null,
+                {
+                  "origin": "Nat",
+                  "singular": {
+                    "name": "Nat"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ]
+            ],
+            "isArray": true,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "callerRank",
+          {
+            "origin": "?Nat",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": true,
+            "isAsync": false
+          }
+        ],
+        [
+          "is",
+          {
+            "origin": "Nat",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "of",
+          {
+            "origin": "Nat",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ]
+      ],
+      "isArray": false,
+      "isOptional": false,
+      "isAsync": true
+    },
     "async Payout.Sharable": {
       "origin": "async Payout.Sharable",
       "singular": {
@@ -7000,9 +7448,9 @@
                     [
                       "rank",
                       {
-                        "origin": "Nat",
+                        "origin": "Int",
                         "singular": {
-                          "name": "Nat"
+                          "name": "Int"
                         },
                         "entries": [],
                         "isArray": false,
@@ -7013,9 +7461,9 @@
                     [
                       "score",
                       {
-                        "origin": "Nat",
+                        "origin": "Int",
                         "singular": {
-                          "name": "Nat"
+                          "name": "Int"
                         },
                         "entries": [],
                         "isArray": false,
@@ -7040,9 +7488,9 @@
                     [
                       "rank",
                       {
-                        "origin": "Nat",
+                        "origin": "Int",
                         "singular": {
-                          "name": "Nat"
+                          "name": "Int"
                         },
                         "entries": [],
                         "isArray": false,
@@ -7053,9 +7501,9 @@
                     [
                       "score",
                       {
-                        "origin": "Nat",
+                        "origin": "Int",
                         "singular": {
-                          "name": "Nat"
+                          "name": "Int"
                         },
                         "entries": [],
                         "isArray": false,
@@ -7144,9 +7592,9 @@
                     [
                       "rank",
                       {
-                        "origin": "Nat",
+                        "origin": "Int",
                         "singular": {
-                          "name": "Nat"
+                          "name": "Int"
                         },
                         "entries": [],
                         "isArray": false,
@@ -7157,9 +7605,9 @@
                     [
                       "score",
                       {
-                        "origin": "Nat",
+                        "origin": "Int",
                         "singular": {
-                          "name": "Nat"
+                          "name": "Int"
                         },
                         "entries": [],
                         "isArray": false,
@@ -7184,9 +7632,9 @@
                     [
                       "rank",
                       {
-                        "origin": "Nat",
+                        "origin": "Int",
                         "singular": {
-                          "name": "Nat"
+                          "name": "Int"
                         },
                         "entries": [],
                         "isArray": false,
@@ -7197,9 +7645,9 @@
                     [
                       "score",
                       {
-                        "origin": "Nat",
+                        "origin": "Int",
                         "singular": {
-                          "name": "Nat"
+                          "name": "Int"
                         },
                         "entries": [],
                         "isArray": false,
@@ -7288,9 +7736,9 @@
                     [
                       "rank",
                       {
-                        "origin": "Nat",
+                        "origin": "Int",
                         "singular": {
-                          "name": "Nat"
+                          "name": "Int"
                         },
                         "entries": [],
                         "isArray": false,
@@ -7301,9 +7749,9 @@
                     [
                       "score",
                       {
-                        "origin": "Nat",
+                        "origin": "Int",
                         "singular": {
-                          "name": "Nat"
+                          "name": "Int"
                         },
                         "entries": [],
                         "isArray": false,
@@ -7328,9 +7776,9 @@
                     [
                       "rank",
                       {
-                        "origin": "Nat",
+                        "origin": "Int",
                         "singular": {
-                          "name": "Nat"
+                          "name": "Int"
                         },
                         "entries": [],
                         "isArray": false,
@@ -7341,9 +7789,9 @@
                     [
                       "score",
                       {
-                        "origin": "Nat",
+                        "origin": "Int",
                         "singular": {
-                          "name": "Nat"
+                          "name": "Int"
                         },
                         "entries": [],
                         "isArray": false,
@@ -7387,6 +7835,19 @@
         "name": "()"
       },
       "entries": [
+        [
+          "principal",
+          {
+            "origin": "Principal",
+            "singular": {
+              "name": "Principal"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
         [
           "earning",
           {
@@ -7436,6 +7897,32 @@
               ]
             ],
             "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "followers",
+          {
+            "origin": "[Principal]",
+            "singular": {
+              "name": "Principal"
+            },
+            "entries": [],
+            "isArray": true,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "followings",
+          {
+            "origin": "[Principal]",
+            "singular": {
+              "name": "Principal"
+            },
+            "entries": [],
+            "isArray": true,
             "isOptional": false,
             "isAsync": false
           }
@@ -7658,6 +8145,32 @@
             ],
             "isArray": true,
             "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "callerFollowing",
+          {
+            "origin": "?Bool",
+            "singular": {
+              "name": "Bool"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": true,
+            "isAsync": false
+          }
+        ],
+        [
+          "callerFollower",
+          {
+            "origin": "?Bool",
+            "singular": {
+              "name": "Bool"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": true,
             "isAsync": false
           }
         ]

@@ -111,7 +111,15 @@
 "Nat"
 ```
 
-### 9. `publishEvidence(hypothesisId, form, choice)` returns `Nat`
+### 9. `editHypothesis(hypothesisId, content)` returns `()`
+
+#### Arguments:
+
+```json
+{"hypothesisId": "Nat", "content": "Text"}
+```
+
+### 10. `publishEvidence(hypothesisId, form, choice, repliedTo)` returns `Nat`
 
 #### Arguments:
 
@@ -125,7 +133,8 @@
       "#NOTE": {"content": "Text", "extended": "Bool"}
     }
   ],
-  "choice": "#POSITIVE | #NEGATIVE"
+  "choice": "#POSITIVE | #NEGATIVE",
+  "repliedTo": "Nat"
 }
 ```
 
@@ -134,7 +143,7 @@
 "Nat"
 ```
 
-### 10. `requestFlag(header, reason)` returns `()`
+### 11. `requestFlag(header, reason)` returns `()`
 
 #### Arguments:
 
@@ -142,7 +151,7 @@
 {"header": {"id": "Nat", "category": "#HYPOTHESIS | #EVIDENCE"}, "reason": "Text"}
 ```
 
-### 11. `voteHypothesis(hypothesisId, choice)` returns `()`
+### 12. `voteHypothesis(hypothesisId, choice)` returns `()`
 
 #### Arguments:
 
@@ -150,7 +159,7 @@
 {"hypothesisId": "Nat", "choice": "#POSITIVE | #NEUTRAL | #NEGATIVE"}
 ```
 
-### 12. `voteEvidence(evidenceId, choice)` returns `()`
+### 13. `voteEvidence(evidenceId, choice)` returns `()`
 
 #### Arguments:
 
@@ -158,7 +167,7 @@
 {"evidenceId": "Nat", "choice": "#POSITIVE | #NEGATIVE"}
 ```
 
-### 13. `voteFlag(header, choice)` returns `()`
+### 14. `voteFlag(header, choice)` returns `()`
 
 #### Arguments:
 
@@ -166,7 +175,7 @@
 {"header": {"id": "Nat", "category": "#HYPOTHESIS | #EVIDENCE"}, "choice": "#POSITIVE | #NEGATIVE"}
 ```
 
-### 14. `removeHypothesisVote(hypothesisId)` returns `()`
+### 15. `removeHypothesisVote(hypothesisId)` returns `()`
 
 #### Arguments:
 
@@ -174,7 +183,7 @@
 {"hypothesisId": "Nat"}
 ```
 
-### 15. `removeEvidenceVote(evidenceId)` returns `()`
+### 16. `removeEvidenceVote(evidenceId)` returns `()`
 
 #### Arguments:
 
@@ -182,7 +191,7 @@
 {"evidenceId": "Nat"}
 ```
 
-### 16. `removeFlagVote(header)` returns `()`
+### 17. `removeFlagVote(header)` returns `()`
 
 #### Arguments:
 
@@ -190,7 +199,7 @@
 {"header": {"id": "Nat", "category": "#HYPOTHESIS | #EVIDENCE"}}
 ```
 
-### 17. `addToAxioms(hypothesisId)` returns `()`
+### 18. `addToAxioms(hypothesisId)` returns `()`
 
 #### Arguments:
 
@@ -198,7 +207,7 @@
 {"hypothesisId": "Nat"}
 ```
 
-### 18. `addToBookmarks(hypothesisId)` returns `()`
+### 19. `addToBookmarks(hypothesisId)` returns `()`
 
 #### Arguments:
 
@@ -206,7 +215,7 @@
 {"hypothesisId": "Nat"}
 ```
 
-### 19. `removeFromAxioms(hypothesisId)` returns `()`
+### 20. `removeFromAxioms(hypothesisId)` returns `()`
 
 #### Arguments:
 
@@ -214,7 +223,7 @@
 {"hypothesisId": "Nat"}
 ```
 
-### 20. `removeFromBookmarks(hypothesisId)` returns `()`
+### 21. `removeFromBookmarks(hypothesisId)` returns `()`
 
 #### Arguments:
 
@@ -222,11 +231,7 @@
 {"hypothesisId": "Nat"}
 ```
 
-### 21. `withdrawAll()` returns `()`
-
-## Accessors
-
-### 1. `getEarnings(principal)` returns `[Earning.Sharable]`
+### 22. `follow(principal)` returns `()`
 
 #### Arguments:
 
@@ -234,12 +239,19 @@
 {"principal": "Principal"}
 ```
 
-#### Returns:
+### 23. `unfollow(principal)` returns `()`
+
+#### Arguments:
+
 ```json
-[{"revenue": "Nat", "balance": "Nat", "lastWithdrawAt": "Time"}]
+{"principal": "Principal"}
 ```
 
-### 2. `getConfig(key)` returns `Configs.SharableValue`
+### 24. `withdrawAll()` returns `()`
+
+## Accessors
+
+### 1. `getConfig(key)` returns `Configs.SharableValue`
 
 #### Arguments:
 
@@ -264,7 +276,7 @@
 }
 ```
 
-### 3. `getConfigs()` returns `Configs.Sharable`
+### 2. `getConfigs()` returns `Configs.Sharable`
 
 #### Returns:
 ```json
@@ -288,7 +300,7 @@
 ]
 ```
 
-### 4. `getField(name)` returns `Field.Sharable`
+### 3. `getField(name)` returns `Field.Sharable`
 
 #### Arguments:
 
@@ -308,7 +320,7 @@
 }
 ```
 
-### 5. `getFields(filter, sort)` returns `Fields.Sharable`
+### 4. `getFields(filter, sort)` returns `Fields.Sharable`
 
 #### Arguments:
 
@@ -333,7 +345,7 @@
 ]
 ```
 
-### 6. `getFieldsPagination(filter, sort, page, limit)` returns `Pagination.Pagination<Field.Sharable>`
+### 5. `getFieldsPagination(filter, sort, page, limit)` returns `Pagination.Pagination<Field.Sharable>`
 
 #### Arguments:
 
@@ -362,7 +374,7 @@
 }
 ```
 
-### 7. `getHypothesis(hypothesisId)` returns `Hypothesis.Sharable`
+### 6. `getHypothesis(hypothesisId)` returns `Hypothesis.Sharable`
 
 #### Arguments:
 
@@ -387,20 +399,22 @@
 }
 ```
 
-### 8. `getHypotheses(filter, sort)` returns `Hypotheses.Sharable`
+### 7. `getHypotheses(filter, sort)` returns `Hypotheses.Sharable`
 
 #### Arguments:
 
 ```json
 {
   "filter": {
-    "publishedAt": "Nat",
-    "publishedIn": "Text",
-    "publishedBy": "Principal",
-    "votedBy": "Principal",
+    "age": "Nat",
+    "field": "Text",
+    "publisher": "Principal",
+    "voter": "Principal",
     "axiomsFrom": "Principal",
     "bookmarksFrom": "Principal",
-    "containsPattern": "Text"
+    "userJoinedFields": "Principal",
+    "userFollowedPublishers": "Principal",
+    "q": "Text"
   },
   "sort": {
     "by": "#RECENT | #CONTROVERSY | #POPULARITY | #POSITIVITY | #NEUTRALITY | #NEGATIVITY",
@@ -428,20 +442,22 @@
 ]
 ```
 
-### 9. `getHypothesesPagination(filter, sort, page, limit)` returns `Pagination.Pagination<Hypothesis.Sharable>`
+### 8. `getHypothesesPagination(filter, sort, page, limit)` returns `Pagination.Pagination<Hypothesis.Sharable>`
 
 #### Arguments:
 
 ```json
 {
   "filter": {
-    "publishedAt": "Nat",
-    "publishedIn": "Text",
-    "publishedBy": "Principal",
-    "votedBy": "Principal",
+    "age": "Nat",
+    "field": "Text",
+    "publisher": "Principal",
+    "voter": "Principal",
     "axiomsFrom": "Principal",
     "bookmarksFrom": "Principal",
-    "containsPattern": "Text"
+    "userJoinedFields": "Principal",
+    "userFollowedPublishers": "Principal",
+    "q": "Text"
   },
   "sort": {
     "by": "#RECENT | #CONTROVERSY | #POPULARITY | #POSITIVITY | #NEUTRALITY | #NEGATIVITY",
@@ -473,7 +489,7 @@
 }
 ```
 
-### 10. `getEvidence(evidenceId)` returns `Evidence.Sharable`
+### 9. `getEvidence(evidenceId)` returns `Evidence.Sharable`
 
 #### Arguments:
 
@@ -497,23 +513,19 @@
   "hypothesisId": "Nat",
   "votes": {"powered": ["Nat", "Nat"], "regular": ["Nat", "Nat"]},
   "choice": "#POSITIVE | #NEGATIVE",
-  "callerVote": {"choice": "#POSITIVE | #NEGATIVE", "value": "Nat"}
+  "callerVote": {"choice": "#POSITIVE | #NEGATIVE", "value": "Nat"},
+  "repliedTo": "Nat",
+  "replies": ["Nat"]
 }
 ```
 
-### 11. `getEvidences(filter, sort)` returns `Evidences.Sharable`
+### 10. `getEvidences(filter, sort)` returns `Evidences.Sharable`
 
 #### Arguments:
 
 ```json
 {
-  "filter": {
-    "publishedIn": "Nat",
-    "publishedBy": "Principal",
-    "votedBy": "Principal",
-    "onSide": "#POSITIVE | #NEGATIVE",
-    "containsPattern": "Text"
-  },
+  "filter": {"hypothesis": "Nat", "publisher": "Principal", "voter": "Principal", "side": "#POSITIVE | #NEGATIVE", "q": "Text"},
   "sort": {"by": "#RECENT | #POPULARITY | #POSITIVITY | #NEGATIVITY", "order": "#ASCENDING | #DESCENDING"}
 }
 ```
@@ -535,24 +547,20 @@
     "hypothesisId": "Nat",
     "votes": {"powered": ["Nat", "Nat"], "regular": ["Nat", "Nat"]},
     "choice": "#POSITIVE | #NEGATIVE",
-    "callerVote": {"choice": "#POSITIVE | #NEGATIVE", "value": "Nat"}
+    "callerVote": {"choice": "#POSITIVE | #NEGATIVE", "value": "Nat"},
+    "repliedTo": "Nat",
+    "replies": ["Nat"]
   }
 ]
 ```
 
-### 12. `getEvidencesPagination(filter, sort, page, limit)` returns `Pagination.Pagination<Evidence.Sharable>`
+### 11. `getEvidencesPagination(filter, sort, page, limit)` returns `Pagination.Pagination<Evidence.Sharable>`
 
 #### Arguments:
 
 ```json
 {
-  "filter": {
-    "publishedIn": "Nat",
-    "publishedBy": "Principal",
-    "votedBy": "Principal",
-    "onSide": "#POSITIVE | #NEGATIVE",
-    "containsPattern": "Text"
-  },
+  "filter": {"hypothesis": "Nat", "publisher": "Principal", "voter": "Principal", "side": "#POSITIVE | #NEGATIVE", "q": "Text"},
   "sort": {"by": "#RECENT | #POPULARITY | #POSITIVITY | #NEGATIVITY", "order": "#ASCENDING | #DESCENDING"},
   "page": "Nat",
   "limit": "Nat"
@@ -576,14 +584,16 @@
     "hypothesisId": "Nat",
     "votes": {"powered": ["Nat", "Nat"], "regular": ["Nat", "Nat"]},
     "choice": "#POSITIVE | #NEGATIVE",
-    "callerVote": {"choice": "#POSITIVE | #NEGATIVE", "value": "Nat"}
+    "callerVote": {"choice": "#POSITIVE | #NEGATIVE", "value": "Nat"},
+    "repliedTo": "Nat",
+    "replies": ["Nat"]
   },
   "is": "Nat",
   "of": "Nat"
 }
 ```
 
-### 13. `getFlag(header)` returns `Flag.Sharable`
+### 12. `getFlag(header)` returns `Flag.Sharable`
 
 #### Arguments:
 
@@ -605,7 +615,7 @@
 }
 ```
 
-### 14. `getFlags(filter, sort)` returns `Flags.Sharable`
+### 13. `getFlags(filter, sort)` returns `Flags.Sharable`
 
 #### Arguments:
 
@@ -637,7 +647,7 @@
 ]
 ```
 
-### 15. `getFlagsPagination(filter, sort, page, limit)` returns `Pagination.Pagination<Flag.Sharable>`
+### 14. `getFlagsPagination(filter, sort, page, limit)` returns `Pagination.Pagination<Flag.Sharable>`
 
 #### Arguments:
 
@@ -673,7 +683,37 @@
 }
 ```
 
-### 16. `getAgePayout(ageId, ago)` returns `Payout.Sharable`
+### 15. `getTop(category)` returns `Pagination.TopNonPagination`
+
+#### Arguments:
+
+```json
+{"category": "#HYPOTHESISPUBLISHERS | #EVIDENCEPUBLISHERS | #HYPOTHESISVOTERS | #EVIDENCEVOTERS | #ACORNEARNERS"}
+```
+
+#### Returns:
+```json
+{"result": [["Principal", "Nat"]], "callerRank": "Nat"}
+```
+
+### 16. `getTopPagination(category, page, limit)` returns `Pagination.TopPagination`
+
+#### Arguments:
+
+```json
+{
+  "category": "#HYPOTHESISPUBLISHERS | #EVIDENCEPUBLISHERS | #HYPOTHESISVOTERS | #EVIDENCEVOTERS | #ACORNEARNERS",
+  "page": "Nat",
+  "limit": "Nat"
+}
+```
+
+#### Returns:
+```json
+{"result": [["Principal", "Nat"]], "callerRank": "Nat", "is": "Nat", "of": "Nat"}
+```
+
+### 17. `getAgePayout(ageId, ago)` returns `Payout.Sharable`
 
 #### Arguments:
 
@@ -688,15 +728,15 @@
     {
       "hypothesisId": "Nat",
       "averageRank": "Float",
-      "regularEntry": {"rank": "Nat", "score": "Nat"},
-      "poweredEntry": {"rank": "Nat", "score": "Nat"}
+      "regularEntry": {"rank": "Int", "score": "Int"},
+      "poweredEntry": {"rank": "Int", "score": "Int"}
     }
   ],
   "callerRevenue": "Nat"
 }
 ```
 
-### 17. `getAgePayouts(ageId)` returns `Payouts.Sharable`
+### 18. `getAgePayouts(ageId)` returns `Payouts.Sharable`
 
 #### Arguments:
 
@@ -712,8 +752,8 @@
       {
         "hypothesisId": "Nat",
         "averageRank": "Float",
-        "regularEntry": {"rank": "Nat", "score": "Nat"},
-        "poweredEntry": {"rank": "Nat", "score": "Nat"}
+        "regularEntry": {"rank": "Int", "score": "Int"},
+        "poweredEntry": {"rank": "Int", "score": "Int"}
       }
     ],
     "callerRevenue": "Nat"
@@ -721,7 +761,7 @@
 ]
 ```
 
-### 18. `getAgesPayout(ago)` returns `Payouts.Sharable`
+### 19. `getAgesPayout(ago)` returns `Payouts.Sharable`
 
 #### Arguments:
 
@@ -737,8 +777,8 @@
       {
         "hypothesisId": "Nat",
         "averageRank": "Float",
-        "regularEntry": {"rank": "Nat", "score": "Nat"},
-        "poweredEntry": {"rank": "Nat", "score": "Nat"}
+        "regularEntry": {"rank": "Int", "score": "Int"},
+        "poweredEntry": {"rank": "Int", "score": "Int"}
       }
     ],
     "callerRevenue": "Nat"
@@ -746,7 +786,7 @@
 ]
 ```
 
-### 19. `getAgesPayouts()` returns `[Payouts.Sharable]`
+### 20. `getAgesPayouts()` returns `[Payouts.Sharable]`
 
 #### Returns:
 ```json
@@ -756,8 +796,8 @@
       {
         "hypothesisId": "Nat",
         "averageRank": "Float",
-        "regularEntry": {"rank": "Nat", "score": "Nat"},
-        "poweredEntry": {"rank": "Nat", "score": "Nat"}
+        "regularEntry": {"rank": "Int", "score": "Int"},
+        "poweredEntry": {"rank": "Int", "score": "Int"}
       }
     ],
     "callerRevenue": "Nat"
@@ -765,7 +805,7 @@
 ]
 ```
 
-### 20. `getUser(principal)` returns `User.Sharable`
+### 21. `getUser(principal)` returns `User.Sharable`
 
 #### Arguments:
 
@@ -777,6 +817,8 @@
 ```json
 {
   "earning": {"revenue": "Nat", "balance": "Nat", "lastWithdrawAt": "Time"},
+  "followers": ["Principal"],
+  "following": ["Principal"],
   "axioms": ["Nat"],
   "bookmarks": ["Nat"],
   "joinedFields": ["Text"],
@@ -787,7 +829,7 @@
 }
 ```
 
-### 21. `getEarning(principal)` returns `Earning.Sharable`
+### 22. `getEarning(principal)` returns `Earning.Sharable`
 
 #### Arguments:
 
@@ -800,7 +842,7 @@
 {"revenue": "Nat", "balance": "Nat", "lastWithdrawAt": "Time"}
 ```
 
-### 22. `expectUserNotFound(principal)` returns `()`
+### 23. `expectUserNotFound(principal)` returns `()`
 
 #### Arguments:
 

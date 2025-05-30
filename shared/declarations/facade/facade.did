@@ -142,6 +142,7 @@ type Facade =
    getUserIdentifier: (IdentifierVariant) -> (Identifier) query;
    getUsers: (Filter, Sort) -> (vec Sharable) query;
    getUsersCount: () -> (nat) query;
+   getUsersIdentifier: () -> (vec Identifier) query;
    getUsersPagination: (Filter, Sort, nat, nat) -> (Pagination) query;
    /// PROTECTED ////// MODIFIERS ////////////
    initialize: () -> ();
@@ -156,5 +157,6 @@ type Facade =
                       SharableValue;
                     }) -> ();
    shiftToMidnight: (nat) -> ();
+   updateCapitalRaised: (principal, nat) -> ();
  };
 service : () -> Facade

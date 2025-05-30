@@ -24,6 +24,7 @@ module {
     /// PRIVATE ////// DECLARATIONS ////////////
 
     private type Vector<T> = Vector.Vector<T>;
+    private type List<T> = List.List<T>;
     private type Set<T> = Set.Set<T>;
     private type ClusterTree<K, V> = ClusterTree.ClusterTree<K, V>;
     private type Ranking<T> = DoubleRankTree.Ranking<T>;
@@ -55,14 +56,34 @@ module {
         case (#negativity) func(_, e) = (BinaryVotes.getRegularNegativeValue(e.votes), BinaryVotes.getPoweredNegativeValue(e.votes))
     };
 
+    private func _buildRepliesContextOptimized(__ : Self, parentEvidence : Evidence, depthLimit : Nat, currentDepth : Nat, callerUser : ?(Principal, User), getCallerVote : Nat -> ?BinaryVote) : SharableContext {
+        if (currentDepth >= depthLimit) {
+            return []
+        };
+        var contextRepliesList : List.List<(SharableEvidence, SharableContext)> = List.nil();
+        for (replyId in List.toIter(parentEvidence.replies)) {
+            switch (evidenceRemovedOpt(__, replyId)) {
+                case (?replyEvidence) {
+                    let sharableReply = Evidence.toSharable(replyEvidence, replyId, getCallerVote);
+                    let subRepliesContext = _buildRepliesContextOptimized(__, replyEvidence, depthLimit, currentDepth + 1, callerUser, getCallerVote);
+
+                    let currentEntry : (SharableEvidence, SharableContext) = (sharableReply, subRepliesContext);
+                    contextRepliesList := List.push(currentEntry, contextRepliesList)
+                };
+                case (null) {}
+            }
+        };
+        return List.toArray(contextRepliesList)
+    };
+
     /// PUBLIC ////// DECLARATIONS ////////////
 
     public type Filter = {
-        publishedIn : ?Nat;
-        publishedBy : ?Principal;
-        votedBy : ?Principal;
-        onSide : ?BinaryChoice;
-        containsPattern : ?Text
+        hypothesis : ?Nat;
+        publisher : ?Principal;
+        voter : ?Principal;
+        side : ?BinaryChoice;
+        q : ?Text
     };
     public type Sort = {
         #recent;
@@ -70,6 +91,9 @@ module {
         #positivity;
         #negativity
     };
+
+    public type Context = List<((Nat, Evidence), Context)>;
+    public type SharableContext = [(SharableEvidence, SharableContext)];
 
     /// AXIOMS ////// EVIDENCES ////////////
 
@@ -82,9 +106,9 @@ module {
 
     /// PUBLIC ////// MODIFIERS ////////////
 
-    public func publish(__ : Self, evidence : Evidence) : Nat {
+    public func publish(__ : Self, e : Evidence) : Nat {
         let id : Nat = Vector.size(__);
-        Vector.add(__, ?evidence);
+        Vector.add(__, ?e);
         id
     };
 
@@ -110,7 +134,7 @@ module {
         };
         case (null) E.f(#NOT_EXISTED("Evidence"), "Attempted to get a non-existent evidence id " # debug_show (id) # ". Max id available is " # debug_show (lastId(__)))
     };
-    public func evidenceFlaggedOpt(__ : Self, id : Nat) : ?Evidence = switch (Vector.getOpt(__, id)) {
+    public func evidenceRemovedOpt(__ : Self, id : Nat) : ?Evidence = switch (Vector.getOpt(__, id)) {
         case (?evidence) evidence;
         case (null) E.f(#NOT_EXISTED("Evidence"), "Attempted to get a non-existent evidence id " # debug_show (id) # ". Max id available is " # debug_show (lastId(__)))
     };
@@ -122,27 +146,27 @@ module {
         let getCallerVote : Nat -> ?BinaryVote = User.callerEvidenceVoteCallback(callerUser);
 
         var filtered : ?[Entry] = null;
-        let toEntry : Nat -> ?Entry = func(i) = switch (evidenceFlaggedOpt(__, i)) {
+        let toEntry : Nat -> ?Entry = func(i) = switch (evidenceRemovedOpt(__, i)) {
             case (?evidence) ?(i, evidence);
             case (null) null
         };
         let toSharable : Entry -> SharableEvidence = func(id, entry) = Evidence.toSharable(entry, id, getCallerVote);
 
-        switch (filter.votedBy) {
+        switch (filter.voter) {
             case (null) {};
             case (?user) filtered := ?Map.getKeysFilterMap(getUser(user).votedEvidences, toEntry)
         };
-        switch (filter.publishedBy, filtered) {
+        switch (filter.publisher, filtered) {
             case (null, _) {};
             case (?user, null) filtered := ?List.toArrayFilterMap<Nat, Entry>(getUser(user).evidences, toEntry);
             case (?user, ?prevResult) filtered := ?Array.filter<Entry>(prevResult, func(_, e) = e.publisher == user)
         };
-        switch (filter.publishedIn, filtered) {
+        switch (filter.hypothesis, filtered) {
             case (null, _) {};
             case (?hypothesis, null) filtered := ?List.toArrayFilterMap<Nat, Entry>(getHypothesis(hypothesis).evidenceIds, toEntry);
             case (?hypothesis, ?prevResult) filtered := ?Array.filter<Entry>(prevResult, func(_, e) = e.hypothesisId == hypothesis)
         };
-        switch (filter.onSide, filtered) {
+        switch (filter.side, filtered) {
             case (null, _) {};
             case (?side, null) filtered := ?Vector.toEntriesFilterMap<?Evidence, Entry>(
                 __,
@@ -156,7 +180,7 @@ module {
             );
             case (?side, ?prevResult) filtered := ?Array.filter<Entry>(prevResult, func(_, e) = e.choice == side)
         };
-        switch (filter.containsPattern, filtered) {
+        switch (filter.q, filtered) {
             case (null, _) {};
             case (?pattern, null) {
                 let patternIns = #text(Text.toLowercase(pattern));
@@ -195,6 +219,48 @@ module {
                 };
                 let ranking : [Ranking<Entry>] = ClusterTree.getFlattenVals(ordering, #all, flippedOrder);
                 Array.map<Ranking<Entry>, SharableEvidence>(ranking, func({ key }) = toSharable(key))
+            }
+        }
+    };
+
+    public func getEvidenceContext(__ : Self, evidenceId : Nat, depthLimit : Nat, callerUser : ?(Principal, User)) : SharableContext {
+        let getCallerVote : Nat -> ?BinaryVote = User.callerEvidenceVoteCallback(callerUser);
+
+        var currentId = evidenceId;
+        var rootEvidenceOpt : ?Evidence = null;
+        var rootId : Nat = evidenceId;
+
+        var safetyCounter = 0;
+        let maxHops = 100;
+
+        label rootFinding while (safetyCounter < maxHops) {
+            switch (evidenceRemovedOpt(__, currentId)) {
+                case (?e) {
+                    rootEvidenceOpt := ?e;
+                    rootId := currentId;
+
+                    switch (e.repliedTo) {
+                        case (?parentIdInLoop) switch (evidenceRemovedOpt(__, parentIdInLoop)) {
+                            case (?_) currentId := parentIdInLoop;
+                            case (null) break rootFinding
+                        };
+                        case (null) break rootFinding
+                    }
+                };
+                case (null) {
+                    rootEvidenceOpt := null;
+                    break rootFinding
+                }
+            };
+            safetyCounter += 1
+        };
+
+        switch (rootEvidenceOpt) {
+            case (null) return [];
+            case (?rootEvidence) {
+                let sharableRoot = Evidence.toSharable(rootEvidence, rootId, getCallerVote);
+                let repliesContext = _buildRepliesContextOptimized(__, rootEvidence, depthLimit, 1, callerUser, getCallerVote);
+                return [(sharableRoot, repliesContext)]
             }
         }
     };

@@ -30,7 +30,7 @@ module {
     private type FlagHeader = Flag.Header;
 
     private let { NatKey } = Map;
-    private let { NatVal; TextVal } = Set;
+    private let { NatVal; TextVal; PrincipalVal } = Set;
     private let { Key = FlagKey } = Flag;
 
     /// PUBLIC ////// DECLARATIONS ////////////
@@ -55,6 +55,14 @@ module {
         case (?(_, { votedFlags })) func(header) = Map.get(votedFlags, FlagKey(header));
         case (_) func(_) = null
     };
+    public func callerFollowingCallback(callerUser : ?(Principal, User)) : Principal -> ?Bool = switch (callerUser) {
+        case (?(_, { followings })) func(following) = ?Set.includes(followings, PrincipalVal(following));
+        case (_) func(_) = null
+    };
+    public func callerFollowerCallback(callerUser : ?(Principal, User)) : Principal -> ?Bool = switch (callerUser) {
+        case (?(_, { followers })) func(follower) = ?Set.includes(followers, PrincipalVal(follower));
+        case (_) func(_) = null
+    };
 
     /// AXIOMS ////// USERS ////////////
 
@@ -63,6 +71,8 @@ module {
     public type User = {
         mintEarning : Earning;
         transferEarning : Earning;
+        followers : Set<Principal>;
+        followings : Set<Principal>;
         axioms : Set<Nat>;
         bookmarks : Set<Nat>;
         joinedFields : Set<Text>;
@@ -73,19 +83,26 @@ module {
         votedFlags : Map<FlagHeader, BinaryVote>
     };
     public type Sharable = {
+        principal : Principal;
         earning : SharableEarning;
+        followers : [Principal];
+        followings : [Principal];
         axioms : [Nat];
         bookmarks : [Nat];
         joinedFields : [Text];
         hypotheses : [Nat];
         evidences : [Nat];
         votedHypotheses : [(Nat, TernaryVote)];
-        votedEvidences : [(Nat, BinaryVote)]
+        votedEvidences : [(Nat, BinaryVote)];
+        callerFollowing : ?Bool;
+        callerFollower : ?Bool
     };
 
     public func init(getNow : () -> Int) : Self = {
         mintEarning = Earning.new(getNow);
         transferEarning = Earning.new(getNow);
+        followers = Set.new<Principal>();
+        followings = Set.new<Principal>();
         axioms = Set.new<Nat>();
         bookmarks = Set.new<Nat>();
         joinedFields = Set.new();
@@ -98,6 +115,8 @@ module {
     public func fromFounder(getNow : () -> Int) : Self = {
         mintEarning = Earning.new(getNow);
         transferEarning = Earning.new(getNow);
+        followers = Set.new<Principal>();
+        followings = Set.new<Principal>();
         axioms = Set.new<Nat>();
         bookmarks = Set.new<Nat>();
         joinedFields = Set.make(TextVal("Axiom governance"));
@@ -109,6 +128,19 @@ module {
     };
 
     /// PUBLIC ////// MODIFIERS ////////////
+
+    public func addFollower(__ : Self, follower : Principal) {
+        Set.put(__.followers, PrincipalVal(follower))
+    };
+    public func removeFollower(__ : Self, follower : Principal) {
+        Set.delete(__.followers, PrincipalVal(follower))
+    };
+    public func addFollowing(__ : Self, followings : Principal) {
+        Set.put(__.followings, PrincipalVal(followings))
+    };
+    public func removeFollowing(__ : Self, followings : Principal) {
+        Set.delete(__.followings, PrincipalVal(followings))
+    };
 
     public func addAxiom(__ : Self, hypothesisId : Nat) {
         Set.put(__.axioms, NatVal(hypothesisId))
@@ -201,6 +233,9 @@ module {
     };
 
     public func isPoweredVoter(__ : Self, id : Nat) : Bool = Map.unwrap(__.votedHypotheses, NatKey(id)).value > 1;
+    public func followerFound(__ : Self, follower : Principal) : Bool = Set.includes(__.followers, PrincipalVal(follower));
+    public func followingsFound(__ : Self, followings : Principal) : Bool = Set.includes(__.followings, PrincipalVal(followings));
+    public func joinedFieldFound(__ : Self, field : Text) : Bool = Set.includes(__.joinedFields, TextVal(field));
     public func axiomFound(__ : Self, hypothesisId : Nat) : Bool = Set.includes(__.axioms, NatVal(hypothesisId));
     public func bookmarkFound(__ : Self, hypothesisId : Nat) : Bool = Set.includes(__.bookmarks, NatVal(hypothesisId));
 
@@ -225,19 +260,40 @@ module {
     public func getEvidenceVote(__ : Self, id : Nat) : ?BinaryVote = Map.get(__.votedEvidences, NatKey(id));
     public func getFlagVote(__ : Self, header : FlagHeader) : ?BinaryVote = Map.get(__.votedFlags, FlagKey(header));
 
-    public func toSharable(__ : Self) : Sharable = {
+    public func toSharable(__ : Self, principal : Principal, getCallerFollowing : Principal -> ?Bool, getCallerFollower : Principal -> ?Bool) : Sharable = {
+        principal;
         earning = getEarning(__);
+        followers = Set.toArray(__.followers);
+        followings = Set.toArray(__.followings);
         axioms = Set.toArray(__.axioms);
         bookmarks = Set.toArray(__.bookmarks);
         joinedFields = Set.toArray(__.joinedFields);
         hypotheses = List.toArray(__.hypotheses);
         evidences = List.toArray(__.evidences);
         votedHypotheses = Map.getEntries(__.votedHypotheses);
-        votedEvidences = Map.getEntries(__.votedEvidences)
+        votedEvidences = Map.getEntries(__.votedEvidences);
+        callerFollowing = getCallerFollowing(principal);
+        callerFollower = getCallerFollower(principal)
     };
 
     /// PUBLIC ////// ASSERTERS ////////////
 
+    public func expectFollowerFound(__ : Self, follower : Principal) {
+        if (followerFound(__, follower)) return;
+        E.f(#NOT_EXISTED("Follower"), "Follower " # debug_show follower # " has not existed in User")
+    };
+    public func expectFollowerNotFound(__ : Self, follower : Principal) {
+        if (not followerFound(__, follower)) return;
+        E.f(#ALREADY_EXISTED("Follower"), "Follower " # debug_show follower # " has already existed in User")
+    };
+    public func expectFollowingFound(__ : Self, followings : Principal) {
+        if (followingsFound(__, followings)) return;
+        E.f(#NOT_EXISTED("Following"), "Following " # debug_show followings # " has not existed in User")
+    };
+    public func expectFollowingNotFound(__ : Self, followings : Principal) {
+        if (not followingsFound(__, followings)) return;
+        E.f(#ALREADY_EXISTED("Following"), "Following " # debug_show followings # " has already existed in User")
+    };
     public func expectAxiomFound(__ : Self, hypothesisId : Nat) {
         if (axiomFound(__, hypothesisId)) return;
         E.f(#NOT_EXISTED("Axiom"), "Axiom " # debug_show hypothesisId # " has not existed in User")

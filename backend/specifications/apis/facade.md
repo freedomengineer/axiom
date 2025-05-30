@@ -3,8 +3,8 @@
 ## Dependencies
 
 
-- Attributes: `User`, `Users`
-- Interfaces: `ICPUSDInterface`, `SplitInterface`, `TreasuryInterface`, `AffiliateInterface`, `SalesInterface`, `EscrowInterface`, `AxiomsInterface`, `DAOInterface`, `IndicatorInterface`
+- Attributes: `User`, `Users`, `DIP721`
+- Interfaces: `DIP721Interface`, `ICPUSDInterface`, `SplitInterface`, `TreasuryInterface`, `AffiliateInterface`, `SalesInterface`, `EscrowInterface`, `AxiomsInterface`, `DAOInterface`, `IndicatorInterface`
 - Commons: `C`, `E`
 - Libraries: `Base`, `Configs`, `Date`, `E8S`, `Format`, `Iter`, `Pagination`
 - Bases: `Principal`, `Nat`, `Time`, `Text`
@@ -74,7 +74,15 @@
 }
 ```
 
-### 5. `register(username, capitalRaised, referrer)` returns `()`
+### 5. `updateCapitalRaised(principal, capitalRaised)` returns `()`
+
+#### Arguments:
+
+```json
+{"principal": "Principal", "capitalRaised": "Nat"}
+```
+
+### 6. `register(username, capitalRaised, referrer)` returns `()`
 
 #### Arguments:
 
@@ -82,7 +90,7 @@
 {"username": "Text", "capitalRaised": "Nat", "referrer": "Principal"}
 ```
 
-### 6. `editUsername(username)` returns `()`
+### 7. `editUsername(username)` returns `()`
 
 #### Arguments:
 
@@ -90,7 +98,7 @@
 {"username": "Text"}
 ```
 
-### 7. `editLocation(location)` returns `()`
+### 8. `editLocation(location)` returns `()`
 
 #### Arguments:
 
@@ -98,7 +106,7 @@
 {"location": "Text"}
 ```
 
-### 8. `editAvatar(picture)` returns `()`
+### 9. `editAvatar(picture)` returns `()`
 
 #### Arguments:
 
@@ -106,7 +114,7 @@
 {"picture": {"blob": "Blob"}}
 ```
 
-### 9. `editLinks(links)` returns `()`
+### 10. `editLinks(links)` returns `()`
 
 #### Arguments:
 
@@ -175,17 +183,31 @@
 
 #### Returns:
 ```json
-{"principal": "Principal", "username": "Text"}
+{"principal": "Principal", "username": "Text", "capitalRaised": "Nat"}
 ```
 
-### 4. `getUsersCount()` returns `Nat`
+### 4. `getUsersIdentifier()` returns `[User.Identifier]`
+
+#### Returns:
+```json
+[{"principal": "Principal", "username": "Text", "capitalRaised": "Nat"}]
+```
+
+### 5. `getUsersPrincipal()` returns `[Principal]`
+
+#### Returns:
+```json
+["Principal"]
+```
+
+### 6. `getUsersCount()` returns `Nat`
 
 #### Returns:
 ```json
 "Nat"
 ```
 
-### 5. `getUser(principal)` returns `User.Sharable`
+### 7. `getUser(principal)` returns `User.Sharable`
 
 #### Arguments:
 
@@ -206,14 +228,14 @@
 }
 ```
 
-### 6. `getUsers(filter, sort)` returns `[User.Sharable]`
+### 8. `getUsers(filter, sort)` returns `[User.Sharable]`
 
 #### Arguments:
 
 ```json
 {
-  "filter": {"hasCapitalRaised": "Nat", "containsPattern": "Text"},
-  "sort": {"by": "#RECENT | #CAPITALRAISED | #ALPHABETICAL", "order": "#ASCENDING | #DESCENDING"}
+  "filter": {"capitalRaised": "Nat", "q": "Text"},
+  "sort": {"by": "#RECENT | #CAPITALRAISED | #ALPHABETICAL | #FOLLOWERS | #FOLLOWINGS", "order": "#ASCENDING | #DESCENDING"}
 }
 ```
 
@@ -232,14 +254,14 @@
 ]
 ```
 
-### 7. `getUsersPagination(filter, sort, page, limit)` returns `Pagination.Pagination<User.Sharable>`
+### 9. `getUsersPagination(filter, sort, page, limit)` returns `Pagination.Pagination<User.Sharable>`
 
 #### Arguments:
 
 ```json
 {
-  "filter": {"hasCapitalRaised": "Nat", "containsPattern": "Text"},
-  "sort": {"by": "#RECENT | #CAPITALRAISED | #ALPHABETICAL", "order": "#ASCENDING | #DESCENDING"},
+  "filter": {"capitalRaised": "Nat", "q": "Text"},
+  "sort": {"by": "#RECENT | #CAPITALRAISED | #ALPHABETICAL | #FOLLOWERS | #FOLLOWINGS", "order": "#ASCENDING | #DESCENDING"},
   "page": "Nat",
   "limit": "Nat"
 }

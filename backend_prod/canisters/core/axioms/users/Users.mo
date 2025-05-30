@@ -2,20 +2,28 @@ import User "User";
 
 import E "../../../common/Errors";
 
+import Base "../../../library/Base";
+import List "../../../library/List";
 import Map "../../../library/Map";
+
+import Nat "mo:base/Nat";
 
 module {
     /// PRIVATE ////// DECLARATIONS ////////////
 
-    private type Self = Users;
-
     private type Map<K, V> = Map.Map<K, V>;
+    private type Compare<T> = Base.Compare<T>;
+    private type Sorted<T> = Base.Sort<T>;
+    private type Order = Base.Order;
+
     private type User = User.User;
     private type SharableUser = User.Sharable;
 
     private let { PrincipalKey } = Map;
 
     /// AXIOMS ////// USERS ////////////
+
+    private type Self = Users;
 
     public type Users = Map<Principal, User>;
 
@@ -52,6 +60,17 @@ module {
             case (?principal) ?(principal, user(__, principal));
             case (null) null
         }
+    };
+
+    public func getTop(__ : Self, category : { #HypothesisPublishers; #EvidencePublishers; #HypothesisVoters; #EvidenceVoters; #AcornEarners }) : [(Principal, Nat)] {
+        let map : ((Principal, User)) -> ((Principal, Nat)) = switch (category) {
+            case (#HypothesisPublishers) func(i, e) = (i, List.size(e.hypotheses));
+            case (#EvidencePublishers) func(i, e) = (i, List.size(e.evidences));
+            case (#HypothesisVoters) func(i, e) = (i, e.votedHypotheses.size());
+            case (#EvidenceVoters) func(i, e) = (i, e.votedEvidences.size());
+            case (#AcornEarners) func(i, e) = (i, User.getEarning(e).revenue)
+        };
+        Map.getEntriesMap<Principal, User, (Principal, Nat)>(__, map)
     };
 
     /// PUBLIC ////// ASSERTERS ////////////

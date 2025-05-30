@@ -11,6 +11,7 @@ module {
         initialize : shared () -> async ();
         setConfigs : shared ([(Configs.Key, Configs.SharableValue)]) -> async ();
         putConfigs : shared ([(Configs.Key, Configs.SharableValue)]) -> async ();
+        updateCapitalRaised : shared (Principal, Nat) -> async ();
         register : shared (Text, Nat, ?Principal) -> async ();
         editUsername : shared (Text) -> async ();
         editLocation : shared (?Text) -> async ();
@@ -19,6 +20,8 @@ module {
         getConfig : query (Configs.Key) -> async Configs.SharableValue;
         getConfigs : query () -> async Configs.Sharable;
         getUserIdentifier : query (User.IdentifierVariant) -> async User.Identifier;
+        getUsersIdentifier : query () -> async [User.Identifier];
+        getUsersPrincipal : query () -> async [Principal];
         getUsersCount : query () -> async Nat;
         getUser : query (Principal) -> async User.Sharable;
         getUsers : query (Users.Filter, Base.Sort<Users.Sort>) -> async [User.Sharable];

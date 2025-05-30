@@ -69,13 +69,15 @@ module {
     /// PUBLIC ////// DECLARATIONS ////////////
 
     public type Filter = {
-        publishedAt : ?Nat;
-        publishedIn : ?Text;
-        publishedBy : ?Principal;
-        votedBy : ?Principal;
+        age : ?Nat;
+        field : ?Text;
+        publisher : ?Principal;
+        voter : ?Principal;
         axiomsFrom : ?Principal;
         bookmarksFrom : ?Principal;
-        containsPattern : ?Text
+        userJoinedFields : ?Principal;
+        userFollowedPublishers : ?Principal;
+        q : ?Text
     };
     public type Sort = {
         #recent;
@@ -166,7 +168,35 @@ module {
                 filtered := ?Array.filter<Entry>(prev, func((i, _)) = User.bookmarkFound(userIns, i))
             }
         };
-        switch (filter.votedBy, filtered) {
+        switch (filter.userJoinedFields, filtered) {
+            case (null, _) {};
+            case (?user, null) {
+                var list : List<Nat> = List.nil();
+                for (fieldId in Set.vals(getUser(user).joinedFields)) {
+                    list := List.revAppend(getField(fieldId).hypothesisIds, list)
+                };
+                filtered := ?List.toArrayFilterMap<Nat, Entry>(list, toEntry)
+            };
+            case (?user, ?prev) {
+                let userIns : User = getUser(user);
+                filtered := ?Array.filter<Entry>(prev, func((_, e)) = User.joinedFieldFound(userIns, e.fieldId))
+            }
+        };
+        switch (filter.userFollowedPublishers, filtered) {
+            case (null, _) {};
+            case (?user, null) {
+                var list : List<Nat> = List.nil();
+                for (following in Set.vals(getUser(user).following)) {
+                    list := List.revAppend(getUser(following).hypotheses, list)
+                };
+                filtered := ?List.toArrayFilterMap<Nat, Entry>(list, toEntry)
+            };
+            case (?user, ?prev) {
+                let userIns : User = getUser(user);
+                filtered := ?Array.filter<Entry>(prev, func((_, e)) = User.followingFound(userIns, e.publisher))
+            }
+        };
+        switch (filter.voter, filtered) {
             case (null, _) {};
             case (?user, null) filtered := ?Map.getKeysFilterMap(getUser(user).votedHypotheses, toEntry);
             case (?user, ?prev) {
@@ -174,17 +204,17 @@ module {
                 filtered := ?Array.filter<Entry>(prev, func((i, _)) = User.hasHypothesisVoted(userIns, i))
             }
         };
-        switch (filter.publishedBy, filtered) {
+        switch (filter.publisher, filtered) {
             case (null, _) {};
             case (?user, null) filtered := ?List.toArrayFilterMap<Nat, Entry>(getUser(user).hypotheses, toEntry);
             case (?user, ?prev) filtered := ?Array.filter<Entry>(prev, func(_, e) = e.publisher == user)
         };
-        switch (filter.publishedIn, filtered) {
+        switch (filter.field, filtered) {
             case (null, _) {};
             case (?field, null) filtered := ?List.toArrayFilterMap<Nat, Entry>(getField(field).hypothesisIds, toEntry);
             case (?field, ?prev) filtered := ?Array.filter<Entry>(prev, func(_, e) = e.fieldId == field)
         };
-        switch (filter.publishedAt, filtered) {
+        switch (filter.age, filtered) {
             case (null, _) {};
             case (?age, null) {
                 let nextPaidId : Nat = getAge(age).nextPaidId.val;
@@ -201,7 +231,7 @@ module {
                 }
             }
         };
-        switch (filter.containsPattern, filtered) {
+        switch (filter.q, filtered) {
             case (null, _) {};
             case (?pattern, null) {
                 let patternIns = #text(Text.toLowercase(pattern));

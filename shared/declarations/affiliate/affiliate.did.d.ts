@@ -11,6 +11,11 @@ export interface Affiliate {
   'getConfig' : ActorMethod<[Key], SharableValue>,
   'getConfigs' : ActorMethod<[], Sharable__2>,
   'getEarning' : ActorMethod<[Principal], Sharable__1>,
+  'getTop' : ActorMethod<[{ 'Referrals' : null }], TopNonPagination>,
+  'getTopPagination' : ActorMethod<
+    [{ 'Referrals' : null }, bigint, bigint],
+    TopPagination
+  >,
   'getUser' : ActorMethod<[Principal], Sharable>,
   'initialize' : ActorMethod<[], undefined>,
   'putConfigs' : ActorMethod<[Array<[Key, SharableValue]>], undefined>,
@@ -55,6 +60,17 @@ export interface Sharable__1 {
 }
 export type Sharable__2 = Array<[Key, SharableValue]>;
 export type Time = bigint;
+export interface TopNonPagination {
+  'result' : TopResult,
+  'callerRank' : [] | [bigint],
+}
+export interface TopPagination {
+  'is' : bigint,
+  'of' : bigint,
+  'result' : TopResult,
+  'callerRank' : [] | [bigint],
+}
+export type TopResult = Array<[Principal, bigint]>;
 export type Value = { 'value' : ValueProp } |
   { 'infinity' : null };
 export type ValueProp = { 'inclusive' : number } |

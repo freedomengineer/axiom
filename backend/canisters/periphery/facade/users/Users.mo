@@ -53,13 +53,15 @@ module {
     /// PUBLIC ////// DECLARATIONS ////////////
 
     public type Filter = {
-        hasCapitalRaised : ?Nat;
-        containsPattern : ?Text
+        capitalRaised : ?Nat;
+        q : ?Text
     };
     public type Sort = {
         #recent;
         #capitalRaised;
-        #alphabetical
+        #alphabetical;
+        #followers;
+        #followings
     };
 
     /// FACADE ////// USERS ////////////
@@ -126,7 +128,11 @@ module {
     public func getIdentifier(__ : Self, from : IdentifierVariant) : Identifier {
         switch (_fromIdentifier(__, from)) {
             case (null) E.f(#NOT_TOBE("User"), "Attempted to derive Identifier from " # debug_show from # " who has not registered yet");
-            case (?(principal, user))({ principal; username = user.username })
+            case (?(principal, user))({
+                principal;
+                username = user.username;
+                capitalRaised = user.capitalRaised
+            })
         }
     };
     public func getCount(__ : Self) : Nat = Map.size(__);
@@ -147,7 +153,7 @@ module {
         var filtered : ?[Entry] = null;
         let toSharable : (Entry) -> SharableUser = func(principal, user) = User.toSharable(user, principal);
 
-        switch (filter.hasCapitalRaised) {
+        switch (filter.capitalRaised) {
             case (null) {};
             case (?capitalRaised) filtered := ?Map.getEntriesFilterMap<Principal, User, Entry>(
                 __,
@@ -157,7 +163,7 @@ module {
                 },
             )
         };
-        switch (filter.containsPattern, filtered) {
+        switch (filter.q, filtered) {
             case (null, _) {};
             case (?pattern, null) {
                 let patternIns = #text(Text.toLowercase(pattern));
@@ -183,6 +189,13 @@ module {
             case (#capitalRaised, order, ?unsorted) Array.map<Entry, SharableUser>(Array.sort(unsorted, _capitalRaised(order)), toSharable);
             case (#alphabetical, order, ?unsorted) Array.map<Entry, SharableUser>(Array.sort(unsorted, _alphabetical(order)), toSharable)
         }
+    };
+
+    public func getPrincipals(__ : Self) : [Principal] {
+        Map.getKeys(__)
+    };
+    public func getIdentifiers(__ : Self) : [Identifier] {
+        Map.getEntriesMap<Principal, User, Identifier>(__, func(i, e) = ({ principal = i; username = e.username; capitalRaised = e.capitalRaised }))
     };
 
     /// PUBLIC ////// ASSERTERS ////////////

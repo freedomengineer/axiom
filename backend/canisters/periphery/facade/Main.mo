@@ -1,6 +1,9 @@
 import User "users/User";
 import Users "users/Users";
 
+import DIP721 "../../core/dip721/Main";
+import DIP721Interface "../../core/dip721/Interface";
+
 import ICPUSDInterface "../../core/icpusd/Interface";
 import SplitInterface "../../core/split/Interface";
 import TreasuryInterface "../../core/treasury/Interface";
@@ -79,6 +82,12 @@ shared ({ caller = indicator }) actor class Facade() = this {
     public shared ({ caller }) func putConfigs(entries : [(Configs.Key, Configs.SharableValue)]) : async () {
         await Indicator.expectAuthorized(caller, [#Indicator]);
         Configs.putBatch(configs, entries)
+    };
+
+    public shared ({ caller }) func updateCapitalRaised(principal : Principal, capitalRaised : Nat) : async () {
+        await Indicator.expectAuthorized(caller, [#Sales]);
+        let user : User.User = Users.user(users, principal);
+        User.updateCapitalRaised(user, capitalRaised)
     };
 
     /// PUBLIC ////// MODIFIERS ////////////
@@ -179,17 +188,25 @@ shared ({ caller = indicator }) actor class Facade() = this {
     public query func getUserIdentifier(from : User.IdentifierVariant) : async User.Identifier {
         Users.getIdentifier(users, from)
     };
+    public query func getUsersIdentifier() : async [User.Identifier] {
+        Users.getIdentifiers(users)
+    };
+    public query func getUsersPrincipal() : async [Principal] {
+        Users.getPrincipals(users)
+    };
     public query func getUsersCount() : async Nat {
         Users.getCount(users)
     };
+
     public query func getUser(principal : Principal) : async User.Sharable {
         Users.getUser(users, principal)
     };
     public query func getUsers(filter : Users.Filter, sort : Base.Sort<Users.Sort>) : async [User.Sharable] {
         Users.getUsers(users, filter, sort)
     };
-    public query ({ caller }) func getUsersPagination(filter : Users.Filter, sort : Base.Sort<Users.Sort>, page : Nat, limit : Nat) : async Pagination.Pagination<User.Sharable> {
+    public query func getUsersPagination(filter : Users.Filter, sort : Base.Sort<Users.Sort>, page : Nat, limit : Nat) : async Pagination.Pagination<User.Sharable> {
         let result : Users.Sharable = Users.getUsers(users, filter, sort);
         Pagination.paginate(result, page, limit)
-    }
+    };
+
 }

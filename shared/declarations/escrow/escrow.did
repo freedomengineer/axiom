@@ -28,6 +28,23 @@ type Value =
    infinity;
    value: ValueProp;
  };
+type TopResult = 
+ vec record {
+       principal;
+       nat;
+     };
+type TopPagination = 
+ record {
+   callerRank: opt nat;
+   is: nat;
+   of: nat;
+   result: TopResult;
+ };
+type TopNonPagination = 
+ record {
+   callerRank: opt nat;
+   result: TopResult;
+ };
 type Time = int;
 type Sharable__2 = vec SharableBurial;
 type Sharable__1 = 
@@ -105,6 +122,14 @@ type Escrow =
    getConfigs: () -> (Sharable__1) query;
    getExpiredAmount: (principal) -> (nat) query;
    getInterestAmount: (principal) -> (nat) query;
+   getTop: (variant {
+              AcornBuriers;
+              PoweredVoters;
+            }) -> (TopNonPagination) query;
+   getTopPagination: (variant {
+                        AcornBuriers;
+                        PoweredVoters;
+                      }, nat, nat) -> (TopPagination) query;
    getUser: (principal) -> (Sharable) query;
    getVotingPower: (principal) -> (nat) query;
    /// PROTECTED ////// MODIFIERS ////////////
@@ -119,6 +144,7 @@ type Escrow =
                       SharableValue;
                     }) -> ();
    shiftToMidnight: (nat) -> ();
+   transferFounderBurial: (principal, principal) -> ();
    withdrawAll: () -> ();
  };
 service : () -> Escrow

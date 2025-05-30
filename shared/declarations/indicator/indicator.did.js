@@ -149,13 +149,24 @@ export const idlFactory = ({ IDL }) => {
     'revenue' : SharableE8S__1,
     'balance' : SharableE8S__1,
   });
+  const TopResult = IDL.Vec(IDL.Tuple(IDL.Principal, IDL.Nat));
+  const TopNonPagination = IDL.Record({
+    'result' : TopResult,
+    'callerRank' : IDL.Opt(IDL.Nat),
+  });
+  const TopPagination = IDL.Record({
+    'is' : IDL.Nat,
+    'of' : IDL.Nat,
+    'result' : TopResult,
+    'callerRank' : IDL.Opt(IDL.Nat),
+  });
   const SharableEarning__3 = IDL.Record({
     'lastWithdrawAt' : Time,
     'revenue' : SharableE8S__1,
     'balance' : SharableE8S__1,
   });
   const SharableCount__1 = IDL.Nat;
-  const Sharable__31 = IDL.Record({
+  const Sharable__32 = IDL.Record({
     'referrer' : IDL.Opt(IDL.Principal),
     'earning' : SharableEarning__3,
     'referrals' : SharableCount__1,
@@ -170,14 +181,24 @@ export const idlFactory = ({ IDL }) => {
     'getConfig' : IDL.Func([Key], [SharableValue], ['query']),
     'getConfigs' : IDL.Func([], [Sharable__3], ['query']),
     'getEarning' : IDL.Func([IDL.Principal], [Sharable__7], ['query']),
-    'getUser' : IDL.Func([IDL.Principal], [Sharable__31], ['query']),
+    'getTop' : IDL.Func(
+        [IDL.Variant({ 'Referrals' : IDL.Null })],
+        [TopNonPagination],
+        ['query'],
+      ),
+    'getTopPagination' : IDL.Func(
+        [IDL.Variant({ 'Referrals' : IDL.Null }), IDL.Nat, IDL.Nat],
+        [TopPagination],
+        ['query'],
+      ),
+    'getUser' : IDL.Func([IDL.Principal], [Sharable__32], ['query']),
     'initialize' : IDL.Func([], [], []),
     'putConfigs' : IDL.Func([IDL.Vec(IDL.Tuple(Key, SharableValue))], [], []),
     'setConfigs' : IDL.Func([IDL.Vec(IDL.Tuple(Key, SharableValue))], [], []),
     'shiftToMidnight' : IDL.Func([IDL.Nat], [], []),
     'withdrawAll' : IDL.Func([], [], []),
   });
-  const Entry = IDL.Record({ 'rank' : IDL.Nat, 'score' : IDL.Nat });
+  const Entry = IDL.Record({ 'rank' : IDL.Int, 'score' : IDL.Int });
   const SharableRank = IDL.Record({
     'poweredEntry' : Entry,
     'regularEntry' : Entry,
@@ -186,7 +207,7 @@ export const idlFactory = ({ IDL }) => {
   });
   const SharableRanks = IDL.Vec(SharableRank);
   const SharableE8S__3 = IDL.Nat;
-  const Sharable__30 = IDL.Record({
+  const Sharable__31 = IDL.Record({
     'ranks' : SharableRanks,
     'callerRevenue' : IDL.Opt(SharableE8S__3),
   });
@@ -194,7 +215,7 @@ export const idlFactory = ({ IDL }) => {
     'ranks' : SharableRanks,
     'callerRevenue' : IDL.Opt(SharableE8S__3),
   });
-  const Sharable__29 = IDL.Vec(SharablePayout);
+  const Sharable__30 = IDL.Vec(SharablePayout);
   const Choice__2 = IDL.Variant({
     'Negative' : IDL.Null,
     'Positive' : IDL.Null,
@@ -221,13 +242,15 @@ export const idlFactory = ({ IDL }) => {
     'Negative' : IDL.Null,
     'Positive' : IDL.Null,
   });
-  const Sharable__27 = IDL.Record({
+  const Sharable__28 = IDL.Record({
     'id' : IDL.Nat,
     'callerVote' : IDL.Opt(BinaryVote__2),
     'votes' : SharableBinaryVotes__1,
     'publishDate' : IDL.Int,
     'form' : Form,
     'publisher' : IDL.Principal,
+    'repliedTo' : IDL.Opt(IDL.Nat),
+    'replies' : IDL.Vec(IDL.Nat),
     'choice' : BinaryChoice__1,
     'hypothesisId' : IDL.Nat,
   });
@@ -236,11 +259,11 @@ export const idlFactory = ({ IDL }) => {
     'Positive' : IDL.Null,
   });
   const Filter__6 = IDL.Record({
-    'publishedBy' : IDL.Opt(IDL.Principal),
-    'publishedIn' : IDL.Opt(IDL.Nat),
-    'votedBy' : IDL.Opt(IDL.Principal),
-    'containsPattern' : IDL.Opt(IDL.Text),
-    'onSide' : IDL.Opt(BinaryChoice),
+    'q' : IDL.Opt(IDL.Text),
+    'voter' : IDL.Opt(IDL.Principal),
+    'publisher' : IDL.Opt(IDL.Principal),
+    'side' : IDL.Opt(BinaryChoice),
+    'hypothesis' : IDL.Opt(IDL.Nat),
   });
   const Sort__7 = IDL.Variant({
     'positivity' : IDL.Null,
@@ -260,18 +283,20 @@ export const idlFactory = ({ IDL }) => {
     'publishDate' : IDL.Int,
     'form' : Form,
     'publisher' : IDL.Principal,
+    'repliedTo' : IDL.Opt(IDL.Nat),
+    'replies' : IDL.Vec(IDL.Nat),
     'choice' : BinaryChoice__1,
     'hypothesisId' : IDL.Nat,
   });
-  const Sharable__28 = IDL.Vec(SharableEvidence);
+  const Sharable__29 = IDL.Vec(SharableEvidence);
   const Pagination_6 = IDL.Record({
     'is' : IDL.Nat,
     'of' : IDL.Nat,
-    'result' : IDL.Vec(Sharable__27),
+    'result' : IDL.Vec(Sharable__28),
   });
   const Role = IDL.Variant({ 'Guest' : IDL.Null, 'Member' : IDL.Null });
   const Time__6 = IDL.Int;
-  const Sharable__25 = IDL.Record({
+  const Sharable__26 = IDL.Record({
     'members' : IDL.Vec(IDL.Principal),
     'hypothesisIds' : IDL.Vec(IDL.Nat),
     'callerRole' : IDL.Opt(Role),
@@ -297,25 +322,32 @@ export const idlFactory = ({ IDL }) => {
     'description' : IDL.Text,
     'creationDate' : Time__6,
   });
-  const Sharable__26 = IDL.Vec(SharableField__1);
+  const Sharable__27 = IDL.Vec(SharableField__1);
   const Pagination_5 = IDL.Record({
     'is' : IDL.Nat,
     'of' : IDL.Nat,
-    'result' : IDL.Vec(Sharable__25),
+    'result' : IDL.Vec(Sharable__26),
   });
   const Category = IDL.Variant({
     'Hypothesis' : IDL.Null,
     'Evidence' : IDL.Null,
   });
   const Header = IDL.Record({ 'id' : IDL.Nat, 'category' : Category });
+  const Status__2 = IDL.Variant({
+    'Approved' : IDL.Null,
+    'Rejected' : IDL.Null,
+    'Requested' : IDL.Null,
+    'Expired' : IDL.Null,
+  });
   const BinaryVote__1 = IDL.Record({ 'value' : IDL.Nat, 'choice' : Choice__2 });
   const SharableBinaryVotes = IDL.Record({
     'powered' : OneSideSharable__1,
     'regular' : OneSideSharable__1,
   });
   const Time__5 = IDL.Int;
-  const Sharable__23 = IDL.Record({
+  const Sharable__24 = IDL.Record({
     'id' : IDL.Nat,
+    'status' : Status__2,
     'requester' : IDL.Principal,
     'callerVote' : IDL.Opt(BinaryVote__1),
     'votes' : SharableBinaryVotes,
@@ -327,15 +359,23 @@ export const idlFactory = ({ IDL }) => {
     'Hypothesis' : IDL.Null,
     'Evidence' : IDL.Null,
   });
+  const Status__1 = IDL.Variant({
+    'Approved' : IDL.Null,
+    'Rejected' : IDL.Null,
+    'Requested' : IDL.Null,
+    'Expired' : IDL.Null,
+  });
   const Filter__4 = IDL.Record({
     'votedBy' : IDL.Opt(IDL.Principal),
     'requestedBy' : IDL.Opt(IDL.Principal),
     'requestedIn' : IDL.Opt(Category__1),
+    'withStatus' : IDL.Opt(Status__1),
   });
   const Sort__5 = IDL.Variant({ 'difference' : IDL.Null, 'recent' : IDL.Null });
   const Sort_4 = IDL.Record({ 'by' : Sort__5, 'order' : Order });
   const SharableFlag = IDL.Record({
     'id' : IDL.Nat,
+    'status' : Status__2,
     'requester' : IDL.Principal,
     'callerVote' : IDL.Opt(BinaryVote__1),
     'votes' : SharableBinaryVotes,
@@ -343,20 +383,22 @@ export const idlFactory = ({ IDL }) => {
     'requestDate' : Time__5,
     'reason' : IDL.Text,
   });
-  const Sharable__24 = IDL.Vec(SharableFlag);
+  const Sharable__25 = IDL.Vec(SharableFlag);
   const Pagination_4 = IDL.Record({
     'is' : IDL.Nat,
     'of' : IDL.Nat,
-    'result' : IDL.Vec(Sharable__23),
+    'result' : IDL.Vec(Sharable__24),
   });
   const Filter__3 = IDL.Record({
+    'q' : IDL.Opt(IDL.Text),
+    'age' : IDL.Opt(IDL.Nat),
+    'field' : IDL.Opt(IDL.Text),
     'axiomsFrom' : IDL.Opt(IDL.Principal),
-    'publishedAt' : IDL.Opt(IDL.Nat),
-    'publishedBy' : IDL.Opt(IDL.Principal),
-    'publishedIn' : IDL.Opt(IDL.Text),
-    'votedBy' : IDL.Opt(IDL.Principal),
+    'voter' : IDL.Opt(IDL.Principal),
+    'publisher' : IDL.Opt(IDL.Principal),
+    'userFollowedPublishers' : IDL.Opt(IDL.Principal),
     'bookmarksFrom' : IDL.Opt(IDL.Principal),
-    'containsPattern' : IDL.Opt(IDL.Text),
+    'userJoinedFields' : IDL.Opt(IDL.Principal),
   });
   const Sort__4 = IDL.Variant({
     'positivity' : IDL.Null,
@@ -395,8 +437,8 @@ export const idlFactory = ({ IDL }) => {
     'fieldId' : IDL.Text,
     'evidenceIds' : IDL.Vec(IDL.Nat),
   });
-  const Sharable__22 = IDL.Vec(SharableHypothesis);
-  const Sharable__21 = IDL.Record({
+  const Sharable__23 = IDL.Vec(SharableHypothesis);
+  const Sharable__22 = IDL.Record({
     'id' : IDL.Nat,
     'content' : IDL.Text,
     'axioms' : SharableCount,
@@ -412,7 +454,7 @@ export const idlFactory = ({ IDL }) => {
   const Pagination_3 = IDL.Record({
     'is' : IDL.Nat,
     'of' : IDL.Nat,
-    'result' : IDL.Vec(Sharable__21),
+    'result' : IDL.Vec(Sharable__22),
   });
   const SharableEarning__2 = IDL.Record({
     'lastWithdrawAt' : Time,
@@ -424,7 +466,7 @@ export const idlFactory = ({ IDL }) => {
     'choice' : Choice__1,
   });
   const BinaryVote = IDL.Record({ 'value' : IDL.Nat, 'choice' : Choice__2 });
-  const Sharable__20 = IDL.Record({
+  const Sharable__21 = IDL.Record({
     'evidences' : IDL.Vec(IDL.Nat),
     'earning' : SharableEarning__2,
     'joinedFields' : IDL.Vec(IDL.Text),
@@ -433,52 +475,88 @@ export const idlFactory = ({ IDL }) => {
     'bookmarks' : IDL.Vec(IDL.Nat),
     'hypotheses' : IDL.Vec(IDL.Nat),
     'votedEvidences' : IDL.Vec(IDL.Tuple(IDL.Nat, BinaryVote)),
+    'followers' : IDL.Vec(IDL.Principal),
+    'following' : IDL.Vec(IDL.Principal),
   });
   const Axioms = IDL.Service({
     'addToAxioms' : IDL.Func([IDL.Nat], [], []),
     'addToBookmarks' : IDL.Func([IDL.Nat], [], []),
     'createField' : IDL.Func([IDL.Text, IDL.Text], [], []),
+    'editHypothesis' : IDL.Func([IDL.Nat, IDL.Text], [], []),
     'expectUserNotFound' : IDL.Func([IDL.Principal], [], ['query']),
-    'getAgePayout' : IDL.Func([IDL.Nat, IDL.Nat], [Sharable__30], ['query']),
-    'getAgePayouts' : IDL.Func([IDL.Nat], [Sharable__29], ['query']),
-    'getAgesPayout' : IDL.Func([IDL.Nat], [Sharable__29], ['query']),
-    'getAgesPayouts' : IDL.Func([], [IDL.Vec(Sharable__29)], ['query']),
+    'follow' : IDL.Func([IDL.Principal], [], []),
+    'getAgePayout' : IDL.Func([IDL.Nat, IDL.Nat], [Sharable__31], ['query']),
+    'getAgePayouts' : IDL.Func([IDL.Nat], [Sharable__30], ['query']),
+    'getAgesPayout' : IDL.Func([IDL.Nat], [Sharable__30], ['query']),
+    'getAgesPayouts' : IDL.Func([], [IDL.Vec(Sharable__30)], ['query']),
     'getConfig' : IDL.Func([Key], [SharableValue], ['query']),
     'getConfigs' : IDL.Func([], [Sharable__3], ['query']),
     'getEarning' : IDL.Func([IDL.Principal], [Sharable__7], ['query']),
-    'getEvidence' : IDL.Func([IDL.Nat], [Sharable__27], ['query']),
-    'getEvidences' : IDL.Func([Filter__6, Sort_6], [Sharable__28], ['query']),
+    'getEvidence' : IDL.Func([IDL.Nat], [Sharable__28], ['query']),
+    'getEvidences' : IDL.Func([Filter__6, Sort_6], [Sharable__29], ['query']),
     'getEvidencesPagination' : IDL.Func(
         [Filter__6, Sort_6, IDL.Nat, IDL.Nat],
         [Pagination_6],
         ['query'],
       ),
-    'getField' : IDL.Func([IDL.Text], [Sharable__25], ['query']),
-    'getFields' : IDL.Func([Filter__5, Sort_5], [Sharable__26], ['query']),
+    'getField' : IDL.Func([IDL.Text], [Sharable__26], ['query']),
+    'getFields' : IDL.Func([Filter__5, Sort_5], [Sharable__27], ['query']),
     'getFieldsPagination' : IDL.Func(
         [Filter__5, Sort_5, IDL.Nat, IDL.Nat],
         [Pagination_5],
         ['query'],
       ),
-    'getFlag' : IDL.Func([Header], [Sharable__23], ['query']),
-    'getFlags' : IDL.Func([Filter__4, Sort_4], [Sharable__24], ['query']),
+    'getFlag' : IDL.Func([Header], [Sharable__24], ['query']),
+    'getFlags' : IDL.Func([Filter__4, Sort_4], [Sharable__25], ['query']),
     'getFlagsPagination' : IDL.Func(
         [Filter__4, Sort_4, IDL.Nat, IDL.Nat],
         [Pagination_4],
         ['query'],
       ),
-    'getHypotheses' : IDL.Func([Filter__3, Sort_3], [Sharable__22], ['query']),
+    'getHypotheses' : IDL.Func([Filter__3, Sort_3], [Sharable__23], ['query']),
     'getHypothesesPagination' : IDL.Func(
         [Filter__3, Sort_3, IDL.Nat, IDL.Nat],
         [Pagination_3],
         ['query'],
       ),
-    'getHypothesis' : IDL.Func([IDL.Nat], [Sharable__21], ['query']),
-    'getUser' : IDL.Func([IDL.Principal], [Sharable__20], ['query']),
+    'getHypothesis' : IDL.Func([IDL.Nat], [Sharable__22], ['query']),
+    'getTop' : IDL.Func(
+        [
+          IDL.Variant({
+            'HypothesisPublishers' : IDL.Null,
+            'AcornEarners' : IDL.Null,
+            'HypothesisVoters' : IDL.Null,
+            'EvidenceVoters' : IDL.Null,
+            'EvidencePublishers' : IDL.Null,
+          }),
+        ],
+        [TopNonPagination],
+        ['query'],
+      ),
+    'getTopPagination' : IDL.Func(
+        [
+          IDL.Variant({
+            'HypothesisPublishers' : IDL.Null,
+            'AcornEarners' : IDL.Null,
+            'HypothesisVoters' : IDL.Null,
+            'EvidenceVoters' : IDL.Null,
+            'EvidencePublishers' : IDL.Null,
+          }),
+          IDL.Nat,
+          IDL.Nat,
+        ],
+        [TopPagination],
+        ['query'],
+      ),
+    'getUser' : IDL.Func([IDL.Principal], [Sharable__21], ['query']),
     'initialize' : IDL.Func([], [], []),
     'joinField' : IDL.Func([IDL.Text], [], []),
     'leaveField' : IDL.Func([IDL.Text], [], []),
-    'publishEvidence' : IDL.Func([IDL.Nat, Form, Choice__2], [IDL.Nat], []),
+    'publishEvidence' : IDL.Func(
+        [IDL.Nat, Form, Choice__2, IDL.Opt(IDL.Nat)],
+        [IDL.Nat],
+        [],
+      ),
     'publishHypothesis' : IDL.Func([IDL.Text, IDL.Text], [IDL.Nat], []),
     'putConfigs' : IDL.Func([IDL.Vec(IDL.Tuple(Key, SharableValue))], [], []),
     'register' : IDL.Func([IDL.Principal], [], []),
@@ -490,13 +568,14 @@ export const idlFactory = ({ IDL }) => {
     'requestFlag' : IDL.Func([Header, IDL.Text], [], []),
     'setConfigs' : IDL.Func([IDL.Vec(IDL.Tuple(Key, SharableValue))], [], []),
     'shiftToMidnight' : IDL.Func([IDL.Nat], [], []),
+    'unfollow' : IDL.Func([IDL.Principal], [], []),
     'voteEvidence' : IDL.Func([IDL.Nat, Choice__2], [], []),
     'voteFlag' : IDL.Func([Header, Choice__2], [], []),
     'voteHypothesis' : IDL.Func([IDL.Nat, Choice__1], [], []),
     'withdrawAll' : IDL.Func([], [], []),
   });
-  const Sharable__19 = IDL.Nat;
-  const Sharable__17 = IDL.Record({
+  const Sharable__20 = IDL.Nat;
+  const Sharable__18 = IDL.Record({
     'title' : IDL.Text,
     'principal' : IDL.Principal,
     'ballots' : IDL.Tuple(IDL.Nat, IDL.Nat),
@@ -516,11 +595,11 @@ export const idlFactory = ({ IDL }) => {
     'isCustodian' : IDL.Bool,
     'callerBallot' : IDL.Opt(IDL.Nat),
   });
-  const Sharable__18 = IDL.Vec(SharableNominee);
+  const Sharable__19 = IDL.Vec(SharableNominee);
   const Pagination_2 = IDL.Record({
     'is' : IDL.Nat,
     'of' : IDL.Nat,
-    'result' : IDL.Vec(Sharable__17),
+    'result' : IDL.Vec(Sharable__18),
   });
   const Choice = IDL.Variant({
     'Delegated' : IDL.Null,
@@ -613,7 +692,7 @@ export const idlFactory = ({ IDL }) => {
   });
   const Time__4 = IDL.Int;
   const Milestone = IDL.Record({ 'status' : Status, 'date' : Time__4 });
-  const Sharable__15 = IDL.Record({
+  const Sharable__16 = IDL.Record({
     'id' : IDL.Nat,
     'title' : IDL.Text,
     'icpReward' : IDL.Nat,
@@ -675,11 +754,11 @@ export const idlFactory = ({ IDL }) => {
     'detachment' : SharableDetachment,
     'timeline' : IDL.Vec(Milestone),
   });
-  const Sharable__16 = IDL.Vec(SharableProposal);
+  const Sharable__17 = IDL.Vec(SharableProposal);
   const Pagination_1 = IDL.Record({
     'is' : IDL.Nat,
     'of' : IDL.Nat,
-    'result' : IDL.Vec(Sharable__15),
+    'result' : IDL.Vec(Sharable__16),
   });
   List__1.fill(IDL.Opt(IDL.Tuple(IDL.Nat, List__1)));
   const List = IDL.Opt(IDL.Tuple(IDL.Nat, List__1));
@@ -695,7 +774,7 @@ export const idlFactory = ({ IDL }) => {
     'Delegated' : IDL.Principal,
     'Default' : UniformBinaryVote,
   });
-  const Sharable__14 = IDL.Record({
+  const Sharable__15 = IDL.Record({
     'ballots' : IDL.Vec(IDL.Tuple(IDL.Principal, IDL.Nat)),
     'referendums' : List,
     'icpEarning' : SharableEarning__1,
@@ -725,27 +804,27 @@ export const idlFactory = ({ IDL }) => {
     'expectUserNotFound' : IDL.Func([IDL.Principal], [], ['query']),
     'getConfig' : IDL.Func([Key], [SharableValue], ['query']),
     'getConfigs' : IDL.Func([], [Sharable__3], ['query']),
-    'getDaysInPeriod' : IDL.Func([], [Sharable__19], ['query']),
+    'getDaysInPeriod' : IDL.Func([], [Sharable__20], ['query']),
     'getEarning' : IDL.Func(
         [IDL.Principal],
         [Sharable__7, Sharable__7],
         ['query'],
       ),
-    'getNominee' : IDL.Func([IDL.Principal], [Sharable__17], ['query']),
-    'getNominees' : IDL.Func([Filter__2, Sort_2], [Sharable__18], ['query']),
+    'getNominee' : IDL.Func([IDL.Principal], [Sharable__18], ['query']),
+    'getNominees' : IDL.Func([Filter__2, Sort_2], [Sharable__19], ['query']),
     'getNomineesPagination' : IDL.Func(
         [Filter__2, Sort_2, IDL.Nat, IDL.Nat],
         [Pagination_2],
         ['query'],
       ),
-    'getProposal' : IDL.Func([IDL.Nat], [Sharable__15], ['query']),
-    'getProposals' : IDL.Func([Filter__1, Sort_1], [Sharable__16], ['query']),
+    'getProposal' : IDL.Func([IDL.Nat], [Sharable__16], ['query']),
+    'getProposals' : IDL.Func([Filter__1, Sort_1], [Sharable__17], ['query']),
     'getProposalsPagination' : IDL.Func(
         [Filter__1, Sort_1, IDL.Nat, IDL.Nat],
         [Pagination_1],
         ['query'],
       ),
-    'getUser' : IDL.Func([IDL.Principal], [Sharable__14], ['query']),
+    'getUser' : IDL.Func([IDL.Principal], [Sharable__15], ['query']),
     'initialize' : IDL.Func([], [], []),
     'initializeCodeUploadSession' : IDL.Func(
         [IDL.Text, UpdateLevel, ReleaseNotes, Sharable],
@@ -814,31 +893,54 @@ export const idlFactory = ({ IDL }) => {
     'claimableInterest' : SharableE8S__2,
     'amount' : SharableE8S__2,
   });
-  const Sharable__13 = IDL.Vec(SharableBurial);
+  const Sharable__14 = IDL.Vec(SharableBurial);
   const SharableBurials = IDL.Vec(SharableBurial);
-  const Sharable__12 = IDL.Record({ 'burials' : SharableBurials });
+  const Sharable__13 = IDL.Record({ 'burials' : SharableBurials });
   const Escrow = IDL.Service({
     'bury' : IDL.Func([IDL.Nat, Option], [], []),
     'expectUserNotFound' : IDL.Func([IDL.Principal], [], ['query']),
-    'getBurials' : IDL.Func([IDL.Principal], [Sharable__13], ['query']),
+    'getBurials' : IDL.Func([IDL.Principal], [Sharable__14], ['query']),
     'getBuriedAmount' : IDL.Func([IDL.Principal], [IDL.Nat], ['query']),
     'getClaimableAmount' : IDL.Func([IDL.Principal], [IDL.Nat], ['query']),
     'getConfig' : IDL.Func([Key], [SharableValue], ['query']),
     'getConfigs' : IDL.Func([], [Sharable__3], ['query']),
     'getExpiredAmount' : IDL.Func([IDL.Principal], [IDL.Nat], ['query']),
     'getInterestAmount' : IDL.Func([IDL.Principal], [IDL.Nat], ['query']),
-    'getUser' : IDL.Func([IDL.Principal], [Sharable__12], ['query']),
+    'getTop' : IDL.Func(
+        [
+          IDL.Variant({
+            'PoweredVoters' : IDL.Null,
+            'AcornBuriers' : IDL.Null,
+          }),
+        ],
+        [TopNonPagination],
+        ['query'],
+      ),
+    'getTopPagination' : IDL.Func(
+        [
+          IDL.Variant({
+            'PoweredVoters' : IDL.Null,
+            'AcornBuriers' : IDL.Null,
+          }),
+          IDL.Nat,
+          IDL.Nat,
+        ],
+        [TopPagination],
+        ['query'],
+      ),
+    'getUser' : IDL.Func([IDL.Principal], [Sharable__13], ['query']),
     'getVotingPower' : IDL.Func([IDL.Principal], [IDL.Nat], ['query']),
     'initialize' : IDL.Func([], [], []),
     'putConfigs' : IDL.Func([IDL.Vec(IDL.Tuple(Key, SharableValue))], [], []),
     'register' : IDL.Func([IDL.Principal, IDL.Nat], [], []),
     'setConfigs' : IDL.Func([IDL.Vec(IDL.Tuple(Key, SharableValue))], [], []),
     'shiftToMidnight' : IDL.Func([IDL.Nat], [], []),
+    'transferFounderBurial' : IDL.Func([IDL.Principal, IDL.Principal], [], []),
     'withdrawAll' : IDL.Func([], [], []),
   });
   const Hyperlink = IDL.Record({ 'url' : IDL.Text, 'anchorText' : IDL.Text });
   const Time__1 = IDL.Int;
-  const Sharable__11 = IDL.Record({
+  const Sharable__12 = IDL.Record({
     'principal' : IDL.Principal,
     'username' : IDL.Text,
     'links' : IDL.Vec(Hyperlink),
@@ -868,7 +970,7 @@ export const idlFactory = ({ IDL }) => {
   const Pagination = IDL.Record({
     'is' : IDL.Nat,
     'of' : IDL.Nat,
-    'result' : IDL.Vec(Sharable__11),
+    'result' : IDL.Vec(Sharable__12),
   });
   const Facade = IDL.Service({
     'editAvatar' : IDL.Func([IDL.Opt(Picture)], [], []),
@@ -877,13 +979,13 @@ export const idlFactory = ({ IDL }) => {
     'editUsername' : IDL.Func([IDL.Text], [], []),
     'getConfig' : IDL.Func([Key], [SharableValue], ['query']),
     'getConfigs' : IDL.Func([], [Sharable__3], ['query']),
-    'getUser' : IDL.Func([IDL.Principal], [Sharable__11], ['query']),
+    'getUser' : IDL.Func([IDL.Principal], [Sharable__12], ['query']),
     'getUserIdentifier' : IDL.Func(
         [IdentifierVariant],
         [Identifier],
         ['query'],
       ),
-    'getUsers' : IDL.Func([Filter, Sort], [IDL.Vec(Sharable__11)], ['query']),
+    'getUsers' : IDL.Func([Filter, Sort], [IDL.Vec(Sharable__12)], ['query']),
     'getUsersCount' : IDL.Func([], [IDL.Nat], ['query']),
     'getUsersPagination' : IDL.Func(
         [Filter, Sort, IDL.Nat, IDL.Nat],
@@ -895,9 +997,14 @@ export const idlFactory = ({ IDL }) => {
     'register' : IDL.Func([IDL.Text, IDL.Nat, IDL.Opt(IDL.Principal)], [], []),
     'setConfigs' : IDL.Func([IDL.Vec(IDL.Tuple(Key, SharableValue))], [], []),
     'shiftToMidnight' : IDL.Func([IDL.Nat], [], []),
+    'updateCapitalRaised' : IDL.Func([IDL.Principal, IDL.Nat], [], []),
   });
   const ICPUSD = IDL.Service({
     'exchange' : IDL.Func([IDL.Bool, IDL.Nat], [IDL.Nat], []),
+  });
+  const Achievement = IDL.Variant({
+    'OctupleBurial' : IDL.Null,
+    'Referral' : IDL.Null,
   });
   const ACORNToMint = IDL.Record({ 'buried' : IDL.Nat, 'liquid' : IDL.Nat });
   const LogoResult = IDL.Record({ 'data' : IDL.Text, 'logo_type' : IDL.Text });
@@ -907,6 +1014,12 @@ export const idlFactory = ({ IDL }) => {
     'name' : IDL.Text,
     'symbol' : IDL.Text,
   });
+  const SharableAchievementPackage = IDL.Record({
+    'principal' : IDL.Opt(IDL.Principal),
+    'metadata' : Dip721NonFungibleToken,
+    'achievement' : Achievement,
+  });
+  const Sharable__11 = IDL.Vec(SharableAchievementPackage);
   const SharablePackage = IDL.Record({
     'principal' : IDL.Opt(IDL.Principal),
     'metadata' : Dip721NonFungibleToken,
@@ -914,13 +1027,30 @@ export const idlFactory = ({ IDL }) => {
   });
   const Sharable__10 = IDL.Vec(SharablePackage);
   const Sales = IDL.Service({
+    'addAchievementPackage' : IDL.Func(
+        [Achievement, IDL.Text, IDL.Text, IDL.Text],
+        [],
+        [],
+      ),
     'addPackage' : IDL.Func([IDL.Nat, IDL.Text, IDL.Text, IDL.Text], [], []),
     'computeAcornToMint' : IDL.Func([IDL.Nat], [ACORNToMint], []),
+    'deployAchievementPackage' : IDL.Func([Achievement], [], []),
+    'deployPackage' : IDL.Func([IDL.Nat], [], []),
     'expectPackageFound' : IDL.Func([IDL.Nat], [IDL.Nat], ['query']),
     'expectPackageNotFound' : IDL.Func([IDL.Nat], [], ['query']),
+    'getAchievementPackagePrincipals' : IDL.Func(
+        [],
+        [IDL.Vec(IDL.Tuple(Achievement, IDL.Principal))],
+        ['query'],
+      ),
+    'getAchievementPackages' : IDL.Func([], [Sharable__11], ['query']),
     'getConfig' : IDL.Func([Key], [SharableValue], ['query']),
     'getConfigs' : IDL.Func([], [Sharable__3], ['query']),
-    'getDeployedPackages' : IDL.Func([], [Sharable__10], ['query']),
+    'getOwnedAchievementPackages' : IDL.Func(
+        [IDL.Principal],
+        [Sharable__11],
+        [],
+      ),
     'getOwnedPackages' : IDL.Func([IDL.Principal], [Sharable__10], []),
     'getPackagePrincipals' : IDL.Func(
         [],
@@ -928,9 +1058,12 @@ export const idlFactory = ({ IDL }) => {
         ['query'],
       ),
     'getPackages' : IDL.Func([], [Sharable__10], ['query']),
+    'initialize' : IDL.Func([], [], []),
+    'mintAchievementPackage' : IDL.Func([Achievement], [], []),
     'mintPackage' : IDL.Func([IDL.Principal, IDL.Nat], [IDL.Nat], []),
     'putConfigs' : IDL.Func([IDL.Vec(IDL.Tuple(Key, SharableValue))], [], []),
     'setConfigs' : IDL.Func([IDL.Vec(IDL.Tuple(Key, SharableValue))], [], []),
+    'upgradePackage' : IDL.Func([], [], []),
   });
   const Variant = IDL.Variant({
     'DAO' : IDL.Null,
@@ -1025,6 +1158,11 @@ export const idlFactory = ({ IDL }) => {
   const Treasury = IDL.Service({
     'claim' : IDL.Func([IDL.Principal, IDL.Nat], [], []),
     'delegatedClaim' : IDL.Func([Variant, IDL.Principal, IDL.Nat], [], []),
+    'delegatedExternalTransfer' : IDL.Func(
+        [Variant, IDL.Principal, IDL.Nat],
+        [],
+        [],
+      ),
     'externalMint' : IDL.Func([IDL.Principal, IDL.Nat], [], []),
     'externalTransfer' : IDL.Func([IDL.Principal, IDL.Nat], [], []),
     'getAllocated' : IDL.Func([Variant], [Sharable__4], ['query']),

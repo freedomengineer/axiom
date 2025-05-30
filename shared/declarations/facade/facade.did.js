@@ -93,6 +93,7 @@ export const idlFactory = ({ IDL }) => {
       ),
     'getUsers' : IDL.Func([Filter, Sort], [IDL.Vec(Sharable)], ['query']),
     'getUsersCount' : IDL.Func([], [IDL.Nat], ['query']),
+    'getUsersIdentifier' : IDL.Func([], [IDL.Vec(Identifier)], ['query']),
     'getUsersPagination' : IDL.Func(
         [Filter, Sort, IDL.Nat, IDL.Nat],
         [Pagination],
@@ -103,6 +104,7 @@ export const idlFactory = ({ IDL }) => {
     'register' : IDL.Func([IDL.Text, IDL.Nat, IDL.Opt(IDL.Principal)], [], []),
     'setConfigs' : IDL.Func([IDL.Vec(IDL.Tuple(Key, SharableValue))], [], []),
     'shiftToMidnight' : IDL.Func([IDL.Nat], [], []),
+    'updateCapitalRaised' : IDL.Func([IDL.Principal, IDL.Nat], [], []),
   });
   return Facade;
 };

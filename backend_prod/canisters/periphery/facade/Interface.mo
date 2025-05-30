@@ -10,6 +10,7 @@ module {
         initialize : shared () -> async ();
         setConfigs : shared ([(Configs.Key, Configs.SharableValue)]) -> async ();
         putConfigs : shared ([(Configs.Key, Configs.SharableValue)]) -> async ();
+        updateCapitalRaised : shared (Principal, Nat) -> async ();
         register : shared (Text, Nat, ?Principal) -> async ();
         editUsername : shared (Text) -> async ();
         editLocation : shared (?Text) -> async ();

@@ -48,6 +48,7 @@ type Treasury =
  service {
    claim: (principal, nat) -> ();
    delegatedClaim: (Variant, principal, nat) -> ();
+   delegatedExternalTransfer: (Variant, principal, nat) -> ();
    externalMint: (principal, nat) -> ();
    externalTransfer: (principal, nat) -> ();
    getAllocated: (Variant) -> (Sharable) query;

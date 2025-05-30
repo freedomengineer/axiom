@@ -57,10 +57,10 @@ module {
     private type ProposalVariant = Detachment.Variant;
     private type User = User.User;
 
-    private func _votedBy((i, _) : Entry, x : User) : Bool = User.hasProposalVoted(x, i);
-    private func _proposedBy(x : Principal) : Entry -> Bool = func(_, e) = e.proposer == x;
-    private func _proposedIn(x : ProposalVariant) : Entry -> Bool = func(_, e) = Proposal.variant(e) == x;
-    private func _withStatus(status : StatusVariant) : Entry -> Bool = func(_, e) = Proposal.getStatus(e) == status;
+    private func _voter((i, _) : Entry, x : User) : Bool = User.hasProposalVoted(x, i);
+    private func _proposer(x : Principal) : Entry -> Bool = func(_, e) = e.proposer == x;
+    private func _category(x : ProposalVariant) : Entry -> Bool = func(_, e) = Proposal.variant(e) == x;
+    private func _status(status : StatusVariant) : Entry -> Bool = func(_, e) = Proposal.getStatus(e) == status;
 
     private func _recent(orderBy : Order) : Compare<Entry> = switch (orderBy) {
         case (#ascending) func((_, a), (_, b)) = Int.compare(Proposal.proposeDate(a), Proposal.proposeDate(b));
@@ -82,10 +82,10 @@ module {
     /// PUBLIC ////// DECLARATIONS ////////////
 
     public type Filter = {
-        proposedBy : ?Principal;
-        proposedIn : ?ProposalVariant;
-        votedBy : ?Principal;
-        withStatus : ?StatusVariant
+        proposer : ?Principal;
+        category : ?ProposalVariant;
+        voter : ?Principal;
+        status : ?StatusVariant
     };
     public type Sort = {
         #recent;
@@ -210,27 +210,27 @@ module {
         let toEntry : (Nat) -> Entry = func(i) = (i, proposal(__, i));
         let toSharable : (Entry) -> SharableProposal = func(i, e) = Proposal.toSharable(e, i, custodians, getCallerVote);
 
-        switch (filter.proposedBy) {
+        switch (filter.proposer) {
             case (null) {};
             case (?proposer) filtered := ?List.toArrayMap<Nat, Entry>(getUser(proposer).proposals, toEntry)
         };
-        switch (filter.proposedIn, filtered) {
+        switch (filter.category, filtered) {
             case (null, _) {};
-            case (?variant, null) filtered := ?Vector.toEntriesFilter<Proposal>(__.proposals, _proposedIn(variant));
-            case (?variant, ?prevResult) filtered := ?Array.filter<Entry>(prevResult, _proposedIn(variant))
+            case (?category, null) filtered := ?Vector.toEntriesFilter<Proposal>(__.proposals, _category(category));
+            case (?category, ?prevResult) filtered := ?Array.filter<Entry>(prevResult, _category(category))
         };
-        switch (filter.votedBy, filtered) {
+        switch (filter.voter, filtered) {
             case (null, _) {};
             case (?voter, null) filtered := ?Map.getKeysMap(getUser(voter).proposalVotes, toEntry);
             case (?voter, ?prevResult) {
                 let voterUser : User = getUser(voter);
-                filtered := ?Array.filter<Entry>(prevResult, func(e) = _votedBy(e, voterUser))
+                filtered := ?Array.filter<Entry>(prevResult, func(e) = _voter(e, voterUser))
             }
         };
-        switch (filter.withStatus, filtered) {
+        switch (filter.status, filtered) {
             case (null, _) {};
-            case (?status, null) filtered := ?Vector.toEntriesFilter<Proposal>(__.proposals, _withStatus(status));
-            case (?status, ?prevResult) filtered := ?Array.filter<Entry>(prevResult, _withStatus(status))
+            case (?status, null) filtered := ?Vector.toEntriesFilter<Proposal>(__.proposals, _status(status));
+            case (?status, ?prevResult) filtered := ?Array.filter<Entry>(prevResult, _status(status))
         };
 
         let default : ?[Entry] -> [Entry] = func(unsorted) = switch (unsorted) {

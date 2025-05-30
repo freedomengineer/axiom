@@ -1,5 +1,5 @@
 export const idlFactory = ({ IDL }) => {
-  const Entry = IDL.Record({ 'rank' : IDL.Nat, 'score' : IDL.Nat });
+  const Entry = IDL.Record({ 'rank' : IDL.Int, 'score' : IDL.Int });
   const SharableRank = IDL.Record({
     'poweredEntry' : Entry,
     'regularEntry' : Entry,
@@ -90,6 +90,8 @@ export const idlFactory = ({ IDL }) => {
     'publishDate' : IDL.Int,
     'form' : Form,
     'publisher' : IDL.Principal,
+    'repliedTo' : IDL.Opt(IDL.Nat),
+    'replies' : IDL.Vec(IDL.Nat),
     'choice' : BinaryChoice__1,
     'hypothesisId' : IDL.Nat,
   });
@@ -98,11 +100,11 @@ export const idlFactory = ({ IDL }) => {
     'Positive' : IDL.Null,
   });
   const Filter__3 = IDL.Record({
-    'publishedBy' : IDL.Opt(IDL.Principal),
-    'publishedIn' : IDL.Opt(IDL.Nat),
-    'votedBy' : IDL.Opt(IDL.Principal),
-    'containsPattern' : IDL.Opt(IDL.Text),
-    'onSide' : IDL.Opt(BinaryChoice),
+    'q' : IDL.Opt(IDL.Text),
+    'voter' : IDL.Opt(IDL.Principal),
+    'publisher' : IDL.Opt(IDL.Principal),
+    'side' : IDL.Opt(BinaryChoice),
+    'hypothesis' : IDL.Opt(IDL.Nat),
   });
   const Sort__4 = IDL.Variant({
     'positivity' : IDL.Null,
@@ -122,6 +124,8 @@ export const idlFactory = ({ IDL }) => {
     'publishDate' : IDL.Int,
     'form' : Form,
     'publisher' : IDL.Principal,
+    'repliedTo' : IDL.Opt(IDL.Nat),
+    'replies' : IDL.Vec(IDL.Nat),
     'choice' : BinaryChoice__1,
     'hypothesisId' : IDL.Nat,
   });
@@ -171,10 +175,8 @@ export const idlFactory = ({ IDL }) => {
   });
   const Header = IDL.Record({ 'id' : IDL.Nat, 'category' : Category });
   const Status__1 = IDL.Variant({
-    'Failed' : IDL.Null,
     'Approved' : IDL.Null,
     'Rejected' : IDL.Null,
-    'Executed' : IDL.Null,
     'Requested' : IDL.Null,
     'Expired' : IDL.Null,
   });
@@ -199,10 +201,8 @@ export const idlFactory = ({ IDL }) => {
     'Evidence' : IDL.Null,
   });
   const Status = IDL.Variant({
-    'Failed' : IDL.Null,
     'Approved' : IDL.Null,
     'Rejected' : IDL.Null,
-    'Executed' : IDL.Null,
     'Requested' : IDL.Null,
     'Expired' : IDL.Null,
   });
@@ -231,13 +231,15 @@ export const idlFactory = ({ IDL }) => {
     'result' : IDL.Vec(Sharable__3),
   });
   const Filter = IDL.Record({
+    'q' : IDL.Opt(IDL.Text),
+    'age' : IDL.Opt(IDL.Nat),
+    'field' : IDL.Opt(IDL.Text),
     'axiomsFrom' : IDL.Opt(IDL.Principal),
-    'publishedAt' : IDL.Opt(IDL.Nat),
-    'publishedBy' : IDL.Opt(IDL.Principal),
-    'publishedIn' : IDL.Opt(IDL.Text),
-    'votedBy' : IDL.Opt(IDL.Principal),
+    'voter' : IDL.Opt(IDL.Principal),
+    'publisher' : IDL.Opt(IDL.Principal),
+    'userFollowedPublishers' : IDL.Opt(IDL.Principal),
     'bookmarksFrom' : IDL.Opt(IDL.Principal),
-    'containsPattern' : IDL.Opt(IDL.Text),
+    'userJoinedFields' : IDL.Opt(IDL.Principal),
   });
   const Sort__1 = IDL.Variant({
     'positivity' : IDL.Null,
@@ -292,6 +294,17 @@ export const idlFactory = ({ IDL }) => {
     'of' : IDL.Nat,
     'result' : IDL.Vec(Sharable__1),
   });
+  const TopResult = IDL.Vec(IDL.Tuple(IDL.Principal, IDL.Nat));
+  const TopNonPagination = IDL.Record({
+    'result' : TopResult,
+    'callerRank' : IDL.Opt(IDL.Nat),
+  });
+  const TopPagination = IDL.Record({
+    'is' : IDL.Nat,
+    'of' : IDL.Nat,
+    'result' : TopResult,
+    'callerRank' : IDL.Opt(IDL.Nat),
+  });
   const SharableEarning = IDL.Record({
     'lastWithdrawAt' : Time,
     'revenue' : SharableE8S__1,
@@ -308,12 +321,16 @@ export const idlFactory = ({ IDL }) => {
     'bookmarks' : IDL.Vec(IDL.Nat),
     'hypotheses' : IDL.Vec(IDL.Nat),
     'votedEvidences' : IDL.Vec(IDL.Tuple(IDL.Nat, BinaryVote)),
+    'followers' : IDL.Vec(IDL.Principal),
+    'following' : IDL.Vec(IDL.Principal),
   });
   const Axioms = IDL.Service({
     'addToAxioms' : IDL.Func([IDL.Nat], [], []),
     'addToBookmarks' : IDL.Func([IDL.Nat], [], []),
     'createField' : IDL.Func([IDL.Text, IDL.Text], [], []),
+    'editHypothesis' : IDL.Func([IDL.Nat, IDL.Text], [], []),
     'expectUserNotFound' : IDL.Func([IDL.Principal], [], ['query']),
+    'follow' : IDL.Func([IDL.Principal], [], []),
     'getAgePayout' : IDL.Func([IDL.Nat, IDL.Nat], [Sharable__12], ['query']),
     'getAgePayouts' : IDL.Func([IDL.Nat], [Sharable__11], ['query']),
     'getAgesPayout' : IDL.Func([IDL.Nat], [Sharable__11], ['query']),
@@ -321,11 +338,6 @@ export const idlFactory = ({ IDL }) => {
     'getConfig' : IDL.Func([Key], [SharableValue], ['query']),
     'getConfigs' : IDL.Func([], [Sharable__10], ['query']),
     'getEarning' : IDL.Func([IDL.Principal], [Sharable__9], ['query']),
-    'getEarnings' : IDL.Func(
-        [IDL.Principal],
-        [IDL.Vec(Sharable__9)],
-        ['query'],
-      ),
     'getEvidence' : IDL.Func([IDL.Nat], [Sharable__7], ['query']),
     'getEvidences' : IDL.Func([Filter__3, Sort_3], [Sharable__8], ['query']),
     'getEvidencesPagination' : IDL.Func(
@@ -354,11 +366,43 @@ export const idlFactory = ({ IDL }) => {
         ['query'],
       ),
     'getHypothesis' : IDL.Func([IDL.Nat], [Sharable__1], ['query']),
+    'getTop' : IDL.Func(
+        [
+          IDL.Variant({
+            'HypothesisPublishers' : IDL.Null,
+            'AcornEarners' : IDL.Null,
+            'HypothesisVoters' : IDL.Null,
+            'EvidenceVoters' : IDL.Null,
+            'EvidencePublishers' : IDL.Null,
+          }),
+        ],
+        [TopNonPagination],
+        ['query'],
+      ),
+    'getTopPagination' : IDL.Func(
+        [
+          IDL.Variant({
+            'HypothesisPublishers' : IDL.Null,
+            'AcornEarners' : IDL.Null,
+            'HypothesisVoters' : IDL.Null,
+            'EvidenceVoters' : IDL.Null,
+            'EvidencePublishers' : IDL.Null,
+          }),
+          IDL.Nat,
+          IDL.Nat,
+        ],
+        [TopPagination],
+        ['query'],
+      ),
     'getUser' : IDL.Func([IDL.Principal], [Sharable], ['query']),
     'initialize' : IDL.Func([], [], []),
     'joinField' : IDL.Func([IDL.Text], [], []),
     'leaveField' : IDL.Func([IDL.Text], [], []),
-    'publishEvidence' : IDL.Func([IDL.Nat, Form, Choice__1], [IDL.Nat], []),
+    'publishEvidence' : IDL.Func(
+        [IDL.Nat, Form, Choice__1, IDL.Opt(IDL.Nat)],
+        [IDL.Nat],
+        [],
+      ),
     'publishHypothesis' : IDL.Func([IDL.Text, IDL.Text], [IDL.Nat], []),
     'putConfigs' : IDL.Func([IDL.Vec(IDL.Tuple(Key, SharableValue))], [], []),
     'register' : IDL.Func([IDL.Principal], [], []),
@@ -370,6 +414,7 @@ export const idlFactory = ({ IDL }) => {
     'requestFlag' : IDL.Func([Header, IDL.Text], [], []),
     'setConfigs' : IDL.Func([IDL.Vec(IDL.Tuple(Key, SharableValue))], [], []),
     'shiftToMidnight' : IDL.Func([IDL.Nat], [], []),
+    'unfollow' : IDL.Func([IDL.Principal], [], []),
     'voteEvidence' : IDL.Func([IDL.Nat, Choice__1], [], []),
     'voteFlag' : IDL.Func([Header, Choice__1], [], []),
     'voteHypothesis' : IDL.Func([IDL.Nat, Choice], [], []),

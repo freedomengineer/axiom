@@ -38,6 +38,8 @@ module {
 
     /// PUBLIC ////// ACCESSORS ////////////
 
+    public func found(__ : Self, principal : Principal) : Bool = Map.includes(__, PrincipalKey(principal));
+
     public func user(__ : Self, principal : Principal) : User {
         switch (Map.get(__, PrincipalKey(principal))) {
             case (?user) user;
@@ -48,7 +50,13 @@ module {
         User.toSharable(user(__, principal), configs, getNow)
     };
 
-    public func found(__ : Self, principal : Principal) : Bool = Map.includes(__, PrincipalKey(principal));
+    public func getTop(__ : Self, category : { #PoweredVoters; #AcornBuriers }, getNow : () -> Int) : [(Principal, Nat)] {
+        let map : ((Principal, User)) -> ((Principal, Nat)) = switch (category) {
+            case (#PoweredVoters) func(i, e) = (i, User.getVotingPower(e, getNow));
+            case (#AcornBuriers) func(i, e) = (i, User.getBuriedAmount(e))
+        };
+        Map.getEntriesMap<Principal, User, (Principal, Nat)>(__, map)
+    };
 
     /// PUBLIC ////// ASSERTERS ////////////
 

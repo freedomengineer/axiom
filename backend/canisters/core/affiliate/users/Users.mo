@@ -41,20 +41,27 @@ module {
 
     /// PUBLIC ////// ACCESSORS ////////////
 
-    public func userOpt(__ : Self, principal : Principal) : ?User {
-        Map.get(__, PrincipalKey(principal))
-    };
+    public func found(__ : Self, principal : Principal) : Bool = Map.includes(__, PrincipalKey(principal));
+
     public func user(__ : Self, principal : Principal) : User {
         switch (Map.get(__, PrincipalKey(principal))) {
             case (?user) user;
             case (null) E.f(#NOT_TOBE("User"), "User " # debug_show principal # " has not registered in Affiliate")
         }
     };
+    public func userOpt(__ : Self, principal : Principal) : ?User {
+        Map.get(__, PrincipalKey(principal))
+    };
     public func getUser(__ : Self, principal : Principal) : SharableUser {
         User.toSharable(user(__, principal))
     };
 
-    public func found(__ : Self, principal : Principal) : Bool = Map.includes(__, PrincipalKey(principal));
+    public func getTop(__ : Self, category : { #Referrals }) : [(Principal, Nat)] {
+        let map : ((Principal, User)) -> ((Principal, Nat)) = switch (category) {
+            case (#Referrals) func(i, e) = (i, e.referrals.val)
+        };
+        Map.getEntriesMap<Principal, User, (Principal, Nat)>(__, map)
+    };
 
     /// PUBLIC ////// ASSERTERS ////////////
 

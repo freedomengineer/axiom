@@ -167,6 +167,45 @@
       }
     },
     {
+      "name": "updateCapitalRaised",
+      "flag": {
+        "isQuery": false,
+        "callerRequired": true
+      },
+      "argTypes": {
+        "principal": {
+          "origin": "Principal",
+          "singular": {
+            "name": "Principal"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        },
+        "capitalRaised": {
+          "origin": "Nat",
+          "singular": {
+            "name": "Nat"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async ()",
+        "singular": {
+          "name": "()"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
       "name": "register",
       "flag": {
         "isQuery": false,
@@ -415,6 +454,43 @@
       }
     },
     {
+      "name": "getUsersIdentifier",
+      "flag": {
+        "isQuery": true,
+        "callerRequired": false
+      },
+      "argTypes": {},
+      "returnType": {
+        "origin": "async [User.Identifier]",
+        "singular": {
+          "name": "Identifier",
+          "parent": "User"
+        },
+        "entries": [],
+        "isArray": true,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
+      "name": "getUsersPrincipal",
+      "flag": {
+        "isQuery": true,
+        "callerRequired": false
+      },
+      "argTypes": {},
+      "returnType": {
+        "origin": "async [Principal]",
+        "singular": {
+          "name": "Principal"
+        },
+        "entries": [],
+        "isArray": true,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
       "name": "getUsersCount",
       "flag": {
         "isQuery": true,
@@ -523,7 +599,7 @@
       "name": "getUsersPagination",
       "flag": {
         "isQuery": true,
-        "callerRequired": true
+        "callerRequired": false
       },
       "argTypes": {
         "filter": {
@@ -626,6 +702,20 @@
       "category": "attribute",
       "relativePath": "users/Users",
       "depth": 2
+    },
+    "DIP721": {
+      "origin": "import DIP721 \"../../core/dip721/Main\";",
+      "name": "DIP721",
+      "category": "attribute",
+      "relativePath": "../../core/dip721/Main",
+      "depth": 5
+    },
+    "DIP721Interface": {
+      "origin": "import DIP721Interface \"../../core/dip721/Interface\";",
+      "name": "DIP721Interface",
+      "category": "interface",
+      "relativePath": "../../core/dip721/Interface",
+      "depth": 5
     },
     "ICPUSDInterface": {
       "origin": "import ICPUSDInterface \"../../core/icpusd/Interface\";",
@@ -785,6 +875,8 @@
   "actorDependencies": [
     "User",
     "Users",
+    "DIP721",
+    "DIP721Interface",
     "ICPUSDInterface",
     "SplitInterface",
     "TreasuryInterface",
@@ -1084,6 +1176,16 @@
         ]
       ],
       "isArray": true,
+      "isOptional": false,
+      "isAsync": false
+    },
+    "Principal": {
+      "origin": "Principal",
+      "singular": {
+        "name": "Principal"
+      },
+      "entries": [],
+      "isArray": false,
       "isOptional": false,
       "isAsync": false
     },
@@ -1729,9 +1831,82 @@
             "isOptional": false,
             "isAsync": false
           }
+        ],
+        [
+          "capitalRaised",
+          {
+            "origin": "Nat",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
         ]
       ],
       "isArray": false,
+      "isOptional": false,
+      "isAsync": true
+    },
+    "async [User.Identifier]": {
+      "origin": "async [User.Identifier]",
+      "singular": {
+        "name": "()"
+      },
+      "entries": [
+        [
+          "principal",
+          {
+            "origin": "Principal",
+            "singular": {
+              "name": "Principal"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "username",
+          {
+            "origin": "Text",
+            "singular": {
+              "name": "Text"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "capitalRaised",
+          {
+            "origin": "Nat",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ]
+      ],
+      "isArray": true,
+      "isOptional": false,
+      "isAsync": true
+    },
+    "async [Principal]": {
+      "origin": "async [Principal]",
+      "singular": {
+        "name": "Principal"
+      },
+      "entries": [],
+      "isArray": true,
       "isOptional": false,
       "isAsync": true
     },
@@ -1744,16 +1919,6 @@
       "isArray": false,
       "isOptional": false,
       "isAsync": true
-    },
-    "Principal": {
-      "origin": "Principal",
-      "singular": {
-        "name": "Principal"
-      },
-      "entries": [],
-      "isArray": false,
-      "isOptional": false,
-      "isAsync": false
     },
     "async User.Sharable": {
       "origin": "async User.Sharable",
@@ -1905,7 +2070,7 @@
       },
       "entries": [
         [
-          "hasCapitalRaised",
+          "capitalRaised",
           {
             "origin": "?Nat",
             "singular": {
@@ -1918,7 +2083,7 @@
           }
         ],
         [
-          "containsPattern",
+          "q",
           {
             "origin": "?Text",
             "singular": {
@@ -1959,6 +2124,14 @@
               ],
               [
                 "#alphabetical",
+                null
+              ],
+              [
+                "#followers",
+                null
+              ],
+              [
+                "#followings",
                 null
               ]
             ],

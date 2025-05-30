@@ -138,6 +138,45 @@
       }
     },
     {
+      "name": "updateCapitalRaised",
+      "flag": {
+        "isQuery": false,
+        "callerRequired": true
+      },
+      "argTypes": {
+        "principal": {
+          "origin": "Principal",
+          "singular": {
+            "name": "Principal"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        },
+        "capitalRaised": {
+          "origin": "Nat",
+          "singular": {
+            "name": "Nat"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async ()",
+        "singular": {
+          "name": "()"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
       "name": "register",
       "flag": {
         "isQuery": false,
@@ -1048,10 +1087,10 @@
       "isOptional": false,
       "isAsync": false
     },
-    "Text": {
-      "origin": "Text",
+    "Principal": {
+      "origin": "Principal",
       "singular": {
-        "name": "Text"
+        "name": "Principal"
       },
       "entries": [],
       "isArray": false,
@@ -1062,6 +1101,16 @@
       "origin": "Nat",
       "singular": {
         "name": "Nat"
+      },
+      "entries": [],
+      "isArray": false,
+      "isOptional": false,
+      "isAsync": false
+    },
+    "Text": {
+      "origin": "Text",
+      "singular": {
+        "name": "Text"
       },
       "entries": [],
       "isArray": false,
@@ -1715,16 +1764,6 @@
       "isArray": false,
       "isOptional": false,
       "isAsync": true
-    },
-    "Principal": {
-      "origin": "Principal",
-      "singular": {
-        "name": "Principal"
-      },
-      "entries": [],
-      "isArray": false,
-      "isOptional": false,
-      "isAsync": false
     },
     "async User.Sharable": {
       "origin": "async User.Sharable",

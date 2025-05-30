@@ -6,7 +6,7 @@
 - Attributes: `Burials`, `Burial`, `Users`, `User`
 - Interfaces: `TreasuryInterface`, `IndicatorInterface`
 - Commons: `C`, `E`
-- Libraries: `E8S`, `Configs`, `Iter`, `Proportion`
+- Libraries: `E8S`, `Configs`, `Iter`, `Pagination`, `Proportion`
 - Bases: `Principal`, `Time`
 ## Modifiers
 
@@ -151,7 +151,33 @@
 ]
 ```
 
-### 3. `getUser(principal)` returns `User.Sharable`
+### 3. `getTop(category)` returns `Pagination.TopNonPagination`
+
+#### Arguments:
+
+```json
+{"category": "#POWEREDVOTERS | #ACORNBURIERS"}
+```
+
+#### Returns:
+```json
+{"result": [["Principal", "Nat"]], "callerRank": "Nat"}
+```
+
+### 4. `getTopPagination(category, page, limit)` returns `Pagination.TopPagination`
+
+#### Arguments:
+
+```json
+{"category": "#POWEREDVOTERS | #ACORNBURIERS", "page": "Nat", "limit": "Nat"}
+```
+
+#### Returns:
+```json
+{"result": [["Principal", "Nat"]], "callerRank": "Nat", "is": "Nat", "of": "Nat"}
+```
+
+### 5. `getUser(principal)` returns `User.Sharable`
 
 #### Arguments:
 
@@ -166,7 +192,7 @@
 }
 ```
 
-### 4. `getBurials(principal)` returns `Burials.Sharable`
+### 6. `getBurials(principal)` returns `Burials.Sharable`
 
 #### Arguments:
 
@@ -179,7 +205,7 @@
 [{"amount": "Nat", "coefficient": "Nat", "issueDate": "Time", "expiryDate": "Time", "claimableInterest": "Nat"}]
 ```
 
-### 5. `getVotingPower(principal)` returns `Nat`
+### 7. `getVotingPower(principal)` returns `Nat`
 
 #### Arguments:
 
@@ -192,7 +218,7 @@
 "Nat"
 ```
 
-### 6. `getBuriedAmount(principal)` returns `Nat`
+### 8. `getBuriedAmount(principal)` returns `Nat`
 
 #### Arguments:
 
@@ -205,7 +231,7 @@
 "Nat"
 ```
 
-### 7. `getInterestAmount(principal)` returns `Nat`
+### 9. `getInterestAmount(principal)` returns `Nat`
 
 #### Arguments:
 
@@ -218,7 +244,7 @@
 "Nat"
 ```
 
-### 8. `getExpiredAmount(principal)` returns `Nat`
+### 10. `getExpiredAmount(principal)` returns `Nat`
 
 #### Arguments:
 
@@ -231,7 +257,7 @@
 "Nat"
 ```
 
-### 9. `getClaimableAmount(principal)` returns `Nat`
+### 11. `getClaimableAmount(principal)` returns `Nat`
 
 #### Arguments:
 
@@ -244,7 +270,7 @@
 "Nat"
 ```
 
-### 10. `expectUserNotFound(principal)` returns `()`
+### 12. `expectUserNotFound(principal)` returns `()`
 
 #### Arguments:
 

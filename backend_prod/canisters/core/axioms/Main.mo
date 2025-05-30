@@ -96,6 +96,11 @@ shared ({ caller = indicator }) actor class Axioms() = this {
         ("MAX_ANCHOR_LENGTH", #Nat(21)),
         ("MIN_URL_LENGTH", #Nat(11)),
         ("MAX_URL_LENGTH", #Nat(1000)),
+
+        /// New Configs
+        ("MAX_HYPOTHESIS_LENGTH", #Nat(2000)),
+        ("EVIDENCE_PAYOUT_DECAY_PROPORTION", #Proportion(Proportion.make(50, 100))),
+        ("HYPOTHESIS_EDIT_FEE", #E8S(E8S.fromFloat(10.0))),
     ]);
 
     /// PRIVATE ////// MODIFIERS ////////////
@@ -140,8 +145,10 @@ shared ({ caller = indicator }) actor class Axioms() = this {
                 continue agePaying
             };
 
-            let AGE_PAYOUT : E8S.E8S = Configs.E8S(configs, "AGE_" # debug_show (i + 1) # "_PAYOUT");
+            /// a
             let HYPOTHESIS_PAYOUT_DECAY_PROPORTION : Proportion.Proportion = Configs.Proportion(configs, "AGE_" # debug_show (i +1) # "_HYPOTHESIS_PAYOUT_DECAY_PROPORTION");
+            /// y
+            let AGE_PAYOUT : E8S.E8S = Configs.E8S(configs, "AGE_" # debug_show (i + 1) # "_PAYOUT");
 
             /// r = (1 - a) * (1 - a^n)^-1
             let distributionFactor : Proportion.Proportion = Proportion.getMul(
@@ -175,11 +182,37 @@ shared ({ caller = indicator }) actor class Axioms() = this {
                 // Evidences
                 let evidencesSize : Nat = List.size(hypothesis.evidenceIds);
                 if (evidencesSize > 0) {
+                    let evidenceScores : (Nat) -> ?(Int, Int) = func(i) {
+                        switch (Evidences.evidenceRemovedOpt(evidences, i)) {
+                            case (?{ votes }) ?(BinaryVotes.getRegularPositiveDiffValue(votes), BinaryVotes.getPoweredPositiveDiffValue(votes));
+                            case (null) null
+                        }
+                    };
+                    let evidenceOrdering : ClusterTree.ClusterTree<Float, DoubleRankTree.Ranking<Nat>> = DoubleClusterTree.getAverageRankTreeFromList(hypothesis.evidenceIds, evidenceScores, Nat.compare);
+                    let paidEvidences : [(Float, DoubleRankTree.Ranking<Nat>)] = ClusterTree.getFlattenEntries(evidenceOrdering, #all, #ascending);
+
+                    /// a
+                    let EVIDENCE_PAYOUT_DECAY_PROPORTION : Proportion.Proportion = Configs.Proportion(configs, "EVIDENCE_PAYOUT_DECAY_PROPORTION");
+                    /// y
                     let evidencesProportion : Proportion.Proportion = Proportion.getMul(EVIDENCES_PAYOUT_PROPORTION, Proportion.make(1, evidencesSize));
                     let evidencesPayout : E8S.E8S = E8S.getScaleBy(currentHypothesisPayout, evidencesProportion);
-                    Debug.print(debug_show ({ evidencesPayout; evidences = List.toArray(hypothesis.evidenceIds) }));
-                    for (evidenceId in List.toIter(hypothesis.evidenceIds)) {
-                        Map.putOnCollision(recipients, Map.PrincipalKey(Evidences.evidence(evidences, evidenceId).publisher), evidencesPayout, onExistedRecipient)
+
+                    /// r = (1 - a) * (1 - a^n)^-1
+                    let evidenceDistributionFactor : Proportion.Proportion = Proportion.getMul(
+                        Proportion.getComplement(EVIDENCE_PAYOUT_DECAY_PROPORTION),
+                        Proportion.getInverse(
+                            Proportion.getComplement(
+                                Proportion.getPow(EVIDENCE_PAYOUT_DECAY_PROPORTION, evidencesSize)
+                            )
+                        ),
+                    );
+                    /// P_1 = y * r
+                    let currentEvidencePayout : E8S.E8S = E8S.getScaleBy(evidencesPayout, evidenceDistributionFactor);
+
+                    label evidencesPaying for ((averageRank, { key = evidenceId }) in paidEvidences.vals()) {
+                        let evidence : Evidence.Evidence = Evidences.evidence(evidences, evidenceId);
+                        let evidencePayout : E8S.E8S = E8S.getScaleBy(currentEvidencePayout, EVIDENCES_PAYOUT_PROPORTION);
+                        Map.putOnCollision(recipients, Map.PrincipalKey(evidence.publisher), evidencePayout, onExistedRecipient)
                     }
                 };
 
@@ -236,26 +269,10 @@ shared ({ caller = indicator }) actor class Axioms() = this {
                 switch (Hypotheses.hypothesisRemovedOpt(hypotheses, header.id)) {
                     case (null) {};
                     case (?hypothesis) {
-
-                        // // Clean up flag votes in voters' storage and reward hypothesis publish fee to voters
-                        // let voterProportion : Proportion.Proportion = Proportion.make(1, BinaryVotes.getRegularValue(flag.votes));
-                        // let voterReward : E8S.E8S = E8S.getScaleBy(HYPOTHESIS_PUBLISH_FEE, voterProportion);
-                        // for (flagVoter in BinaryVotes.voters(flag.votes)) {
-                        //     let voterUser : User.User = Users.user(users, flagVoter);
-                        //     User.depositTransfer(voterUser, voterReward)
-                        // };
-
                         for (evidenceId in List.toIter(hypothesis.evidenceIds)) {
-                            switch (Evidences.evidenceFlaggedOpt(evidences, evidenceId)) {
+                            switch (Evidences.evidenceRemovedOpt(evidences, evidenceId)) {
                                 case (null) {};
                                 case (?evidence) {
-                                    // // Clean up evidence votes in voters' storage
-                                    // for (evidenceVoter in BinaryVotes.voters(evidence.votes)) {
-                                    //     let voterUser : User.User = Users.user(users, evidenceVoter);
-                                    //     User.removeEvidenceVote(voterUser, evidenceId)
-                                    // };
-
-                                    // Clean up evidence in publisher's storage and refund publish fee to publisher
                                     let publishFee : E8S.E8S = E8S.new();
                                     for (format in evidence.form.vals()) {
                                         switch (format) {
@@ -269,23 +286,11 @@ shared ({ caller = indicator }) actor class Axioms() = this {
                                     };
                                     let publisherUser : User.User = Users.user(users, evidence.publisher);
                                     User.depositTransfer(publisherUser, publishFee);
-                                    // User.removeEvidence(publisherUser, evidenceId);
                                     Evidences.remove(evidences, evidenceId)
                                 }
                             }
                         };
 
-                        // // Clean up hypothesis votes in voters' storage
-                        // for (hypothesisVoter in TernaryVotes.voters(hypothesis.votes)) {
-                        //     let voterUser : User.User = Users.user(users, hypothesisVoter);
-                        //     User.removeHypothesisVote(voterUser, hypothesisId)
-                        // };
-
-                        // // Clean up hypothesis in publisher's storage
-                        // let publisherUser : User.User = Users.user(users, hypothesis.publisher);
-                        // User.removeHypothesis(publisherUser, hypothesisId);
-
-                        // Refund flag publish fee to requester
                         let requesterRefund : E8S.E8S = E8S.getScaleBy(FLAG_REQUEST_FEE, FLAG_REQUEST_ACCEPTANCE_REFUND);
                         let requesterUser : User.User = Users.user(users, flag.requester);
                         User.depositTransfer(requesterUser, requesterRefund);
@@ -294,41 +299,14 @@ shared ({ caller = indicator }) actor class Axioms() = this {
                 }
             };
             case (#Evidence) {
-                switch (Evidences.evidenceFlaggedOpt(evidences, header.id)) {
+                switch (Evidences.evidenceRemovedOpt(evidences, header.id)) {
                     case (null) {};
                     case (?evidence) {
                         switch (Hypotheses.hypothesisRemovedOpt(hypotheses, evidence.hypothesisId)) {
                             case (null) {};
                             case (?hypothesis) {
-                                // Clean up evidence from hypothesis's storage
                                 Hypothesis.removeEvidence(hypothesis, header.id);
 
-                                // // Clean up flag votes in voters' storage and reward evidence publish fee to voters
-                                // let publishFee : E8S.E8S = E8S.new();
-                                // for (format in evidence.form.vals()) {
-                                //     switch (format) {
-                                //         case (#Picture(_)) E8S.add(publishFee, EVIDENCE_PICTURE_FEE);
-                                //         case (#Hyperlink(_)) E8S.add(publishFee, EVIDENCE_HYPERLINK_FEE);
-                                //         case (#Note(x)) switch (x.extended) {
-                                //             case (false) E8S.add(publishFee, EVIDENCE_NOTE_FEE);
-                                //             case (true) E8S.add(publishFee, EVIDENCE_EXTENDED_NOTE_FEE)
-                                //         }
-                                //     }
-                                // };
-                                // let voterProportion : Proportion.Proportion = Proportion.make(1, BinaryVotes.getRegularValue(flag.votes));
-                                // let voterReward : E8S.E8S = E8S.getScaleBy(publishFee, voterProportion);
-                                // for (flagVoter in BinaryVotes.voters(flag.votes)) {
-                                //     let voterUser : User.User = Users.user(users, flagVoter);
-                                //     User.depositTransfer(voterUser, voterReward)
-                                // };
-
-                                // // Clean up evidence votes in voters' storage
-                                // for (evidenceVoter in BinaryVotes.voters(evidence.votes)) {
-                                //     let voterUser : User.User = Users.user(users, evidenceVoter);
-                                //     User.removeEvidenceVote(voterUser, evidenceId)
-                                // };
-
-                                // Clean up evidence in publisher's storage and refund publish fee to publisher
                                 let requesterRefund : E8S.E8S = E8S.getScaleBy(FLAG_REQUEST_FEE, FLAG_REQUEST_ACCEPTANCE_REFUND);
                                 let requesterUser : User.User = Users.user(users, flag.requester);
                                 User.depositTransfer(requesterUser, requesterRefund);
@@ -419,7 +397,47 @@ shared ({ caller = indicator }) actor class Axioms() = this {
 
         hypothesisId
     };
-    public shared ({ caller }) func publishEvidence(hypothesisId : Nat, form : Evidence.Form, choice : BinaryVotes.Choice) : async Nat {
+    public shared ({ caller }) func editHypothesis(hypothesisId : Nat, content : Text) : async () {
+        let MAX_HYPOTHESIS_LENGTH : Nat = Configs.Nat(configs, "MAX_HYPOTHESIS_LENGTH");
+        let HYPOTHESIS_EDIT_FEE : E8S.E8S = Configs.E8S(configs, "HYPOTHESIS_EDIT_FEE");
+
+        let contentLength : Nat = Text.size(content);
+        if (contentLength > MAX_HYPOTHESIS_LENGTH) E.f(#NOT_VALID("Hypothesis"), "The hypothesis content has " # debug_show contentLength # " characters, exceeds the limit of " # debug_show MAX_HYPOTHESIS_LENGTH # " characters");
+        if (contentLength == 0) E.f(#NOT_VALID("Hypothesis"), "The hypothesis content is empty");
+
+        let hypothesis : Hypothesis.Hypothesis = Hypotheses.hypothesis(hypotheses, hypothesisId);
+        Hypothesis.expectPublisher(hypothesis, caller);
+
+        var evidencesSize : Nat = 0;
+        var isOnlyEvidencePublisher : Bool = true;
+        label evidencesChecking for (evidenceId in List.toIter(hypothesis.evidenceIds)) {
+            evidencesSize += 1;
+            if (Evidences.evidence(evidences, evidenceId).publisher != caller) {
+                isOnlyEvidencePublisher := false;
+                break evidencesChecking
+            }
+        };
+        switch (evidencesSize, isOnlyEvidencePublisher) {
+            case (0, _) {};
+            case (_, true) {};
+            case (_, false) E.f(#NOT_VALID("Hypothesis"), "Attempted to edit a hypothesis with evidences already published by other users")
+        };
+
+        let Treasury : TreasuryInterface.Treasury = await Indicator.Treasury();
+        await Treasury.delegatedClaim(#DAO, caller, HYPOTHESIS_EDIT_FEE.val);
+
+        Hypothesis.updateContent(hypothesis, content)
+    };
+    public shared ({ caller }) func publishEvidence(hypothesisId : Nat, form : Evidence.Form, choice : BinaryVotes.Choice, repliedTo : ?Nat) : async Nat {
+        let repliedEvidence : ?Evidence.Evidence = switch (repliedTo) {
+            case (null) null;
+            case (?id) {
+                let evidence : Evidence.Evidence = Evidences.evidence(evidences, id);
+                Evidence.expectPublishedIn(evidence, hypothesisId);
+                ?evidence
+            }
+        };
+
         let publishFee : E8S.E8S = E8S.new();
         var deduplicated : List.List<Format.FormatVariant> = List.nil();
         label deduplicating for (format in form.vals()) {
@@ -458,8 +476,12 @@ shared ({ caller = indicator }) actor class Axioms() = this {
         let Treasury : TreasuryInterface.Treasury = await Indicator.Treasury();
         await Treasury.delegatedClaim(#DAO, caller, publishFee.val);
 
-        let evidence : Evidence.Evidence = Evidence.init(form, caller, hypothesisId, choice);
+        let evidence : Evidence.Evidence = Evidence.init(form, caller, hypothesisId, choice, repliedTo);
         let evidenceId : Nat = Evidences.publish(evidences, evidence);
+        switch (repliedEvidence) {
+            case (null) {};
+            case (?repliedEvidence) Evidence.addReply(repliedEvidence, evidenceId)
+        };
         Hypothesis.addEvidence(hypothesis, evidenceId);
         User.publishEvidence(user, evidenceId);
 
@@ -602,6 +624,23 @@ shared ({ caller = indicator }) actor class Axioms() = this {
         User.removeBookmark(user, hypothesisId)
     };
 
+    public shared ({ caller }) func follow(principal : Principal) : async () {
+        if (caller == principal) E.f(#NOT_VALID("Follow"), "You cannot follow yourself");
+
+        let follower : User.User = Users.user(users, caller);
+        let following : User.User = Users.user(users, principal);
+        User.addFollowing(follower, principal);
+        User.addFollower(following, caller)
+    };
+    public shared ({ caller }) func unfollow(principal : Principal) : async () {
+        if (caller == principal) E.f(#NOT_VALID("Follow"), "You cannot unfollow yourself");
+
+        let follower : User.User = Users.user(users, caller);
+        let following : User.User = Users.user(users, principal);
+        User.removeFollowing(follower, principal);
+        User.removeFollower(following, caller)
+    };
+
     public shared ({ caller }) func withdrawAll() : async () {
         let user : User.User = Users.user(users, caller);
         let transferBalance : E8S.E8S = Earning.balance(user.transferEarning);
@@ -620,11 +659,6 @@ shared ({ caller = indicator }) actor class Axioms() = this {
             await Treasury.externalMint(caller, mintBalance.val);
             User.withdrawMint(user, mintBalance)
         }
-    };
-
-    public query func getEarnings(principal : Principal) : async [Earning.Sharable] {
-        let user : User.User = Users.user(users, principal);
-        [Earning.toSharable(user.mintEarning), Earning.toSharable(user.transferEarning)]
     };
 
     /// PRIVATE ////// ACCESSORS ////////////
@@ -705,6 +739,15 @@ shared ({ caller = indicator }) actor class Axioms() = this {
         let callerUser : ?(Principal, User.User) = _getCallerUser(caller);
         let result : Flags.Sharable = Flags.getFlags(flags, filter, sort, callerUser, _getUser);
         Pagination.paginate(result, page, limit)
+    };
+
+    public query ({ caller }) func getTop(category : { #HypothesisPublishers; #EvidencePublishers; #HypothesisVoters; #EvidenceVoters; #AcornEarners }) : async Pagination.TopNonPagination {
+        let result : Pagination.TopResult = Users.getTop(users, category);
+        Pagination.topNonPaginate(result, caller)
+    };
+    public query ({ caller }) func getTopPagination(category : { #HypothesisPublishers; #EvidencePublishers; #HypothesisVoters; #EvidenceVoters; #AcornEarners }, page : Nat, limit : Nat) : async Pagination.TopPagination {
+        let result : Pagination.TopResult = Users.getTop(users, category);
+        Pagination.topPaginate(result, page, limit, caller)
     };
 
     public query ({ caller }) func getAgePayout(ageId : Nat, ago : Nat) : async Payout.Sharable {

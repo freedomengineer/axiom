@@ -66,7 +66,15 @@
 }
 ```
 
-### 4. `register(username, capitalRaised, referrer)` returns `()`
+### 4. `updateCapitalRaised(principal, capitalRaised)` returns `()`
+
+#### Arguments:
+
+```json
+{"principal": "Principal", "capitalRaised": "Nat"}
+```
+
+### 5. `register(username, capitalRaised, referrer)` returns `()`
 
 #### Arguments:
 
@@ -74,7 +82,7 @@
 {"username": "Text", "capitalRaised": "Nat", "referrer": "Principal"}
 ```
 
-### 5. `editUsername(username)` returns `()`
+### 6. `editUsername(username)` returns `()`
 
 #### Arguments:
 
@@ -82,7 +90,7 @@
 {"username": "Text"}
 ```
 
-### 6. `editLocation(location)` returns `()`
+### 7. `editLocation(location)` returns `()`
 
 #### Arguments:
 
@@ -90,7 +98,7 @@
 {"location": "Text"}
 ```
 
-### 7. `editAvatar(picture)` returns `()`
+### 8. `editAvatar(picture)` returns `()`
 
 #### Arguments:
 
@@ -98,7 +106,7 @@
 {"picture": {"blob": "Blob"}}
 ```
 
-### 8. `editLinks(links)` returns `()`
+### 9. `editLinks(links)` returns `()`
 
 #### Arguments:
 

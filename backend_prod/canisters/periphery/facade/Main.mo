@@ -71,6 +71,12 @@ shared ({ caller = indicator }) actor class Facade() = this {
         Configs.putBatch(configs, entries)
     };
 
+    public shared ({ caller }) func updateCapitalRaised(principal : Principal, capitalRaised : Nat) : async () {
+        await Indicator.expectAuthorized(caller, [#Sales]);
+        let user : User.User = Users.user(users, principal);
+        User.updateCapitalRaised(user, capitalRaised)
+    };
+
     /// PUBLIC ////// MODIFIERS ////////////
 
     public shared ({ caller }) func register(username : Text, capitalRaised : Nat, referrer : ?Principal) : async () {

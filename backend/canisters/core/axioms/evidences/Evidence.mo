@@ -1,9 +1,9 @@
 import Format "../../../library/Format";
 
+import E "../../../common/Errors";
+
 import BinaryVotes "../../../library/votes/BinaryVotes";
 import List "../../../library/List";
-
-import E "../../../common/Errors";
 
 import Time "mo:base/Time";
 import Text "mo:base/Text";
@@ -37,7 +37,9 @@ module {
         publishDate : Int;
         hypothesisId : Nat;
         votes : BinaryVotes;
-        choice : BinaryChoice
+        choice : BinaryChoice;
+        repliedTo : ?Nat;
+        var replies : List<Nat>
     };
     public type Sharable = {
         id : Nat;
@@ -47,16 +49,20 @@ module {
         hypothesisId : Nat;
         votes : SharableBinaryVotes;
         choice : BinaryChoice;
-        callerVote : ?BinaryVote
+        callerVote : ?BinaryVote;
+        repliedTo : ?Nat;
+        replies : [Nat]
     };
 
-    public func init(form : Form, publisher : Principal, hypothesisId : Nat, choice : BinaryChoice, getNow : () -> Int) : Self = {
+    public func init(form : Form, publisher : Principal, hypothesisId : Nat, choice : BinaryChoice, repliedTo : ?Nat, getNow : () -> Int) : Self = {
         form;
         publisher;
         hypothesisId;
         choice;
         publishDate = getNow();
-        votes = BinaryVotes.new()
+        votes = BinaryVotes.new();
+        repliedTo;
+        var replies = List.nil()
     };
 
     /// PUBLIC ////// MODIFIERS ////////////
@@ -70,6 +76,10 @@ module {
     };
     public func removeVote(__ : Self, voter : Principal, vote : BinaryVote) {
         BinaryVotes.remove(__.votes, voter, vote)
+    };
+
+    public func addReply(__ : Self, replyId : Nat) {
+        __.replies := List.push(replyId, __.replies)
     };
 
     /// PUBLIC ////// ACCESSORS ////////////
@@ -89,6 +99,14 @@ module {
         __ with
         id;
         votes = BinaryVotes.toSharable(__.votes);
+        replies = List.toArray(__.replies);
         callerVote = getCallerVote(id)
+    };
+
+    /// PUBLIC ////// ASSERTERS ////////////
+
+    public func expectPublishedIn(__ : Self, id : Nat) {
+        if (__.hypothesisId == id) return;
+        E.f(#NOT_VALID("Evidence"), "Evidence " # debug_show id # " not published in " # debug_show (__.hypothesisId) # ".")
     }
 }

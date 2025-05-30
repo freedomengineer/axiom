@@ -6,7 +6,9 @@ export interface Axioms {
   'addToAxioms' : ActorMethod<[bigint], undefined>,
   'addToBookmarks' : ActorMethod<[bigint], undefined>,
   'createField' : ActorMethod<[string, string], undefined>,
+  'editHypothesis' : ActorMethod<[bigint, string], undefined>,
   'expectUserNotFound' : ActorMethod<[Principal], undefined>,
+  'follow' : ActorMethod<[Principal], undefined>,
   'getAgePayout' : ActorMethod<[bigint, bigint], Sharable__12>,
   'getAgePayouts' : ActorMethod<[bigint], Sharable__11>,
   'getAgesPayout' : ActorMethod<[bigint], Sharable__11>,
@@ -14,7 +16,6 @@ export interface Axioms {
   'getConfig' : ActorMethod<[Key], SharableValue>,
   'getConfigs' : ActorMethod<[], Sharable__10>,
   'getEarning' : ActorMethod<[Principal], Sharable__9>,
-  'getEarnings' : ActorMethod<[Principal], Array<Sharable__9>>,
   'getEvidence' : ActorMethod<[bigint], Sharable__7>,
   'getEvidences' : ActorMethod<[Filter__3, Sort_3], Sharable__8>,
   'getEvidencesPagination' : ActorMethod<
@@ -39,11 +40,36 @@ export interface Axioms {
     Pagination
   >,
   'getHypothesis' : ActorMethod<[bigint], Sharable__1>,
+  'getTop' : ActorMethod<
+    [
+      { 'HypothesisPublishers' : null } |
+        { 'AcornEarners' : null } |
+        { 'HypothesisVoters' : null } |
+        { 'EvidenceVoters' : null } |
+        { 'EvidencePublishers' : null },
+    ],
+    TopNonPagination
+  >,
+  'getTopPagination' : ActorMethod<
+    [
+      { 'HypothesisPublishers' : null } |
+        { 'AcornEarners' : null } |
+        { 'HypothesisVoters' : null } |
+        { 'EvidenceVoters' : null } |
+        { 'EvidencePublishers' : null },
+      bigint,
+      bigint,
+    ],
+    TopPagination
+  >,
   'getUser' : ActorMethod<[Principal], Sharable>,
   'initialize' : ActorMethod<[], undefined>,
   'joinField' : ActorMethod<[string], undefined>,
   'leaveField' : ActorMethod<[string], undefined>,
-  'publishEvidence' : ActorMethod<[bigint, Form, Choice__1], bigint>,
+  'publishEvidence' : ActorMethod<
+    [bigint, Form, Choice__1, [] | [bigint]],
+    bigint
+  >,
   'publishHypothesis' : ActorMethod<[string, string], bigint>,
   'putConfigs' : ActorMethod<[Array<[Key, SharableValue]>], undefined>,
   'register' : ActorMethod<[Principal], undefined>,
@@ -55,6 +81,7 @@ export interface Axioms {
   'requestFlag' : ActorMethod<[Header, string], undefined>,
   'setConfigs' : ActorMethod<[Array<[Key, SharableValue]>], undefined>,
   'shiftToMidnight' : ActorMethod<[bigint], undefined>,
+  'unfollow' : ActorMethod<[Principal], undefined>,
   'voteEvidence' : ActorMethod<[bigint, Choice__1], undefined>,
   'voteFlag' : ActorMethod<[Header, Choice__1], undefined>,
   'voteHypothesis' : ActorMethod<[bigint, Choice], undefined>,
@@ -78,13 +105,15 @@ export type Choice__1 = { 'Negative' : null } |
   { 'Positive' : null };
 export interface Entry { 'rank' : bigint, 'score' : bigint }
 export interface Filter {
+  'q' : [] | [string],
+  'age' : [] | [bigint],
+  'field' : [] | [string],
   'axiomsFrom' : [] | [Principal],
-  'publishedAt' : [] | [bigint],
-  'publishedBy' : [] | [Principal],
-  'publishedIn' : [] | [string],
-  'votedBy' : [] | [Principal],
+  'voter' : [] | [Principal],
+  'publisher' : [] | [Principal],
+  'userFollowedPublishers' : [] | [Principal],
   'bookmarksFrom' : [] | [Principal],
-  'containsPattern' : [] | [string],
+  'userJoinedFields' : [] | [Principal],
 }
 export interface Filter__1 {
   'votedBy' : [] | [Principal],
@@ -97,11 +126,11 @@ export interface Filter__2 {
   'containsPattern' : [] | [string],
 }
 export interface Filter__3 {
-  'publishedBy' : [] | [Principal],
-  'publishedIn' : [] | [bigint],
-  'votedBy' : [] | [Principal],
-  'containsPattern' : [] | [string],
-  'onSide' : [] | [BinaryChoice],
+  'q' : [] | [string],
+  'voter' : [] | [Principal],
+  'publisher' : [] | [Principal],
+  'side' : [] | [BinaryChoice],
+  'hypothesis' : [] | [bigint],
 }
 export type Form = Array<Format>;
 export type Format = { 'Note' : Note } |
@@ -147,6 +176,8 @@ export interface Sharable {
   'bookmarks' : Array<bigint>,
   'hypotheses' : Array<bigint>,
   'votedEvidences' : Array<[bigint, BinaryVote]>,
+  'followers' : Array<Principal>,
+  'following' : Array<Principal>,
 }
 export interface SharableBinaryVotes {
   'powered' : OneSideSharable__1,
@@ -173,6 +204,8 @@ export interface SharableEvidence {
   'publishDate' : bigint,
   'form' : Form,
   'publisher' : Principal,
+  'repliedTo' : [] | [bigint],
+  'replies' : Array<bigint>,
   'choice' : BinaryChoice__1,
   'hypothesisId' : bigint,
 }
@@ -284,6 +317,8 @@ export interface Sharable__7 {
   'publishDate' : bigint,
   'form' : Form,
   'publisher' : Principal,
+  'repliedTo' : [] | [bigint],
+  'replies' : Array<bigint>,
   'choice' : BinaryChoice__1,
   'hypothesisId' : bigint,
 }
@@ -312,16 +347,12 @@ export type Sort__4 = { 'positivity' : null } |
   { 'negativity' : null } |
   { 'popularity' : null } |
   { 'recent' : null };
-export type Status = { 'Failed' : null } |
-  { 'Approved' : null } |
+export type Status = { 'Approved' : null } |
   { 'Rejected' : null } |
-  { 'Executed' : null } |
   { 'Requested' : null } |
   { 'Expired' : null };
-export type Status__1 = { 'Failed' : null } |
-  { 'Approved' : null } |
+export type Status__1 = { 'Approved' : null } |
   { 'Rejected' : null } |
-  { 'Executed' : null } |
   { 'Requested' : null } |
   { 'Expired' : null };
 export interface TernaryVote { 'value' : bigint, 'choice' : Choice }
@@ -329,6 +360,17 @@ export interface TernaryVote__1 { 'value' : bigint, 'choice' : Choice }
 export type Time = bigint;
 export type Time__1 = bigint;
 export type Time__2 = bigint;
+export interface TopNonPagination {
+  'result' : TopResult,
+  'callerRank' : [] | [bigint],
+}
+export interface TopPagination {
+  'is' : bigint,
+  'of' : bigint,
+  'result' : TopResult,
+  'callerRank' : [] | [bigint],
+}
+export type TopResult = Array<[Principal, bigint]>;
 export type Value = { 'value' : ValueProp } |
   { 'infinity' : null };
 export type ValueProp = { 'inclusive' : number } |

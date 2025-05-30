@@ -132,7 +132,7 @@ module {
         Result.mapOk(go(xs, null), func(xs : List<R>) : List<R> = reverse(xs))
     };
 
-    func revAppend<T>(l : List<T>, m : List<T>) : List<T> {
+    public func revAppend<T>(l : List<T>, m : List<T>) : List<T> {
         switch l {
             case null { m };
             case (?(h, t)) { revAppend(t, ?(h, m)) }

@@ -13,6 +13,7 @@ export interface Facade {
   'getUserIdentifier' : ActorMethod<[IdentifierVariant], Identifier>,
   'getUsers' : ActorMethod<[Filter, Sort], Array<Sharable>>,
   'getUsersCount' : ActorMethod<[], bigint>,
+  'getUsersIdentifier' : ActorMethod<[], Array<Identifier>>,
   'getUsersPagination' : ActorMethod<
     [Filter, Sort, bigint, bigint],
     Pagination
@@ -22,6 +23,7 @@ export interface Facade {
   'register' : ActorMethod<[string, bigint, [] | [Principal]], undefined>,
   'setConfigs' : ActorMethod<[Array<[Key, SharableValue]>], undefined>,
   'shiftToMidnight' : ActorMethod<[bigint], undefined>,
+  'updateCapitalRaised' : ActorMethod<[Principal, bigint], undefined>,
 }
 export interface Filter {
   'containsPattern' : [] | [string],
