@@ -111,7 +111,7 @@
 {"achievement": "#REFERRAL | #OCTUPLEBURIAL"}
 ```
 
-### 9. `forceUpdateCapitalRaised()` returns `ForceUpdateCapitalRaisedResult`
+### 9. `forceUpdateCapitalRaised()` returns `Packages.ForceUpdateCapitalRaisedResult`
 
 #### Returns:
 ```json

@@ -1855,7 +1855,7 @@
       "name": "getUser",
       "flag": {
         "isQuery": true,
-        "callerRequired": false
+        "callerRequired": true
       },
       "argTypes": {
         "principal": {
@@ -2047,6 +2047,13 @@
       "relativePath": "flags/Flags",
       "depth": 2
     },
+    "Notification": {
+      "origin": "import Notification \"../../periphery/facade/notifications/Notification\";",
+      "name": "Notification",
+      "category": "attribute",
+      "relativePath": "../../periphery/facade/notifications/Notification",
+      "depth": 6
+    },
     "EscrowInterface": {
       "origin": "import EscrowInterface \"../escrow/Interface\";",
       "name": "EscrowInterface",
@@ -2060,6 +2067,13 @@
       "category": "interface",
       "relativePath": "../treasury/Interface",
       "depth": 3
+    },
+    "FacadeInterface": {
+      "origin": "import FacadeInterface \"../../periphery/facade/Interface\";",
+      "name": "FacadeInterface",
+      "category": "interface",
+      "relativePath": "../../periphery/facade/Interface",
+      "depth": 5
     },
     "IndicatorInterface": {
       "origin": "import IndicatorInterface \"../../periphery/indicator/Interface\";",
@@ -2288,8 +2302,10 @@
     "Users",
     "Flag",
     "Flags",
+    "Notification",
     "EscrowInterface",
     "TreasuryInterface",
+    "FacadeInterface",
     "IndicatorInterface",
     "C",
     "E",
@@ -3445,7 +3461,7 @@
       },
       "entries": [
         [
-          "joinedBy",
+          "member",
           {
             "origin": "?Principal",
             "singular": {
@@ -3458,7 +3474,7 @@
           }
         ],
         [
-          "containsPattern",
+          "q",
           {
             "origin": "?Text",
             "singular": {
@@ -6490,7 +6506,7 @@
       },
       "entries": [
         [
-          "requestedBy",
+          "requester",
           {
             "origin": "?Principal",
             "singular": {
@@ -6503,7 +6519,20 @@
           }
         ],
         [
-          "requestedIn",
+          "voter",
+          {
+            "origin": "?Principal",
+            "singular": {
+              "name": "Principal"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": true,
+            "isAsync": false
+          }
+        ],
+        [
+          "category",
           {
             "origin": "?Category",
             "singular": {
@@ -6525,20 +6554,7 @@
           }
         ],
         [
-          "votedBy",
-          {
-            "origin": "?Principal",
-            "singular": {
-              "name": "Principal"
-            },
-            "entries": [],
-            "isArray": false,
-            "isOptional": true,
-            "isAsync": false
-          }
-        ],
-        [
-          "withStatus",
+          "status",
           {
             "origin": "?Status",
             "singular": {
@@ -7807,6 +7823,19 @@
       },
       "entries": [
         [
+          "principal",
+          {
+            "origin": "Principal",
+            "singular": {
+              "name": "Principal"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
           "earning",
           {
             "origin": "SharableEarning",
@@ -7873,7 +7902,7 @@
           }
         ],
         [
-          "following",
+          "followings",
           {
             "origin": "[Principal]",
             "singular": {
@@ -8103,6 +8132,32 @@
             ],
             "isArray": true,
             "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "callerFollowing",
+          {
+            "origin": "?Bool",
+            "singular": {
+              "name": "Bool"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": true,
+            "isAsync": false
+          }
+        ],
+        [
+          "callerFollower",
+          {
+            "origin": "?Bool",
+            "singular": {
+              "name": "Bool"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": true,
             "isAsync": false
           }
         ]

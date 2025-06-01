@@ -52,8 +52,10 @@ module {
     public func userOpt(__ : Self, principal : Principal) : ?User {
         Map.get(__, PrincipalKey(principal))
     };
-    public func getUser(__ : Self, principal : Principal) : SharableUser {
-        User.toSharable(user(__, principal))
+    public func getUser(__ : Self, principal : Principal, callerUser : ?(Principal, User)) : SharableUser {
+        let getCallerFollowing : (Principal) -> ?Bool = User.callerFollowingCallback(callerUser);
+        let getCallerFollower : (Principal) -> ?Bool = User.callerFollowerCallback(callerUser);
+        User.toSharable(user(__, principal), principal, getCallerFollowing, getCallerFollower)
     };
     public func callerUser(__ : Self, caller : ?Principal) : ?(Principal, User) {
         switch (caller) {

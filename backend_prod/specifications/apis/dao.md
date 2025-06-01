@@ -523,10 +523,10 @@
 ```json
 {
   "filter": {
-    "proposedBy": "Principal",
-    "proposedIn": "#CODE | #FIELD | #WORKER | #CONFIGS",
-    "votedBy": "Principal",
-    "withStatus": "#RETRIED | #PROPOSED | #APPROVED | #EXECUTED | #FAILED | #REJECTED | #EXPIRED"
+    "proposer": "Principal",
+    "category": "#CODE | #FIELD | #WORKER | #CONFIGS",
+    "voter": "Principal",
+    "status": "#RETRIED | #PROPOSED | #APPROVED | #EXECUTED | #FAILED | #REJECTED | #EXPIRED"
   },
   "sort": {"by": "#RECENT | #UPDATED | #ACORNREWARD | #ICPREWARD", "order": "#ASCENDING | #DESCENDING"}
 }
@@ -635,10 +635,10 @@
 ```json
 {
   "filter": {
-    "proposedBy": "Principal",
-    "proposedIn": "#CODE | #FIELD | #WORKER | #CONFIGS",
-    "votedBy": "Principal",
-    "withStatus": "#RETRIED | #PROPOSED | #APPROVED | #EXECUTED | #FAILED | #REJECTED | #EXPIRED"
+    "proposer": "Principal",
+    "category": "#CODE | #FIELD | #WORKER | #CONFIGS",
+    "voter": "Principal",
+    "status": "#RETRIED | #PROPOSED | #APPROVED | #EXECUTED | #FAILED | #REJECTED | #EXPIRED"
   },
   "sort": {"by": "#RECENT | #UPDATED | #ACORNREWARD | #ICPREWARD", "order": "#ASCENDING | #DESCENDING"},
   "page": "Nat",

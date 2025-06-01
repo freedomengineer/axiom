@@ -362,9 +362,10 @@
       },
       "argTypes": {},
       "returnType": {
-        "origin": "async ForceUpdateCapitalRaisedResult",
+        "origin": "async Packages.ForceUpdateCapitalRaisedResult",
         "singular": {
-          "name": "ForceUpdateCapitalRaisedResult"
+          "name": "ForceUpdateCapitalRaisedResult",
+          "parent": "Packages"
         },
         "entries": [],
         "isArray": false,
@@ -969,8 +970,8 @@
   "interfaceDependencies": [
     "Configs",
     "AchievementPackage",
-    "Package",
     "Packages",
+    "Package",
     "AchievementPackages"
   ],
   "typeDefinitions": {
@@ -1293,8 +1294,8 @@
       "isOptional": false,
       "isAsync": false
     },
-    "async ForceUpdateCapitalRaisedResult": {
-      "origin": "async ForceUpdateCapitalRaisedResult",
+    "async Packages.ForceUpdateCapitalRaisedResult": {
+      "origin": "async Packages.ForceUpdateCapitalRaisedResult",
       "singular": {
         "name": "()"
       },

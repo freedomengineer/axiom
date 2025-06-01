@@ -3,8 +3,8 @@
 ## Dependencies
 
 
-- Attributes: `Age`, `Ages`, `Evidence`, `Evidences`, `Field`, `Fields`, `Hypothesis`, `Hypotheses`, `Payout`, `Payouts`, `Ranks`, `User`, `Users`, `Flag`, `Flags`
-- Interfaces: `EscrowInterface`, `TreasuryInterface`, `IndicatorInterface`
+- Attributes: `Age`, `Ages`, `Evidence`, `Evidences`, `Field`, `Fields`, `Hypothesis`, `Hypotheses`, `Payout`, `Payouts`, `Ranks`, `User`, `Users`, `Flag`, `Flags`, `Notification`
+- Interfaces: `EscrowInterface`, `TreasuryInterface`, `FacadeInterface`, `IndicatorInterface`
 - Commons: `C`, `E`
 - Libraries: `Array`, `Base`, `Configs`, `ClusterTree`, `Count`, `Date`, `DoubleClusterTree`, `DoubleRankTree`, `E8S`, `Earning`, `Format`, `Iter`, `List`, `Map`, `Pagination`, `Proportion`, `Set`, `BinaryVotes`, `TernaryVotes`
 - Bases: `Time`, `Principal`, `Text`, `Int`, `Nat`, `Timer`, `Float`, `Debug`
@@ -326,7 +326,7 @@
 
 ```json
 {
-  "filter": {"joinedBy": "Principal", "containsPattern": "Text"},
+  "filter": {"member": "Principal", "q": "Text"},
   "sort": {"by": "#RECENT | #ALPHABETICAL | #POPULARITY", "order": "#ASCENDING | #DESCENDING"}
 }
 ```
@@ -351,7 +351,7 @@
 
 ```json
 {
-  "filter": {"joinedBy": "Principal", "containsPattern": "Text"},
+  "filter": {"member": "Principal", "q": "Text"},
   "sort": {"by": "#RECENT | #ALPHABETICAL | #POPULARITY", "order": "#ASCENDING | #DESCENDING"},
   "page": "Nat",
   "limit": "Nat"
@@ -622,10 +622,10 @@
 ```json
 {
   "filter": {
-    "requestedBy": "Principal",
-    "requestedIn": "#HYPOTHESIS | #EVIDENCE",
-    "votedBy": "Principal",
-    "withStatus": "#REQUESTED | #APPROVED | #REJECTED | #EXPIRED"
+    "requester": "Principal",
+    "voter": "Principal",
+    "category": "#HYPOTHESIS | #EVIDENCE",
+    "status": "#REQUESTED | #APPROVED | #REJECTED | #EXPIRED"
   },
   "sort": {"by": "#RECENT | #DIFFERENCE", "order": "#ASCENDING | #DESCENDING"}
 }
@@ -654,10 +654,10 @@
 ```json
 {
   "filter": {
-    "requestedBy": "Principal",
-    "requestedIn": "#HYPOTHESIS | #EVIDENCE",
-    "votedBy": "Principal",
-    "withStatus": "#REQUESTED | #APPROVED | #REJECTED | #EXPIRED"
+    "requester": "Principal",
+    "voter": "Principal",
+    "category": "#HYPOTHESIS | #EVIDENCE",
+    "status": "#REQUESTED | #APPROVED | #REJECTED | #EXPIRED"
   },
   "sort": {"by": "#RECENT | #DIFFERENCE", "order": "#ASCENDING | #DESCENDING"},
   "page": "Nat",
@@ -816,16 +816,19 @@
 #### Returns:
 ```json
 {
+  "principal": "Principal",
   "earning": {"revenue": "Nat", "balance": "Nat", "lastWithdrawAt": "Time"},
   "followers": ["Principal"],
-  "following": ["Principal"],
+  "followings": ["Principal"],
   "axioms": ["Nat"],
   "bookmarks": ["Nat"],
   "joinedFields": ["Text"],
   "hypotheses": ["Nat"],
   "evidences": ["Nat"],
   "votedHypotheses": [["Nat", {"choice": "#POSITIVE | #NEUTRAL | #NEGATIVE", "value": "Nat"}]],
-  "votedEvidences": [["Nat", {"choice": "#POSITIVE | #NEGATIVE", "value": "Nat"}]]
+  "votedEvidences": [["Nat", {"choice": "#POSITIVE | #NEGATIVE", "value": "Nat"}]],
+  "callerFollowing": "Bool",
+  "callerFollower": "Bool"
 }
 ```
 

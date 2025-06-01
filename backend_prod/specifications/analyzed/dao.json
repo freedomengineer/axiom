@@ -4880,7 +4880,7 @@
       },
       "entries": [
         [
-          "proposedBy",
+          "proposer",
           {
             "origin": "?Principal",
             "singular": {
@@ -4893,7 +4893,7 @@
           }
         ],
         [
-          "proposedIn",
+          "category",
           {
             "origin": "?ProposalVariant",
             "singular": {
@@ -4923,7 +4923,7 @@
           }
         ],
         [
-          "votedBy",
+          "voter",
           {
             "origin": "?Principal",
             "singular": {
@@ -4936,7 +4936,7 @@
           }
         ],
         [
-          "withStatus",
+          "status",
           {
             "origin": "?StatusVariant",
             "singular": {

@@ -16,7 +16,8 @@ module {
 
     public type Identifier = {
         principal : Principal;
-        username : Text
+        username : Text;
+        capitalRaised : Nat
     };
     public type IdentifierVariant = {
         #Principal : Principal;

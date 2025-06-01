@@ -14,8 +14,11 @@ import Users "users/Users";
 import Flag "flags/Flag";
 import Flags "flags/Flags";
 
+import Notification "../../periphery/facade/notifications/Notification";
+
 import EscrowInterface "../escrow/Interface";
 import TreasuryInterface "../treasury/Interface";
+import FacadeInterface "../../periphery/facade/Interface";
 import IndicatorInterface "../../periphery/indicator/Interface";
 
 import C "../../common/Constants";
@@ -318,12 +321,22 @@ shared ({ caller = indicator }) actor class Axioms() = this {
             }
         }
     };
-    private func _cleanUpExpiredFlagRequests() {
+    private func _cleanUpExpiredFlagRequests() : List.List<Flag.Header> {
         let FLAG_REQUEST_AVAILABILITY_DURATION : Nat = Configs.Duration(configs, "FLAG_REQUEST_AVAILABILITY_DURATION");
         Flags.cleanUpExpiredFlags(flags, FLAG_REQUEST_AVAILABILITY_DURATION)
     };
     private func _dailyExecution() : async () {
-        _cleanUpExpiredFlagRequests();
+        let expired : List.List<Flag.Header> = _cleanUpExpiredFlagRequests();
+        ignore (
+            func() : async () {
+                let Facade : FacadeInterface.Facade = await Indicator.Facade();
+                let expiredNotification : List.List<Notification.SystemVariantParam> = List.map<Flag.Header, Notification.SystemVariantParam>(
+                    expired,
+                    func(header) = #FlagResult({ header; result = #Expired; timestamp = Time.now() }),
+                );
+                await Facade.postSystemNotifications(expiredNotification)
+            }
+        )();
         await _payout()
     };
 
@@ -394,6 +407,20 @@ shared ({ caller = indicator }) actor class Axioms() = this {
         let hypothesisId : Nat = Hypotheses.publish(hypotheses, hypothesis);
         Field.addHypothesis(field, hypothesisId);
         User.publishHypothesis(user, hypothesisId);
+
+        ignore (
+            func() : async () {
+                let Facade : FacadeInterface.Facade = await Indicator.Facade();
+                let notification : Notification.UserVariantParam = #NewHypothesesFromFollowings({
+                    data = { publisher = caller; hypothesisId; timestamp = Time.now() }
+                });
+                let followersNotification : List.List<(Principal, Notification.UserVariantParam)> = Iter.toListMap<Principal, (Principal, Notification.UserVariantParam)>(
+                    Set.vals(user.followers),
+                    func(follower) = (follower, notification),
+                );
+                await Facade.postUserNotifications(followersNotification)
+            }
+        )();
 
         hypothesisId
     };
@@ -485,6 +512,24 @@ shared ({ caller = indicator }) actor class Axioms() = this {
         Hypothesis.addEvidence(hypothesis, evidenceId);
         User.publishEvidence(user, evidenceId);
 
+        ignore (
+            func() : async () {
+                let Facade : FacadeInterface.Facade = await Indicator.Facade();
+                let notification : Notification.UserVariantParam = #NewEvidencesFromFollowings({
+                    data = { publisher = caller; evidenceId; timestamp = Time.now() }
+                });
+                var followersNotification : List.List<(Principal, Notification.UserVariantParam)> = Iter.toListMap<Principal, (Principal, Notification.UserVariantParam)>(
+                    Set.vals(user.followers),
+                    func(follower) = (follower, notification),
+                );
+                await Facade.postUserNotifications(
+                    switch (repliedTo, repliedEvidence) {
+                        case (?id, ?{ publisher }) List.push((publisher, #NewRepliesToEvidence({ id; data = { evidenceId; publisher = caller; timestamp = Time.now() } })), followersNotification);
+                        case (_, _) followersNotification
+                    }
+                )
+            }
+        )();
         evidenceId
     };
     public shared ({ caller }) func requestFlag(header : Flag.Header, reason : Text) : async () {
@@ -509,14 +554,34 @@ shared ({ caller = indicator }) actor class Axioms() = this {
         Flag.addVote(flag, caller, vote);
         User.voteFlag(voterUser, header, vote);
 
+        ignore (
+            func() : async () {
+                let Facade : FacadeInterface.Facade = await Indicator.Facade();
+                await Facade.postSystemNotification(#FlagRequested({ header; timestamp = Time.now() }))
+            }
+        )();
+
         let poweredValueDifference : Int = Flag.getPoweredValuesDifference(flag);
         if (Int.abs(poweredValueDifference) >= FLAG_REQUEST_ACCEPTANCE_THRESHOLD.val) {
-            switch (poweredValueDifference >= 0) {
-                case (true) Flag.approved(flag);
-                case (false) Flag.rejected(flag)
+            let result : { #Approved; #Rejected; #Expired } = switch (poweredValueDifference >= 0) {
+                case (true) {
+                    Flag.approved(flag);
+                    #Approved
+                };
+                case (false) {
+                    Flag.rejected(flag);
+                    #Rejected
+                }
             };
             Flags.finalize(flags, header);
-            _remove(header, flag)
+            _remove(header, flag);
+
+            ignore (
+                func() : async () {
+                    let Facade : FacadeInterface.Facade = await Indicator.Facade();
+                    await Facade.postSystemNotification(#FlagResult({ header; result; timestamp = Time.now() }))
+                }
+            )()
         }
     };
 
@@ -531,7 +596,14 @@ shared ({ caller = indicator }) actor class Axioms() = this {
             case (null) Hypothesis.addVote(hypothesis, caller, vote);
             case (?existedVote) Hypothesis.updateVote(hypothesis, caller, existedVote, vote)
         };
-        User.voteHypothesis(user, hypothesisId, vote)
+        User.voteHypothesis(user, hypothesisId, vote);
+
+        ignore (
+            func() : async () {
+                let Facade : FacadeInterface.Facade = await Indicator.Facade();
+                await Facade.postUserNotification((hypothesis.publisher, #NewVotesToHypothesis({ id = hypothesisId; data = { voter = caller; choice; timestamp = Time.now() } })))
+            }
+        )()
     };
     public shared ({ caller }) func voteEvidence(evidenceId : Nat, choice : BinaryVotes.Choice) : async () {
         let user : User.User = Users.user(users, caller);
@@ -544,7 +616,14 @@ shared ({ caller = indicator }) actor class Axioms() = this {
             case (null) Evidence.addVote(evidence, caller, vote);
             case (?existedVote) Evidence.updateVote(evidence, caller, existedVote, vote)
         };
-        User.voteEvidence(user, evidenceId, vote)
+        User.voteEvidence(user, evidenceId, vote);
+
+        ignore (
+            func() : async () {
+                let Facade : FacadeInterface.Facade = await Indicator.Facade();
+                await Facade.postUserNotification((evidence.publisher, #NewVotesToEvidence({ id = evidenceId; data = { voter = caller; choice; timestamp = Time.now() } })))
+            }
+        )()
     };
     public shared ({ caller }) func voteFlag(header : Flag.Header, choice : BinaryVotes.Choice) : async () {
         let FLAG_REQUEST_ACCEPTANCE_THRESHOLD : E8S.E8S = Configs.E8S(configs, "FLAG_REQUEST_ACCEPTANCE_THRESHOLD");
@@ -564,12 +643,25 @@ shared ({ caller = indicator }) actor class Axioms() = this {
 
         let poweredValueDifference : Int = Flag.getPoweredValuesDifference(flag);
         if (Int.abs(poweredValueDifference) >= FLAG_REQUEST_ACCEPTANCE_THRESHOLD.val) {
-            switch (poweredValueDifference >= 0) {
-                case (true) Flag.approved(flag);
-                case (false) Flag.rejected(flag)
+            let result : { #Approved; #Rejected; #Expired } = switch (poweredValueDifference >= 0) {
+                case (true) {
+                    Flag.approved(flag);
+                    #Approved
+                };
+                case (false) {
+                    Flag.rejected(flag);
+                    #Rejected
+                }
             };
             Flags.finalize(flags, header);
-            _remove(header, flag)
+            _remove(header, flag);
+
+            ignore (
+                func() : async () {
+                    let Facade : FacadeInterface.Facade = await Indicator.Facade();
+                    await Facade.postSystemNotification(#FlagResult({ header; result; timestamp = Time.now() }))
+                }
+            )()
         }
     };
 
@@ -601,7 +693,14 @@ shared ({ caller = indicator }) actor class Axioms() = this {
         let hypothesis : Hypothesis.Hypothesis = Hypotheses.hypothesis(hypotheses, hypothesisId);
         User.expectAxiomNotFound(user, hypothesisId);
         User.addAxiom(user, hypothesisId);
-        Hypothesis.addedToAxiom(hypothesis)
+        Hypothesis.addedToAxiom(hypothesis);
+
+        ignore (
+            func() : async () {
+                let Facade : FacadeInterface.Facade = await Indicator.Facade();
+                await Facade.postUserNotification((hypothesis.publisher, #NewAxiomsToHypothesis({ id = hypothesisId; data = { user = caller; timestamp = Time.now() } })))
+            }
+        )()
     };
     public shared ({ caller }) func addToBookmarks(hypothesisId : Nat) : async () {
         let user : User.User = Users.user(users, caller);
@@ -630,7 +729,14 @@ shared ({ caller = indicator }) actor class Axioms() = this {
         let follower : User.User = Users.user(users, caller);
         let following : User.User = Users.user(users, principal);
         User.addFollowing(follower, principal);
-        User.addFollower(following, caller)
+        User.addFollower(following, caller);
+
+        ignore (
+            func() : async () {
+                let Facade : FacadeInterface.Facade = await Indicator.Facade();
+                await Facade.postUserNotification((principal, #NewFollowers({ data = { principal = caller; timestamp = Time.now() } })))
+            }
+        )()
     };
     public shared ({ caller }) func unfollow(principal : Principal) : async () {
         if (caller == principal) E.f(#NOT_VALID("Follow"), "You cannot unfollow yourself");
@@ -769,8 +875,9 @@ shared ({ caller = indicator }) actor class Axioms() = this {
         Ages.getPayouts(ages, callerUser)
     };
 
-    public query func getUser(principal : Principal) : async User.Sharable {
-        Users.getUser(users, principal)
+    public query ({ caller }) func getUser(principal : Principal) : async User.Sharable {
+        let callerUser : ?(Principal, User.User) = _getCallerUser(caller);
+        Users.getUser(users, principal, callerUser)
     };
     public query func getEarning(principal : Principal) : async Earning.Sharable {
         let user : User.User = Users.user(users, principal);

@@ -140,12 +140,7 @@ shared ({ caller = indicator }) actor class Sales() = this {
         ignore await _deployAchievementPackage(package)
     };
 
-    type ForceUpdateCapitalRaisedResult = {
-        success : [Text];
-        failed : [(Text, Text)];
-        unchanged : [Text]
-    };
-    public shared ({ caller }) func forceUpdateCapitalRaised() : async ForceUpdateCapitalRaisedResult {
+    public shared ({ caller }) func forceUpdateCapitalRaised() : async Packages.ForceUpdateCapitalRaisedResult {
         await Indicator.expectAuthorized(caller, [#Founder]);
         let Facade : FacadeInterface.Facade = await Indicator.Facade();
         let users : [FacadeUser.Identifier] = await Facade.getUsersIdentifier();

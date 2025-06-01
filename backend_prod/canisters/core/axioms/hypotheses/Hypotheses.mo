@@ -186,14 +186,14 @@ module {
             case (null, _) {};
             case (?user, null) {
                 var list : List<Nat> = List.nil();
-                for (following in Set.vals(getUser(user).following)) {
+                for (following in Set.vals(getUser(user).followings)) {
                     list := List.revAppend(getUser(following).hypotheses, list)
                 };
                 filtered := ?List.toArrayFilterMap<Nat, Entry>(list, toEntry)
             };
             case (?user, ?prev) {
                 let userIns : User = getUser(user);
-                filtered := ?Array.filter<Entry>(prev, func((_, e)) = User.followingFound(userIns, e.publisher))
+                filtered := ?Array.filter<Entry>(prev, func((_, e)) = User.followingsFound(userIns, e.publisher))
             }
         };
         switch (filter.voter, filtered) {

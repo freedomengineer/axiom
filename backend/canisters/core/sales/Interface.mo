@@ -14,7 +14,7 @@ module {
         deployPackage : shared (Nat) -> async ();
         addAchievementPackage : shared (AchievementPackage.Achievement, Text, Text, Text) -> async ();
         deployAchievementPackage : shared (AchievementPackage.Achievement) -> async ();
-        forceUpdateCapitalRaised : shared () -> async ForceUpdateCapitalRaisedResult;
+        forceUpdateCapitalRaised : shared () -> async Packages.ForceUpdateCapitalRaisedResult;
         upgradePackage : shared () -> async ();
         mintAchievementPackage : shared (AchievementPackage.Achievement) -> async ();
         getConfig : query (Configs.Key) -> async Configs.SharableValue;
