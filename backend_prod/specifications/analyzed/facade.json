@@ -217,16 +217,97 @@
       }
     },
     {
-      "name": "postUserNotifications",
+      "name": "postUsersNotification",
       "flag": {
         "isQuery": false,
         "callerRequired": true
       },
       "argTypes": {
         "batch": {
-          "origin": "Notifications.UserNotificationBatch",
+          "origin": "Notifications.UsersBatch",
           "singular": {
-            "name": "UserNotificationBatch",
+            "name": "UsersBatch",
+            "parent": "Notifications"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        },
+        "data": {
+          "origin": "Notification.UserVariantParam",
+          "singular": {
+            "name": "UserVariantParam",
+            "parent": "Notification"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async ()",
+        "singular": {
+          "name": "()"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
+      "name": "postUserNotifications",
+      "flag": {
+        "isQuery": false,
+        "callerRequired": true
+      },
+      "argTypes": {
+        "principal": {
+          "origin": "Principal",
+          "singular": {
+            "name": "Principal"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        },
+        "batch": {
+          "origin": "Notifications.UserNotificationsBatch",
+          "singular": {
+            "name": "UserNotificationsBatch",
+            "parent": "Notifications"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async ()",
+        "singular": {
+          "name": "()"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
+      "name": "postUsersNotifications",
+      "flag": {
+        "isQuery": false,
+        "callerRequired": true
+      },
+      "argTypes": {
+        "batch": {
+          "origin": "Notifications.UsersNotificationsBatch",
+          "singular": {
+            "name": "UsersNotificationsBatch",
             "parent": "Notifications"
           },
           "entries": [],
@@ -284,9 +365,9 @@
       },
       "argTypes": {
         "batch": {
-          "origin": "Notifications.SystemNotificationBatch",
+          "origin": "Notifications.SystemNotificationsBatch",
           "singular": {
-            "name": "SystemNotificationBatch",
+            "name": "SystemNotificationsBatch",
             "parent": "Notifications"
           },
           "entries": [],
@@ -1377,44 +1458,31 @@
       },
       "entries": [
         [
-          "#ProposalResult",
+          "#CustodianElectionResult",
           {
-            "origin": "ProposalResultData",
+            "origin": "CustodianElectionResultData",
             "singular": {
               "name": "()"
             },
             "entries": [
               [
-                "proposalId",
-                {
-                  "origin": "Nat",
-                  "singular": {
-                    "name": "Nat"
-                  },
-                  "entries": [],
-                  "isArray": false,
-                  "isOptional": false,
-                  "isAsync": false
-                }
-              ],
-              [
                 "result",
                 {
-                  "origin": "{ #Approved; #Rejected; #Expired }",
+                  "origin": "ElectionResult",
                   "singular": {
                     "name": "()"
                   },
                   "entries": [
                     [
-                      "#Approved",
+                      "#Removed",
                       null
                     ],
                     [
-                      "#Rejected",
+                      "#Unchanged",
                       null
                     ],
                     [
-                      "#Expired",
+                      "#New",
                       null
                     ]
                   ],
@@ -1456,9 +1524,88 @@
           }
         ],
         [
-          "#ProposalDelegated",
+          "#CustodianProposalResult",
           {
-            "origin": "ProposalDelegatedData",
+            "origin": "CustodianProposalResultData",
+            "singular": {
+              "name": "()"
+            },
+            "entries": [
+              [
+                "proposalId",
+                {
+                  "origin": "Nat",
+                  "singular": {
+                    "name": "Nat"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "proposer",
+                {
+                  "origin": "Principal",
+                  "singular": {
+                    "name": "Principal"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "result",
+                {
+                  "origin": "Result",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      "#Approved",
+                      null
+                    ],
+                    [
+                      "#Rejected",
+                      null
+                    ],
+                    [
+                      "#Expired",
+                      null
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "timestamp",
+                {
+                  "origin": "Time",
+                  "singular": {
+                    "name": "Time"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ]
+            ],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "#CustodianProposalDelegated",
+          {
+            "origin": "CustodianProposalDelegatedData",
             "singular": {
               "name": "()"
             },
@@ -1509,49 +1656,9 @@
           }
         ],
         [
-          "#ProposalRejected",
+          "#CustodianProposalOpened",
           {
-            "origin": "ProposalRejectedData",
-            "singular": {
-              "name": "()"
-            },
-            "entries": [
-              [
-                "proposalId",
-                {
-                  "origin": "Nat",
-                  "singular": {
-                    "name": "Nat"
-                  },
-                  "entries": [],
-                  "isArray": false,
-                  "isOptional": false,
-                  "isAsync": false
-                }
-              ],
-              [
-                "timestamp",
-                {
-                  "origin": "Time",
-                  "singular": {
-                    "name": "Time"
-                  },
-                  "entries": [],
-                  "isArray": false,
-                  "isOptional": false,
-                  "isAsync": false
-                }
-              ]
-            ],
-            "isArray": false,
-            "isOptional": false,
-            "isAsync": false
-          }
-        ],
-        [
-          "#ProposalOpened",
-          {
-            "origin": "ProposalOpenedData",
+            "origin": "CustodianProposalOpenedData",
             "singular": {
               "name": "()"
             },
@@ -1615,61 +1722,188 @@
           }
         ],
         [
-          "#NewHypothesesFromFollowings",
+          "#ProposalExecuted",
           {
-            "origin": "{ data : NewHypothesesFromFollowingsData }",
+            "origin": "ProposalExecutedData",
             "singular": {
               "name": "()"
             },
             "entries": [
               [
-                "data",
+                "proposalId",
                 {
-                  "origin": "NewHypothesesFromFollowingsData",
+                  "origin": "Nat",
+                  "singular": {
+                    "name": "Nat"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "result",
+                {
+                  "origin": "ExecutedResult",
                   "singular": {
                     "name": "()"
                   },
                   "entries": [
                     [
-                      "publisher",
-                      {
-                        "origin": "Principal",
-                        "singular": {
-                          "name": "Principal"
-                        },
-                        "entries": [],
-                        "isArray": false,
-                        "isOptional": false,
-                        "isAsync": false
-                      }
+                      "#Executed",
+                      null
                     ],
                     [
-                      "hypothesisId",
-                      {
-                        "origin": "Nat",
-                        "singular": {
-                          "name": "Nat"
-                        },
-                        "entries": [],
-                        "isArray": false,
-                        "isOptional": false,
-                        "isAsync": false
-                      }
-                    ],
-                    [
-                      "timestamp",
-                      {
-                        "origin": "Time",
-                        "singular": {
-                          "name": "Time"
-                        },
-                        "entries": [],
-                        "isArray": false,
-                        "isOptional": false,
-                        "isAsync": false
-                      }
+                      "#Failed",
+                      null
                     ]
                   ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "claimable",
+                {
+                  "origin": "Nat",
+                  "singular": {
+                    "name": "Nat"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "timestamp",
+                {
+                  "origin": "Time",
+                  "singular": {
+                    "name": "Time"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ]
+            ],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "#ProposalResult",
+          {
+            "origin": "ProposalResultData",
+            "singular": {
+              "name": "()"
+            },
+            "entries": [
+              [
+                "proposalId",
+                {
+                  "origin": "Nat",
+                  "singular": {
+                    "name": "Nat"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "result",
+                {
+                  "origin": "Result",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      "#Approved",
+                      null
+                    ],
+                    [
+                      "#Rejected",
+                      null
+                    ],
+                    [
+                      "#Expired",
+                      null
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "timestamp",
+                {
+                  "origin": "Time",
+                  "singular": {
+                    "name": "Time"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ]
+            ],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "#NewHypothesesFromFollowings",
+          {
+            "origin": "NewHypothesesFromFollowingsData",
+            "singular": {
+              "name": "()"
+            },
+            "entries": [
+              [
+                "publisher",
+                {
+                  "origin": "Principal",
+                  "singular": {
+                    "name": "Principal"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "hypothesisId",
+                {
+                  "origin": "Nat",
+                  "singular": {
+                    "name": "Nat"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "timestamp",
+                {
+                  "origin": "Time",
+                  "singular": {
+                    "name": "Time"
+                  },
+                  "entries": [],
                   "isArray": false,
                   "isOptional": false,
                   "isAsync": false
@@ -1684,59 +1918,45 @@
         [
           "#NewEvidencesFromFollowings",
           {
-            "origin": "{ data : NewEvidencesFromFollowingsData }",
+            "origin": "NewEvidencesFromFollowingsData",
             "singular": {
               "name": "()"
             },
             "entries": [
               [
-                "data",
+                "publisher",
                 {
-                  "origin": "NewEvidencesFromFollowingsData",
+                  "origin": "Principal",
                   "singular": {
-                    "name": "()"
+                    "name": "Principal"
                   },
-                  "entries": [
-                    [
-                      "publisher",
-                      {
-                        "origin": "Principal",
-                        "singular": {
-                          "name": "Principal"
-                        },
-                        "entries": [],
-                        "isArray": false,
-                        "isOptional": false,
-                        "isAsync": false
-                      }
-                    ],
-                    [
-                      "evidenceId",
-                      {
-                        "origin": "Nat",
-                        "singular": {
-                          "name": "Nat"
-                        },
-                        "entries": [],
-                        "isArray": false,
-                        "isOptional": false,
-                        "isAsync": false
-                      }
-                    ],
-                    [
-                      "timestamp",
-                      {
-                        "origin": "Time",
-                        "singular": {
-                          "name": "Time"
-                        },
-                        "entries": [],
-                        "isArray": false,
-                        "isOptional": false,
-                        "isAsync": false
-                      }
-                    ]
-                  ],
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "evidenceId",
+                {
+                  "origin": "Nat",
+                  "singular": {
+                    "name": "Nat"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "timestamp",
+                {
+                  "origin": "Time",
+                  "singular": {
+                    "name": "Time"
+                  },
+                  "entries": [],
                   "isArray": false,
                   "isOptional": false,
                   "isAsync": false
@@ -1751,59 +1971,45 @@
         [
           "#NewReferrals",
           {
-            "origin": "{ data : NewReferralsData }",
+            "origin": "NewReferralsData",
             "singular": {
               "name": "()"
             },
             "entries": [
               [
-                "data",
+                "principal",
                 {
-                  "origin": "NewReferralsData",
+                  "origin": "Principal",
                   "singular": {
-                    "name": "()"
+                    "name": "Principal"
                   },
-                  "entries": [
-                    [
-                      "principal",
-                      {
-                        "origin": "Principal",
-                        "singular": {
-                          "name": "Principal"
-                        },
-                        "entries": [],
-                        "isArray": false,
-                        "isOptional": false,
-                        "isAsync": false
-                      }
-                    ],
-                    [
-                      "claimable",
-                      {
-                        "origin": "Nat",
-                        "singular": {
-                          "name": "Nat"
-                        },
-                        "entries": [],
-                        "isArray": false,
-                        "isOptional": false,
-                        "isAsync": false
-                      }
-                    ],
-                    [
-                      "timestamp",
-                      {
-                        "origin": "Time",
-                        "singular": {
-                          "name": "Time"
-                        },
-                        "entries": [],
-                        "isArray": false,
-                        "isOptional": false,
-                        "isAsync": false
-                      }
-                    ]
-                  ],
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "claimable",
+                {
+                  "origin": "Nat",
+                  "singular": {
+                    "name": "Nat"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "timestamp",
+                {
+                  "origin": "Time",
+                  "singular": {
+                    "name": "Time"
+                  },
+                  "entries": [],
                   "isArray": false,
                   "isOptional": false,
                   "isAsync": false
@@ -1818,46 +2024,72 @@
         [
           "#NewFollowers",
           {
-            "origin": "{ data : NewFollowersData }",
+            "origin": "NewFollowersData",
             "singular": {
               "name": "()"
             },
             "entries": [
               [
-                "data",
+                "principal",
                 {
-                  "origin": "NewFollowersData",
+                  "origin": "Principal",
                   "singular": {
-                    "name": "()"
+                    "name": "Principal"
                   },
-                  "entries": [
-                    [
-                      "principal",
-                      {
-                        "origin": "Principal",
-                        "singular": {
-                          "name": "Principal"
-                        },
-                        "entries": [],
-                        "isArray": false,
-                        "isOptional": false,
-                        "isAsync": false
-                      }
-                    ],
-                    [
-                      "timestamp",
-                      {
-                        "origin": "Time",
-                        "singular": {
-                          "name": "Time"
-                        },
-                        "entries": [],
-                        "isArray": false,
-                        "isOptional": false,
-                        "isAsync": false
-                      }
-                    ]
-                  ],
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "timestamp",
+                {
+                  "origin": "Time",
+                  "singular": {
+                    "name": "Time"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ]
+            ],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "#NewBallots",
+          {
+            "origin": "NewBallotsData",
+            "singular": {
+              "name": "()"
+            },
+            "entries": [
+              [
+                "principal",
+                {
+                  "origin": "Principal",
+                  "singular": {
+                    "name": "Principal"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "timestamp",
+                {
+                  "origin": "Time",
+                  "singular": {
+                    "name": "Time"
+                  },
+                  "entries": [],
                   "isArray": false,
                   "isOptional": false,
                   "isAsync": false
@@ -2394,7 +2626,1220 @@
       "isOptional": false,
       "isAsync": false
     },
-    "Notifications.UserNotificationBatch": {
+    "Notifications.UsersBatch": {
+      "origin": "List.List<T>",
+      "singular": {
+        "name": "()"
+      },
+      "entries": [
+        [
+          null,
+          {
+            "origin": "Principal",
+            "singular": {
+              "name": "Principal"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ]
+      ],
+      "isArray": false,
+      "isOptional": false,
+      "isAsync": false
+    },
+    "Notifications.UserNotificationsBatch": {
+      "origin": "List.List<T>",
+      "singular": {
+        "name": "()"
+      },
+      "entries": [
+        [
+          null,
+          {
+            "origin": "UserVariantParam",
+            "singular": {
+              "name": "()"
+            },
+            "entries": [
+              [
+                "#CustodianElectionResult",
+                {
+                  "origin": "CustodianElectionResultData",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      "result",
+                      {
+                        "origin": "ElectionResult",
+                        "singular": {
+                          "name": "()"
+                        },
+                        "entries": [
+                          [
+                            "#Removed",
+                            null
+                          ],
+                          [
+                            "#Unchanged",
+                            null
+                          ],
+                          [
+                            "#New",
+                            null
+                          ]
+                        ],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "claimable",
+                      {
+                        "origin": "Nat",
+                        "singular": {
+                          "name": "Nat"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "timestamp",
+                      {
+                        "origin": "Time",
+                        "singular": {
+                          "name": "Time"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#CustodianProposalResult",
+                {
+                  "origin": "CustodianProposalResultData",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      "proposalId",
+                      {
+                        "origin": "Nat",
+                        "singular": {
+                          "name": "Nat"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "proposer",
+                      {
+                        "origin": "Principal",
+                        "singular": {
+                          "name": "Principal"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "result",
+                      {
+                        "origin": "Result",
+                        "singular": {
+                          "name": "()"
+                        },
+                        "entries": [
+                          [
+                            "#Approved",
+                            null
+                          ],
+                          [
+                            "#Rejected",
+                            null
+                          ],
+                          [
+                            "#Expired",
+                            null
+                          ]
+                        ],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "timestamp",
+                      {
+                        "origin": "Time",
+                        "singular": {
+                          "name": "Time"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#CustodianProposalDelegated",
+                {
+                  "origin": "CustodianProposalDelegatedData",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      "proposalId",
+                      {
+                        "origin": "Nat",
+                        "singular": {
+                          "name": "Nat"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "delegator",
+                      {
+                        "origin": "Principal",
+                        "singular": {
+                          "name": "Principal"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "timestamp",
+                      {
+                        "origin": "Time",
+                        "singular": {
+                          "name": "Time"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#CustodianProposalOpened",
+                {
+                  "origin": "CustodianProposalOpenedData",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      "proposalId",
+                      {
+                        "origin": "Nat",
+                        "singular": {
+                          "name": "Nat"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "proposer",
+                      {
+                        "origin": "Principal",
+                        "singular": {
+                          "name": "Principal"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "retried",
+                      {
+                        "origin": "Nat",
+                        "singular": {
+                          "name": "Nat"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "timestamp",
+                      {
+                        "origin": "Time",
+                        "singular": {
+                          "name": "Time"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#ProposalExecuted",
+                {
+                  "origin": "ProposalExecutedData",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      "proposalId",
+                      {
+                        "origin": "Nat",
+                        "singular": {
+                          "name": "Nat"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "result",
+                      {
+                        "origin": "ExecutedResult",
+                        "singular": {
+                          "name": "()"
+                        },
+                        "entries": [
+                          [
+                            "#Executed",
+                            null
+                          ],
+                          [
+                            "#Failed",
+                            null
+                          ]
+                        ],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "claimable",
+                      {
+                        "origin": "Nat",
+                        "singular": {
+                          "name": "Nat"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "timestamp",
+                      {
+                        "origin": "Time",
+                        "singular": {
+                          "name": "Time"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#ProposalResult",
+                {
+                  "origin": "ProposalResultData",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      "proposalId",
+                      {
+                        "origin": "Nat",
+                        "singular": {
+                          "name": "Nat"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "result",
+                      {
+                        "origin": "Result",
+                        "singular": {
+                          "name": "()"
+                        },
+                        "entries": [
+                          [
+                            "#Approved",
+                            null
+                          ],
+                          [
+                            "#Rejected",
+                            null
+                          ],
+                          [
+                            "#Expired",
+                            null
+                          ]
+                        ],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "timestamp",
+                      {
+                        "origin": "Time",
+                        "singular": {
+                          "name": "Time"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#NewHypothesesFromFollowings",
+                {
+                  "origin": "NewHypothesesFromFollowingsData",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      "publisher",
+                      {
+                        "origin": "Principal",
+                        "singular": {
+                          "name": "Principal"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "hypothesisId",
+                      {
+                        "origin": "Nat",
+                        "singular": {
+                          "name": "Nat"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "timestamp",
+                      {
+                        "origin": "Time",
+                        "singular": {
+                          "name": "Time"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#NewEvidencesFromFollowings",
+                {
+                  "origin": "NewEvidencesFromFollowingsData",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      "publisher",
+                      {
+                        "origin": "Principal",
+                        "singular": {
+                          "name": "Principal"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "evidenceId",
+                      {
+                        "origin": "Nat",
+                        "singular": {
+                          "name": "Nat"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "timestamp",
+                      {
+                        "origin": "Time",
+                        "singular": {
+                          "name": "Time"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#NewReferrals",
+                {
+                  "origin": "NewReferralsData",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      "principal",
+                      {
+                        "origin": "Principal",
+                        "singular": {
+                          "name": "Principal"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "claimable",
+                      {
+                        "origin": "Nat",
+                        "singular": {
+                          "name": "Nat"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "timestamp",
+                      {
+                        "origin": "Time",
+                        "singular": {
+                          "name": "Time"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#NewFollowers",
+                {
+                  "origin": "NewFollowersData",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      "principal",
+                      {
+                        "origin": "Principal",
+                        "singular": {
+                          "name": "Principal"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "timestamp",
+                      {
+                        "origin": "Time",
+                        "singular": {
+                          "name": "Time"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#NewBallots",
+                {
+                  "origin": "NewBallotsData",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      "principal",
+                      {
+                        "origin": "Principal",
+                        "singular": {
+                          "name": "Principal"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "timestamp",
+                      {
+                        "origin": "Time",
+                        "singular": {
+                          "name": "Time"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#NewEvidencesToHypothesis",
+                {
+                  "origin": "{ id : Nat; data : NewEvidencesToHypothesisData }",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      "id",
+                      {
+                        "origin": "Nat",
+                        "singular": {
+                          "name": "Nat"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "data",
+                      {
+                        "origin": "NewEvidencesToHypothesisData",
+                        "singular": {
+                          "name": "()"
+                        },
+                        "entries": [
+                          [
+                            "evidenceId",
+                            {
+                              "origin": "Nat",
+                              "singular": {
+                                "name": "Nat"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ],
+                          [
+                            "publisher",
+                            {
+                              "origin": "Principal",
+                              "singular": {
+                                "name": "Principal"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ],
+                          [
+                            "side",
+                            {
+                              "origin": "BinaryChoice",
+                              "singular": {
+                                "name": "()"
+                              },
+                              "entries": [
+                                [
+                                  "#Positive",
+                                  null
+                                ],
+                                [
+                                  "#Negative",
+                                  null
+                                ]
+                              ],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ],
+                          [
+                            "timestamp",
+                            {
+                              "origin": "Time",
+                              "singular": {
+                                "name": "Time"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ]
+                        ],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#NewAxiomsToHypothesis",
+                {
+                  "origin": "{ id : Nat; data : NewAxiomsToHypothesisData }",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      "id",
+                      {
+                        "origin": "Nat",
+                        "singular": {
+                          "name": "Nat"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "data",
+                      {
+                        "origin": "NewAxiomsToHypothesisData",
+                        "singular": {
+                          "name": "()"
+                        },
+                        "entries": [
+                          [
+                            "user",
+                            {
+                              "origin": "Principal",
+                              "singular": {
+                                "name": "Principal"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ],
+                          [
+                            "timestamp",
+                            {
+                              "origin": "Time",
+                              "singular": {
+                                "name": "Time"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ]
+                        ],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#NewRepliesToEvidence",
+                {
+                  "origin": "{ id : Nat; data : NewRepliesToEvidenceData }",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      "id",
+                      {
+                        "origin": "Nat",
+                        "singular": {
+                          "name": "Nat"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "data",
+                      {
+                        "origin": "NewRepliesToEvidenceData",
+                        "singular": {
+                          "name": "()"
+                        },
+                        "entries": [
+                          [
+                            "evidenceId",
+                            {
+                              "origin": "Nat",
+                              "singular": {
+                                "name": "Nat"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ],
+                          [
+                            "publisher",
+                            {
+                              "origin": "Principal",
+                              "singular": {
+                                "name": "Principal"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ],
+                          [
+                            "timestamp",
+                            {
+                              "origin": "Time",
+                              "singular": {
+                                "name": "Time"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ]
+                        ],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#NewVotesToHypothesis",
+                {
+                  "origin": "{ id : Nat; data : NewVotesToHypothesisData }",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      "id",
+                      {
+                        "origin": "Nat",
+                        "singular": {
+                          "name": "Nat"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "data",
+                      {
+                        "origin": "NewVotesToHypothesisData",
+                        "singular": {
+                          "name": "()"
+                        },
+                        "entries": [
+                          [
+                            "voter",
+                            {
+                              "origin": "Principal",
+                              "singular": {
+                                "name": "Principal"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ],
+                          [
+                            "choice",
+                            {
+                              "origin": "TernaryChoice",
+                              "singular": {
+                                "name": "()"
+                              },
+                              "entries": [
+                                [
+                                  "#Positive",
+                                  null
+                                ],
+                                [
+                                  "#Neutral",
+                                  null
+                                ],
+                                [
+                                  "#Negative",
+                                  null
+                                ]
+                              ],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ],
+                          [
+                            "timestamp",
+                            {
+                              "origin": "Time",
+                              "singular": {
+                                "name": "Time"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ]
+                        ],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#NewVotesToEvidence",
+                {
+                  "origin": "{ id : Nat; data : NewVotesToEvidenceData }",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      "id",
+                      {
+                        "origin": "Nat",
+                        "singular": {
+                          "name": "Nat"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "data",
+                      {
+                        "origin": "NewVotesToEvidenceData",
+                        "singular": {
+                          "name": "()"
+                        },
+                        "entries": [
+                          [
+                            "voter",
+                            {
+                              "origin": "Principal",
+                              "singular": {
+                                "name": "Principal"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ],
+                          [
+                            "choice",
+                            {
+                              "origin": "BinaryChoice",
+                              "singular": {
+                                "name": "()"
+                              },
+                              "entries": [
+                                [
+                                  "#Positive",
+                                  null
+                                ],
+                                [
+                                  "#Negative",
+                                  null
+                                ]
+                              ],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ],
+                          [
+                            "timestamp",
+                            {
+                              "origin": "Time",
+                              "singular": {
+                                "name": "Time"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ]
+                        ],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#NewVotesToProposal",
+                {
+                  "origin": "{ id : Nat; data : NewVotesToProposalData }",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      "id",
+                      {
+                        "origin": "Nat",
+                        "singular": {
+                          "name": "Nat"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "data",
+                      {
+                        "origin": "NewVotesToProposalData",
+                        "singular": {
+                          "name": "()"
+                        },
+                        "entries": [
+                          [
+                            "voter",
+                            {
+                              "origin": "Principal",
+                              "singular": {
+                                "name": "Principal"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ],
+                          [
+                            "choice",
+                            {
+                              "origin": "BinaryChoice",
+                              "singular": {
+                                "name": "()"
+                              },
+                              "entries": [
+                                [
+                                  "#Positive",
+                                  null
+                                ],
+                                [
+                                  "#Negative",
+                                  null
+                                ]
+                              ],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ],
+                          [
+                            "timestamp",
+                            {
+                              "origin": "Time",
+                              "singular": {
+                                "name": "Time"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ]
+                        ],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ]
+            ],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ]
+      ],
+      "isArray": false,
+      "isOptional": false,
+      "isAsync": false
+    },
+    "Notifications.UsersNotificationsBatch": {
       "origin": "List.List<T>",
       "singular": {
         "name": "()"
@@ -2430,44 +3875,31 @@
                   },
                   "entries": [
                     [
-                      "#ProposalResult",
+                      "#CustodianElectionResult",
                       {
-                        "origin": "ProposalResultData",
+                        "origin": "CustodianElectionResultData",
                         "singular": {
                           "name": "()"
                         },
                         "entries": [
                           [
-                            "proposalId",
-                            {
-                              "origin": "Nat",
-                              "singular": {
-                                "name": "Nat"
-                              },
-                              "entries": [],
-                              "isArray": false,
-                              "isOptional": false,
-                              "isAsync": false
-                            }
-                          ],
-                          [
                             "result",
                             {
-                              "origin": "{ #Approved; #Rejected; #Expired }",
+                              "origin": "ElectionResult",
                               "singular": {
                                 "name": "()"
                               },
                               "entries": [
                                 [
-                                  "#Approved",
+                                  "#Removed",
                                   null
                                 ],
                                 [
-                                  "#Rejected",
+                                  "#Unchanged",
                                   null
                                 ],
                                 [
-                                  "#Expired",
+                                  "#New",
                                   null
                                 ]
                               ],
@@ -2509,9 +3941,88 @@
                       }
                     ],
                     [
-                      "#ProposalDelegated",
+                      "#CustodianProposalResult",
                       {
-                        "origin": "ProposalDelegatedData",
+                        "origin": "CustodianProposalResultData",
+                        "singular": {
+                          "name": "()"
+                        },
+                        "entries": [
+                          [
+                            "proposalId",
+                            {
+                              "origin": "Nat",
+                              "singular": {
+                                "name": "Nat"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ],
+                          [
+                            "proposer",
+                            {
+                              "origin": "Principal",
+                              "singular": {
+                                "name": "Principal"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ],
+                          [
+                            "result",
+                            {
+                              "origin": "Result",
+                              "singular": {
+                                "name": "()"
+                              },
+                              "entries": [
+                                [
+                                  "#Approved",
+                                  null
+                                ],
+                                [
+                                  "#Rejected",
+                                  null
+                                ],
+                                [
+                                  "#Expired",
+                                  null
+                                ]
+                              ],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ],
+                          [
+                            "timestamp",
+                            {
+                              "origin": "Time",
+                              "singular": {
+                                "name": "Time"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ]
+                        ],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "#CustodianProposalDelegated",
+                      {
+                        "origin": "CustodianProposalDelegatedData",
                         "singular": {
                           "name": "()"
                         },
@@ -2562,49 +4073,9 @@
                       }
                     ],
                     [
-                      "#ProposalRejected",
+                      "#CustodianProposalOpened",
                       {
-                        "origin": "ProposalRejectedData",
-                        "singular": {
-                          "name": "()"
-                        },
-                        "entries": [
-                          [
-                            "proposalId",
-                            {
-                              "origin": "Nat",
-                              "singular": {
-                                "name": "Nat"
-                              },
-                              "entries": [],
-                              "isArray": false,
-                              "isOptional": false,
-                              "isAsync": false
-                            }
-                          ],
-                          [
-                            "timestamp",
-                            {
-                              "origin": "Time",
-                              "singular": {
-                                "name": "Time"
-                              },
-                              "entries": [],
-                              "isArray": false,
-                              "isOptional": false,
-                              "isAsync": false
-                            }
-                          ]
-                        ],
-                        "isArray": false,
-                        "isOptional": false,
-                        "isAsync": false
-                      }
-                    ],
-                    [
-                      "#ProposalOpened",
-                      {
-                        "origin": "ProposalOpenedData",
+                        "origin": "CustodianProposalOpenedData",
                         "singular": {
                           "name": "()"
                         },
@@ -2668,61 +4139,188 @@
                       }
                     ],
                     [
-                      "#NewHypothesesFromFollowings",
+                      "#ProposalExecuted",
                       {
-                        "origin": "{ data : NewHypothesesFromFollowingsData }",
+                        "origin": "ProposalExecutedData",
                         "singular": {
                           "name": "()"
                         },
                         "entries": [
                           [
-                            "data",
+                            "proposalId",
                             {
-                              "origin": "NewHypothesesFromFollowingsData",
+                              "origin": "Nat",
+                              "singular": {
+                                "name": "Nat"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ],
+                          [
+                            "result",
+                            {
+                              "origin": "ExecutedResult",
                               "singular": {
                                 "name": "()"
                               },
                               "entries": [
                                 [
-                                  "publisher",
-                                  {
-                                    "origin": "Principal",
-                                    "singular": {
-                                      "name": "Principal"
-                                    },
-                                    "entries": [],
-                                    "isArray": false,
-                                    "isOptional": false,
-                                    "isAsync": false
-                                  }
+                                  "#Executed",
+                                  null
                                 ],
                                 [
-                                  "hypothesisId",
-                                  {
-                                    "origin": "Nat",
-                                    "singular": {
-                                      "name": "Nat"
-                                    },
-                                    "entries": [],
-                                    "isArray": false,
-                                    "isOptional": false,
-                                    "isAsync": false
-                                  }
-                                ],
-                                [
-                                  "timestamp",
-                                  {
-                                    "origin": "Time",
-                                    "singular": {
-                                      "name": "Time"
-                                    },
-                                    "entries": [],
-                                    "isArray": false,
-                                    "isOptional": false,
-                                    "isAsync": false
-                                  }
+                                  "#Failed",
+                                  null
                                 ]
                               ],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ],
+                          [
+                            "claimable",
+                            {
+                              "origin": "Nat",
+                              "singular": {
+                                "name": "Nat"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ],
+                          [
+                            "timestamp",
+                            {
+                              "origin": "Time",
+                              "singular": {
+                                "name": "Time"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ]
+                        ],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "#ProposalResult",
+                      {
+                        "origin": "ProposalResultData",
+                        "singular": {
+                          "name": "()"
+                        },
+                        "entries": [
+                          [
+                            "proposalId",
+                            {
+                              "origin": "Nat",
+                              "singular": {
+                                "name": "Nat"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ],
+                          [
+                            "result",
+                            {
+                              "origin": "Result",
+                              "singular": {
+                                "name": "()"
+                              },
+                              "entries": [
+                                [
+                                  "#Approved",
+                                  null
+                                ],
+                                [
+                                  "#Rejected",
+                                  null
+                                ],
+                                [
+                                  "#Expired",
+                                  null
+                                ]
+                              ],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ],
+                          [
+                            "timestamp",
+                            {
+                              "origin": "Time",
+                              "singular": {
+                                "name": "Time"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ]
+                        ],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "#NewHypothesesFromFollowings",
+                      {
+                        "origin": "NewHypothesesFromFollowingsData",
+                        "singular": {
+                          "name": "()"
+                        },
+                        "entries": [
+                          [
+                            "publisher",
+                            {
+                              "origin": "Principal",
+                              "singular": {
+                                "name": "Principal"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ],
+                          [
+                            "hypothesisId",
+                            {
+                              "origin": "Nat",
+                              "singular": {
+                                "name": "Nat"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ],
+                          [
+                            "timestamp",
+                            {
+                              "origin": "Time",
+                              "singular": {
+                                "name": "Time"
+                              },
+                              "entries": [],
                               "isArray": false,
                               "isOptional": false,
                               "isAsync": false
@@ -2737,59 +4335,45 @@
                     [
                       "#NewEvidencesFromFollowings",
                       {
-                        "origin": "{ data : NewEvidencesFromFollowingsData }",
+                        "origin": "NewEvidencesFromFollowingsData",
                         "singular": {
                           "name": "()"
                         },
                         "entries": [
                           [
-                            "data",
+                            "publisher",
                             {
-                              "origin": "NewEvidencesFromFollowingsData",
+                              "origin": "Principal",
                               "singular": {
-                                "name": "()"
+                                "name": "Principal"
                               },
-                              "entries": [
-                                [
-                                  "publisher",
-                                  {
-                                    "origin": "Principal",
-                                    "singular": {
-                                      "name": "Principal"
-                                    },
-                                    "entries": [],
-                                    "isArray": false,
-                                    "isOptional": false,
-                                    "isAsync": false
-                                  }
-                                ],
-                                [
-                                  "evidenceId",
-                                  {
-                                    "origin": "Nat",
-                                    "singular": {
-                                      "name": "Nat"
-                                    },
-                                    "entries": [],
-                                    "isArray": false,
-                                    "isOptional": false,
-                                    "isAsync": false
-                                  }
-                                ],
-                                [
-                                  "timestamp",
-                                  {
-                                    "origin": "Time",
-                                    "singular": {
-                                      "name": "Time"
-                                    },
-                                    "entries": [],
-                                    "isArray": false,
-                                    "isOptional": false,
-                                    "isAsync": false
-                                  }
-                                ]
-                              ],
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ],
+                          [
+                            "evidenceId",
+                            {
+                              "origin": "Nat",
+                              "singular": {
+                                "name": "Nat"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ],
+                          [
+                            "timestamp",
+                            {
+                              "origin": "Time",
+                              "singular": {
+                                "name": "Time"
+                              },
+                              "entries": [],
                               "isArray": false,
                               "isOptional": false,
                               "isAsync": false
@@ -2804,59 +4388,45 @@
                     [
                       "#NewReferrals",
                       {
-                        "origin": "{ data : NewReferralsData }",
+                        "origin": "NewReferralsData",
                         "singular": {
                           "name": "()"
                         },
                         "entries": [
                           [
-                            "data",
+                            "principal",
                             {
-                              "origin": "NewReferralsData",
+                              "origin": "Principal",
                               "singular": {
-                                "name": "()"
+                                "name": "Principal"
                               },
-                              "entries": [
-                                [
-                                  "principal",
-                                  {
-                                    "origin": "Principal",
-                                    "singular": {
-                                      "name": "Principal"
-                                    },
-                                    "entries": [],
-                                    "isArray": false,
-                                    "isOptional": false,
-                                    "isAsync": false
-                                  }
-                                ],
-                                [
-                                  "claimable",
-                                  {
-                                    "origin": "Nat",
-                                    "singular": {
-                                      "name": "Nat"
-                                    },
-                                    "entries": [],
-                                    "isArray": false,
-                                    "isOptional": false,
-                                    "isAsync": false
-                                  }
-                                ],
-                                [
-                                  "timestamp",
-                                  {
-                                    "origin": "Time",
-                                    "singular": {
-                                      "name": "Time"
-                                    },
-                                    "entries": [],
-                                    "isArray": false,
-                                    "isOptional": false,
-                                    "isAsync": false
-                                  }
-                                ]
-                              ],
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ],
+                          [
+                            "claimable",
+                            {
+                              "origin": "Nat",
+                              "singular": {
+                                "name": "Nat"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ],
+                          [
+                            "timestamp",
+                            {
+                              "origin": "Time",
+                              "singular": {
+                                "name": "Time"
+                              },
+                              "entries": [],
                               "isArray": false,
                               "isOptional": false,
                               "isAsync": false
@@ -2871,46 +4441,72 @@
                     [
                       "#NewFollowers",
                       {
-                        "origin": "{ data : NewFollowersData }",
+                        "origin": "NewFollowersData",
                         "singular": {
                           "name": "()"
                         },
                         "entries": [
                           [
-                            "data",
+                            "principal",
                             {
-                              "origin": "NewFollowersData",
+                              "origin": "Principal",
                               "singular": {
-                                "name": "()"
+                                "name": "Principal"
                               },
-                              "entries": [
-                                [
-                                  "principal",
-                                  {
-                                    "origin": "Principal",
-                                    "singular": {
-                                      "name": "Principal"
-                                    },
-                                    "entries": [],
-                                    "isArray": false,
-                                    "isOptional": false,
-                                    "isAsync": false
-                                  }
-                                ],
-                                [
-                                  "timestamp",
-                                  {
-                                    "origin": "Time",
-                                    "singular": {
-                                      "name": "Time"
-                                    },
-                                    "entries": [],
-                                    "isArray": false,
-                                    "isOptional": false,
-                                    "isAsync": false
-                                  }
-                                ]
-                              ],
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ],
+                          [
+                            "timestamp",
+                            {
+                              "origin": "Time",
+                              "singular": {
+                                "name": "Time"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ]
+                        ],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "#NewBallots",
+                      {
+                        "origin": "NewBallotsData",
+                        "singular": {
+                          "name": "()"
+                        },
+                        "entries": [
+                          [
+                            "principal",
+                            {
+                              "origin": "Principal",
+                              "singular": {
+                                "name": "Principal"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ],
+                          [
+                            "timestamp",
+                            {
+                              "origin": "Time",
+                              "singular": {
+                                "name": "Time"
+                              },
+                              "entries": [],
                               "isArray": false,
                               "isOptional": false,
                               "isAsync": false
@@ -3624,7 +5220,7 @@
         [
           "#FlagResult",
           {
-            "origin": "{\n            header : FlagHeader;\n            result : { #Approved; #Rejected; #Expired };\n            timestamp : Time\n        }",
+            "origin": "{ header : FlagHeader; result : Result; timestamp : Time }",
             "singular": {
               "name": "()"
             },
@@ -3681,7 +5277,7 @@
               [
                 "result",
                 {
-                  "origin": "{ #Approved; #Rejected; #Expired }",
+                  "origin": "Result",
                   "singular": {
                     "name": "()"
                   },
@@ -3724,15 +5320,15 @@
           }
         ],
         [
-          "#ElectionResult",
+          "#TallyResult",
           {
-            "origin": "{\n            newCustodians : [Principal];\n            removedCustodians : [Principal];\n            unchangedCustodians : [Principal];\n            timestamp : Time\n        }",
+            "origin": "{\n            new : [Principal];\n            removed : [Principal];\n            unchanged : [Principal];\n            timestamp : Time\n        }",
             "singular": {
               "name": "()"
             },
             "entries": [
               [
-                "newCustodians",
+                "new",
                 {
                   "origin": "[Principal]",
                   "singular": {
@@ -3745,7 +5341,7 @@
                 }
               ],
               [
-                "removedCustodians",
+                "removed",
                 {
                   "origin": "[Principal]",
                   "singular": {
@@ -3758,7 +5354,7 @@
                 }
               ],
               [
-                "unchangedCustodians",
+                "unchanged",
                 {
                   "origin": "[Principal]",
                   "singular": {
@@ -3792,7 +5388,7 @@
         [
           "#ProposalExecuted",
           {
-            "origin": "{ proposalId : Nat; proposer : Principal; timestamp : Time }",
+            "origin": "{\n            proposalId : Nat;\n            proposer : Principal;\n            result : ExecutedResult;\n            timestamp : Time\n        }",
             "singular": {
               "name": "()"
             },
@@ -3824,6 +5420,28 @@
                 }
               ],
               [
+                "result",
+                {
+                  "origin": "ExecutedResult",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      "#Executed",
+                      null
+                    ],
+                    [
+                      "#Failed",
+                      null
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
                 "timestamp",
                 {
                   "origin": "Time",
@@ -3847,7 +5465,7 @@
       "isOptional": false,
       "isAsync": false
     },
-    "Notifications.SystemNotificationBatch": {
+    "Notifications.SystemNotificationsBatch": {
       "origin": "List.List<T>",
       "singular": {
         "name": "()"
@@ -4020,7 +5638,7 @@
               [
                 "#FlagResult",
                 {
-                  "origin": "{\n            header : FlagHeader;\n            result : { #Approved; #Rejected; #Expired };\n            timestamp : Time\n        }",
+                  "origin": "{ header : FlagHeader; result : Result; timestamp : Time }",
                   "singular": {
                     "name": "()"
                   },
@@ -4077,7 +5695,7 @@
                     [
                       "result",
                       {
-                        "origin": "{ #Approved; #Rejected; #Expired }",
+                        "origin": "Result",
                         "singular": {
                           "name": "()"
                         },
@@ -4120,15 +5738,15 @@
                 }
               ],
               [
-                "#ElectionResult",
+                "#TallyResult",
                 {
-                  "origin": "{\n            newCustodians : [Principal];\n            removedCustodians : [Principal];\n            unchangedCustodians : [Principal];\n            timestamp : Time\n        }",
+                  "origin": "{\n            new : [Principal];\n            removed : [Principal];\n            unchanged : [Principal];\n            timestamp : Time\n        }",
                   "singular": {
                     "name": "()"
                   },
                   "entries": [
                     [
-                      "newCustodians",
+                      "new",
                       {
                         "origin": "[Principal]",
                         "singular": {
@@ -4141,7 +5759,7 @@
                       }
                     ],
                     [
-                      "removedCustodians",
+                      "removed",
                       {
                         "origin": "[Principal]",
                         "singular": {
@@ -4154,7 +5772,7 @@
                       }
                     ],
                     [
-                      "unchangedCustodians",
+                      "unchanged",
                       {
                         "origin": "[Principal]",
                         "singular": {
@@ -4188,7 +5806,7 @@
               [
                 "#ProposalExecuted",
                 {
-                  "origin": "{ proposalId : Nat; proposer : Principal; timestamp : Time }",
+                  "origin": "{\n            proposalId : Nat;\n            proposer : Principal;\n            result : ExecutedResult;\n            timestamp : Time\n        }",
                   "singular": {
                     "name": "()"
                   },
@@ -4214,6 +5832,28 @@
                           "name": "Principal"
                         },
                         "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "result",
+                      {
+                        "origin": "ExecutedResult",
+                        "singular": {
+                          "name": "()"
+                        },
+                        "entries": [
+                          [
+                            "#Executed",
+                            null
+                          ],
+                          [
+                            "#Failed",
+                            null
+                          ]
+                        ],
                         "isArray": false,
                         "isOptional": false,
                         "isAsync": false
@@ -5605,44 +7245,31 @@
             },
             "entries": [
               [
-                "#ProposalResult",
+                "#CustodianElectionResult",
                 {
-                  "origin": "ProposalResultData",
+                  "origin": "CustodianElectionResultData",
                   "singular": {
                     "name": "()"
                   },
                   "entries": [
                     [
-                      "proposalId",
-                      {
-                        "origin": "Nat",
-                        "singular": {
-                          "name": "Nat"
-                        },
-                        "entries": [],
-                        "isArray": false,
-                        "isOptional": false,
-                        "isAsync": false
-                      }
-                    ],
-                    [
                       "result",
                       {
-                        "origin": "{ #Approved; #Rejected; #Expired }",
+                        "origin": "ElectionResult",
                         "singular": {
                           "name": "()"
                         },
                         "entries": [
                           [
-                            "#Approved",
+                            "#Removed",
                             null
                           ],
                           [
-                            "#Rejected",
+                            "#Unchanged",
                             null
                           ],
                           [
-                            "#Expired",
+                            "#New",
                             null
                           ]
                         ],
@@ -5684,9 +7311,88 @@
                 }
               ],
               [
-                "#ProposalDelegated",
+                "#CustodianProposalResult",
                 {
-                  "origin": "ProposalDelegatedData",
+                  "origin": "CustodianProposalResultData",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      "proposalId",
+                      {
+                        "origin": "Nat",
+                        "singular": {
+                          "name": "Nat"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "proposer",
+                      {
+                        "origin": "Principal",
+                        "singular": {
+                          "name": "Principal"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "result",
+                      {
+                        "origin": "Result",
+                        "singular": {
+                          "name": "()"
+                        },
+                        "entries": [
+                          [
+                            "#Approved",
+                            null
+                          ],
+                          [
+                            "#Rejected",
+                            null
+                          ],
+                          [
+                            "#Expired",
+                            null
+                          ]
+                        ],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "timestamp",
+                      {
+                        "origin": "Time",
+                        "singular": {
+                          "name": "Time"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#CustodianProposalDelegated",
+                {
+                  "origin": "CustodianProposalDelegatedData",
                   "singular": {
                     "name": "()"
                   },
@@ -5737,49 +7443,9 @@
                 }
               ],
               [
-                "#ProposalRejected",
+                "#CustodianProposalOpened",
                 {
-                  "origin": "ProposalRejectedData",
-                  "singular": {
-                    "name": "()"
-                  },
-                  "entries": [
-                    [
-                      "proposalId",
-                      {
-                        "origin": "Nat",
-                        "singular": {
-                          "name": "Nat"
-                        },
-                        "entries": [],
-                        "isArray": false,
-                        "isOptional": false,
-                        "isAsync": false
-                      }
-                    ],
-                    [
-                      "timestamp",
-                      {
-                        "origin": "Time",
-                        "singular": {
-                          "name": "Time"
-                        },
-                        "entries": [],
-                        "isArray": false,
-                        "isOptional": false,
-                        "isAsync": false
-                      }
-                    ]
-                  ],
-                  "isArray": false,
-                  "isOptional": false,
-                  "isAsync": false
-                }
-              ],
-              [
-                "#ProposalOpened",
-                {
-                  "origin": "ProposalOpenedData",
+                  "origin": "CustodianProposalOpenedData",
                   "singular": {
                     "name": "()"
                   },
@@ -5818,6 +7484,147 @@
                           "name": "Nat"
                         },
                         "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "timestamp",
+                      {
+                        "origin": "Time",
+                        "singular": {
+                          "name": "Time"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#ProposalExecuted",
+                {
+                  "origin": "ProposalExecutedData",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      "proposalId",
+                      {
+                        "origin": "Nat",
+                        "singular": {
+                          "name": "Nat"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "result",
+                      {
+                        "origin": "ExecutedResult",
+                        "singular": {
+                          "name": "()"
+                        },
+                        "entries": [
+                          [
+                            "#Executed",
+                            null
+                          ],
+                          [
+                            "#Failed",
+                            null
+                          ]
+                        ],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "claimable",
+                      {
+                        "origin": "Nat",
+                        "singular": {
+                          "name": "Nat"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "timestamp",
+                      {
+                        "origin": "Time",
+                        "singular": {
+                          "name": "Time"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#ProposalResult",
+                {
+                  "origin": "ProposalResultData",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      "proposalId",
+                      {
+                        "origin": "Nat",
+                        "singular": {
+                          "name": "Nat"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "result",
+                      {
+                        "origin": "Result",
+                        "singular": {
+                          "name": "()"
+                        },
+                        "entries": [
+                          [
+                            "#Approved",
+                            null
+                          ],
+                          [
+                            "#Rejected",
+                            null
+                          ],
+                          [
+                            "#Expired",
+                            null
+                          ]
+                        ],
                         "isArray": false,
                         "isOptional": false,
                         "isAsync": false
@@ -6094,6 +7901,73 @@
                       "capacity",
                       {
                         "origin": "[NewFollowersData]",
+                        "singular": {
+                          "name": "()"
+                        },
+                        "entries": [
+                          [
+                            "principal",
+                            {
+                              "origin": "Principal",
+                              "singular": {
+                                "name": "Principal"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ],
+                          [
+                            "timestamp",
+                            {
+                              "origin": "Time",
+                              "singular": {
+                                "name": "Time"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ]
+                        ],
+                        "isArray": true,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "total",
+                      {
+                        "origin": "Nat",
+                        "singular": {
+                          "name": "Nat"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#NewBallots",
+                {
+                  "origin": "{\n            capacity : [NewBallotsData];\n            total : Nat\n        }",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      "capacity",
+                      {
+                        "origin": "[NewBallotsData]",
                         "singular": {
                           "name": "()"
                         },
@@ -6920,7 +8794,7 @@
               [
                 "#FlagResult",
                 {
-                  "origin": "{\n            header : FlagHeader;\n            result : { #Approved; #Rejected; #Expired };\n            timestamp : Time\n        }",
+                  "origin": "{ header : FlagHeader; result : Result; timestamp : Time }",
                   "singular": {
                     "name": "()"
                   },
@@ -6977,7 +8851,7 @@
                     [
                       "result",
                       {
-                        "origin": "{ #Approved; #Rejected; #Expired }",
+                        "origin": "Result",
                         "singular": {
                           "name": "()"
                         },
@@ -7020,15 +8894,15 @@
                 }
               ],
               [
-                "#ElectionResult",
+                "#TallyResult",
                 {
-                  "origin": "{\n            newCustodians : [Principal];\n            removedCustodians : [Principal];\n            unchangedCustodians : [Principal];\n            timestamp : Time\n        }",
+                  "origin": "{\n            new : [Principal];\n            removed : [Principal];\n            unchanged : [Principal];\n            timestamp : Time\n        }",
                   "singular": {
                     "name": "()"
                   },
                   "entries": [
                     [
-                      "newCustodians",
+                      "new",
                       {
                         "origin": "[Principal]",
                         "singular": {
@@ -7041,7 +8915,7 @@
                       }
                     ],
                     [
-                      "removedCustodians",
+                      "removed",
                       {
                         "origin": "[Principal]",
                         "singular": {
@@ -7054,7 +8928,7 @@
                       }
                     ],
                     [
-                      "unchangedCustodians",
+                      "unchanged",
                       {
                         "origin": "[Principal]",
                         "singular": {
@@ -7088,7 +8962,7 @@
               [
                 "#ProposalExecuted",
                 {
-                  "origin": "{ proposalId : Nat; proposer : Principal; timestamp : Time }",
+                  "origin": "{\n            proposalId : Nat;\n            proposer : Principal;\n            result : ExecutedResult;\n            timestamp : Time\n        }",
                   "singular": {
                     "name": "()"
                   },
@@ -7114,6 +8988,28 @@
                           "name": "Principal"
                         },
                         "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "result",
+                      {
+                        "origin": "ExecutedResult",
+                        "singular": {
+                          "name": "()"
+                        },
+                        "entries": [
+                          [
+                            "#Executed",
+                            null
+                          ],
+                          [
+                            "#Failed",
+                            null
+                          ]
+                        ],
                         "isArray": false,
                         "isOptional": false,
                         "isAsync": false

@@ -4,7 +4,7 @@
 
 
 - Attributes: `User`, `Users`
-- Interfaces: `IndicatorInterface`, `SplitInterface`
+- Interfaces: `IndicatorInterface`, `FacadeInterface`, `SplitInterface`
 - Commons: `C`, `E`
 - Libraries: `Configs`, `E8S`, `Earning`, `Iter`, `Pagination`, `Proportion`
 - Bases: `Principal`, `Nat`, `Time`

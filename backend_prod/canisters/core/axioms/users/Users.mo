@@ -5,6 +5,7 @@ import E "../../../common/Errors";
 import Base "../../../library/Base";
 import List "../../../library/List";
 import Map "../../../library/Map";
+import Set "../../../library/Set";
 
 import Nat "mo:base/Nat";
 
@@ -12,6 +13,7 @@ module {
     /// PRIVATE ////// DECLARATIONS ////////////
 
     private type Map<K, V> = Map.Map<K, V>;
+    private type Set<T> = Set.Set<T>;
     private type Compare<T> = Base.Compare<T>;
     private type Sorted<T> = Base.Sort<T>;
     private type Order = Base.Order;
@@ -64,8 +66,9 @@ module {
         }
     };
 
-    public func getTop(__ : Self, category : { #HypothesisPublishers; #EvidencePublishers; #HypothesisVoters; #EvidenceVoters; #AcornEarners }) : [(Principal, Nat)] {
+    public func getTop(__ : Self, category : { #Influencers; #HypothesisPublishers; #EvidencePublishers; #HypothesisVoters; #EvidenceVoters; #AcornEarners }) : [(Principal, Nat)] {
         let map : ((Principal, User)) -> ((Principal, Nat)) = switch (category) {
+            case (#Influencers) func(i, e) = (i, Set.size(e.followings));
             case (#HypothesisPublishers) func(i, e) = (i, List.size(e.hypotheses));
             case (#EvidencePublishers) func(i, e) = (i, List.size(e.evidences));
             case (#HypothesisVoters) func(i, e) = (i, e.votedHypotheses.size());

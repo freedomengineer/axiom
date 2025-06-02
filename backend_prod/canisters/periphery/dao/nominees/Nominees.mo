@@ -91,7 +91,7 @@ module {
         Map.delete(__.nominees, Key(principal))
     };
 
-    public func tally(__ : Self, maxCustodians : Nat, hasExpiredBallot : Principal -> Bool) : (Set<Principal>, Set<Principal>) {
+    public func tally(__ : Self, maxCustodians : Nat, hasExpiredBallot : Principal -> Bool) : (Set<Principal>, Set<Principal>, Set<Principal>) {
         let entries : [Entry] = Map.getEntries(__.nominees);
         let sorted : [Entry] = Array.sort<Entry>(
             entries,
@@ -104,12 +104,13 @@ module {
                 for (i in Iter.range(0, limit - 1)) {
                     Set.put(newCustodians, Val(sorted[i].0))
                 };
-                let removedCustodians : Set<Principal> = Set.difference(__.custodians, newCustodians, { equal = Principal.equal; hash = Principal.hash });
-                let preservedCustodians : Set<Principal> = Set.intersection(__.custodians, newCustodians, { equal = Principal.equal; hash = Principal.hash });
+                let removed : Set<Principal> = Set.difference(__.custodians, newCustodians, { equal = Principal.equal; hash = Principal.hash });
+                let unchanged : Set<Principal> = Set.intersection(__.custodians, newCustodians, { equal = Principal.equal; hash = Principal.hash });
+                let new : Set<Principal> = Set.difference(newCustodians, __.custodians, { equal = Principal.equal; hash = Principal.hash });
                 __.custodians := newCustodians;
-                (preservedCustodians, removedCustodians)
+                (removed, unchanged, new)
             };
-            case (false)(Set.new(), Set.new())
+            case (false)(Set.new(), Set.new(), Set.new())
         }
     };
 

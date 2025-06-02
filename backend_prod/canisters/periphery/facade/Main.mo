@@ -94,12 +94,26 @@ shared ({ caller = indicator }) actor class Facade() = this {
         let MAX_NOTIFICATION_CAPACITY : Nat = Configs.Nat(configs, "MAX_NOTIFICATION_CAPACITY");
         Notifications.postUserNotification(notifications, principal, data, MAX_NOTIFICATION_SIZE, MAX_NOTIFICATION_CAPACITY)
     };
-    public shared ({ caller }) func postUserNotifications(batch : Notifications.UserNotificationBatch) : async () {
+    public shared ({ caller }) func postUsersNotification(batch : Notifications.UsersBatch, data : Notification.UserVariantParam) : async () {
         await Indicator.expectAuthorized(caller, [#Axioms, #DAO, #Affiliate]);
 
         let MAX_NOTIFICATION_SIZE : Nat = Configs.Nat(configs, "MAX_NOTIFICATION_SIZE");
         let MAX_NOTIFICATION_CAPACITY : Nat = Configs.Nat(configs, "MAX_NOTIFICATION_CAPACITY");
-        Notifications.postUserNotificationBatch(notifications, batch, MAX_NOTIFICATION_SIZE, MAX_NOTIFICATION_CAPACITY)
+        Notifications.postUsersNotification(notifications, batch, data, MAX_NOTIFICATION_SIZE, MAX_NOTIFICATION_CAPACITY)
+    };
+    public shared ({ caller }) func postUserNotifications(principal : Principal, batch : Notifications.UserNotificationsBatch) : async () {
+        await Indicator.expectAuthorized(caller, [#Axioms, #DAO, #Affiliate]);
+
+        let MAX_NOTIFICATION_SIZE : Nat = Configs.Nat(configs, "MAX_NOTIFICATION_SIZE");
+        let MAX_NOTIFICATION_CAPACITY : Nat = Configs.Nat(configs, "MAX_NOTIFICATION_CAPACITY");
+        Notifications.postUserNotifications(notifications, principal, batch, MAX_NOTIFICATION_SIZE, MAX_NOTIFICATION_CAPACITY)
+    };
+    public shared ({ caller }) func postUsersNotifications(batch : Notifications.UsersNotificationsBatch) : async () {
+        await Indicator.expectAuthorized(caller, [#Axioms, #DAO, #Affiliate]);
+
+        let MAX_NOTIFICATION_SIZE : Nat = Configs.Nat(configs, "MAX_NOTIFICATION_SIZE");
+        let MAX_NOTIFICATION_CAPACITY : Nat = Configs.Nat(configs, "MAX_NOTIFICATION_CAPACITY");
+        Notifications.postUsersNotifications(notifications, batch, MAX_NOTIFICATION_SIZE, MAX_NOTIFICATION_CAPACITY)
     };
 
     public shared ({ caller }) func postSystemNotification(data : Notification.SystemVariantParam) : async () {
@@ -108,11 +122,11 @@ shared ({ caller = indicator }) actor class Facade() = this {
         let MAX_NOTIFICATION_SIZE : Nat = Configs.Nat(configs, "MAX_NOTIFICATION_SIZE");
         Notifications.postSystemNotification(notifications, data, MAX_NOTIFICATION_SIZE)
     };
-    public shared ({ caller }) func postSystemNotifications(batch : Notifications.SystemNotificationBatch) : async () {
+    public shared ({ caller }) func postSystemNotifications(batch : Notifications.SystemNotificationsBatch) : async () {
         await Indicator.expectAuthorized(caller, [#DAO, #Axioms]);
 
         let MAX_NOTIFICATION_SIZE : Nat = Configs.Nat(configs, "MAX_NOTIFICATION_SIZE");
-        Notifications.postSystemNotificationBatch(notifications, batch, MAX_NOTIFICATION_SIZE)
+        Notifications.postSystemNotifications(notifications, batch, MAX_NOTIFICATION_SIZE)
     };
     public shared ({ caller }) func postSystemGenericNotification(message : Text, link : ?Format.Hyperlink) : async () {
         await Indicator.expectAuthorized(caller, [#Founder]);

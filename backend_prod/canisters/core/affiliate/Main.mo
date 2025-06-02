@@ -2,6 +2,7 @@ import User "users/User";
 import Users "users/Users";
 
 import IndicatorInterface "../../periphery/indicator/Interface";
+import FacadeInterface "../../periphery/facade/Interface";
 import SplitInterface "../split/Interface";
 
 import C "../../common/Constants";
@@ -62,6 +63,14 @@ shared ({ caller = indicator }) actor class Affiliate() = this {
                     User.deposit(u, affiliatePayout);
                     User.referred(u);
                     Users.register(users, principal, referrer);
+
+                    ignore (
+                        func() : async () {
+                            let Facade : FacadeInterface.Facade = await Indicator.Facade();
+                            await Facade.postUserNotification((r, #NewReferrals({ principal; claimable = affiliatePayout.val; timestamp = Time.now() })))
+                        }
+                    )();
+
                     return
                 };
                 case (null) {}

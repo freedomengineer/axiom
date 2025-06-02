@@ -25,22 +25,41 @@ module {
 
     /// PUBLIC ////// DECLARATIONS ////////////
 
-    public type ProposalResultData = {
-        proposalId : Nat;
-        result : { #Approved; #Rejected; #Expired };
+    public type ExecutedResult = { #Executed; #Failed };
+    public type ElectionResult = { #Removed; #Unchanged; #New };
+    public type Result = { #Approved; #Rejected; #Expired };
+
+    public type CustodianElectionResultData = {
+        result : ElectionResult;
         claimable : Nat;
         timestamp : Time
     };
-    public type ProposalDelegatedData = {
+    public type CustodianProposalDelegatedData = {
         proposalId : Nat;
         delegator : Principal;
         timestamp : Time
     };
-    public type ProposalRejectedData = { proposalId : Nat; timestamp : Time };
-    public type ProposalOpenedData = {
+    public type CustodianProposalOpenedData = {
         proposalId : Nat;
         proposer : Principal;
         retried : Nat;
+        timestamp : Time
+    };
+    public type CustodianProposalResultData = {
+        proposalId : Nat;
+        proposer : Principal;
+        result : Result;
+        timestamp : Time
+    };
+    public type ProposalExecutedData = {
+        proposalId : Nat;
+        result : ExecutedResult;
+        claimable : Nat;
+        timestamp : Time
+    };
+    public type ProposalResultData = {
+        proposalId : Nat;
+        result : Result;
         timestamp : Time
     };
 
@@ -90,31 +109,39 @@ module {
         principal : Principal;
         timestamp : Time
     };
+    public type NewBallotsData = {
+        principal : Principal;
+        timestamp : Time
+    };
 
     public type UserVariantParam = {
+        #CustodianElectionResult : CustodianElectionResultData;
+        #CustodianProposalResult : CustodianProposalResultData;
+        #CustodianProposalDelegated : CustodianProposalDelegatedData;
+        #CustodianProposalOpened : CustodianProposalOpenedData;
+        #ProposalExecuted : ProposalExecutedData;
         #ProposalResult : ProposalResultData;
-        #ProposalDelegated : ProposalDelegatedData;
-        #ProposalRejected : ProposalRejectedData;
-        #ProposalOpened : ProposalOpenedData;
 
-        #NewHypothesesFromFollowings : { data : NewHypothesesFromFollowingsData };
-        #NewEvidencesFromFollowings : { data : NewEvidencesFromFollowingsData };
-        #NewReferrals : { data : NewReferralsData };
-        #NewFollowers : { data : NewFollowersData };
+        #NewHypothesesFromFollowings : NewHypothesesFromFollowingsData;
+        #NewEvidencesFromFollowings : NewEvidencesFromFollowingsData;
+        #NewReferrals : NewReferralsData;
+        #NewFollowers : NewFollowersData;
+        #NewBallots : NewBallotsData;
 
         #NewEvidencesToHypothesis : { id : Nat; data : NewEvidencesToHypothesisData };
         #NewAxiomsToHypothesis : { id : Nat; data : NewAxiomsToHypothesisData };
         #NewRepliesToEvidence : { id : Nat; data : NewRepliesToEvidenceData };
         #NewVotesToHypothesis : { id : Nat; data : NewVotesToHypothesisData };
         #NewVotesToEvidence : { id : Nat; data : NewVotesToEvidenceData };
-        #NewVotesToProposal : { id : Nat; data : NewVotesToProposalData };
-
+        #NewVotesToProposal : { id : Nat; data : NewVotesToProposalData }
     };
     public type UserVariant = {
+        #CustodianElectionResult : CustodianElectionResultData;
+        #CustodianProposalResult : CustodianProposalResultData;
+        #CustodianProposalDelegated : CustodianProposalDelegatedData;
+        #CustodianProposalOpened : CustodianProposalOpenedData;
+        #ProposalExecuted : ProposalExecutedData;
         #ProposalResult : ProposalResultData;
-        #ProposalDelegated : ProposalDelegatedData;
-        #ProposalRejected : ProposalRejectedData;
-        #ProposalOpened : ProposalOpenedData;
 
         #NewHypothesesFromFollowings : {
             var capacity : List<NewHypothesesFromFollowingsData>;
@@ -130,6 +157,10 @@ module {
         };
         #NewFollowers : {
             var capacity : List<NewFollowersData>;
+            var total : Nat
+        };
+        #NewBallots : {
+            var capacity : List<NewBallotsData>;
             var total : Nat
         };
 
@@ -165,10 +196,12 @@ module {
         }
     };
     public type SharableUserVariant = {
+        #CustodianElectionResult : CustodianElectionResultData;
+        #CustodianProposalResult : CustodianProposalResultData;
+        #CustodianProposalDelegated : CustodianProposalDelegatedData;
+        #CustodianProposalOpened : CustodianProposalOpenedData;
+        #ProposalExecuted : ProposalExecutedData;
         #ProposalResult : ProposalResultData;
-        #ProposalDelegated : ProposalDelegatedData;
-        #ProposalRejected : ProposalRejectedData;
-        #ProposalOpened : ProposalOpenedData;
 
         #NewHypothesesFromFollowings : {
             capacity : [NewHypothesesFromFollowingsData];
@@ -184,6 +217,10 @@ module {
         };
         #NewFollowers : {
             capacity : [NewFollowersData];
+            total : Nat
+        };
+        #NewBallots : {
+            capacity : [NewBallotsData];
             total : Nat
         };
 
@@ -223,18 +260,19 @@ module {
     public type SystemVariant = {
         #SystemGeneric : { message : Text; link : ?Hyperlink; timestamp : Time };
         #FlagRequested : { header : FlagHeader; timestamp : Time };
-        #FlagResult : {
-            header : FlagHeader;
-            result : { #Approved; #Rejected; #Expired };
+        #FlagResult : { header : FlagHeader; result : Result; timestamp : Time };
+        #TallyResult : {
+            new : [Principal];
+            removed : [Principal];
+            unchanged : [Principal];
             timestamp : Time
         };
-        #ElectionResult : {
-            newCustodians : [Principal];
-            removedCustodians : [Principal];
-            unchangedCustodians : [Principal];
+        #ProposalExecuted : {
+            proposalId : Nat;
+            proposer : Principal;
+            result : ExecutedResult;
             timestamp : Time
-        };
-        #ProposalExecuted : { proposalId : Nat; proposer : Principal; timestamp : Time }
+        }
     };
     public type SharableSystemVariant = SystemVariant;
 
@@ -273,6 +311,7 @@ module {
                 case (#NewEvidencesFromFollowings(_), #NewEvidencesFromFollowings(_)) true;
                 case (#NewReferrals(_), #NewReferrals(_)) true;
                 case (#NewFollowers(_), #NewFollowers(_)) true;
+                case (#NewBallots(_), #NewBallots(_)) true;
 
                 // not grouped
                 case (_, _) false
@@ -314,19 +353,23 @@ module {
 
             // grouped without ids
             case (null, #NewHypothesesFromFollowings(data)) #NewHypothesesFromFollowings({
-                var capacity = List.make<NewHypothesesFromFollowingsData>(data.data);
+                var capacity = List.make<NewHypothesesFromFollowingsData>(data);
                 var total = 1
             });
             case (null, #NewEvidencesFromFollowings(data)) #NewEvidencesFromFollowings({
-                var capacity = List.make<NewEvidencesFromFollowingsData>(data.data);
+                var capacity = List.make<NewEvidencesFromFollowingsData>(data);
                 var total = 1
             });
             case (null, #NewReferrals(data)) #NewReferrals({
-                var capacity = List.make<NewReferralsData>(data.data);
+                var capacity = List.make<NewReferralsData>(data);
                 var total = 1
             });
             case (null, #NewFollowers(data)) #NewFollowers({
-                var capacity = List.make<NewFollowersData>(data.data);
+                var capacity = List.make<NewFollowersData>(data);
+                var total = 1
+            });
+            case (null, #NewBallots(data)) #NewBallots({
+                var capacity = List.make<NewBallotsData>(data);
                 var total = 1
             });
 
@@ -388,7 +431,7 @@ module {
 
             // grouped without ids
             case (? #NewHypothesesFromFollowings(group), #NewHypothesesFromFollowings(data)) {
-                let (res, pushType) = List.smartPush<NewHypothesesFromFollowingsData>(group.capacity, data.data, func(x) = false, maxNotificationCapacity);
+                let (res, pushType) = List.smartPush<NewHypothesesFromFollowingsData>(group.capacity, data, func(x) = false, maxNotificationCapacity);
                 group.capacity := res;
                 switch (pushType) {
                     case (#replaced) {};
@@ -397,7 +440,7 @@ module {
                 #NewHypothesesFromFollowings(group)
             };
             case (? #NewEvidencesFromFollowings(group), #NewEvidencesFromFollowings(data)) {
-                let (res, pushType) = List.smartPush<NewEvidencesFromFollowingsData>(group.capacity, data.data, func(x) = false, maxNotificationCapacity);
+                let (res, pushType) = List.smartPush<NewEvidencesFromFollowingsData>(group.capacity, data, func(x) = false, maxNotificationCapacity);
                 group.capacity := res;
                 switch (pushType) {
                     case (#replaced) {};
@@ -406,7 +449,7 @@ module {
                 #NewEvidencesFromFollowings(group)
             };
             case (? #NewReferrals(group), #NewReferrals(data)) {
-                let (res, pushType) = List.smartPush<NewReferralsData>(group.capacity, data.data, func(x) = false, maxNotificationCapacity);
+                let (res, pushType) = List.smartPush<NewReferralsData>(group.capacity, data, func(x) = false, maxNotificationCapacity);
                 group.capacity := res;
                 switch (pushType) {
                     case (#replaced) {};
@@ -415,7 +458,7 @@ module {
                 #NewReferrals(group)
             };
             case (? #NewFollowers(group), #NewFollowers(data)) {
-                let (res, pushType) = List.smartPush<NewFollowersData>(group.capacity, data.data, func(x) = false, maxNotificationCapacity);
+                let (res, pushType) = List.smartPush<NewFollowersData>(group.capacity, data, func(x) = false, maxNotificationCapacity);
                 group.capacity := res;
                 switch (pushType) {
                     case (#replaced) {};
@@ -423,12 +466,23 @@ module {
                 };
                 #NewFollowers(group)
             };
+            case (? #NewBallots(group), #NewBallots(data)) {
+                let (res, pushType) = List.smartPush<NewBallotsData>(group.capacity, data, func(x) = false, maxNotificationCapacity);
+                group.capacity := res;
+                switch (pushType) {
+                    case (#replaced) {};
+                    case (_) group.total := group.total + 1
+                };
+                #NewBallots(group)
+            };
 
             // not grouped
+            case (_, #CustodianElectionResult(data)) #CustodianElectionResult(data);
+            case (_, #CustodianProposalResult(data)) #CustodianProposalResult(data);
+            case (_, #CustodianProposalDelegated(data)) #CustodianProposalDelegated(data);
+            case (_, #CustodianProposalOpened(data)) #CustodianProposalOpened(data);
+            case (_, #ProposalExecuted(data)) #ProposalExecuted(data);
             case (_, #ProposalResult(data)) #ProposalResult(data);
-            case (_, #ProposalDelegated(data)) #ProposalDelegated(data);
-            case (_, #ProposalRejected(data)) #ProposalRejected(data);
-            case (_, #ProposalOpened(data)) #ProposalOpened(data);
 
             // unreachable
             case (_, _) E.unreachable()
@@ -446,6 +500,7 @@ module {
                 case (_, #NewEvidencesFromFollowings(_), #NewEvidencesFromFollowings(_)) true;
                 case (_, #NewReferrals(_), #NewReferrals(_)) true;
                 case (_, #NewFollowers(_), #NewFollowers(_)) true;
+                case (_, #NewBallots(_), #NewBallots(_)) true;
 
                 // grouped with ids
                 case (_, #NewEvidencesToHypothesis(a), #NewEvidencesToHypothesis(b)) a.id == b.id;
@@ -469,10 +524,12 @@ module {
             __.notification,
             func(x) = switch (x) {
                 // not grouped
+                case (#CustodianElectionResult(data)) #CustodianElectionResult(data);
+                case (#CustodianProposalResult(data)) #CustodianProposalResult(data);
+                case (#CustodianProposalDelegated(data)) #CustodianProposalDelegated(data);
+                case (#CustodianProposalOpened(data)) #CustodianProposalOpened(data);
+                case (#ProposalExecuted(data)) #ProposalExecuted(data);
                 case (#ProposalResult(data)) #ProposalResult(data);
-                case (#ProposalDelegated(data)) #ProposalDelegated(data);
-                case (#ProposalRejected(data)) #ProposalRejected(data);
-                case (#ProposalOpened(data)) #ProposalOpened(data);
 
                 // grouped without ids
                 case (#NewHypothesesFromFollowings(group)) #NewHypothesesFromFollowings({
@@ -489,6 +546,10 @@ module {
                 });
                 case (#NewFollowers(group)) #NewFollowers({
                     capacity = List.toArray<NewFollowersData>(group.capacity);
+                    total = group.total
+                });
+                case (#NewBallots(group)) #NewBallots({
+                    capacity = List.toArray<NewBallotsData>(group.capacity);
                     total = group.total
                 });
 

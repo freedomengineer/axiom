@@ -25,8 +25,10 @@ module {
 
     /// PUBLIC ////// DECLARATIONS ////////////
 
-    public type UserNotificationBatch = List<(Principal, UserVariantParam)>;
-    public type SystemNotificationBatch = List<SystemVariantParam>;
+    public type UsersBatch = List<Principal>;
+    public type UserNotificationsBatch = List<UserVariantParam>;
+    public type UsersNotificationsBatch = List<(Principal, UserVariantParam)>;
+    public type SystemNotificationsBatch = List<SystemVariantParam>;
 
     /// FACADE ////// NOTIFICATION ////////////
 
@@ -48,17 +50,28 @@ module {
         let userNotification = notification(__, principal);
         Notification.pushUserNotification(userNotification, data, maxNotificationSize, maxNotificationCapacity)
     };
-    public func postSystemNotification(__ : Self, data : SystemVariantParam, maxNotificationSize : Nat) {
-        Notification.pushSystemNotification(__.systemNotification, data, maxNotificationSize)
+    public func postUserNotifications(__ : Self, principal : Principal, batch : UserNotificationsBatch, maxNotificationSize : Nat, maxNotificationCapacity : Nat) {
+        let userNotification = notification(__, principal);
+        for (data in List.toIter(batch)) {
+            Notification.pushUserNotification(userNotification, data, maxNotificationSize, maxNotificationCapacity)
+        }
     };
-
-    public func postUserNotificationBatch(__ : Self, batch : UserNotificationBatch, maxNotificationSize : Nat, maxNotificationCapacity : Nat) {
+    public func postUsersNotification(__ : Self, batch : UsersBatch, data : UserVariantParam, maxNotificationSize : Nat, maxNotificationCapacity : Nat) {
+        for (principal in List.toIter(batch)) {
+            postUserNotification(__, principal, data, maxNotificationSize, maxNotificationCapacity)
+        }
+    };
+    public func postUsersNotifications(__ : Self, batch : UsersNotificationsBatch, maxNotificationSize : Nat, maxNotificationCapacity : Nat) {
         for ((principal, data) in List.toIter(batch)) {
             let userNotification = notification(__, principal);
             Notification.pushUserNotification(userNotification, data, maxNotificationSize, maxNotificationCapacity)
         }
     };
-    public func postSystemNotificationBatch(__ : Self, batch : SystemNotificationBatch, maxNotificationSize : Nat) {
+
+    public func postSystemNotification(__ : Self, data : SystemVariantParam, maxNotificationSize : Nat) {
+        Notification.pushSystemNotification(__.systemNotification, data, maxNotificationSize)
+    };
+    public func postSystemNotifications(__ : Self, batch : SystemNotificationsBatch, maxNotificationSize : Nat) {
         for (data in List.toIter(batch)) {
             Notification.pushSystemNotification(__.systemNotification, data, maxNotificationSize)
         }

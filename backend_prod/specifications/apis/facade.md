@@ -82,14 +82,17 @@
 {
   "principal": "Principal",
   "data": {
-    "#PROPOSALRESULT": {"proposalId": "Nat", "result": "#APPROVED | #REJECTED | #EXPIRED", "claimable": "Nat", "timestamp": "Time"},
-    "#PROPOSALDELEGATED": {"proposalId": "Nat", "delegator": "Principal", "timestamp": "Time"},
-    "#PROPOSALREJECTED": {"proposalId": "Nat", "timestamp": "Time"},
-    "#PROPOSALOPENED": {"proposalId": "Nat", "proposer": "Principal", "retried": "Nat", "timestamp": "Time"},
-    "#NEWHYPOTHESESFROMFOLLOWINGS": {"data": {"publisher": "Principal", "hypothesisId": "Nat", "timestamp": "Time"}},
-    "#NEWEVIDENCESFROMFOLLOWINGS": {"data": {"publisher": "Principal", "evidenceId": "Nat", "timestamp": "Time"}},
-    "#NEWREFERRALS": {"data": {"principal": "Principal", "claimable": "Nat", "timestamp": "Time"}},
-    "#NEWFOLLOWERS": {"data": {"principal": "Principal", "timestamp": "Time"}},
+    "#CUSTODIANELECTIONRESULT": {"result": "#REMOVED | #UNCHANGED | #NEW", "claimable": "Nat", "timestamp": "Time"},
+    "#CUSTODIANPROPOSALRESULT": {"proposalId": "Nat", "proposer": "Principal", "result": "#APPROVED | #REJECTED | #EXPIRED", "timestamp": "Time"},
+    "#CUSTODIANPROPOSALDELEGATED": {"proposalId": "Nat", "delegator": "Principal", "timestamp": "Time"},
+    "#CUSTODIANPROPOSALOPENED": {"proposalId": "Nat", "proposer": "Principal", "retried": "Nat", "timestamp": "Time"},
+    "#PROPOSALEXECUTED": {"proposalId": "Nat", "result": "#EXECUTED | #FAILED", "claimable": "Nat", "timestamp": "Time"},
+    "#PROPOSALRESULT": {"proposalId": "Nat", "result": "#APPROVED | #REJECTED | #EXPIRED", "timestamp": "Time"},
+    "#NEWHYPOTHESESFROMFOLLOWINGS": {"publisher": "Principal", "hypothesisId": "Nat", "timestamp": "Time"},
+    "#NEWEVIDENCESFROMFOLLOWINGS": {"publisher": "Principal", "evidenceId": "Nat", "timestamp": "Time"},
+    "#NEWREFERRALS": {"principal": "Principal", "claimable": "Nat", "timestamp": "Time"},
+    "#NEWFOLLOWERS": {"principal": "Principal", "timestamp": "Time"},
+    "#NEWBALLOTS": {"principal": "Principal", "timestamp": "Time"},
     "#NEWEVIDENCESTOHYPOTHESIS": {
       "id": "Nat",
       "data": {"evidenceId": "Nat", "publisher": "Principal", "side": "#POSITIVE | #NEGATIVE", "timestamp": "Time"}
@@ -103,7 +106,73 @@
 }
 ```
 
-### 6. `postUserNotifications(batch)` returns `()`
+### 6. `postUsersNotification(batch, data)` returns `()`
+
+#### Arguments:
+
+```json
+{
+  "batch": ["Principal"],
+  "data": {
+    "#CUSTODIANELECTIONRESULT": {"result": "#REMOVED | #UNCHANGED | #NEW", "claimable": "Nat", "timestamp": "Time"},
+    "#CUSTODIANPROPOSALRESULT": {"proposalId": "Nat", "proposer": "Principal", "result": "#APPROVED | #REJECTED | #EXPIRED", "timestamp": "Time"},
+    "#CUSTODIANPROPOSALDELEGATED": {"proposalId": "Nat", "delegator": "Principal", "timestamp": "Time"},
+    "#CUSTODIANPROPOSALOPENED": {"proposalId": "Nat", "proposer": "Principal", "retried": "Nat", "timestamp": "Time"},
+    "#PROPOSALEXECUTED": {"proposalId": "Nat", "result": "#EXECUTED | #FAILED", "claimable": "Nat", "timestamp": "Time"},
+    "#PROPOSALRESULT": {"proposalId": "Nat", "result": "#APPROVED | #REJECTED | #EXPIRED", "timestamp": "Time"},
+    "#NEWHYPOTHESESFROMFOLLOWINGS": {"publisher": "Principal", "hypothesisId": "Nat", "timestamp": "Time"},
+    "#NEWEVIDENCESFROMFOLLOWINGS": {"publisher": "Principal", "evidenceId": "Nat", "timestamp": "Time"},
+    "#NEWREFERRALS": {"principal": "Principal", "claimable": "Nat", "timestamp": "Time"},
+    "#NEWFOLLOWERS": {"principal": "Principal", "timestamp": "Time"},
+    "#NEWBALLOTS": {"principal": "Principal", "timestamp": "Time"},
+    "#NEWEVIDENCESTOHYPOTHESIS": {
+      "id": "Nat",
+      "data": {"evidenceId": "Nat", "publisher": "Principal", "side": "#POSITIVE | #NEGATIVE", "timestamp": "Time"}
+    },
+    "#NEWAXIOMSTOHYPOTHESIS": {"id": "Nat", "data": {"user": "Principal", "timestamp": "Time"}},
+    "#NEWREPLIESTOEVIDENCE": {"id": "Nat", "data": {"evidenceId": "Nat", "publisher": "Principal", "timestamp": "Time"}},
+    "#NEWVOTESTOHYPOTHESIS": {"id": "Nat", "data": {"voter": "Principal", "choice": "#POSITIVE | #NEUTRAL | #NEGATIVE", "timestamp": "Time"}},
+    "#NEWVOTESTOEVIDENCE": {"id": "Nat", "data": {"voter": "Principal", "choice": "#POSITIVE | #NEGATIVE", "timestamp": "Time"}},
+    "#NEWVOTESTOPROPOSAL": {"id": "Nat", "data": {"voter": "Principal", "choice": "#POSITIVE | #NEGATIVE", "timestamp": "Time"}}
+  }
+}
+```
+
+### 7. `postUserNotifications(principal, batch)` returns `()`
+
+#### Arguments:
+
+```json
+{
+  "principal": "Principal",
+  "batch": [
+    {
+      "#CUSTODIANELECTIONRESULT": {"result": "#REMOVED | #UNCHANGED | #NEW", "claimable": "Nat", "timestamp": "Time"},
+      "#CUSTODIANPROPOSALRESULT": {"proposalId": "Nat", "proposer": "Principal", "result": "#APPROVED | #REJECTED | #EXPIRED", "timestamp": "Time"},
+      "#CUSTODIANPROPOSALDELEGATED": {"proposalId": "Nat", "delegator": "Principal", "timestamp": "Time"},
+      "#CUSTODIANPROPOSALOPENED": {"proposalId": "Nat", "proposer": "Principal", "retried": "Nat", "timestamp": "Time"},
+      "#PROPOSALEXECUTED": {"proposalId": "Nat", "result": "#EXECUTED | #FAILED", "claimable": "Nat", "timestamp": "Time"},
+      "#PROPOSALRESULT": {"proposalId": "Nat", "result": "#APPROVED | #REJECTED | #EXPIRED", "timestamp": "Time"},
+      "#NEWHYPOTHESESFROMFOLLOWINGS": {"publisher": "Principal", "hypothesisId": "Nat", "timestamp": "Time"},
+      "#NEWEVIDENCESFROMFOLLOWINGS": {"publisher": "Principal", "evidenceId": "Nat", "timestamp": "Time"},
+      "#NEWREFERRALS": {"principal": "Principal", "claimable": "Nat", "timestamp": "Time"},
+      "#NEWFOLLOWERS": {"principal": "Principal", "timestamp": "Time"},
+      "#NEWBALLOTS": {"principal": "Principal", "timestamp": "Time"},
+      "#NEWEVIDENCESTOHYPOTHESIS": {
+        "id": "Nat",
+        "data": {"evidenceId": "Nat", "publisher": "Principal", "side": "#POSITIVE | #NEGATIVE", "timestamp": "Time"}
+      },
+      "#NEWAXIOMSTOHYPOTHESIS": {"id": "Nat", "data": {"user": "Principal", "timestamp": "Time"}},
+      "#NEWREPLIESTOEVIDENCE": {"id": "Nat", "data": {"evidenceId": "Nat", "publisher": "Principal", "timestamp": "Time"}},
+      "#NEWVOTESTOHYPOTHESIS": {"id": "Nat", "data": {"voter": "Principal", "choice": "#POSITIVE | #NEUTRAL | #NEGATIVE", "timestamp": "Time"}},
+      "#NEWVOTESTOEVIDENCE": {"id": "Nat", "data": {"voter": "Principal", "choice": "#POSITIVE | #NEGATIVE", "timestamp": "Time"}},
+      "#NEWVOTESTOPROPOSAL": {"id": "Nat", "data": {"voter": "Principal", "choice": "#POSITIVE | #NEGATIVE", "timestamp": "Time"}}
+    }
+  ]
+}
+```
+
+### 8. `postUsersNotifications(batch)` returns `()`
 
 #### Arguments:
 
@@ -113,14 +182,22 @@
     [
       "Principal",
       {
-        "#PROPOSALRESULT": {"proposalId": "Nat", "result": "#APPROVED | #REJECTED | #EXPIRED", "claimable": "Nat", "timestamp": "Time"},
-        "#PROPOSALDELEGATED": {"proposalId": "Nat", "delegator": "Principal", "timestamp": "Time"},
-        "#PROPOSALREJECTED": {"proposalId": "Nat", "timestamp": "Time"},
-        "#PROPOSALOPENED": {"proposalId": "Nat", "proposer": "Principal", "retried": "Nat", "timestamp": "Time"},
-        "#NEWHYPOTHESESFROMFOLLOWINGS": {"data": {"publisher": "Principal", "hypothesisId": "Nat", "timestamp": "Time"}},
-        "#NEWEVIDENCESFROMFOLLOWINGS": {"data": {"publisher": "Principal", "evidenceId": "Nat", "timestamp": "Time"}},
-        "#NEWREFERRALS": {"data": {"principal": "Principal", "claimable": "Nat", "timestamp": "Time"}},
-        "#NEWFOLLOWERS": {"data": {"principal": "Principal", "timestamp": "Time"}},
+        "#CUSTODIANELECTIONRESULT": {"result": "#REMOVED | #UNCHANGED | #NEW", "claimable": "Nat", "timestamp": "Time"},
+        "#CUSTODIANPROPOSALRESULT": {
+          "proposalId": "Nat",
+          "proposer": "Principal",
+          "result": "#APPROVED | #REJECTED | #EXPIRED",
+          "timestamp": "Time"
+        },
+        "#CUSTODIANPROPOSALDELEGATED": {"proposalId": "Nat", "delegator": "Principal", "timestamp": "Time"},
+        "#CUSTODIANPROPOSALOPENED": {"proposalId": "Nat", "proposer": "Principal", "retried": "Nat", "timestamp": "Time"},
+        "#PROPOSALEXECUTED": {"proposalId": "Nat", "result": "#EXECUTED | #FAILED", "claimable": "Nat", "timestamp": "Time"},
+        "#PROPOSALRESULT": {"proposalId": "Nat", "result": "#APPROVED | #REJECTED | #EXPIRED", "timestamp": "Time"},
+        "#NEWHYPOTHESESFROMFOLLOWINGS": {"publisher": "Principal", "hypothesisId": "Nat", "timestamp": "Time"},
+        "#NEWEVIDENCESFROMFOLLOWINGS": {"publisher": "Principal", "evidenceId": "Nat", "timestamp": "Time"},
+        "#NEWREFERRALS": {"principal": "Principal", "claimable": "Nat", "timestamp": "Time"},
+        "#NEWFOLLOWERS": {"principal": "Principal", "timestamp": "Time"},
+        "#NEWBALLOTS": {"principal": "Principal", "timestamp": "Time"},
         "#NEWEVIDENCESTOHYPOTHESIS": {
           "id": "Nat",
           "data": {"evidenceId": "Nat", "publisher": "Principal", "side": "#POSITIVE | #NEGATIVE", "timestamp": "Time"}
@@ -136,7 +213,7 @@
 }
 ```
 
-### 7. `postSystemNotification(data)` returns `()`
+### 9. `postSystemNotification(data)` returns `()`
 
 #### Arguments:
 
@@ -150,18 +227,13 @@
       "result": "#APPROVED | #REJECTED | #EXPIRED",
       "timestamp": "Time"
     },
-    "#ELECTIONRESULT": {
-      "newCustodians": ["Principal"],
-      "removedCustodians": ["Principal"],
-      "unchangedCustodians": ["Principal"],
-      "timestamp": "Time"
-    },
-    "#PROPOSALEXECUTED": {"proposalId": "Nat", "proposer": "Principal", "timestamp": "Time"}
+    "#TALLYRESULT": {"new": ["Principal"], "removed": ["Principal"], "unchanged": ["Principal"], "timestamp": "Time"},
+    "#PROPOSALEXECUTED": {"proposalId": "Nat", "proposer": "Principal", "result": "#EXECUTED | #FAILED", "timestamp": "Time"}
   }
 }
 ```
 
-### 8. `postSystemNotifications(batch)` returns `()`
+### 10. `postSystemNotifications(batch)` returns `()`
 
 #### Arguments:
 
@@ -176,19 +248,14 @@
         "result": "#APPROVED | #REJECTED | #EXPIRED",
         "timestamp": "Time"
       },
-      "#ELECTIONRESULT": {
-        "newCustodians": ["Principal"],
-        "removedCustodians": ["Principal"],
-        "unchangedCustodians": ["Principal"],
-        "timestamp": "Time"
-      },
-      "#PROPOSALEXECUTED": {"proposalId": "Nat", "proposer": "Principal", "timestamp": "Time"}
+      "#TALLYRESULT": {"new": ["Principal"], "removed": ["Principal"], "unchanged": ["Principal"], "timestamp": "Time"},
+      "#PROPOSALEXECUTED": {"proposalId": "Nat", "proposer": "Principal", "result": "#EXECUTED | #FAILED", "timestamp": "Time"}
     }
   ]
 }
 ```
 
-### 9. `postSystemGenericNotification(message, link)` returns `()`
+### 11. `postSystemGenericNotification(message, link)` returns `()`
 
 #### Arguments:
 
@@ -196,7 +263,7 @@
 {"message": "Text", "link": {"anchorText": "Text", "url": "Text"}}
 ```
 
-### 10. `register(username, capitalRaised, referrer)` returns `()`
+### 12. `register(username, capitalRaised, referrer)` returns `()`
 
 #### Arguments:
 
@@ -204,7 +271,7 @@
 {"username": "Text", "capitalRaised": "Nat", "referrer": "Principal"}
 ```
 
-### 11. `editUsername(username)` returns `()`
+### 13. `editUsername(username)` returns `()`
 
 #### Arguments:
 
@@ -212,7 +279,7 @@
 {"username": "Text"}
 ```
 
-### 12. `editLocation(location)` returns `()`
+### 14. `editLocation(location)` returns `()`
 
 #### Arguments:
 
@@ -220,7 +287,7 @@
 {"location": "Text"}
 ```
 
-### 13. `editAvatar(picture)` returns `()`
+### 15. `editAvatar(picture)` returns `()`
 
 #### Arguments:
 
@@ -228,7 +295,7 @@
 {"picture": {"blob": "Blob"}}
 ```
 
-### 14. `editLinks(links)` returns `()`
+### 16. `editLinks(links)` returns `()`
 
 #### Arguments:
 
@@ -411,14 +478,17 @@
 [
   [
     {
-      "#PROPOSALRESULT": {"proposalId": "Nat", "result": "#APPROVED | #REJECTED | #EXPIRED", "claimable": "Nat", "timestamp": "Time"},
-      "#PROPOSALDELEGATED": {"proposalId": "Nat", "delegator": "Principal", "timestamp": "Time"},
-      "#PROPOSALREJECTED": {"proposalId": "Nat", "timestamp": "Time"},
-      "#PROPOSALOPENED": {"proposalId": "Nat", "proposer": "Principal", "retried": "Nat", "timestamp": "Time"},
+      "#CUSTODIANELECTIONRESULT": {"result": "#REMOVED | #UNCHANGED | #NEW", "claimable": "Nat", "timestamp": "Time"},
+      "#CUSTODIANPROPOSALRESULT": {"proposalId": "Nat", "proposer": "Principal", "result": "#APPROVED | #REJECTED | #EXPIRED", "timestamp": "Time"},
+      "#CUSTODIANPROPOSALDELEGATED": {"proposalId": "Nat", "delegator": "Principal", "timestamp": "Time"},
+      "#CUSTODIANPROPOSALOPENED": {"proposalId": "Nat", "proposer": "Principal", "retried": "Nat", "timestamp": "Time"},
+      "#PROPOSALEXECUTED": {"proposalId": "Nat", "result": "#EXECUTED | #FAILED", "claimable": "Nat", "timestamp": "Time"},
+      "#PROPOSALRESULT": {"proposalId": "Nat", "result": "#APPROVED | #REJECTED | #EXPIRED", "timestamp": "Time"},
       "#NEWHYPOTHESESFROMFOLLOWINGS": {"capacity": [{"publisher": "Principal", "hypothesisId": "Nat", "timestamp": "Time"}], "total": "Nat"},
       "#NEWEVIDENCESFROMFOLLOWINGS": {"capacity": [{"publisher": "Principal", "evidenceId": "Nat", "timestamp": "Time"}], "total": "Nat"},
       "#NEWREFERRALS": {"capacity": [{"principal": "Principal", "claimable": "Nat", "timestamp": "Time"}], "total": "Nat"},
       "#NEWFOLLOWERS": {"capacity": [{"principal": "Principal", "timestamp": "Time"}], "total": "Nat"},
+      "#NEWBALLOTS": {"capacity": [{"principal": "Principal", "timestamp": "Time"}], "total": "Nat"},
       "#NEWEVIDENCESTOHYPOTHESIS": {
         "id": "Nat",
         "capacity": [{"evidenceId": "Nat", "publisher": "Principal", "side": "#POSITIVE | #NEGATIVE", "timestamp": "Time"}],
@@ -452,13 +522,8 @@
         "result": "#APPROVED | #REJECTED | #EXPIRED",
         "timestamp": "Time"
       },
-      "#ELECTIONRESULT": {
-        "newCustodians": ["Principal"],
-        "removedCustodians": ["Principal"],
-        "unchangedCustodians": ["Principal"],
-        "timestamp": "Time"
-      },
-      "#PROPOSALEXECUTED": {"proposalId": "Nat", "proposer": "Principal", "timestamp": "Time"}
+      "#TALLYRESULT": {"new": ["Principal"], "removed": ["Principal"], "unchanged": ["Principal"], "timestamp": "Time"},
+      "#PROPOSALEXECUTED": {"proposalId": "Nat", "proposer": "Principal", "result": "#EXECUTED | #FAILED", "timestamp": "Time"}
     }
   ]
 ]

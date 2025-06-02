@@ -3,10 +3,10 @@
 ## Dependencies
 
 
-- Attributes: `Proposal`, `Proposals`, `Nominees`, `Nominee`, `Users`, `User`, `Detachment`, `Commitments`, `Installation`
-- Interfaces: `IndicatorInterface`, `EscrowInterface`, `SplitInterface`, `TreasuryInterface`, `AxiomsInterface`
+- Attributes: `Proposal`, `Proposals`, `Nominees`, `Nominee`, `Users`, `User`, `Detachment`, `Commitments`, `Installation`, `Notification`
+- Interfaces: `IndicatorInterface`, `FacadeInterface`, `EscrowInterface`, `SplitInterface`, `TreasuryInterface`, `AxiomsInterface`
 - Commons: `C`, `E`
-- Libraries: `Base`, `Configs`, `Count`, `E8S`, `Earning`, `Delegable`, `Iter`, `Pagination`, `Proportion`, `Set`, `UniformBinaryVotes`, `Version`
+- Libraries: `Base`, `Configs`, `Count`, `Delegable`, `E8S`, `Earning`, `Iter`, `List`, `Pagination`, `Proportion`, `Set`, `UniformBinaryVotes`, `Version`
 - Bases: `Principal`, `Text`, `Time`, `Error`, `Nat`, `Int`, `Debug`, `Timer`
 ## Modifiers
 

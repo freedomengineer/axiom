@@ -146,16 +146,20 @@ module {
     public func cleanUpLockedProposals(__ : Self) {
         __.lockedIds := List.nil()
     };
-    public func cleanUpExpiredProposals(__ : Self, duration : Nat, getNow : () -> Int) {
+    public func cleanUpExpiredProposals(__ : Self, duration : Nat, getNow : () -> Int) : List<(Nat, Principal)> {
         let lastId : Nat = switch (nextId(__)) {
-            case (0) return;
+            case (0) return List.nil();
             case (_) Vector.size(__.proposals) - 1
         };
+        var expired : List<(Nat, Principal)> = List.nil();
         label shifting while (__.nextExpiredId.val <= lastId) {
             let p : Proposal = proposal(__, __.nextExpiredId.val);
             let isExpired : Bool = Proposal.isExpired(p, duration, getNow);
             if (not isExpired) break shifting;
-            if (Proposal.getStatus(p) == #Proposed) Proposal.expired(p, getNow);
+            if (Proposal.getStatus(p) == #Proposed) {
+                Proposal.expired(p, getNow);
+                expired := List.push((__.nextExpiredId.val, p.proposer), expired)
+            };
             Count.increment(__.nextExpiredId)
         };
         let newRetryingIds : List<Nat> = List.filter<Nat>(
@@ -163,19 +167,23 @@ module {
             func(i) {
                 let p : Proposal = proposal(__, i);
                 let isExpired : Bool = Proposal.isExpired(p, duration, getNow);
-                if (isExpired) Proposal.expired(p, getNow);
+                if (isExpired) {
+                    Proposal.expired(p, getNow);
+                    expired := List.push((i, p.proposer), expired)
+                };
                 not isExpired
             },
         );
-        __.retryingIds := newRetryingIds
+        __.retryingIds := newRetryingIds;
+        expired
     };
 
     /// PUBLIC ////// ITERATORS ////////////
 
-    public func lockedProposals(__ : Self) : Iter<Proposal> = List.toIterMap<Nat, Proposal>(__.lockedIds, func(i) = proposal(__, i));
+    public func lockedProposals(__ : Self) : Iter<Entry> = List.toIterMap<Nat, Entry>(__.lockedIds, func(i) = (i, proposal(__, i)));
 
-    public func votableProposals(__ : Self) : Iter<(Nat, Proposal)> {
-        var proposalEntires : List<(Nat, Proposal)> = List.nil();
+    public func votableProposals(__ : Self) : Iter<Entry> {
+        var proposalEntires : List<Entry> = List.nil();
         for (i in Iter.range(nextExpiredId(__).val, lastId(__))) {
             let p : Proposal = proposal(__, i);
             if (Proposal.votable(p)) proposalEntires := List.push((i, p), proposalEntires)

@@ -485,6 +485,13 @@
       "relativePath": "../../periphery/indicator/Interface",
       "depth": 5
     },
+    "FacadeInterface": {
+      "origin": "import FacadeInterface \"../../periphery/facade/Interface\";",
+      "name": "FacadeInterface",
+      "category": "interface",
+      "relativePath": "../../periphery/facade/Interface",
+      "depth": 5
+    },
     "SplitInterface": {
       "origin": "import SplitInterface \"../split/Interface\";",
       "name": "SplitInterface",
@@ -574,6 +581,7 @@
     "User",
     "Users",
     "IndicatorInterface",
+    "FacadeInterface",
     "SplitInterface",
     "C",
     "E",

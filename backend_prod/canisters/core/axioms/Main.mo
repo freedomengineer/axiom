@@ -330,11 +330,11 @@ shared ({ caller = indicator }) actor class Axioms() = this {
         ignore (
             func() : async () {
                 let Facade : FacadeInterface.Facade = await Indicator.Facade();
-                let expiredNotification : List.List<Notification.SystemVariantParam> = List.map<Flag.Header, Notification.SystemVariantParam>(
+                let systemNotifications : List.List<Notification.SystemVariantParam> = List.map<Flag.Header, Notification.SystemVariantParam>(
                     expired,
                     func(header) = #FlagResult({ header; result = #Expired; timestamp = Time.now() }),
                 );
-                await Facade.postSystemNotifications(expiredNotification)
+                await Facade.postSystemNotifications(systemNotifications)
             }
         )();
         await _payout()
@@ -411,17 +411,9 @@ shared ({ caller = indicator }) actor class Axioms() = this {
         ignore (
             func() : async () {
                 let Facade : FacadeInterface.Facade = await Indicator.Facade();
-                let notification : Notification.UserVariantParam = #NewHypothesesFromFollowings({
-                    data = { publisher = caller; hypothesisId; timestamp = Time.now() }
-                });
-                let followersNotification : List.List<(Principal, Notification.UserVariantParam)> = Iter.toListMap<Principal, (Principal, Notification.UserVariantParam)>(
-                    Set.vals(user.followers),
-                    func(follower) = (follower, notification),
-                );
-                await Facade.postUserNotifications(followersNotification)
+                await Facade.postUsersNotification(Iter.toList(Set.vals(user.followers)), #NewHypothesesFromFollowings({ publisher = caller; hypothesisId; timestamp = Time.now() }))
             }
         )();
-
         hypothesisId
     };
     public shared ({ caller }) func editHypothesis(hypothesisId : Nat, content : Text) : async () {
@@ -515,19 +507,17 @@ shared ({ caller = indicator }) actor class Axioms() = this {
         ignore (
             func() : async () {
                 let Facade : FacadeInterface.Facade = await Indicator.Facade();
-                let notification : Notification.UserVariantParam = #NewEvidencesFromFollowings({
-                    data = { publisher = caller; evidenceId; timestamp = Time.now() }
-                });
-                var followersNotification : List.List<(Principal, Notification.UserVariantParam)> = Iter.toListMap<Principal, (Principal, Notification.UserVariantParam)>(
-                    Set.vals(user.followers),
-                    func(follower) = (follower, notification),
-                );
-                await Facade.postUserNotifications(
-                    switch (repliedTo, repliedEvidence) {
-                        case (?id, ?{ publisher }) List.push((publisher, #NewRepliesToEvidence({ id; data = { evidenceId; publisher = caller; timestamp = Time.now() } })), followersNotification);
-                        case (_, _) followersNotification
-                    }
-                )
+                var usersNotifications : List.List<(Principal, Notification.UserVariantParam)> = List.nil();
+                for (follower in Set.vals(user.followers)) {
+                    usersNotifications := List.push((follower, #NewEvidencesFromFollowings({ evidenceId; publisher = caller; timestamp = Time.now() })), usersNotifications)
+                };
+                switch (repliedTo, repliedEvidence) {
+                    case (?id, ?{ publisher }) {
+                        usersNotifications := List.push((publisher, #NewRepliesToEvidence({ id; data = { evidenceId; publisher = caller; timestamp = Time.now() } })), usersNotifications)
+                    };
+                    case (_, _) {}
+                };
+                await Facade.postUsersNotifications(usersNotifications)
             }
         )();
         evidenceId
@@ -554,12 +544,7 @@ shared ({ caller = indicator }) actor class Axioms() = this {
         Flag.addVote(flag, caller, vote);
         User.voteFlag(voterUser, header, vote);
 
-        ignore (
-            func() : async () {
-                let Facade : FacadeInterface.Facade = await Indicator.Facade();
-                await Facade.postSystemNotification(#FlagRequested({ header; timestamp = Time.now() }))
-            }
-        )();
+        var systemNotifications : List.List<Notification.SystemVariantParam> = List.make(#FlagRequested({ header; timestamp = Time.now() }));
 
         let poweredValueDifference : Int = Flag.getPoweredValuesDifference(flag);
         if (Int.abs(poweredValueDifference) >= FLAG_REQUEST_ACCEPTANCE_THRESHOLD.val) {
@@ -576,13 +561,15 @@ shared ({ caller = indicator }) actor class Axioms() = this {
             Flags.finalize(flags, header);
             _remove(header, flag);
 
-            ignore (
-                func() : async () {
-                    let Facade : FacadeInterface.Facade = await Indicator.Facade();
-                    await Facade.postSystemNotification(#FlagResult({ header; result; timestamp = Time.now() }))
-                }
-            )()
-        }
+            systemNotifications := List.push(#FlagResult({ header; result; timestamp = Time.now() }), systemNotifications)
+        };
+
+        ignore (
+            func() : async () {
+                let Facade : FacadeInterface.Facade = await Indicator.Facade();
+                await Facade.postSystemNotifications(systemNotifications)
+            }
+        )()
     };
 
     public shared ({ caller }) func voteHypothesis(hypothesisId : Nat, choice : TernaryVotes.Choice) : async () {
@@ -734,7 +721,7 @@ shared ({ caller = indicator }) actor class Axioms() = this {
         ignore (
             func() : async () {
                 let Facade : FacadeInterface.Facade = await Indicator.Facade();
-                await Facade.postUserNotification((principal, #NewFollowers({ data = { principal = caller; timestamp = Time.now() } })))
+                await Facade.postUserNotification((principal, #NewFollowers({ principal = caller; timestamp = Time.now() })))
             }
         )()
     };

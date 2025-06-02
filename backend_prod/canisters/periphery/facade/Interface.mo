@@ -14,9 +14,11 @@ module {
         putConfigs : shared ([(Configs.Key, Configs.SharableValue)]) -> async ();
         updateCapitalRaised : shared (Principal, Nat) -> async ();
         postUserNotification : shared (Principal, Notification.UserVariantParam) -> async ();
-        postUserNotifications : shared (Notifications.UserNotificationBatch) -> async ();
+        postUsersNotification : shared (Notifications.UsersBatch, Notification.UserVariantParam) -> async ();
+        postUserNotifications : shared (Principal, Notifications.UserNotificationsBatch) -> async ();
+        postUsersNotifications : shared (Notifications.UsersNotificationsBatch) -> async ();
         postSystemNotification : shared (Notification.SystemVariantParam) -> async ();
-        postSystemNotifications : shared (Notifications.SystemNotificationBatch) -> async ();
+        postSystemNotifications : shared (Notifications.SystemNotificationsBatch) -> async ();
         postSystemGenericNotification : shared (Text, ?Format.Hyperlink) -> async ();
         register : shared (Text, Nat, ?Principal) -> async ();
         editUsername : shared (Text) -> async ();
