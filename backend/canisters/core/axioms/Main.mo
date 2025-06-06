@@ -518,7 +518,7 @@ shared ({ caller = indicator }) actor class Axioms() = this {
         ignore (
             func() : async () {
                 let Facade : FacadeInterface.Facade = await Indicator.Facade();
-                var usersNotifications : List.List<(Principal, Notification.UserVariantParam)> = List.nil();
+                var usersNotifications : List.List<(Principal, Notification.UserVariantParam)> = List.make((hypothesis.publisher, #NewEvidencesToHypothesis({ id = hypothesisId; data = { evidenceId; side = choice; publisher = caller; timestamp = getNow() } })));
                 for (follower in Set.vals(user.followers)) {
                     usersNotifications := List.push((follower, #NewEvidencesFromFollowings({ evidenceId; publisher = caller; timestamp = getNow() })), usersNotifications)
                 };
@@ -732,7 +732,7 @@ shared ({ caller = indicator }) actor class Axioms() = this {
         ignore (
             func() : async () {
                 let Facade : FacadeInterface.Facade = await Indicator.Facade();
-                await Facade.postUserNotification((principal, #NewFollowers({ principal = caller; timestamp = getNow() })))
+                await Facade.postUserNotification((principal, #NewFollowers({ user = caller; timestamp = getNow() })))
             }
         )()
     };

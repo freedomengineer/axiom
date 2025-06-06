@@ -6,9 +6,9 @@ import TopCard from '@components/Pages/ACEDashboard/Top10/TopCard'
 import Spinner from '@components/Primitives/Spinner'
 import PageMetadata from '@components/Shared/PageMetadata'
 import siteMetadata from '@data/siteMetadata.json'
-import useTop10, { Top10, Top10Key, getTop10 } from '@hooks/useTop10'
+import { Top, TopKey, getTop } from '@hooks/useTop'
 import cn from '@libs/class'
-import { TOP10 } from '@utils/dashboard/top10'
+import { TOP } from '@utils/dashboard/top'
 
 const title = 'Top 10'
 const metadata = siteMetadata.routes['ACE Dashboard'].routes[title]
@@ -20,14 +20,15 @@ const pageMetadata: Metadata = {
 
 const Top10Page = () => {
     const [searchParams, setSearchPrams] = useSearchParams()
-    const [top10, setTop10] = useState<Top10 | null>(null)
+    const [top, setTop] = useState<Top | null>(null)
+    const [page, setPage] = useState<bigint>(1n)
 
-    const keyParam = searchParams.get('key') as Top10Key
+    const keyParam = searchParams.get('key') as TopKey
 
     useEffect(() => {
-        setTop10(null)
-        getTop10(keyParam).then(setTop10)
-    }, [keyParam])
+        setTop(null)
+        getTop(keyParam, page).then(setTop)
+    }, [keyParam, page])
 
     return (
         <>
@@ -40,7 +41,7 @@ const Top10Page = () => {
                             'bg-transparent border-b-2 border-primary-700 shadow-none rounded-none',
                     }}
                 >
-                    {TOP10.map(({ key, label }) => (
+                    {TOP.map(({ key, label }) => (
                         <Tab
                             key={key}
                             value={key}
@@ -60,11 +61,11 @@ const Top10Page = () => {
                         value={keyParam}
                         className="gap-medium mt-medium flex w-full flex-col flex-wrap items-center"
                     >
-                        {!top10 ? (
+                        {!top ? (
                             <Spinner className="mx-auto mt-10 h-10 w-10" />
                         ) : (
                             <div className="gap-normal flex w-full flex-col">
-                                {top10.map(([address, value], index) => (
+                                {top.result.map(([address, value], index) => (
                                     <TopCard
                                         key={address}
                                         string={address}

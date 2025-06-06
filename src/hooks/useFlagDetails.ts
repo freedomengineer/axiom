@@ -13,7 +13,7 @@ import useUsername from './useUsername'
 
 const useFlagDetails = (item: DAxioms.SharableFlag) => {
     const { agent } = useAuth()
-    const requester = useUsername(item.requester)
+    const { username: requester } = useUsername(item.requester)
 
     const [localItem, setLocalItem] = useState<DAxioms.SharableFlag>(item)
     const [votesLoading, setVotesLoading] = useState<Record<EVote, boolean>>({

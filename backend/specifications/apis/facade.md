@@ -473,13 +473,7 @@
 }
 ```
 
-### 10. `getNotification(principal)` returns `Notifications.Sharable`
-
-#### Arguments:
-
-```json
-{"principal": "Principal"}
-```
+### 10. `getNotification()` returns `Notifications.Sharable`
 
 #### Returns:
 ```json

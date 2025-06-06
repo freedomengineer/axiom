@@ -146,8 +146,8 @@ export const idlFactory = ({ IDL }) => {
     'creationDate' : Time__2,
   });
   const Filter__2 = IDL.Record({
-    'joinedBy' : IDL.Opt(IDL.Principal),
-    'containsPattern' : IDL.Opt(IDL.Text),
+    'q' : IDL.Opt(IDL.Text),
+    'member' : IDL.Opt(IDL.Principal),
   });
   const Sort__3 = IDL.Variant({
     'alphabetical' : IDL.Null,
@@ -196,21 +196,21 @@ export const idlFactory = ({ IDL }) => {
     'requestDate' : Time__1,
     'reason' : IDL.Text,
   });
-  const Category__1 = IDL.Variant({
-    'Hypothesis' : IDL.Null,
-    'Evidence' : IDL.Null,
-  });
   const Status = IDL.Variant({
     'Approved' : IDL.Null,
     'Rejected' : IDL.Null,
     'Requested' : IDL.Null,
     'Expired' : IDL.Null,
   });
+  const Category__1 = IDL.Variant({
+    'Hypothesis' : IDL.Null,
+    'Evidence' : IDL.Null,
+  });
   const Filter__1 = IDL.Record({
-    'votedBy' : IDL.Opt(IDL.Principal),
-    'requestedBy' : IDL.Opt(IDL.Principal),
-    'requestedIn' : IDL.Opt(Category__1),
-    'withStatus' : IDL.Opt(Status),
+    'status' : IDL.Opt(Status),
+    'requester' : IDL.Opt(IDL.Principal),
+    'voter' : IDL.Opt(IDL.Principal),
+    'category' : IDL.Opt(Category__1),
   });
   const Sort__2 = IDL.Variant({ 'difference' : IDL.Null, 'recent' : IDL.Null });
   const Sort_1 = IDL.Record({ 'by' : Sort__2, 'order' : Order });
@@ -314,6 +314,7 @@ export const idlFactory = ({ IDL }) => {
   const BinaryVote = IDL.Record({ 'value' : IDL.Nat, 'choice' : Choice__1 });
   const Sharable = IDL.Record({
     'evidences' : IDL.Vec(IDL.Nat),
+    'principal' : IDL.Principal,
     'earning' : SharableEarning,
     'joinedFields' : IDL.Vec(IDL.Text),
     'axioms' : IDL.Vec(IDL.Nat),
@@ -321,8 +322,10 @@ export const idlFactory = ({ IDL }) => {
     'bookmarks' : IDL.Vec(IDL.Nat),
     'hypotheses' : IDL.Vec(IDL.Nat),
     'votedEvidences' : IDL.Vec(IDL.Tuple(IDL.Nat, BinaryVote)),
+    'callerFollowing' : IDL.Opt(IDL.Bool),
     'followers' : IDL.Vec(IDL.Principal),
-    'following' : IDL.Vec(IDL.Principal),
+    'followings' : IDL.Vec(IDL.Principal),
+    'callerFollower' : IDL.Opt(IDL.Bool),
   });
   const Axioms = IDL.Service({
     'addToAxioms' : IDL.Func([IDL.Nat], [], []),

@@ -17,15 +17,18 @@ import ExtendedLogoIcon from '@components/Assets/logo/Logo_LandscapeLEAVES-FULLC
 import MiniLogoIcon from '@components/Assets/logo/Logo_MarkACORN-FULLCOLOUR.svg'
 import LogoutIcon from '@components/Assets/logout.svg'
 import MenuIcon from '@components/Assets/menu.svg'
+import NotificationIcon from '@components/Assets/notification.svg'
 import SearchIcon from '@components/Assets/search.svg'
 import PostHypothesis from '@components/Pages/Feed/Hypotheses/PostHypothesis'
 import MyAssetsLayout from '@components/Pages/Profile/MyAssets/MyAssetsLayout'
 import Transfer from '@components/Pages/Profile/MyAssets/Transfer'
 import Link from '@components/Shared/Link'
+import Notifications from '@components/Shared/Notifications'
 import Popup from '@components/Shared/Popup'
 import QRCode from '@components/Shared/QRCode'
 import useAuth from '@hooks/useAuth'
 import { deleteAllConfigsCache } from '@hooks/useConfigs'
+import useNotification, { useNotificationPoller } from '@hooks/useNotification'
 import { deleteAllPackagesCache } from '@hooks/usePackages'
 import { deleteAllStatusCache } from '@hooks/useStatus'
 import useUserData from '@hooks/useUserData'
@@ -38,6 +41,7 @@ import { Unwrap } from 'shared/utils/typings'
 
 enum EPopup {
     Login,
+    Notification,
     Post,
     Claim,
     Search,
@@ -50,8 +54,10 @@ const Header = ({
     openSidebar,
     setOpenSidebar,
 }: Readonly<{ openSidebar: boolean; setOpenSidebar: (open: boolean) => void }>) => {
-    const { isAuthenticated, principal, user, setPemIdentity, login, logout } = useAuth()
+    const { isAuthenticated, principal, agent, user, setPemIdentity, login, logout } = useAuth()
+    const { unreadUserCount, unreadSystemCount } = useNotification()
     const userData = useUserData(principal ?? null)
+    useNotificationPoller(agent ?? null, 10)
 
     const [openMenu, setOpenMenu] = useState<{ [key: string]: string | null }>({})
     const [open, setOpen] = useState<EPopup | null>(null)
@@ -216,6 +222,24 @@ const Header = ({
                             <div className="live-animated"></div>
                         </div>
                     </button>
+                    <button
+                        className="md:px-medium gap-small relative flex h-[1.75rem] w-[1.75rem] items-center rounded-full border-0 border-black/10 px-0 text-primary-700 hover:bg-black/5 disabled:pointer-events-none disabled:opacity-50 md:h-[2.25rem] md:w-auto md:border"
+                        onClick={() => setOpen(EPopup.Notification)}
+                        disabled={!isAuthenticated || !user}
+                    >
+                        <span className="text-tiny hidden font-display font-normal md:block">
+                            Noti
+                        </span>
+                        <NotificationIcon className="h-5 w-5 stroke-[1.5px]" />
+                        {open === EPopup.Notification && <Notifications />}
+                        <div
+                            className="absolute -top-[1.5rem] right-[2rem] z-50 aria-hidden:hidden md:-top-[1.25rem] md:right-[2.25rem]"
+                            aria-hidden={unreadUserCount + unreadSystemCount === 0}
+                        >
+                            <div className="live-dot"></div>
+                            <div className="live-animated"></div>
+                        </div>
+                    </button>
                     {!isAuthenticated ? (
                         <button
                             className="md:px-medium gap-small flex h-[1.75rem] w-[1.75rem] items-center rounded-full border-0 border-black/10 px-0 text-primary-700 hover:bg-black/5 md:h-[2.25rem] md:w-auto md:border"
@@ -372,6 +396,18 @@ const Header = ({
                     <MyAssetsLayout />
                 </Popup>
             )}
+            {/* {principal && user && (
+                <Popup
+                    open={open === EPopup.Notification}
+                    onClose={() => setOpen(null)}
+                    title="Notifications"
+                    Icon={<NotificationIcon className="h-6 w-6 !stroke-[1.5px] md:h-7 md:w-7" />}
+                    className="w-full md:w-4/5"
+                    href={build(['profile', 'my_notifications'])}
+                >
+                    <Notifications />
+                </Popup>
+            )} */}
             <Popup
                 open={open === EPopup.Login}
                 onClose={() => {

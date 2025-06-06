@@ -13,7 +13,7 @@ import useUsername from './useUsername'
 
 const useEvidenceDetail = (item: DAxioms.SharableEvidence) => {
     const { agent } = useAuth()
-    const publisher = useUsername(item.publisher)
+    const { username: publisher } = useUsername(item.publisher)
 
     const [localItem, setLocalItem] = useState<DAxioms.SharableEvidence>(item)
     const [votesLoading, setVotesLoading] = useState<Record<EVote, boolean>>({

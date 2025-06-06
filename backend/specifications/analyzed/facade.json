@@ -942,20 +942,9 @@
       "name": "getNotification",
       "flag": {
         "isQuery": true,
-        "callerRequired": false
+        "callerRequired": true
       },
-      "argTypes": {
-        "principal": {
-          "origin": "Principal",
-          "singular": {
-            "name": "Principal"
-          },
-          "entries": [],
-          "isArray": false,
-          "isOptional": false,
-          "isAsync": false
-        }
-      },
+      "argTypes": {},
       "returnType": {
         "origin": "async Notifications.Sharable",
         "singular": {

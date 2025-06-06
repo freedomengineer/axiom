@@ -177,7 +177,7 @@ const ProfileLayout = ({ id }: { id?: string }) => {
                     Axioms.call(agent)
                         .getFields(
                             parseFilterFromObj('field', {
-                                joinedBy: profilePrincipal.toText(),
+                                member: profilePrincipal.toText(),
                             }),
                             parseSortFromObj('field', { by: 'recent', order: 'descending' })
                         )
@@ -191,8 +191,8 @@ const ProfileLayout = ({ id }: { id?: string }) => {
                             parseFilterFromObj('hypothesis', {
                                 [{
                                     [EFullTab.Axioms]: 'axiomsFrom',
-                                    [EFullTab.PublishedHypotheses]: 'publishedBy',
-                                    [EFullTab.VotedHypotheses]: 'votedBy',
+                                    [EFullTab.PublishedHypotheses]: 'publisher',
+                                    [EFullTab.VotedHypotheses]: 'voter',
                                 }[fullTab]]: profilePrincipal.toText(),
                             }),
                             parseSortFromObj('hypothesis', { by: 'recent', order: 'descending' })
@@ -205,8 +205,8 @@ const ProfileLayout = ({ id }: { id?: string }) => {
                         .getEvidences(
                             parseFilterFromObj('evidence', {
                                 [{
-                                    [EFullTab.PublishedEvidences]: 'publishedBy',
-                                    [EFullTab.VotedEvidences]: 'votedBy',
+                                    [EFullTab.PublishedEvidences]: 'publisher',
+                                    [EFullTab.VotedEvidences]: 'voter',
                                 }[fullTab]]: profilePrincipal.toText(),
                             }),
                             parseSortFromObj('evidence', { by: 'recent', order: 'descending' })
@@ -220,7 +220,7 @@ const ProfileLayout = ({ id }: { id?: string }) => {
                             parseFilterFromObj('proposal', {
                                 [{
                                     [EFullTab.OpenedProposals]: 'proposedBy',
-                                    [EFullTab.VotedProposals]: 'votedBy',
+                                    [EFullTab.VotedProposals]: 'voter',
                                 }[fullTab]]: profilePrincipal.toText(),
                             }),
                             parseSortFromObj('proposal', { by: 'recent', order: 'descending' })

@@ -140,7 +140,7 @@ const NomineeLayout = ({ items, sort }: { items: DDAO.SharableNominee[]; sort?: 
         Promise.all(
             items.map(
                 (item, i) =>
-                    getUsername(item.principal).then((username) => [
+                    getUsername(item.principal).then(({ username }) => [
                         i,
                         username,
                         item.title,

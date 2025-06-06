@@ -201,7 +201,6 @@ export const useAuthClient = () => {
                 return null
             })
     }
-
     return {
         isAuthenticated,
         isLoading,

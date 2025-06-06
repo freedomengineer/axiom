@@ -116,15 +116,12 @@ export interface Filter {
   'userJoinedFields' : [] | [Principal],
 }
 export interface Filter__1 {
-  'votedBy' : [] | [Principal],
-  'requestedBy' : [] | [Principal],
-  'requestedIn' : [] | [Category__1],
-  'withStatus' : [] | [Status],
+  'status' : [] | [Status],
+  'requester' : [] | [Principal],
+  'voter' : [] | [Principal],
+  'category' : [] | [Category__1],
 }
-export interface Filter__2 {
-  'joinedBy' : [] | [Principal],
-  'containsPattern' : [] | [string],
-}
+export interface Filter__2 { 'q' : [] | [string], 'member' : [] | [Principal] }
 export interface Filter__3 {
   'q' : [] | [string],
   'voter' : [] | [Principal],
@@ -169,6 +166,7 @@ export type Role = { 'Guest' : null } |
   { 'Member' : null };
 export interface Sharable {
   'evidences' : Array<bigint>,
+  'principal' : Principal,
   'earning' : SharableEarning,
   'joinedFields' : Array<string>,
   'axioms' : Array<bigint>,
@@ -176,8 +174,10 @@ export interface Sharable {
   'bookmarks' : Array<bigint>,
   'hypotheses' : Array<bigint>,
   'votedEvidences' : Array<[bigint, BinaryVote]>,
+  'callerFollowing' : [] | [boolean],
   'followers' : Array<Principal>,
-  'following' : Array<Principal>,
+  'followings' : Array<Principal>,
+  'callerFollower' : [] | [boolean],
 }
 export interface SharableBinaryVotes {
   'powered' : OneSideSharable__1,

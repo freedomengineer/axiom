@@ -53,7 +53,7 @@ const _fetchUserData = async (principal: Principal): Promise<MemoryData | null> 
                 Escrow.call().getClaimableAmount(principal),
                 Axioms.call()
                     .getFieldsPagination(
-                        parseFilterFromObj('field', { joinedBy: principal.toText() }),
+                        parseFilterFromObj('field', { member: principal.toText() }),
                         parseSortFromObj('field', { by: 'popularity', order: 'descending' }),
                         1n,
                         10000n
@@ -91,11 +91,8 @@ const _fetchSpecificUserData = async <K extends UserDataKey>(
                 case 'fields':
                     memoryCache.fields = await Axioms.call()
                         .getFieldsPagination(
-                            parseFilterFromObj('field', { joinedBy: principal.toText() }),
-                            parseSortFromObj('field', {
-                                by: 'popularity',
-                                order: 'descending',
-                            }),
+                            parseFilterFromObj('field', { member: principal.toText() }),
+                            parseSortFromObj('field', { by: 'popularity', order: 'descending' }),
                             1n,
                             10000n
                         )

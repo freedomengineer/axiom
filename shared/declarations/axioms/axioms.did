@@ -311,12 +311,15 @@ type Sharable =
  record {
    axioms: vec nat;
    bookmarks: vec nat;
+   callerFollower: opt bool;
+   callerFollowing: opt bool;
    earning: SharableEarning;
    evidences: vec nat;
    followers: vec principal;
-   following: vec principal;
+   followings: vec principal;
    hypotheses: vec nat;
    joinedFields: vec text;
+   "principal": principal;
    votedEvidences: vec record {
                          nat;
                          BinaryVote;
@@ -405,15 +408,15 @@ type Filter__3 =
  };
 type Filter__2 = 
  record {
-   containsPattern: opt text;
-   joinedBy: opt principal;
+   member: opt principal;
+   q: opt text;
  };
 type Filter__1 = 
  record {
-   requestedBy: opt principal;
-   requestedIn: opt Category__1;
-   votedBy: opt principal;
-   withStatus: opt Status;
+   category: opt Category__1;
+   requester: opt principal;
+   status: opt Status;
+   voter: opt principal;
  };
 type Filter = 
  record {

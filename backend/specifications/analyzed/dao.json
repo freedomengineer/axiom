@@ -3291,7 +3291,7 @@
       },
       "entries": [
         [
-          "votedBy",
+          "voter",
           {
             "origin": "?Principal",
             "singular": {

@@ -54,7 +54,7 @@ module {
     /// PUBLIC ////// DECLARATIONS ////////////
 
     public type Filter = {
-        votedBy : ?Principal;
+        voter : ?Principal;
         isCustodian : ?Bool
     };
     public type Sort = {
@@ -156,11 +156,11 @@ module {
         };
         let toSharable : (Entry) -> SharableNominee = func(principal, nominee) = Nominee.toSharable(nominee, principal, custodianFound(__, principal), hasExpiredBallot, getCallerBallot);
 
-        switch (filter.votedBy) {
+        switch (filter.voter) {
             case (null) {};
-            case (?votedBy) switch (hasExpiredBallot(votedBy)) {
+            case (?voter) switch (hasExpiredBallot(voter)) {
                 case (true) filtered := ?[];
-                case (false) filtered := ?Set.toArrayMap(getUser(votedBy).ballots, toEntry)
+                case (false) filtered := ?Set.toArrayMap(getUser(voter).ballots, toEntry)
             }
         };
         switch (filter.isCustodian, filtered) {

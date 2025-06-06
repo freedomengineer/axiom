@@ -74,14 +74,8 @@ const HypothesisDetail = ({ item }: { item: DAxioms.SharableHypothesis }) => {
         setTimeout(() => setCopied(false), 3000)
     }
 
-    const positiveFilter = useMemo(
-        () => ({ onSide: 'Positive', publishedIn: item.id.toString() }),
-        []
-    )
-    const negativeFilter = useMemo(
-        () => ({ onSide: 'Negative', publishedIn: item.id.toString() }),
-        []
-    )
+    const positiveFilter = useMemo(() => ({ side: 'Positive', hypothesis: item.id.toString() }), [])
+    const negativeFilter = useMemo(() => ({ side: 'Negative', hypothesis: item.id.toString() }), [])
     const commonSort = useMemo(() => ({ by: 'positivity', order: 'descending' }), [])
 
     const voteKeys = Object.keys(VOTES) as EVote[]

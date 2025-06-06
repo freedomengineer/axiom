@@ -20,10 +20,12 @@ enum EStep {
 const PostEvidence = ({
     id,
     side,
+    replyTo,
     onSubmit,
 }: {
     id: bigint
     side?: EVote | null
+    replyTo?: bigint | null
     onSubmit?: (side: EVote) => void
 }) => {
     const { principal } = useAuth()
@@ -54,6 +56,7 @@ const PostEvidence = ({
         ),
         [EStep.Preview]: (
             <PostEvidencePreview
+                replyTo={replyTo}
                 item={{
                     id,
                     callerVote: [],

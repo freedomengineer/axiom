@@ -35,6 +35,6 @@ module {
         getUser : query (Principal) -> async User.Sharable;
         getUsers : query (Users.Filter, Base.Sort<Users.Sort>) -> async [User.Sharable];
         getUsersPagination : query (Users.Filter, Base.Sort<Users.Sort>, Nat, Nat) -> async Pagination.Pagination<User.Sharable>;
-        getNotification : query (Principal) -> async Notifications.Sharable;
+        getNotification : query () -> async Notifications.Sharable;
     };
 };

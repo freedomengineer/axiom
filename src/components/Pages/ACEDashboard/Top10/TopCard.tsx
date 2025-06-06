@@ -6,7 +6,7 @@ import cn from '@libs/class'
 
 const TopCard = ({ string, number, index }: { string: string; number: number; index: number }) => {
     const principal = Principal.fromText(string)!
-    const username = useUsername(principal)
+    const { username } = useUsername(principal)
 
     return (
         <div

@@ -14,7 +14,7 @@ import { EVote } from '@utils/feed/evidence'
 import { DAxioms } from 'shared/types/services'
 import { ACORN, Axioms, Treasury } from 'shared/utils/services'
 import { valueOf } from 'shared/utils/tokens'
-import { UnwrapVariant } from 'shared/utils/typings'
+import { UnwrapVariant, Wrap } from 'shared/utils/typings'
 
 import EvidenceCard from './EvidenceCard'
 
@@ -23,11 +23,13 @@ const PostEvidencePreview = ({
     totalFee,
     onBack,
     onSubmit,
+    replyTo,
 }: {
     item: DAxioms.SharableEvidence
     totalFee: bigint
     onBack: () => void
     onSubmit?: (side: EVote) => void
+    replyTo?: bigint | null
 }) => {
     const navigate = useNavigate()
     const { agent } = useAuth()
@@ -57,7 +59,7 @@ const PostEvidencePreview = ({
             return
         }
         const res = await promise(
-            Axioms.call(agent).publishEvidence(item.id, item.form, item.choice),
+            Axioms.call(agent).publishEvidence(item.id, item.form, item.choice, Wrap(replyTo)),
             'Posting evidence',
             'Posted evidence successfully!'
         )

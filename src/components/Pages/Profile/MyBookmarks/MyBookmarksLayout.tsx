@@ -16,7 +16,7 @@ import e8s from 'shared/utils/e8s'
 import { Axioms } from 'shared/utils/services'
 
 const Username = ({ principal }: { principal: Principal }) => {
-    const username = useUsername(principal)
+    const { username } = useUsername(principal)
     return <>{username}</>
 }
 

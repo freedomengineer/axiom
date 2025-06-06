@@ -31,22 +31,22 @@ const useProposalDetails = (item: DDAO.SharableProposal) => {
         Promise.all([
             Promise.all(
                 localItem.votes[0].map((voter) =>
-                    getUsername(voter).then((r) => ({ principal: voter, username: r! }))
+                    getUsername(voter).then((r) => ({ principal: voter, username: r.username! }))
                 )
             ),
             Promise.all(
                 localItem.votes[1].map((voter) =>
-                    getUsername(voter).then((r) => ({ principal: voter, username: r! }))
+                    getUsername(voter).then((r) => ({ principal: voter, username: r.username! }))
                 )
             ),
             Promise.all(
                 localItem.votes[2].map((voter) =>
-                    getUsername(voter).then((r) => ({ principal: voter, username: r! }))
+                    getUsername(voter).then((r) => ({ principal: voter, username: r.username! }))
                 )
             ),
             Promise.all(
                 localItem.votes[3].map((voter) =>
-                    getUsername(voter).then((r) => ({ principal: voter, username: r! }))
+                    getUsername(voter).then((r) => ({ principal: voter, username: r.username! }))
                 )
             ),
         ]).then(setVoters)
@@ -67,8 +67,10 @@ const useProposalDetails = (item: DDAO.SharableProposal) => {
 
     const vote = Unwrap(localItem.callerVote)
     const category = UnwrapVariant(localItem.detachment)[0] as ECategory
-    const proposer = useUsername(localItem.proposer)
-    const delegatee = useUsername((vote && 'Delegated' in vote && vote.Delegated) || null)
+    const { username: proposer } = useUsername(localItem.proposer)
+    const { username: delegatee } = useUsername(
+        (vote && 'Delegated' in vote && vote.Delegated) || null
+    )
 
     const handleVote = async (choice: EVote, delegatedTo?: Principal) => {
         setVotesLoading((prev) => ({ ...prev, [choice]: true }))

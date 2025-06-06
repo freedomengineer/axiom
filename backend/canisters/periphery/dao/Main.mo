@@ -754,7 +754,7 @@ shared ({ caller = indicator }) actor class DAO() = this {
         ignore (
             func() : async () {
                 let Facade : FacadeInterface.Facade = await Indicator.Facade();
-                ignore Facade.postUsersNotification(List.fromArray(principals), #NewBallots({ principal = caller; timestamp = getNow() }))
+                ignore Facade.postUsersNotification(List.fromArray(principals), #NewBallots({ voter = caller; timestamp = getNow() }))
             }
         )()
     };

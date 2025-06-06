@@ -18,7 +18,7 @@ const CustodianCard = ({
     isExpanded: boolean
     onToggle: () => void
 }) => {
-    const username = useUsername(item.principal)
+    const { username } = useUsername(item.principal)
 
     return (
         <div className="flex w-full flex-col">
