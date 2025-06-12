@@ -143,7 +143,7 @@ const ProfileLayout = ({ id }: { id?: string }) => {
                 (res) => {
                     if (res) {
                         setProfileUser(res)
-                        cacheUsername(profilePrincipal, res.username)
+                        cacheUsername(profilePrincipal, res.username, res.capitalRaised.toString())
                     } else {
                         setPageStatus(PageStatus.NotFound)
                     }

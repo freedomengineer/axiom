@@ -1,8 +1,95 @@
 import { Principal } from '@dfinity/principal'
 
+import EngineerIcon from '@components/Assets/engineer.svg'
+import ExplorerIcon from '@components/Assets/explorer.svg'
+import HoboIcon from '@components/Assets/hobo.svg'
+import LiberatorIcon from '@components/Assets/liberator.svg'
+import PhilosopherIcon from '@components/Assets/philosopher.svg'
+import ScientistIcon from '@components/Assets/scientist.svg'
+import ScribeIcon from '@components/Assets/scribe.svg'
+import SeekerIcon from '@components/Assets/seeker.svg'
 import useUsername from '@hooks/useUsername'
+import cn from '@libs/class'
 
 import Link from './Link'
+
+const Symbol = ({ capitalRaised, className }: { capitalRaised: string; className?: string }) => {
+    switch (capitalRaised) {
+        case '0':
+        case '1000000000':
+            return (
+                <HoboIcon
+                    className={cn(
+                        'h-3.5 w-3.5 shrink-0 stroke-2 text-inherit md:h-4 md:w-4',
+                        className
+                    )}
+                />
+            )
+        case '2000000000':
+            return (
+                <SeekerIcon
+                    className={cn(
+                        'h-3.5 w-3.5 shrink-0 stroke-2 text-inherit md:h-4 md:w-4',
+                        className
+                    )}
+                />
+            )
+        case '5000000000':
+            return (
+                <ScribeIcon
+                    className={cn(
+                        'h-3.5 w-3.5 shrink-0 stroke-2 text-inherit md:h-4 md:w-4',
+                        className
+                    )}
+                />
+            )
+        case '10000000000':
+            return (
+                <ScientistIcon
+                    className={cn(
+                        'h-3.5 w-3.5 shrink-0 stroke-2 text-inherit md:h-4 md:w-4',
+                        className
+                    )}
+                />
+            )
+        case '50000000000':
+            return (
+                <PhilosopherIcon
+                    className={cn(
+                        'h-3.5 w-3.5 shrink-0 stroke-2 text-inherit md:h-4 md:w-4',
+                        className
+                    )}
+                />
+            )
+        case '1000000000000':
+            return (
+                <EngineerIcon
+                    className={cn(
+                        'h-3.5 w-3.5 shrink-0 stroke-2 text-inherit md:h-4 md:w-4',
+                        className
+                    )}
+                />
+            )
+        case '5000000000000':
+            return (
+                <ExplorerIcon
+                    className={cn(
+                        'h-3.5 w-3.5 shrink-0 stroke-2 text-inherit md:h-4 md:w-4',
+                        className
+                    )}
+                />
+            )
+        case '10000000000000':
+            return (
+                <LiberatorIcon
+                    className={cn(
+                        'h-3.5 w-3.5 shrink-0 stroke-2 text-inherit md:h-4 md:w-4',
+                        className
+                    )}
+                />
+            )
+    }
+}
 
 const Username = ({
     principal,
@@ -17,19 +104,30 @@ const Username = ({
 }) => {
     const parsedPrincipal = Principal.fromUint8Array(principal._arr)
     const { username, capitalRaised } = useUsername(parsedPrincipal)
-    if (className) return <span className={className}>{username}</span>
+    if (className)
+        return (
+            <span className={cn('flex items-center gap-1', className)}>
+                {symbol && <Symbol capitalRaised={capitalRaised} />}
+                {username}
+            </span>
+        )
     if (linkClassName)
         return (
             <Link
                 href={`/profile/${parsedPrincipal.toText()}`}
-                className={linkClassName}
+                className={cn('flex items-center gap-1', linkClassName)}
                 openInNewTab
             >
-                {symbol ? '@' : ''}
+                {symbol && <Symbol capitalRaised={capitalRaised} />}
                 {username}
             </Link>
         )
-    return <span>{username}</span>
+    return (
+        <>
+            {symbol && <Symbol capitalRaised={capitalRaised} />}
+            {username}
+        </>
+    )
 }
 
 export const Usernames = ({

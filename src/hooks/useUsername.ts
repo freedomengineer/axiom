@@ -7,8 +7,13 @@ import { Facade } from 'shared/utils/services'
 const MAX_CACHE_SIZE = 3000
 const CACHE_LIFETIME = 3 * 24 * 60 * 60 * 1000
 
+export type Displayer = {
+    username: string | null
+    capitalRaised: string
+}
+
 class AxiomUsernameCache extends Dexie {
-    users: Table<{ id: string; username: string; capitalRaised: bigint; timestamp: number }, string>
+    users: Table<{ id: string; username: string; capitalRaised: string; timestamp: number }, string>
     constructor() {
         super('AxiomUsernameCache')
         this.version(2).stores({ users: '&id, username, capitalRaised, timestamp' })
@@ -17,11 +22,8 @@ class AxiomUsernameCache extends Dexie {
 }
 
 const db = new AxiomUsernameCache()
-const memoryCache = new Map<string, { username: string | null; capitalRaised: bigint }>()
-const pendingRequests = new Map<
-    string,
-    Promise<{ username: string | null; capitalRaised: bigint }>
->()
+const memoryCache = new Map<string, Displayer>()
+const pendingRequests = new Map<string, Promise<Displayer>>()
 
 const _ensureMemoryCacheSize = () => {
     if (memoryCache.size <= MAX_CACHE_SIZE) return
@@ -40,11 +42,14 @@ const _cleanupCache = async () => {
         .catch(() => {})
 }
 
-const _fetchUsername = async (
-    id: Principal
-): Promise<{ username: string | null; capitalRaised: bigint }> => {
+const _fetchUsername = async (id: Principal): Promise<Displayer> => {
     try {
-        const { username, capitalRaised } = await Facade.call().getUserIdentifier({ Principal: id })
+        const { username, capitalRaised } = await Facade.call()
+            .getUserIdentifier({ Principal: id })
+            .then((res) => ({
+                username: res.username,
+                capitalRaised: res.capitalRaised.toString(),
+            }))
 
         const idStr = id.toString()
         memoryCache.set(idStr, { username, capitalRaised })
@@ -56,25 +61,23 @@ const _fetchUsername = async (
 
         return { username, capitalRaised }
     } catch {
-        return { username: null, capitalRaised: 0n }
+        return { username: null, capitalRaised: '0' }
     }
 }
-const _getUsernameSync = (id: Principal): { username: string | null; capitalRaised: bigint } => {
-    if (!id) return { username: null, capitalRaised: 0n }
+const _getUsernameSync = (id: Principal): Displayer => {
+    if (!id) return { username: null, capitalRaised: '0' }
 
     const idStr = id.toString()
 
     if (memoryCache.has(idStr)) {
         console.log(`useUsername: found CachedItem for username ${idStr}`)
-        return memoryCache.get(idStr) || { username: null, capitalRaised: 0n }
+        return memoryCache.get(idStr) || { username: null, capitalRaised: '0' }
     }
 
-    return { username: null, capitalRaised: 0n }
+    return { username: null, capitalRaised: '0' }
 }
-const _getUsername = async (
-    id: Principal
-): Promise<{ username: string | null; capitalRaised: bigint }> => {
-    if (!id) return { username: null, capitalRaised: 0n }
+const _getUsername = async (id: Principal): Promise<Displayer> => {
+    if (!id) return { username: null, capitalRaised: '0' }
 
     const idStr = id.toString()
 
@@ -102,10 +105,8 @@ const _getUsername = async (
 
     return request
 }
-export const getUsername = async (
-    id: Principal
-): Promise<{ username: string | null; capitalRaised: bigint }> => {
-    if (!id) return { username: null, capitalRaised: 0n }
+export const getUsername = async (id: Principal): Promise<Displayer> => {
+    if (!id) return { username: null, capitalRaised: '0' }
 
     const syncResult = _getUsernameSync(id)
     if (syncResult.username !== null) return syncResult
@@ -120,24 +121,21 @@ export const deleteAllUsernamesCache = async (): Promise<void> => {
     } catch {}
 }
 
-const useUsername = (id: Principal | null): { username: string | null; capitalRaised: bigint } => {
-    const [data, setData] = useState<{ username: string | null; capitalRaised: bigint }>({
-        username: null,
-        capitalRaised: 0n,
-    })
+const useUsername = (id: Principal | null): Displayer => {
+    const [data, setData] = useState<Displayer>({ username: null, capitalRaised: '0' })
 
     useEffect(() => {
         if (data.username || !id) return
 
         _getUsername(id)
             .then((username) => setData(username))
-            .catch(() => setData({ username: null, capitalRaised: 0n }))
+            .catch(() => setData({ username: null, capitalRaised: '0' }))
     }, [id?.toString(), data.username])
 
     return data
 }
 
-export const cacheUsername = (id: Principal, username: string, capitalRaised: bigint): void => {
+export const cacheUsername = (id: Principal, username: string, capitalRaised: string): void => {
     if (!id || !username) return
 
     const idStr = id.toString()

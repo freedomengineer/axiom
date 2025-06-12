@@ -63,10 +63,10 @@ const _fetchTop = async (key: TopKey, page: bigint): Promise<Top | null> => {
         switch (key) {
             case 'acornHolders': {
                 const users = await Facade.call()
-                    .getUsersPrincipal()
+                    .getUsersIdentifier()
                     .then((res) =>
-                        res.map(({ username, principal }) => {
-                            cacheUsername(principal, username)
+                        res.map(({ username, principal, capitalRaised }) => {
+                            cacheUsername(principal, username, capitalRaised.toString())
                             return principal
                         })
                     )

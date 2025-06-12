@@ -1995,7 +1995,7 @@
             },
             "entries": [
               [
-                "principal",
+                "user",
                 {
                   "origin": "Principal",
                   "singular": {
@@ -2048,7 +2048,7 @@
             },
             "entries": [
               [
-                "principal",
+                "user",
                 {
                   "origin": "Principal",
                   "singular": {
@@ -2088,7 +2088,7 @@
             },
             "entries": [
               [
-                "principal",
+                "voter",
                 {
                   "origin": "Principal",
                   "singular": {
@@ -3202,7 +3202,7 @@
                   },
                   "entries": [
                     [
-                      "principal",
+                      "user",
                       {
                         "origin": "Principal",
                         "singular": {
@@ -3255,7 +3255,7 @@
                   },
                   "entries": [
                     [
-                      "principal",
+                      "user",
                       {
                         "origin": "Principal",
                         "singular": {
@@ -3295,7 +3295,7 @@
                   },
                   "entries": [
                     [
-                      "principal",
+                      "voter",
                       {
                         "origin": "Principal",
                         "singular": {
@@ -4412,7 +4412,7 @@
                         },
                         "entries": [
                           [
-                            "principal",
+                            "user",
                             {
                               "origin": "Principal",
                               "singular": {
@@ -4465,7 +4465,7 @@
                         },
                         "entries": [
                           [
-                            "principal",
+                            "user",
                             {
                               "origin": "Principal",
                               "singular": {
@@ -4505,7 +4505,7 @@
                         },
                         "entries": [
                           [
-                            "principal",
+                            "voter",
                             {
                               "origin": "Principal",
                               "singular": {
@@ -7844,7 +7844,7 @@
                         },
                         "entries": [
                           [
-                            "principal",
+                            "user",
                             {
                               "origin": "Principal",
                               "singular": {
@@ -7924,7 +7924,7 @@
                         },
                         "entries": [
                           [
-                            "principal",
+                            "user",
                             {
                               "origin": "Principal",
                               "singular": {
@@ -7991,7 +7991,7 @@
                         },
                         "entries": [
                           [
-                            "principal",
+                            "voter",
                             {
                               "origin": "Principal",
                               "singular": {

@@ -193,7 +193,7 @@ export const useAuthClient = () => {
             .getUser(p)
             .then((res) => {
                 setUser(res)
-                cacheUsername(p, res.username)
+                cacheUsername(p, res.username, res.capitalRaised.toString())
                 return res
             })
             .catch(() => {

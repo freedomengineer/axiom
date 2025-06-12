@@ -1,9 +1,15 @@
 import { Accordion, AccordionBody, AccordionHeader } from '@material-tailwind/react'
-import { useState } from 'react'
+import { memo, useCallback, useEffect, useMemo, useState } from 'react'
 
 import DownIcon from '@components/Assets/down.svg'
+import NotificationIcon from '@components/Assets/notification.svg'
 import useConfigs from '@hooks/useConfigs'
-import useNotification, { StoredNotification, markAsRead } from '@hooks/useNotification'
+import useNotification, {
+    StoredNotification,
+    markAllCapacityItemsAsRead,
+    markAsRead,
+    markCapacityItemAsRead,
+} from '@hooks/useNotification'
 import cn from '@libs/class'
 import { formatDate } from '@libs/date'
 import { capitalize } from '@libs/formatter'
@@ -48,35 +54,320 @@ const IconEnvelopeOpen = ({ className }: { className?: string }) => (
     </svg>
 )
 
-export const DetailsAccordion = ({
-    summary,
-    children,
-}: {
-    summary: React.ReactNode
-    children: React.ReactNode
-}) => {
-    const [open, setOpen] = useState(false)
-    const handleOpen = () => setOpen((cur) => !cur)
-    return (
-        <Accordion
-            open={open}
-            icon={
-                <DownIcon className={`h-4 w-4 transition-transform ${open ? 'rotate-180' : ''}`} />
+const GroupedNotificationRenderer = memo(
+    ({
+        type,
+        item,
+        notification,
+        isOpen,
+        onToggle,
+    }: {
+        type: string
+        item: any
+        notification: StoredNotification
+        isOpen: boolean
+        onToggle: () => void
+    }) => {
+        const handleOpen = useCallback(() => {
+            onToggle()
+        }, [onToggle])
+
+        const handleMarkAllAsRead = useCallback(
+            (e: React.MouseEvent) => {
+                e.preventDefault()
+                e.stopPropagation()
+
+                markAllCapacityItemsAsRead(notification.id)
+            },
+            [notification.id]
+        )
+
+        const handleCapacityItemClick = useCallback(
+            (e: React.MouseEvent, index: number) => {
+                e.preventDefault()
+                e.stopPropagation()
+                markCapacityItemAsRead(notification.id, index)
+            },
+            [notification.id]
+        )
+
+        const totalNum = Number(item.total)
+        const capacityNum = item.capacity.length
+
+        const allCapacityItemsRead = notification.capacityItemsRead
+            ? notification.capacityItemsRead.every((status) => status === 1)
+            : false
+
+        const hasUnreadCapacityItems = notification.capacityItemsRead
+            ? notification.capacityItemsRead.some((status) => status === 0)
+            : true
+
+        const groupedText = {
+            NewFollowers: 'has started following you.',
+            NewReferrals: 'has joined Axiom by your referral link.',
+            NewBallots: 'voted you in the election.',
+            NewVotesToHypothesis: `voted on your hypothesis ${item.id}.`,
+            NewVotesToEvidence: `voted on your evidence ${item.id}.`,
+            NewVotesToProposal: `voted on your proposal ${item.id}.`,
+            NewAxiomsToHypothesis: `adopted your hypothesis ${item.id} as their Axioms.`,
+            NewEvidencesToHypothesis: `published new evidences to your hypothesis ${item.id}.`,
+            NewRepliesToEvidence: `replied to your evidence ${item.id}.`,
+            NewHypothesesFromFollowings: 'published new hypotheses',
+            NewEvidencesFromFollowings: 'published new evidences',
+        }[type]
+
+        const renderCapacityItem = (item: any, id: string) => {
+            switch (type) {
+                case 'NewFollowers':
+                    return <>started following you.</>
+                case 'NewReferrals':
+                    return (
+                        <>
+                            joined Axiom by using your referral link, you can claim{' '}
+                            {e8s.toString(item.claimable)} ACORN.
+                        </>
+                    )
+                case 'NewBallots':
+                    return <>voted you in the election.</>
+                case 'NewVotesToHypothesis':
+                    return (
+                        <>
+                            voted {UnwrapVariant(item.choice)} on your hypothesis #{id}.
+                        </>
+                    )
+                case 'NewVotesToEvidence':
+                    return (
+                        <>
+                            voted {UnwrapVariant(item.choice)} on your evidence #{id}.
+                        </>
+                    )
+                case 'NewVotesToProposal':
+                    return (
+                        <>
+                            voted {UnwrapVariant(item.choice)} on your proposal #{id}.
+                        </>
+                    )
+                case 'NewAxiomsToHypothesis':
+                    return <>adopted your hypothesis #{id} as their Axioms.</>
+                case 'NewEvidencesToHypothesis':
+                    return <>published new evidences to your hypothesis #{id}.</>
+                case 'NewRepliesToEvidence':
+                    return <>replied to your evidence #{id}.</>
+                case 'NewHypothesesFromFollowings':
+                    return <>published hypothesis #{id}.</>
+                case 'NewEvidencesFromFollowings':
+                    return <>published evidence #{id}.</>
             }
-            className="mt-2 border-t border-cold-200"
-        >
-            <AccordionHeader
-                onClick={handleOpen}
-                className="border-b-0 py-2.5 text-sm font-normal text-cold-600 hover:text-cold-800"
-            >
-                {summary}
-            </AccordionHeader>
-            <AccordionBody className="pb-2 pt-0 text-sm">
-                <div className="space-y-2 border-l-2 border-cold-200 pl-4">{children}</div>
-            </AccordionBody>
-        </Accordion>
-    )
-}
+        }
+        const firstItem = item.capacity[0]
+
+        return (
+            <div className="rounded-lg border border-cold-200 bg-white">
+                <div
+                    onClick={handleOpen}
+                    className={cn(
+                        'text-tiny py-normal px-medium gap-x-small flex cursor-pointer items-center justify-between rounded-lg transition-colors hover:bg-primary-50',
+                        hasUnreadCapacityItems ? 'bg-primary-50' : 'bg-white'
+                    )}
+                >
+                    <div className="flex flex-1 flex-wrap items-center gap-1">
+                        {totalNum === 1 ? (
+                            <>
+                                <Username
+                                    symbol
+                                    className="font-semibold text-primary-700"
+                                    principal={
+                                        firstItem?.user ?? firstItem?.voter ?? firstItem?.publisher
+                                    }
+                                />
+                                <span> {groupedText}</span>
+                            </>
+                        ) : (
+                            <>
+                                {item.capacity.slice(0, 3).map((item: any, index: number) => (
+                                    <span key={index} className="inline-flex items-center">
+                                        <Username
+                                            symbol
+                                            className="font-semibold text-primary-700"
+                                            principal={item.user ?? item.voter ?? item.publisher}
+                                        />
+                                        {index < Math.min(2, capacityNum - 1) && <span>,</span>}
+                                    </span>
+                                ))}
+                                {totalNum > 3 && <span>and {totalNum - 3} other(s)</span>}
+                                <span> {groupedText}</span>
+                            </>
+                        )}
+                    </div>
+                    <div className="gap-x-small flex items-center">
+                        {!allCapacityItemsRead && (
+                            <button
+                                onClick={handleMarkAllAsRead}
+                                title="Mark all as read"
+                                className="flex-shrink-0 rounded-full font-normal text-primary-700 transition-colors hover:bg-primary-100"
+                            >
+                                <IconCheckCircle className="h-4 w-4 stroke-[1.5px] md:h-5 md:w-5" />
+                            </button>
+                        )}
+                        <div className="p-tiny flex-shrink-0">
+                            <DownIcon
+                                className={`h-3 w-3 stroke-[1.5px] text-cold-700 transition-transform duration-200 ease-in-out md:h-4 md:w-4 ${isOpen ? 'rotate-180' : ''}`}
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    className={cn(
+                        'overflow-hidden transition-all duration-200 ease-in-out',
+                        isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+                    )}
+                >
+                    <div className="text-tiny pb-tiny pt-tiny border-t border-cold-200 pl-4">
+                        {item.capacity.map((e: any, index: number) => {
+                            const isItemRead = notification.capacityItemsRead?.[index] === 1
+
+                            return (
+                                <div
+                                    key={index}
+                                    onClick={(event) => handleCapacityItemClick(event, index)}
+                                    className={cn(
+                                        'text-tiny px-small py-tiny flex w-full cursor-pointer flex-wrap items-center justify-between gap-1 rounded-lg hover:bg-primary-50',
+                                        !isItemRead ? 'bg-primary-50' : 'bg-white'
+                                    )}
+                                >
+                                    <span className="flex items-center gap-1 font-normal">
+                                        <Username
+                                            symbol
+                                            className="font-semibold text-primary-700"
+                                            principal={e.user ?? e.voter ?? e.publisher}
+                                            linkClassName="text-cold-800"
+                                        />
+                                        <span> {renderCapacityItem(e, item.id)}</span>
+                                    </span>
+                                    <div className="gap-x-small flex items-center">
+                                        <p className="text-extratiny mr-small font-normal text-cold-700">
+                                            <span>
+                                                {' '}
+                                                {formatDate({ nano: BigInt(e.timestamp) }, true)}
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div>
+                            )
+                        })}
+                    </div>
+                </div>
+            </div>
+        )
+    }
+)
+
+export const UserNotificationRenderer = memo(
+    ({
+        notification,
+        isOpen,
+        onToggle,
+    }: {
+        notification: StoredNotification
+        isOpen: boolean
+        onToggle: () => void
+    }) => {
+        const daoConfigs = useConfigs('DAO')
+        const { data } = notification
+        const [type, item] = UnwrapVariant(data)
+        if ('capacity' in item) {
+            return (
+                <GroupedNotificationRenderer
+                    type={type}
+                    item={item}
+                    notification={notification}
+                    isOpen={isOpen}
+                    onToggle={onToggle}
+                />
+            )
+        }
+
+        switch (type) {
+            case 'CustodianElectionResult': {
+                const result = UnwrapVariant(item.result)
+                return (
+                    <p>
+                        {
+                            {
+                                New: 'You have just become a custodian',
+                                Unchanged: 'You have continued to be a custodian',
+                                Removed: 'You are no longer a custodian',
+                            }[result]
+                        }
+                        . The last period payout for you is {e8s.toString(item.claimable)} ACORN.
+                    </p>
+                )
+            }
+            case 'CustodianProposalResult': {
+                const result = UnwrapVariant(item.result)
+                return (
+                    <p>
+                        Custodians: Proposal #{item.proposalId} by{' '}
+                        <Username
+                            symbol
+                            className="font-semibold text-primary-700"
+                            principal={item.proposer}
+                        />{' '}
+                        has been{' '}
+                        {{ Approved: 'approved', Rejected: 'rejected', Expired: 'expired' }[result]}
+                        .
+                    </p>
+                )
+            }
+            case 'CustodianProposalDelegated':
+                return (
+                    <p>
+                        Custodian:{' '}
+                        <Username
+                            symbol
+                            className="font-semibold text-primary-700"
+                            principal={item.delegator}
+                        />{' '}
+                        has delegated their vote to you on proposal #{item.proposalId}.
+                    </p>
+                )
+            case 'CustodianProposalOpened': {
+                const expiresAt =
+                    BigInt(item.timestamp) +
+                    NANOS_IN_A_DAY *
+                        (daoConfigs?.['PROPOSAL_VOTE_AVAILABILITY_DURATION']?.[1] as bigint)
+                return (
+                    <p>
+                        Custodian: A new proposal #{item.proposalId} has been opened by{' '}
+                        <Username
+                            symbol
+                            className="font-semibold text-primary-700"
+                            principal={item.proposer}
+                        />
+                        . Vote before it expires at {formatDate({ nano: expiresAt }, true)}.
+                    </p>
+                )
+            }
+            case 'ProposalExecuted':
+                return (
+                    <p>
+                        Your proposal #{item.proposalId} has been {UnwrapVariant(item.result)}. You
+                        can claim {e8s.toString((item as any).claimable)} ACORN.
+                    </p>
+                )
+            case 'ProposalResult': {
+                return (
+                    <p>
+                        Your proposal #{item.proposalId} has been {UnwrapVariant(item.result)}.
+                    </p>
+                )
+            }
+        }
+
+        return <div>Unsupported User Notification</div>
+    }
+)
 
 export const SystemNotificationRenderer = ({
     notification,
@@ -141,15 +432,23 @@ export const SystemNotificationRenderer = ({
                             Executed: (
                                 <>
                                     Proposal #{data.proposalId} by @
-                                    <Username principal={(data as any).proposer} /> has been
-                                    successfully executed.
+                                    <Username
+                                        symbol
+                                        className="font-semibold text-primary-700"
+                                        principal={(data as any).proposer}
+                                    />{' '}
+                                    has been successfully executed.
                                 </>
                             ),
                             Failed: (
                                 <>
                                     Proposal #{data.proposalId} by @
-                                    <Username principal={(data as any).proposer} /> has failed to
-                                    execute.
+                                    <Username
+                                        symbol
+                                        className="font-semibold text-primary-700"
+                                        principal={(data as any).proposer}
+                                    />{' '}
+                                    has failed to execute.
                                 </>
                             ),
                         }[result]
@@ -167,21 +466,36 @@ export const SystemNotificationRenderer = ({
                     {hasUnchanged && (
                         <>
                             {' '}
-                            <Usernames principals={data.unchanged} /> will continue to be the
-                            custodians.
+                            <Usernames
+                                symbol
+                                className="font-semibold text-primary-700"
+                                principals={data.unchanged}
+                            />{' '}
+                            will continue to be the custodians.
                         </>
                     )}
                     {hasNew && (
                         <>
                             {' '}
-                            Welcome new custodians: <Usernames principals={data.new} />.
+                            Welcome new custodians:{' '}
+                            <Usernames
+                                symbol
+                                className="font-semibold text-primary-700"
+                                principals={data.new}
+                            />
+                            .
                         </>
                     )}
                     {hasRemoved && (
                         <>
                             {' '}
-                            <Usernames principals={data.removed} /> will no longer be the
-                            custodians, thank you for your contribution to the Axiom ACE.
+                            <Usernames
+                                symbol
+                                className="font-semibold text-primary-700"
+                                principals={data.removed}
+                            />{' '}
+                            will no longer be the custodians, thank you for your contribution to the
+                            Axiom ACE.
                         </>
                     )}
                 </p>
@@ -192,268 +506,126 @@ export const SystemNotificationRenderer = ({
     return <div>Unsupported System Notification</div>
 }
 
-const GroupedNotificationRenderer = ({ type, item }: { type: string; item: any }) => {
-    const totalNum = Number(item.total)
-    const capacityNum = item.capacity.length
+const getNotificationLink = (notification: StoredNotification): string | undefined => {
+    switch (notification.source) {
+        case 'system': {
+            const [type, item] = UnwrapVariant(notification.data)
+            switch (type) {
+                case 'FlagRequested':
+                    return `/dashboard/flags`
+                case 'FlagResult':
+                    return `/dashboard/flags`
+                case 'ProposalExecuted':
+                    return `/dashboard/proposals/${item.proposalId}`
+                case 'TallyResult':
+                    return `/dashboard/custodians`
+                case 'SystemGeneric':
+                    return undefined
+                default:
+                    return undefined
+            }
+        }
+        case 'user': {
+            const [type, item] = UnwrapVariant(notification.data)
+            switch (type) {
+                case 'NewFollowers':
+                    return `/dashboard/followers`
+                case 'NewReferrals':
+                    return `/dashboard/referrals`
+                case 'NewBallots':
+                    return `/dashboard/custodians`
+                default:
+                    return undefined
+            }
+        }
+        default:
+            return undefined
+    }
+}
 
-    const renderActionText = () => {
-        switch (type) {
-            case 'NewFollowers':
-                return <>has started following you.</>
-            case 'NewReferrals':
-                return <>has joined Axiom by your referral link.</>
-            case 'NewBallots':
-                return <>voted you in the election.</>
-            case 'NewVotesToHypothesis':
-                return <>voted on your hypothesis #{item.id}.</>
-            case 'NewVotesToEvidence':
-                return <>voted on your evidence #{item.id}.</>
-            case 'NewVotesToProposal':
-                return <>voted on your proposal #{item.id}.</>
-            case 'NewAxiomsToHypothesis':
-                return <>adopted your hypothesis #{item.id} as their Axioms.</>
-            case 'NewEvidencesToHypothesis':
-                return <>published new evidences to your hypothesis #{item.id}.</>
-            case 'NewRepliesToEvidence':
-                return <>replied to your evidence #{item.id}.</>
-            case 'NewHypothesesFromFollowings':
-                return <>published new hypotheses</>
-            case 'NewEvidencesFromFollowings':
-                return <>published new evidences</>
+const NotificationItemWrapper = memo(
+    ({
+        notification,
+        isOpen,
+        onToggle,
+    }: {
+        notification: StoredNotification
+        isOpen: boolean
+        onToggle: () => void
+    }) => {
+        const isRead = notification.isRead === 1
+        const [, item] = UnwrapVariant(notification.data)
+        const hasAccordion = 'capacity' in item
+
+        const handleSingleNotificationClick = () => {
+            if (!hasAccordion && !isRead) {
+                markAsRead(notification.id)
+            }
         }
-    }
-    const renderCapacityItem = (item: any, id: string) => {
-        switch (type) {
-            case 'NewFollowers':
-                return <>started following you.</>
-            case 'NewReferrals':
-                return (
-                    <>
-                        {' '}
-                        joined Axiom by using your referral link, you can claim{' '}
-                        {e8s.toString(item.claimable)} ACORN.
-                    </>
-                )
-            case 'NewBallots':
-                return <>voted you in the election.</>
-            case 'NewVotesToHypothesis':
-                return (
-                    <>
-                        voted {UnwrapVariant(item.choice)} on your hypothesis #{id}.
-                    </>
-                )
-            case 'NewVotesToEvidence':
-                return (
-                    <>
-                        voted {UnwrapVariant(item.choice)} on your evidence #{id}.
-                    </>
-                )
-            case 'NewVotesToProposal':
-                return (
-                    <>
-                        voted {UnwrapVariant(item.choice)} on your proposal #{id}.
-                    </>
-                )
-            case 'NewAxiomsToHypothesis':
-                return <>adopted your hypothesis #{id} as their Axioms.</>
-            case 'NewEvidencesToHypothesis':
-                return <>published new evidences to your hypothesis #{id}.</>
-            case 'NewRepliesToEvidence':
-                return <>replied to your evidence #{id}.</>
-            case 'NewHypothesesFromFollowings':
-                return <>published hypothesis #{id}.</>
-            case 'NewEvidencesFromFollowings':
-                return <>published evidence #{id}.</>
-        }
-    }
-    const firstItem = item.capacity[0]
-    return (
-        <div>
-            <p>
-                {totalNum === 1 ? (
-                    <Username
-                        principal={
-                            firstItem?.user ??
-                            firstItem?.voter ??
-                            firstItem?.publisher ??
-                            firstItem?.principal
-                        }
-                    />
-                ) : (
-                    <>
-                        {item.capacity.slice(0, 3).map((item: any, index: number) => (
-                            <>
-                                <Username
-                                    principal={
-                                        item.user ?? item.voter ?? item.publisher ?? item.principal
-                                    }
+
+        const notificationLink = getNotificationLink(notification)
+
+        return (
+            <div
+                className={cn(
+                    'relative rounded-lg bg-white transition-colors',
+                    !hasAccordion && !isRead && 'bg-primary-50'
+                )}
+            >
+                <div className="gap-x-normal flex items-start">
+                    {hasAccordion ? (
+                        <div className="flex-grow">
+                            {notification.source === 'system' ? (
+                                <SystemNotificationRenderer notification={notification} />
+                            ) : (
+                                <UserNotificationRenderer
+                                    notification={notification}
+                                    isOpen={isOpen}
+                                    onToggle={onToggle}
                                 />
-                                {index < Math.min(2, capacityNum - 1) && ', '}
-                            </>
-                        ))}
-                        {totalNum > 3 ? ` and ${totalNum - 3} other(s)` : ''}
-                    </>
-                )}{' '}
-                {renderActionText()}
-            </p>
-            {totalNum > 1 && (
-                <DetailsAccordion summary={`View all ${totalNum} interaction(s)`}>
-                    <div className="space-y-2">
-                        {item.capacity.map((e: any, index: number) => (
-                            <div key={index} className="flex items-center justify-between text-sm">
-                                <div>
-                                    <Username
-                                        principal={e.user ?? e.voter ?? e.publisher ?? e.principal}
-                                        linkClassName="text-cold-800"
-                                    />{' '}
-                                    {renderCapacityItem(e, item.id)}
+                            )}
+                        </div>
+                    ) : (
+                        <div
+                            className="block w-full cursor-pointer"
+                            onClick={handleSingleNotificationClick}
+                        >
+                            {notificationLink ? (
+                                <a href={notificationLink} className="block w-full">
+                                    <div className="flex-grow">
+                                        {notification.source === 'system' ? (
+                                            <SystemNotificationRenderer
+                                                notification={notification}
+                                            />
+                                        ) : (
+                                            <UserNotificationRenderer
+                                                notification={notification}
+                                                isOpen={isOpen}
+                                                onToggle={onToggle}
+                                            />
+                                        )}
+                                    </div>
+                                </a>
+                            ) : (
+                                <div className="flex-grow">
+                                    {notification.source === 'system' ? (
+                                        <SystemNotificationRenderer notification={notification} />
+                                    ) : (
+                                        <UserNotificationRenderer
+                                            notification={notification}
+                                            isOpen={isOpen}
+                                            onToggle={onToggle}
+                                        />
+                                    )}
                                 </div>
-                                <p className="text-cold-500">
-                                    {' '}
-                                    {formatDate({ nano: BigInt(e.timestamp) }, true)}{' '}
-                                </p>
-                            </div>
-                        ))}
-                    </div>
-                </DetailsAccordion>
-            )}
-        </div>
-    )
-}
-
-export const UserNotificationRenderer = ({
-    notification,
-}: {
-    notification: StoredNotification
-}) => {
-    const daoConfigs = useConfigs('DAO')
-    const { data } = notification
-    const [type, item] = UnwrapVariant(data)
-    if ('capacity' in item) {
-        return <GroupedNotificationRenderer type={type} item={item} />
-    }
-
-    switch (type) {
-        case 'CustodianElectionResult': {
-            const result = UnwrapVariant(item.result)
-            return (
-                <p>
-                    {
-                        {
-                            New: 'You have just become a custodian',
-                            Unchanged: 'You have continued to be a custodian',
-                            Removed: 'You are no longer a custodian',
-                        }[result]
-                    }
-                    . The last period payout for you is {e8s.toString(item.claimable)} ACORN.
-                </p>
-            )
-        }
-        case 'CustodianProposalResult': {
-            const result = UnwrapVariant(item.result)
-            return (
-                <p>
-                    Custodians: Proposal #{item.proposalId} by{' '}
-                    <Username principal={item.proposer} /> has been{' '}
-                    {{ Approved: 'approved', Rejected: 'rejected', Expired: 'expired' }[result]}.
-                </p>
-            )
-        }
-        case 'CustodianProposalDelegated':
-            return (
-                <p>
-                    Custodian: <Username principal={item.delegator} /> has delegated their vote to
-                    you on proposal #{item.proposalId}.
-                </p>
-            )
-        case 'CustodianProposalOpened': {
-            const expiresAt =
-                BigInt(item.timestamp) +
-                NANOS_IN_A_DAY *
-                    (daoConfigs?.['PROPOSAL_VOTE_AVAILABILITY_DURATION']?.[1] as bigint)
-            return (
-                <p>
-                    Custodian: A new proposal #{item.proposalId} has been opened by{' '}
-                    <Username principal={item.proposer} />. Vote before it expires at{' '}
-                    {formatDate({ nano: expiresAt }, true)}.
-                </p>
-            )
-        }
-        case 'ProposalExecuted':
-            return (
-                <p>
-                    Your proposal #{item.proposalId} has been {UnwrapVariant(item.result)}. You can
-                    claim {e8s.toString((item as any).claimable)} ACORN.
-                </p>
-            )
-        case 'ProposalResult': {
-            return (
-                <p>
-                    Your proposal #{item.proposalId} has been {UnwrapVariant(item.result)}.
-                </p>
-            )
-        }
-    }
-
-    return <div>Unsupported User Notification</div>
-}
-
-const getNotificationLink = (notification: StoredNotification): string => {
-    return `/#/notification-link/${notification.id}`
-}
-
-const NotificationItemWrapper = ({ notification }: { notification: StoredNotification }) => {
-    const isRead = notification.isRead === 1
-
-    const handleMarkAsReadClick = (e: React.MouseEvent) => {
-        e.preventDefault()
-        e.stopPropagation()
-        markAsRead(notification.id)
-    }
-
-    const hasAccordion =
-        'capacity' in UnwrapVariant(notification.data)[1] &&
-        Number(UnwrapVariant(notification.data)[1].total) > 1
-
-    const mainContent = (
-        <div className="flex-grow">
-            {notification.source === 'system' ? (
-                <SystemNotificationRenderer notification={notification} />
-            ) : (
-                <UserNotificationRenderer notification={notification} />
-            )}
-        </div>
-    )
-
-    return (
-        <div
-            className={cn(
-                'p-normal relative rounded-lg transition-colors duration-200',
-                !isRead && 'bg-primary-50'
-            )}
-        >
-            <div className="gap-x-normal flex items-start">
-                {hasAccordion ? (
-                    mainContent
-                ) : (
-                    <a href={getNotificationLink(notification)} className="block w-full">
-                        {mainContent}
-                    </a>
-                )}
-
-                {!isRead && (
-                    <button
-                        onClick={handleMarkAsReadClick}
-                        title="Mark as read"
-                        className="p-tiny flex-shrink-0 rounded-full text-primary-500 transition-colors hover:bg-primary-100"
-                    >
-                        <IconCheckCircle className="h-5 w-5" />
-                    </button>
-                )}
+                            )}
+                        </div>
+                    )}
+                </div>
             </div>
-        </div>
-    )
-}
+        )
+    }
+)
 
 const TabButton = ({
     label,
@@ -469,18 +641,16 @@ const TabButton = ({
     <button
         onClick={onClick}
         className={cn(
-            'gap-x-small py-normal text-tiny flex items-center border-b-2 font-semibold transition-colors',
-            isActive
-                ? 'border-primary-600 text-primary-700'
-                : 'text-secondary-500 hover:text-secondary-800 border-transparent'
+            'gap-x-small py-normal px-medium text-tiny flex w-full items-center border-b-2 font-medium transition-colors',
+            isActive ? 'border-primary-600 text-primary-700' : 'border-transparent text-cold-700'
         )}
     >
         <span>{label}</span>
         {count > 0 && (
             <span
                 className={cn(
-                    'px-tiny py-extratiny text-extratiny rounded-full font-bold',
-                    isActive ? 'bg-primary-600 text-white' : 'bg-secondary-200 text-secondary-600'
+                    'px-small text-extratiny rounded-full font-bold',
+                    isActive ? 'bg-primary-600 text-white' : 'bg-cold-200 text-cold-700'
                 )}
             >
                 {count}
@@ -491,6 +661,7 @@ const TabButton = ({
 
 const Notifications = () => {
     const [activeTab, setActiveTab] = useState<'user' | 'system'>('user')
+    const [accordionStates, setAccordionStates] = useState<Record<string, boolean>>({})
     const { notifications, unreadUserCount, unreadSystemCount, actions } = useNotification()
 
     const systemNotifications = notifications.filter((n) => n.source === 'system')
@@ -499,21 +670,52 @@ const Notifications = () => {
     const activeNotifications = activeTab === 'user' ? userNotifications : systemNotifications
     const activeUnreadCount = activeTab === 'user' ? unreadUserCount : unreadSystemCount
 
-    const handleMarkAllRead = () => {
-        if (activeUnreadCount > 0) {
-            actions.markAllAsRead(activeTab)
+    useEffect(() => {
+        const newAccordionStates: Record<string, boolean> = {}
+        let hasChanges = false
+
+        activeNotifications.forEach((notif) => {
+            const [, item] = UnwrapVariant(notif.data)
+            const hasAccordion = 'capacity' in item
+
+            if (hasAccordion) {
+                const hasUnreadCapacityItems = notif.capacityItemsRead
+                    ? notif.capacityItemsRead.some((status) => status === 0)
+                    : true
+
+                const newState =
+                    accordionStates[notif.id] !== undefined
+                        ? accordionStates[notif.id]
+                        : hasUnreadCapacityItems
+
+                newAccordionStates[notif.id] = newState
+
+                if (accordionStates[notif.id] !== newState) {
+                    hasChanges = true
+                }
+            }
+        })
+
+        if (hasChanges) {
+            setAccordionStates((prev) => ({ ...prev, ...newAccordionStates }))
         }
+    }, [activeNotifications.length, activeTab])
+
+    const toggleAccordion = useCallback((id: string) => {
+        setAccordionStates((prev) => ({ ...prev, [id]: !prev[id] }))
+    }, [])
+
+    const handleMarkAllRead = () => {
+        if (activeUnreadCount > 0) actions.markAllAsRead(activeTab)
     }
 
-    console.log({ notifications, unreadUserCount, unreadSystemCount })
-
     return (
-        <div className="mt-normal border-secondary-100 absolute right-0 top-full z-50 flex w-[30rem] max-w-md flex-col rounded-lg border bg-white shadow-2xl">
-            <div className="p-medium border-secondary-200 border-b">
-                <p className="text-normal text-secondary-900 font-semibold">Notifications</p>
+        <>
+            <div className="p-medium gap-small flex items-center border-b border-cold-200">
+                <NotificationIcon className="h-5 w-5 text-cold-800 lg:h-6  lg:w-6" />
+                <p className="text-normal font-light text-cold-800">Notifications</p>
             </div>
-
-            <div className="border-secondary-200 px-medium flex border-b">
+            <div className="flex w-full justify-between border-b border-cold-200">
                 <TabButton
                     label="For You"
                     count={unreadUserCount}
@@ -527,38 +729,41 @@ const Notifications = () => {
                     onClick={() => setActiveTab('system')}
                 />
             </div>
-
             <div className="px-medium py-small flex items-center justify-between">
-                <p className="text-tiny text-secondary-800 font-semibold">
+                <p className="text-tiny font-light text-cold-700">
                     {activeTab === 'user' ? 'Your Updates' : 'System-wide Announcements'}
                 </p>
                 <button
-                    className="text-tiny disabled:text-secondary-400 font-medium text-primary-600 hover:text-primary-800 disabled:cursor-not-allowed"
+                    className="text-tiny font-medium text-primary-700 disabled:text-primary-700/50"
                     onClick={handleMarkAllRead}
                     disabled={activeUnreadCount === 0}
                 >
                     Mark all as read
                 </button>
             </div>
-
-            <div className="p-small gap-y-tiny flex max-h-[60vh] flex-col overflow-y-auto">
+            <div className="gap-y-tiny flex max-h-[60vh] flex-col overflow-y-auto">
                 {activeNotifications.length > 0 ? (
                     activeNotifications.map((notif) => (
-                        <NotificationItemWrapper key={notif.id} notification={notif} />
+                        <NotificationItemWrapper
+                            key={notif.id}
+                            notification={notif}
+                            isOpen={accordionStates[notif.id] || false}
+                            onToggle={() => toggleAccordion(notif.id)}
+                        />
                     ))
                 ) : (
                     <div className="p-large flex flex-col items-center justify-center text-center">
-                        <IconEnvelopeOpen className="text-secondary-300 h-16 w-16" />
-                        <p className="text-normal mt-medium text-secondary-600 font-semibold">
+                        <IconEnvelopeOpen className="h-16 w-16 text-cold-300" />
+                        <p className="text-normal mt-medium font-semibold text-cold-700">
                             You're all caught up!
                         </p>
-                        <p className="text-small mt-tiny text-secondary-500 font-normal">
+                        <p className="text-tinyall mt-tiny font-normal text-cold-700">
                             There are no new notifications in this tab.
                         </p>
                     </div>
                 )}
             </div>
-        </div>
+        </>
     )
 }
 

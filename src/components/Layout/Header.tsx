@@ -1,7 +1,14 @@
 'use client'
 
 import { Identity } from '@dfinity/agent'
-import { Menu, MenuHandler, MenuList } from '@material-tailwind/react'
+import {
+    Menu,
+    MenuHandler,
+    MenuList,
+    Popover,
+    PopoverContent,
+    PopoverHandler,
+} from '@material-tailwind/react'
 import { useEffect, useState } from 'react'
 
 import AcornIcon from '@components/Assets/acorn.svg'
@@ -39,6 +46,24 @@ import { build, buildBlobImage } from '@libs/url'
 import { deriveIdentity } from 'shared/utils/agent'
 import { Unwrap } from 'shared/utils/typings'
 
+// Separate component for time display to avoid re-rendering the entire Header
+const TimeDisplay = () => {
+    const [now, setNow] = useState<number>(Date.now())
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setNow((prev) => prev + 1000)
+        }, 1000)
+        return () => clearInterval(interval)
+    }, [])
+
+    return (
+        <span className="px-normal py-small rounded-lg hover:text-cold-950 hover:outline-none">
+            {formatCanisterDateTime({ milli: now }, true)}
+        </span>
+    )
+}
+
 enum EPopup {
     Login,
     Notification,
@@ -63,19 +88,10 @@ const Header = ({
     const [open, setOpen] = useState<EPopup | null>(null)
 
     const [pattern, setPattern] = useState<string>('')
-
-    const [now, setNow] = useState<number>(Date.now())
     const [pem, setPem] = useState<{ input: string; identity: Identity | null }>({
         input: '',
         identity: null,
     })
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setNow((prev) => prev + 1000)
-        }, 1000)
-        return () => clearInterval(interval)
-    }, [])
 
     const handleMainMenu = (title0: string, isOpen: boolean) => {
         setOpenMenu((prev) => ({ ...prev, [title0]: isOpen ? title0 : null }))
@@ -222,24 +238,40 @@ const Header = ({
                             <div className="live-animated"></div>
                         </div>
                     </button>
-                    <button
-                        className="md:px-medium gap-small relative flex h-[1.75rem] w-[1.75rem] items-center rounded-full border-0 border-black/10 px-0 text-primary-700 hover:bg-black/5 disabled:pointer-events-none disabled:opacity-50 md:h-[2.25rem] md:w-auto md:border"
-                        onClick={() => setOpen(EPopup.Notification)}
-                        disabled={!isAuthenticated || !user}
+                    <Popover
+                        open={openMenu['Notification'] === 'Notification'}
+                        handler={(t) => handleMainMenu('Notification', t)}
+                        animate={{ mount: { scale: 1, y: 0 }, unmount: { scale: 1, y: 20 } }}
                     >
-                        <span className="text-tiny hidden font-display font-normal md:block">
-                            Noti
-                        </span>
-                        <NotificationIcon className="h-5 w-5 stroke-[1.5px]" />
-                        {open === EPopup.Notification && <Notifications />}
-                        <div
-                            className="absolute -top-[1.5rem] right-[2rem] z-50 aria-hidden:hidden md:-top-[1.25rem] md:right-[2.25rem]"
-                            aria-hidden={unreadUserCount + unreadSystemCount === 0}
+                        <PopoverHandler
+                            onMouseEnter={() => setOpenMenu({ Notification: 'Notification' })}
                         >
-                            <div className="live-dot"></div>
-                            <div className="live-animated"></div>
-                        </div>
-                    </button>
+                            <button
+                                className="md:px-medium gap-small relative flex h-[1.75rem] w-[1.75rem] items-center rounded-full border-0 border-black/10 px-0 text-primary-700 outline-none hover:bg-black/5 disabled:pointer-events-none disabled:opacity-50 md:h-[2.25rem] md:w-auto md:border"
+                                disabled={!isAuthenticated || !user}
+                            >
+                                <span className="text-tiny hidden font-display font-normal md:block">
+                                    Noti
+                                </span>
+                                <NotificationIcon className="h-5 w-5 stroke-[1.5px]" />
+                                <div
+                                    className="absolute -top-[1.5rem] right-[2rem] z-50 aria-hidden:hidden md:-top-[1.25rem] md:right-[2.25rem]"
+                                    aria-hidden={unreadUserCount + unreadSystemCount === 0}
+                                >
+                                    <div className="live-dot"></div>
+                                    <div className="live-animated"></div>
+                                </div>
+                            </button>
+                        </PopoverHandler>
+                        <PopoverContent
+                            onMouseEnter={() => setOpenMenu({ Notification: 'Notification' })}
+                            className="relative w-full border-none bg-transparent p-0 shadow-none outline-none md:max-w-[40rem]"
+                        >
+                            <div className="p-medium mx-auto w-[90%] max-w-[40rem] rounded-lg border border-cold-200 bg-white shadow-lg outline-none duration-100 ease-in-out">
+                                <Notifications />
+                            </div>
+                        </PopoverContent>
+                    </Popover>
                     {!isAuthenticated ? (
                         <button
                             className="md:px-medium gap-small flex h-[1.75rem] w-[1.75rem] items-center rounded-full border-0 border-black/10 px-0 text-primary-700 hover:bg-black/5 md:h-[2.25rem] md:w-auto md:border"
@@ -251,13 +283,13 @@ const Header = ({
                             <LoginIcon className="h-5 w-5 stroke-[1.5px]" />
                         </button>
                     ) : (
-                        <Menu
-                            allowHover
+                        <Popover
                             open={openMenu['User'] === 'User'}
                             handler={(t) => handleMainMenu('User', t)}
+                            animate={{ mount: { scale: 1, y: 0 }, unmount: { scale: 1, y: 20 } }}
                         >
-                            <MenuHandler>
-                                <button className="md:px-medium gap-small flex h-[1.75rem] w-[1.75rem] items-center rounded-full border-0 border-black/10 px-0 text-primary-700 hover:bg-black/5 md:h-[2.25rem] md:w-auto md:border">
+                            <PopoverHandler onMouseEnter={() => setOpenMenu({ User: 'User' })}>
+                                <button className="md:px-medium gap-small flex h-[1.75rem] w-[1.75rem] items-center rounded-full border-0 border-black/10 px-0 text-primary-700 outline-none hover:bg-black/5 md:h-[2.25rem] md:w-auto md:border">
                                     {user ? (
                                         <>
                                             <span className="text-tiny hidden text-nowrap font-display font-normal md:block">
@@ -284,51 +316,54 @@ const Header = ({
                                         </>
                                     )}
                                 </button>
-                            </MenuHandler>
-                            <MenuList className="text-tiny flex flex-col text-nowrap text-left font-display font-light">
-                                <span className="px-normal py-small rounded-lg hover:text-cold-950 hover:outline-none">
-                                    {formatCanisterDateTime({ milli: now }, true)}
-                                </span>
-                                <hr className="py-small border-black/10 hover:outline-none" />
-                                <button
-                                    className="px-normal py-small rounded-lg text-left hover:bg-cold-500/25 hover:text-cold-950 hover:outline-none"
-                                    onClick={() => setOpen(EPopup.Affiliate)}
-                                >
-                                    My Referral Link
-                                </button>
-                                <button
-                                    className="px-normal py-small rounded-lg text-left hover:bg-cold-500/25 hover:text-cold-950 hover:outline-none"
-                                    onClick={() => setOpen(EPopup.TransferACORN)}
-                                >
-                                    Transfer ACORN
-                                </button>
-                                <button
-                                    className="px-normal py-small rounded-lg text-left hover:bg-cold-500/25 hover:text-cold-950 hover:outline-none"
-                                    onClick={() => setOpen(EPopup.TransferICP)}
-                                >
-                                    Transfer ICP
-                                </button>
-                                <hr className="py-small border-black/10 hover:outline-none" />
-                                <button
-                                    className="py-small rounded-lg font-medium text-red-800 hover:bg-red-800 hover:text-white hover:outline-none"
-                                    onClick={() => (
-                                        deleteAllConfigsCache(),
-                                        deleteAllPackagesCache(),
-                                        deleteAllStatusCache(),
-                                        deleteAllUsernamesCache(),
-                                        localStorage.clear()
-                                    )}
-                                >
-                                    Clean up all cache
-                                </button>
-                                <button
-                                    className="py-small rounded-lg font-medium text-red-800 hover:bg-red-800 hover:text-white hover:outline-none"
-                                    onClick={logout}
-                                >
-                                    Log out
-                                </button>
-                            </MenuList>
-                        </Menu>
+                            </PopoverHandler>
+                            <PopoverContent
+                                onMouseEnter={() => setOpenMenu({ User: 'User' })}
+                                className="relative w-full border-none bg-transparent p-0 shadow-none outline-none md:max-w-[20rem]"
+                            >
+                                <div className="p-medium mx-auto flex w-[90%] max-w-[20rem] flex-col rounded-lg border border-cold-200 bg-white shadow-lg outline-none">
+                                    <TimeDisplay />
+                                    <hr className="py-small border-black/10 hover:outline-none" />
+                                    <button
+                                        className="px-normal py-small rounded-lg text-left hover:bg-cold-500/25 hover:text-cold-950 hover:outline-none"
+                                        onClick={() => setOpen(EPopup.Affiliate)}
+                                    >
+                                        My Referral Link
+                                    </button>
+                                    <button
+                                        className="px-normal py-small rounded-lg text-left hover:bg-cold-500/25 hover:text-cold-950 hover:outline-none"
+                                        onClick={() => setOpen(EPopup.TransferACORN)}
+                                    >
+                                        Transfer ACORN
+                                    </button>
+                                    <button
+                                        className="px-normal py-small rounded-lg text-left hover:bg-cold-500/25 hover:text-cold-950 hover:outline-none"
+                                        onClick={() => setOpen(EPopup.TransferICP)}
+                                    >
+                                        Transfer ICP
+                                    </button>
+                                    <hr className="py-small border-black/10 hover:outline-none" />
+                                    <button
+                                        className="py-small rounded-lg font-medium text-red-800 hover:bg-red-800 hover:text-white hover:outline-none"
+                                        onClick={() => (
+                                            deleteAllConfigsCache(),
+                                            deleteAllPackagesCache(),
+                                            deleteAllStatusCache(),
+                                            deleteAllUsernamesCache(),
+                                            localStorage.clear()
+                                        )}
+                                    >
+                                        Clean up all cache
+                                    </button>
+                                    <button
+                                        className="py-small rounded-lg font-medium text-red-800 hover:bg-red-800 hover:text-white hover:outline-none"
+                                        onClick={logout}
+                                    >
+                                        Log out
+                                    </button>
+                                </div>
+                            </PopoverContent>
+                        </Popover>
                     )}
                 </div>
             </div>

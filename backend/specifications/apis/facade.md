@@ -98,9 +98,9 @@
     "#PROPOSALRESULT": {"proposalId": "Nat", "result": "#APPROVED | #REJECTED | #EXPIRED", "timestamp": "Time"},
     "#NEWHYPOTHESESFROMFOLLOWINGS": {"publisher": "Principal", "hypothesisId": "Nat", "timestamp": "Time"},
     "#NEWEVIDENCESFROMFOLLOWINGS": {"publisher": "Principal", "evidenceId": "Nat", "timestamp": "Time"},
-    "#NEWREFERRALS": {"principal": "Principal", "claimable": "Nat", "timestamp": "Time"},
-    "#NEWFOLLOWERS": {"principal": "Principal", "timestamp": "Time"},
-    "#NEWBALLOTS": {"principal": "Principal", "timestamp": "Time"},
+    "#NEWREFERRALS": {"user": "Principal", "claimable": "Nat", "timestamp": "Time"},
+    "#NEWFOLLOWERS": {"user": "Principal", "timestamp": "Time"},
+    "#NEWBALLOTS": {"voter": "Principal", "timestamp": "Time"},
     "#NEWEVIDENCESTOHYPOTHESIS": {
       "id": "Nat",
       "data": {"evidenceId": "Nat", "publisher": "Principal", "side": "#POSITIVE | #NEGATIVE", "timestamp": "Time"}
@@ -130,9 +130,9 @@
     "#PROPOSALRESULT": {"proposalId": "Nat", "result": "#APPROVED | #REJECTED | #EXPIRED", "timestamp": "Time"},
     "#NEWHYPOTHESESFROMFOLLOWINGS": {"publisher": "Principal", "hypothesisId": "Nat", "timestamp": "Time"},
     "#NEWEVIDENCESFROMFOLLOWINGS": {"publisher": "Principal", "evidenceId": "Nat", "timestamp": "Time"},
-    "#NEWREFERRALS": {"principal": "Principal", "claimable": "Nat", "timestamp": "Time"},
-    "#NEWFOLLOWERS": {"principal": "Principal", "timestamp": "Time"},
-    "#NEWBALLOTS": {"principal": "Principal", "timestamp": "Time"},
+    "#NEWREFERRALS": {"user": "Principal", "claimable": "Nat", "timestamp": "Time"},
+    "#NEWFOLLOWERS": {"user": "Principal", "timestamp": "Time"},
+    "#NEWBALLOTS": {"voter": "Principal", "timestamp": "Time"},
     "#NEWEVIDENCESTOHYPOTHESIS": {
       "id": "Nat",
       "data": {"evidenceId": "Nat", "publisher": "Principal", "side": "#POSITIVE | #NEGATIVE", "timestamp": "Time"}
@@ -163,9 +163,9 @@
       "#PROPOSALRESULT": {"proposalId": "Nat", "result": "#APPROVED | #REJECTED | #EXPIRED", "timestamp": "Time"},
       "#NEWHYPOTHESESFROMFOLLOWINGS": {"publisher": "Principal", "hypothesisId": "Nat", "timestamp": "Time"},
       "#NEWEVIDENCESFROMFOLLOWINGS": {"publisher": "Principal", "evidenceId": "Nat", "timestamp": "Time"},
-      "#NEWREFERRALS": {"principal": "Principal", "claimable": "Nat", "timestamp": "Time"},
-      "#NEWFOLLOWERS": {"principal": "Principal", "timestamp": "Time"},
-      "#NEWBALLOTS": {"principal": "Principal", "timestamp": "Time"},
+      "#NEWREFERRALS": {"user": "Principal", "claimable": "Nat", "timestamp": "Time"},
+      "#NEWFOLLOWERS": {"user": "Principal", "timestamp": "Time"},
+      "#NEWBALLOTS": {"voter": "Principal", "timestamp": "Time"},
       "#NEWEVIDENCESTOHYPOTHESIS": {
         "id": "Nat",
         "data": {"evidenceId": "Nat", "publisher": "Principal", "side": "#POSITIVE | #NEGATIVE", "timestamp": "Time"}
@@ -203,9 +203,9 @@
         "#PROPOSALRESULT": {"proposalId": "Nat", "result": "#APPROVED | #REJECTED | #EXPIRED", "timestamp": "Time"},
         "#NEWHYPOTHESESFROMFOLLOWINGS": {"publisher": "Principal", "hypothesisId": "Nat", "timestamp": "Time"},
         "#NEWEVIDENCESFROMFOLLOWINGS": {"publisher": "Principal", "evidenceId": "Nat", "timestamp": "Time"},
-        "#NEWREFERRALS": {"principal": "Principal", "claimable": "Nat", "timestamp": "Time"},
-        "#NEWFOLLOWERS": {"principal": "Principal", "timestamp": "Time"},
-        "#NEWBALLOTS": {"principal": "Principal", "timestamp": "Time"},
+        "#NEWREFERRALS": {"user": "Principal", "claimable": "Nat", "timestamp": "Time"},
+        "#NEWFOLLOWERS": {"user": "Principal", "timestamp": "Time"},
+        "#NEWBALLOTS": {"voter": "Principal", "timestamp": "Time"},
         "#NEWEVIDENCESTOHYPOTHESIS": {
           "id": "Nat",
           "data": {"evidenceId": "Nat", "publisher": "Principal", "side": "#POSITIVE | #NEGATIVE", "timestamp": "Time"}
@@ -488,9 +488,9 @@
       "#PROPOSALRESULT": {"proposalId": "Nat", "result": "#APPROVED | #REJECTED | #EXPIRED", "timestamp": "Time"},
       "#NEWHYPOTHESESFROMFOLLOWINGS": {"capacity": [{"publisher": "Principal", "hypothesisId": "Nat", "timestamp": "Time"}], "total": "Nat"},
       "#NEWEVIDENCESFROMFOLLOWINGS": {"capacity": [{"publisher": "Principal", "evidenceId": "Nat", "timestamp": "Time"}], "total": "Nat"},
-      "#NEWREFERRALS": {"capacity": [{"principal": "Principal", "claimable": "Nat", "timestamp": "Time"}], "total": "Nat"},
-      "#NEWFOLLOWERS": {"capacity": [{"principal": "Principal", "timestamp": "Time"}], "total": "Nat"},
-      "#NEWBALLOTS": {"capacity": [{"principal": "Principal", "timestamp": "Time"}], "total": "Nat"},
+      "#NEWREFERRALS": {"capacity": [{"user": "Principal", "claimable": "Nat", "timestamp": "Time"}], "total": "Nat"},
+      "#NEWFOLLOWERS": {"capacity": [{"user": "Principal", "timestamp": "Time"}], "total": "Nat"},
+      "#NEWBALLOTS": {"capacity": [{"voter": "Principal", "timestamp": "Time"}], "total": "Nat"},
       "#NEWEVIDENCESTOHYPOTHESIS": {
         "id": "Nat",
         "capacity": [{"evidenceId": "Nat", "publisher": "Principal", "side": "#POSITIVE | #NEGATIVE", "timestamp": "Time"}],
