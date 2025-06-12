@@ -101,7 +101,7 @@ export interface NewAxiomsToHypothesisData {
   'user' : Principal,
   'timestamp' : Time,
 }
-export interface NewBallotsData { 'principal' : Principal, 'timestamp' : Time }
+export interface NewBallotsData { 'voter' : Principal, 'timestamp' : Time }
 export interface NewEvidencesFromFollowingsData {
   'publisher' : Principal,
   'timestamp' : Time,
@@ -113,17 +113,14 @@ export interface NewEvidencesToHypothesisData {
   'timestamp' : Time,
   'evidenceId' : bigint,
 }
-export interface NewFollowersData {
-  'principal' : Principal,
-  'timestamp' : Time,
-}
+export interface NewFollowersData { 'user' : Principal, 'timestamp' : Time }
 export interface NewHypothesesFromFollowingsData {
   'publisher' : Principal,
   'timestamp' : Time,
   'hypothesisId' : bigint,
 }
 export interface NewReferralsData {
-  'principal' : Principal,
+  'user' : Principal,
   'claimable' : bigint,
   'timestamp' : Time,
 }

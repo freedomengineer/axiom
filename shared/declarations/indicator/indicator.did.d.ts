@@ -66,7 +66,7 @@ export interface Affiliate {
     [{ 'Referrals' : null }, bigint, bigint],
     TopPagination
   >,
-  'getUser' : ActorMethod<[Principal], Sharable__32>,
+  'getUser' : ActorMethod<[Principal], Sharable__33>,
   'initialize' : ActorMethod<[], undefined>,
   'putConfigs' : ActorMethod<[Array<[Key, SharableValue]>], undefined>,
   'setConfigs' : ActorMethod<[Array<[Key, SharableValue]>], undefined>,
@@ -107,37 +107,37 @@ export interface Axioms {
   'editHypothesis' : ActorMethod<[bigint, string], undefined>,
   'expectUserNotFound' : ActorMethod<[Principal], undefined>,
   'follow' : ActorMethod<[Principal], undefined>,
-  'getAgePayout' : ActorMethod<[bigint, bigint], Sharable__31>,
-  'getAgePayouts' : ActorMethod<[bigint], Sharable__30>,
-  'getAgesPayout' : ActorMethod<[bigint], Sharable__30>,
-  'getAgesPayouts' : ActorMethod<[], Array<Sharable__30>>,
+  'getAgePayout' : ActorMethod<[bigint, bigint], Sharable__32>,
+  'getAgePayouts' : ActorMethod<[bigint], Sharable__31>,
+  'getAgesPayout' : ActorMethod<[bigint], Sharable__31>,
+  'getAgesPayouts' : ActorMethod<[], Array<Sharable__31>>,
   'getConfig' : ActorMethod<[Key], SharableValue>,
   'getConfigs' : ActorMethod<[], Sharable__3>,
   'getEarning' : ActorMethod<[Principal], Sharable__7>,
-  'getEvidence' : ActorMethod<[bigint], Sharable__28>,
-  'getEvidences' : ActorMethod<[Filter__6, Sort_6], Sharable__29>,
+  'getEvidence' : ActorMethod<[bigint], Sharable__29>,
+  'getEvidences' : ActorMethod<[Filter__6, Sort_6], Sharable__30>,
   'getEvidencesPagination' : ActorMethod<
     [Filter__6, Sort_6, bigint, bigint],
     Pagination_6
   >,
-  'getField' : ActorMethod<[string], Sharable__26>,
-  'getFields' : ActorMethod<[Filter__5, Sort_5], Sharable__27>,
+  'getField' : ActorMethod<[string], Sharable__27>,
+  'getFields' : ActorMethod<[Filter__5, Sort_5], Sharable__28>,
   'getFieldsPagination' : ActorMethod<
     [Filter__5, Sort_5, bigint, bigint],
     Pagination_5
   >,
-  'getFlag' : ActorMethod<[Header], Sharable__24>,
-  'getFlags' : ActorMethod<[Filter__4, Sort_4], Sharable__25>,
+  'getFlag' : ActorMethod<[Header], Sharable__25>,
+  'getFlags' : ActorMethod<[Filter__4, Sort_4], Sharable__26>,
   'getFlagsPagination' : ActorMethod<
     [Filter__4, Sort_4, bigint, bigint],
     Pagination_4
   >,
-  'getHypotheses' : ActorMethod<[Filter__3, Sort_3], Sharable__23>,
+  'getHypotheses' : ActorMethod<[Filter__3, Sort_3], Sharable__24>,
   'getHypothesesPagination' : ActorMethod<
     [Filter__3, Sort_3, bigint, bigint],
     Pagination_3
   >,
-  'getHypothesis' : ActorMethod<[bigint], Sharable__22>,
+  'getHypothesis' : ActorMethod<[bigint], Sharable__23>,
   'getTop' : ActorMethod<
     [
       { 'HypothesisPublishers' : null } |
@@ -160,7 +160,7 @@ export interface Axioms {
     ],
     TopPagination
   >,
-  'getUser' : ActorMethod<[Principal], Sharable__21>,
+  'getUser' : ActorMethod<[Principal], Sharable__22>,
   'initialize' : ActorMethod<[], undefined>,
   'joinField' : ActorMethod<[string], undefined>,
   'leaveField' : ActorMethod<[string], undefined>,
@@ -188,6 +188,8 @@ export interface Axioms {
 export type BinaryChoice = { 'Negative' : null } |
   { 'Positive' : null };
 export type BinaryChoice__1 = { 'Negative' : null } |
+  { 'Positive' : null };
+export type BinaryChoice__2 = { 'Negative' : null } |
   { 'Positive' : null };
 export interface BinaryVote { 'value' : bigint, 'choice' : Choice__2 }
 export interface BinaryVote__1 { 'value' : bigint, 'choice' : Choice__2 }
@@ -218,6 +220,28 @@ export type ConfigurableActorVariant = { 'DAO' : null } |
   { 'Axioms' : null } |
   { 'Affiliate' : null } |
   { 'Treasury' : null };
+export interface CustodianElectionResultData {
+  'result' : ElectionResult,
+  'claimable' : bigint,
+  'timestamp' : Time__1,
+}
+export interface CustodianProposalDelegatedData {
+  'delegator' : Principal,
+  'timestamp' : Time__1,
+  'proposalId' : bigint,
+}
+export interface CustodianProposalOpenedData {
+  'timestamp' : Time__1,
+  'proposer' : Principal,
+  'proposalId' : bigint,
+  'retried' : bigint,
+}
+export interface CustodianProposalResultData {
+  'result' : Result,
+  'timestamp' : Time__1,
+  'proposer' : Principal,
+  'proposalId' : bigint,
+}
 export interface DAO {
   'cancelCodeUpload' : ActorMethod<[], undefined>,
   'castBallots' : ActorMethod<[Array<Principal>], undefined>,
@@ -225,21 +249,21 @@ export interface DAO {
   'expectUserNotFound' : ActorMethod<[Principal], undefined>,
   'getConfig' : ActorMethod<[Key], SharableValue>,
   'getConfigs' : ActorMethod<[], Sharable__3>,
-  'getDaysInPeriod' : ActorMethod<[], Sharable__20>,
+  'getDaysInPeriod' : ActorMethod<[], Sharable__21>,
   'getEarning' : ActorMethod<[Principal], [Sharable__7, Sharable__7]>,
-  'getNominee' : ActorMethod<[Principal], Sharable__18>,
-  'getNominees' : ActorMethod<[Filter__2, Sort_2], Sharable__19>,
+  'getNominee' : ActorMethod<[Principal], Sharable__19>,
+  'getNominees' : ActorMethod<[Filter__2, Sort_2], Sharable__20>,
   'getNomineesPagination' : ActorMethod<
     [Filter__2, Sort_2, bigint, bigint],
     Pagination_2
   >,
-  'getProposal' : ActorMethod<[bigint], Sharable__16>,
-  'getProposals' : ActorMethod<[Filter__1, Sort_1], Sharable__17>,
+  'getProposal' : ActorMethod<[bigint], Sharable__17>,
+  'getProposals' : ActorMethod<[Filter__1, Sort_1], Sharable__18>,
   'getProposalsPagination' : ActorMethod<
     [Filter__1, Sort_1, bigint, bigint],
     Pagination_1
   >,
-  'getUser' : ActorMethod<[Principal], Sharable__15>,
+  'getUser' : ActorMethod<[Principal], Sharable__16>,
   'initialize' : ActorMethod<[], undefined>,
   'initializeCodeUploadSession' : ActorMethod<
     [string, UpdateLevel, ReleaseNotes, Sharable],
@@ -314,11 +338,14 @@ export interface Dip721NonFungibleToken {
   'name' : string,
   'symbol' : string,
 }
+export type ElectionResult = { 'New' : null } |
+  { 'Unchanged' : null } |
+  { 'Removed' : null };
 export interface Entry { 'rank' : bigint, 'score' : bigint }
 export interface Escrow {
   'bury' : ActorMethod<[bigint, Option], undefined>,
   'expectUserNotFound' : ActorMethod<[Principal], undefined>,
-  'getBurials' : ActorMethod<[Principal], Sharable__14>,
+  'getBurials' : ActorMethod<[Principal], Sharable__15>,
   'getBuriedAmount' : ActorMethod<[Principal], bigint>,
   'getClaimableAmount' : ActorMethod<[Principal], bigint>,
   'getConfig' : ActorMethod<[Key], SharableValue>,
@@ -333,7 +360,7 @@ export interface Escrow {
     [{ 'PoweredVoters' : null } | { 'AcornBuriers' : null }, bigint, bigint],
     TopPagination
   >,
-  'getUser' : ActorMethod<[Principal], Sharable__13>,
+  'getUser' : ActorMethod<[Principal], Sharable__14>,
   'getVotingPower' : ActorMethod<[Principal], bigint>,
   'initialize' : ActorMethod<[], undefined>,
   'putConfigs' : ActorMethod<[Array<[Key, SharableValue]>], undefined>,
@@ -343,6 +370,8 @@ export interface Escrow {
   'transferFounderBurial' : ActorMethod<[Principal, Principal], undefined>,
   'withdrawAll' : ActorMethod<[], undefined>,
 }
+export type ExecutedResult = { 'Failed' : null } |
+  { 'Executed' : null };
 export interface Facade {
   'editAvatar' : ActorMethod<[[] | [Picture]], undefined>,
   'editLinks' : ActorMethod<[Array<Hyperlink__1>], undefined>,
@@ -350,33 +379,55 @@ export interface Facade {
   'editUsername' : ActorMethod<[string], undefined>,
   'getConfig' : ActorMethod<[Key], SharableValue>,
   'getConfigs' : ActorMethod<[], Sharable__3>,
+  'getNotification' : ActorMethod<[], Sharable__13>,
   'getUser' : ActorMethod<[Principal], Sharable__12>,
   'getUserIdentifier' : ActorMethod<[IdentifierVariant], Identifier>,
   'getUsers' : ActorMethod<[Filter, Sort], Array<Sharable__12>>,
   'getUsersCount' : ActorMethod<[], bigint>,
+  'getUsersIdentifier' : ActorMethod<[], Array<Identifier>>,
   'getUsersPagination' : ActorMethod<
     [Filter, Sort, bigint, bigint],
     Pagination
   >,
+  'getUsersPrincipal' : ActorMethod<[], Array<Principal>>,
   'initialize' : ActorMethod<[], undefined>,
+  'postSystemGenericNotification' : ActorMethod<
+    [string, [] | [Hyperlink__1]],
+    undefined
+  >,
+  'postSystemNotification' : ActorMethod<[SystemVariantParam__1], undefined>,
+  'postSystemNotifications' : ActorMethod<
+    [SystemNotificationsBatch],
+    undefined
+  >,
+  'postUserNotification' : ActorMethod<
+    [Principal, UserVariantParam__1],
+    undefined
+  >,
+  'postUserNotifications' : ActorMethod<
+    [Principal, UserNotificationsBatch],
+    undefined
+  >,
+  'postUsersNotification' : ActorMethod<
+    [UsersBatch, UserVariantParam__1],
+    undefined
+  >,
+  'postUsersNotifications' : ActorMethod<[UsersNotificationsBatch], undefined>,
   'putConfigs' : ActorMethod<[Array<[Key, SharableValue]>], undefined>,
   'register' : ActorMethod<[string, bigint, [] | [Principal]], undefined>,
   'setConfigs' : ActorMethod<[Array<[Key, SharableValue]>], undefined>,
   'shiftToMidnight' : ActorMethod<[bigint], undefined>,
   'updateCapitalRaised' : ActorMethod<[Principal, bigint], undefined>,
 }
-export interface Filter {
-  'containsPattern' : [] | [string],
-  'hasCapitalRaised' : [] | [bigint],
-}
+export interface Filter { 'q' : [] | [string], 'capitalRaised' : [] | [bigint] }
 export interface Filter__1 {
-  'votedBy' : [] | [Principal],
-  'proposedBy' : [] | [Principal],
-  'proposedIn' : [] | [ProposalVariant],
-  'withStatus' : [] | [StatusVariant],
+  'status' : [] | [StatusVariant],
+  'voter' : [] | [Principal],
+  'category' : [] | [ProposalVariant],
+  'proposer' : [] | [Principal],
 }
 export interface Filter__2 {
-  'votedBy' : [] | [Principal],
+  'voter' : [] | [Principal],
   'isCustodian' : [] | [boolean],
 }
 export interface Filter__3 {
@@ -391,21 +442,24 @@ export interface Filter__3 {
   'userJoinedFields' : [] | [Principal],
 }
 export interface Filter__4 {
-  'votedBy' : [] | [Principal],
-  'requestedBy' : [] | [Principal],
-  'requestedIn' : [] | [Category__1],
-  'withStatus' : [] | [Status__1],
+  'status' : [] | [Status__1],
+  'requester' : [] | [Principal],
+  'voter' : [] | [Principal],
+  'category' : [] | [Category__1],
 }
-export interface Filter__5 {
-  'joinedBy' : [] | [Principal],
-  'containsPattern' : [] | [string],
-}
+export interface Filter__5 { 'q' : [] | [string], 'member' : [] | [Principal] }
 export interface Filter__6 {
   'q' : [] | [string],
   'voter' : [] | [Principal],
   'publisher' : [] | [Principal],
-  'side' : [] | [BinaryChoice],
+  'side' : [] | [BinaryChoice__1],
   'hypothesis' : [] | [bigint],
+}
+export interface FlagHeader { 'id' : bigint, 'category' : Category }
+export interface ForceUpdateCapitalRaisedResult {
+  'success' : Array<string>,
+  'unchanged' : Array<string>,
+  'failed' : Array<[string, string]>,
 }
 export type Form = Array<Format>;
 export type Format = { 'Note' : Note } |
@@ -414,8 +468,13 @@ export type Format = { 'Note' : Note } |
 export interface Header { 'id' : bigint, 'category' : Category }
 export interface Hyperlink { 'url' : string, 'anchorText' : string }
 export interface Hyperlink__1 { 'url' : string, 'anchorText' : string }
+export interface Hyperlink__2 { 'url' : string, 'anchorText' : string }
 export interface ICPUSD { 'exchange' : ActorMethod<[boolean, bigint], bigint> }
-export interface Identifier { 'principal' : Principal, 'username' : string }
+export interface Identifier {
+  'principal' : Principal,
+  'username' : string,
+  'capitalRaised' : bigint,
+}
 export type IdentifierVariant = { 'Principal' : Principal } |
   { 'Username' : string };
 export interface Indicator {
@@ -491,10 +550,61 @@ export interface Info {
   'memorySize' : bigint,
 }
 export type Key = string;
-export type List = [] | [[bigint, List__1]];
-export type List__1 = [] | [[bigint, List__1]];
+export type List = [] | [[[Principal, UserVariantParam], List]];
+export type List_1 = [] | [[Principal, List_1]];
+export type List_2 = [] | [[UserVariantParam, List_2]];
+export type List_3 = [] | [[SystemVariantParam, List_3]];
+export type List_4 = [] | [[bigint, List_4]];
+export type List__1 = [] | [[bigint, List_4]];
 export interface LogoResult { 'data' : string, 'logo_type' : string }
-export interface Milestone { 'status' : Status, 'date' : Time__4 }
+export interface Milestone { 'status' : Status, 'date' : Time__5 }
+export interface NewAxiomsToHypothesisData {
+  'user' : Principal,
+  'timestamp' : Time__1,
+}
+export interface NewBallotsData { 'voter' : Principal, 'timestamp' : Time__1 }
+export interface NewEvidencesFromFollowingsData {
+  'publisher' : Principal,
+  'timestamp' : Time__1,
+  'evidenceId' : bigint,
+}
+export interface NewEvidencesToHypothesisData {
+  'publisher' : Principal,
+  'side' : BinaryChoice,
+  'timestamp' : Time__1,
+  'evidenceId' : bigint,
+}
+export interface NewFollowersData { 'user' : Principal, 'timestamp' : Time__1 }
+export interface NewHypothesesFromFollowingsData {
+  'publisher' : Principal,
+  'timestamp' : Time__1,
+  'hypothesisId' : bigint,
+}
+export interface NewReferralsData {
+  'user' : Principal,
+  'claimable' : bigint,
+  'timestamp' : Time__1,
+}
+export interface NewRepliesToEvidenceData {
+  'publisher' : Principal,
+  'timestamp' : Time__1,
+  'evidenceId' : bigint,
+}
+export interface NewVotesToEvidenceData {
+  'voter' : Principal,
+  'timestamp' : Time__1,
+  'choice' : BinaryChoice,
+}
+export interface NewVotesToHypothesisData {
+  'voter' : Principal,
+  'timestamp' : Time__1,
+  'choice' : TernaryChoice,
+}
+export interface NewVotesToProposalData {
+  'voter' : Principal,
+  'timestamp' : Time__1,
+  'choice' : BinaryChoice,
+}
 export interface Note { 'content' : string, 'extended' : boolean }
 export type OneSideSharable = [bigint, bigint, bigint];
 export type OneSideSharable__1 = [bigint, bigint];
@@ -513,39 +623,53 @@ export interface Pagination {
 export interface Pagination_1 {
   'is' : bigint,
   'of' : bigint,
-  'result' : Array<Sharable__16>,
+  'result' : Array<Sharable__17>,
 }
 export interface Pagination_2 {
   'is' : bigint,
   'of' : bigint,
-  'result' : Array<Sharable__18>,
+  'result' : Array<Sharable__19>,
 }
 export interface Pagination_3 {
   'is' : bigint,
   'of' : bigint,
-  'result' : Array<Sharable__22>,
+  'result' : Array<Sharable__23>,
 }
 export interface Pagination_4 {
   'is' : bigint,
   'of' : bigint,
-  'result' : Array<Sharable__24>,
+  'result' : Array<Sharable__25>,
 }
 export interface Pagination_5 {
   'is' : bigint,
   'of' : bigint,
-  'result' : Array<Sharable__26>,
+  'result' : Array<Sharable__27>,
 }
 export interface Pagination_6 {
   'is' : bigint,
   'of' : bigint,
-  'result' : Array<Sharable__28>,
+  'result' : Array<Sharable__29>,
 }
 export interface Picture { 'blob' : Uint8Array | number[] }
+export interface ProposalExecutedData {
+  'result' : ExecutedResult,
+  'claimable' : bigint,
+  'timestamp' : Time__1,
+  'proposalId' : bigint,
+}
+export interface ProposalResultData {
+  'result' : Result,
+  'timestamp' : Time__1,
+  'proposalId' : bigint,
+}
 export type ProposalVariant = { 'Code' : null } |
   { 'Field' : null } |
   { 'Configs' : null } |
   { 'Worker' : null };
 export type ReleaseNotes = Array<Changes>;
+export type Result = { 'Approved' : null } |
+  { 'Rejected' : null } |
+  { 'Expired' : null };
 export type Role = { 'Guest' : null } |
   { 'Member' : null };
 export interface Sales {
@@ -559,6 +683,7 @@ export interface Sales {
   'deployPackage' : ActorMethod<[bigint], undefined>,
   'expectPackageFound' : ActorMethod<[bigint], bigint>,
   'expectPackageNotFound' : ActorMethod<[bigint], undefined>,
+  'forceUpdateCapitalRaised' : ActorMethod<[], ForceUpdateCapitalRaisedResult>,
   'getAchievementPackagePrincipals' : ActorMethod<
     [],
     Array<[Achievement, Principal]>
@@ -597,9 +722,9 @@ export interface SharableBinaryVotes__1 {
   'regular' : OneSideSharable__1,
 }
 export interface SharableBurial {
-  'issueDate' : Time__2,
+  'issueDate' : Time__3,
   'coefficient' : bigint,
-  'expiryDate' : Time__2,
+  'expiryDate' : Time__3,
   'claimableInterest' : SharableE8S__2,
   'amount' : SharableE8S__2,
 }
@@ -661,7 +786,7 @@ export interface SharableEvidence {
   'publisher' : Principal,
   'repliedTo' : [] | [bigint],
   'replies' : Array<bigint>,
-  'choice' : BinaryChoice__1,
+  'choice' : BinaryChoice__2,
   'hypothesisId' : bigint,
 }
 export interface SharableField { 'name' : string, 'description' : string }
@@ -671,7 +796,7 @@ export interface SharableField__1 {
   'callerRole' : [] | [Role],
   'name' : string,
   'description' : string,
-  'creationDate' : Time__6,
+  'creationDate' : Time__7,
 }
 export interface SharableFlag {
   'id' : bigint,
@@ -680,7 +805,7 @@ export interface SharableFlag {
   'callerVote' : [] | [BinaryVote__1],
   'votes' : SharableBinaryVotes,
   'category' : Category,
-  'requestDate' : Time__5,
+  'requestDate' : Time__6,
   'reason' : string,
 }
 export interface SharableHypothesis {
@@ -747,10 +872,108 @@ export interface SharableRank {
   'hypothesisId' : bigint,
 }
 export type SharableRanks = Array<SharableRank>;
+export type SharableSystemVariant = {
+    'TallyResult' : {
+      'new' : Array<Principal>,
+      'timestamp' : Time__1,
+      'unchanged' : Array<Principal>,
+      'removed' : Array<Principal>,
+    }
+  } |
+  {
+    'FlagResult' : {
+      'result' : Result,
+      'timestamp' : Time__1,
+      'header' : FlagHeader,
+    }
+  } |
+  {
+    'ProposalExecuted' : {
+      'result' : ExecutedResult,
+      'timestamp' : Time__1,
+      'proposer' : Principal,
+      'proposalId' : bigint,
+    }
+  } |
+  { 'FlagRequested' : { 'timestamp' : Time__1, 'header' : FlagHeader } } |
+  {
+    'SystemGeneric' : {
+      'link' : [] | [Hyperlink],
+      'message' : string,
+      'timestamp' : Time__1,
+    }
+  };
 export interface SharableTernaryVotes {
   'powered' : OneSideSharable,
   'regular' : OneSideSharable,
 }
+export type SharableUserVariant = {
+    'NewEvidencesFromFollowings' : {
+      'total' : bigint,
+      'capacity' : Array<NewEvidencesFromFollowingsData>,
+    }
+  } |
+  {
+    'NewAxiomsToHypothesis' : {
+      'id' : bigint,
+      'total' : bigint,
+      'capacity' : Array<NewAxiomsToHypothesisData>,
+    }
+  } |
+  {
+    'NewReferrals' : { 'total' : bigint, 'capacity' : Array<NewReferralsData> }
+  } |
+  { 'CustodianElectionResult' : CustodianElectionResultData } |
+  { 'ProposalExecuted' : ProposalExecutedData } |
+  { 'NewBallots' : { 'total' : bigint, 'capacity' : Array<NewBallotsData> } } |
+  { 'ProposalResult' : ProposalResultData } |
+  { 'CustodianProposalResult' : CustodianProposalResultData } |
+  {
+    'NewEvidencesToHypothesis' : {
+      'id' : bigint,
+      'total' : bigint,
+      'capacity' : Array<NewEvidencesToHypothesisData>,
+    }
+  } |
+  { 'CustodianProposalOpened' : CustodianProposalOpenedData } |
+  { 'CustodianProposalDelegated' : CustodianProposalDelegatedData } |
+  {
+    'NewVotesToHypothesis' : {
+      'id' : bigint,
+      'total' : bigint,
+      'capacity' : Array<NewVotesToHypothesisData>,
+    }
+  } |
+  {
+    'NewFollowers' : { 'total' : bigint, 'capacity' : Array<NewFollowersData> }
+  } |
+  {
+    'NewVotesToEvidence' : {
+      'id' : bigint,
+      'total' : bigint,
+      'capacity' : Array<NewVotesToEvidenceData>,
+    }
+  } |
+  {
+    'NewHypothesesFromFollowings' : {
+      'total' : bigint,
+      'capacity' : Array<NewHypothesesFromFollowingsData>,
+    }
+  } |
+  {
+    'NewVotesToProposal' : {
+      'id' : bigint,
+      'total' : bigint,
+      'capacity' : Array<NewVotesToProposalData>,
+    }
+  } |
+  {
+    'NewRepliesToEvidence' : {
+      'id' : bigint,
+      'total' : bigint,
+      'capacity' : Array<NewRepliesToEvidenceData>,
+    }
+  };
 export type SharableValue = { 'E8S' : SharableE8S } |
   { 'Nat' : bigint } |
   { 'Bool' : boolean } |
@@ -769,25 +992,29 @@ export type Sharable__11 = Array<SharableAchievementPackage>;
 export interface Sharable__12 {
   'principal' : Principal,
   'username' : string,
-  'links' : Array<Hyperlink>,
-  'creationDate' : Time__1,
+  'links' : Array<Hyperlink__2>,
+  'creationDate' : Time__2,
   'capitalRaised' : bigint,
   'location' : string,
   'avatar' : [] | [Picture],
 }
-export interface Sharable__13 { 'burials' : SharableBurials }
-export type Sharable__14 = Array<SharableBurial>;
-export interface Sharable__15 {
+export type Sharable__13 = [
+  Array<SharableUserVariant>,
+  Array<SharableSystemVariant>,
+];
+export interface Sharable__14 { 'burials' : SharableBurials }
+export type Sharable__15 = Array<SharableBurial>;
+export interface Sharable__16 {
   'ballots' : Array<[Principal, bigint]>,
-  'referendums' : List,
+  'referendums' : List__1,
   'icpEarning' : SharableEarning__1,
   'referendumVotes' : Array<[bigint, TernaryVote]>,
   'acornEarning' : SharableEarning__1,
-  'lastUpdateBallot' : Time__3,
+  'lastUpdateBallot' : Time__4,
   'proposalVotes' : Array<[bigint, Delegable__1]>,
-  'proposals' : List,
+  'proposals' : List__1,
 }
-export interface Sharable__16 {
+export interface Sharable__17 {
   'id' : bigint,
   'title' : string,
   'icpReward' : bigint,
@@ -804,24 +1031,25 @@ export interface Sharable__16 {
   'detachment' : SharableDetachment,
   'timeline' : Array<Milestone>,
 }
-export type Sharable__17 = Array<SharableProposal>;
-export interface Sharable__18 {
+export type Sharable__18 = Array<SharableProposal>;
+export interface Sharable__19 {
   'title' : string,
   'principal' : Principal,
   'ballots' : [bigint, bigint],
   'isCustodian' : boolean,
   'callerBallot' : [] | [bigint],
 }
-export type Sharable__19 = Array<SharableNominee>;
 export interface Sharable__2 {
   'updateLevel' : UpdateLevel__1,
   'releaseNotes' : ReleaseNotes,
   'commitments' : SharableCommitments,
   'commitHash' : string,
 }
-export type Sharable__20 = bigint;
-export interface Sharable__21 {
+export type Sharable__20 = Array<SharableNominee>;
+export type Sharable__21 = bigint;
+export interface Sharable__22 {
   'evidences' : Array<bigint>,
+  'principal' : Principal,
   'earning' : SharableEarning__2,
   'joinedFields' : Array<string>,
   'axioms' : Array<bigint>,
@@ -829,10 +1057,12 @@ export interface Sharable__21 {
   'bookmarks' : Array<bigint>,
   'hypotheses' : Array<bigint>,
   'votedEvidences' : Array<[bigint, BinaryVote]>,
+  'callerFollowing' : [] | [boolean],
   'followers' : Array<Principal>,
-  'following' : Array<Principal>,
+  'followings' : Array<Principal>,
+  'callerFollower' : [] | [boolean],
 }
-export interface Sharable__22 {
+export interface Sharable__23 {
   'id' : bigint,
   'content' : string,
   'axioms' : SharableCount,
@@ -845,28 +1075,28 @@ export interface Sharable__22 {
   'fieldId' : string,
   'evidenceIds' : Array<bigint>,
 }
-export type Sharable__23 = Array<SharableHypothesis>;
-export interface Sharable__24 {
+export type Sharable__24 = Array<SharableHypothesis>;
+export interface Sharable__25 {
   'id' : bigint,
   'status' : Status__2,
   'requester' : Principal,
   'callerVote' : [] | [BinaryVote__1],
   'votes' : SharableBinaryVotes,
   'category' : Category,
-  'requestDate' : Time__5,
+  'requestDate' : Time__6,
   'reason' : string,
 }
-export type Sharable__25 = Array<SharableFlag>;
-export interface Sharable__26 {
+export type Sharable__26 = Array<SharableFlag>;
+export interface Sharable__27 {
   'members' : Array<Principal>,
   'hypothesisIds' : Array<bigint>,
   'callerRole' : [] | [Role],
   'name' : string,
   'description' : string,
-  'creationDate' : Time__6,
+  'creationDate' : Time__7,
 }
-export type Sharable__27 = Array<SharableField__1>;
-export interface Sharable__28 {
+export type Sharable__28 = Array<SharableField__1>;
+export interface Sharable__29 {
   'id' : bigint,
   'callerVote' : [] | [BinaryVote__2],
   'votes' : SharableBinaryVotes__1,
@@ -875,17 +1105,17 @@ export interface Sharable__28 {
   'publisher' : Principal,
   'repliedTo' : [] | [bigint],
   'replies' : Array<bigint>,
-  'choice' : BinaryChoice__1,
+  'choice' : BinaryChoice__2,
   'hypothesisId' : bigint,
 }
-export type Sharable__29 = Array<SharableEvidence>;
 export type Sharable__3 = Array<[Key, SharableValue]>;
-export type Sharable__30 = Array<SharablePayout>;
-export interface Sharable__31 {
+export type Sharable__30 = Array<SharableEvidence>;
+export type Sharable__31 = Array<SharablePayout>;
+export interface Sharable__32 {
   'ranks' : SharableRanks,
   'callerRevenue' : [] | [SharableE8S__3],
 }
-export interface Sharable__32 {
+export interface Sharable__33 {
   'referrer' : [] | [Principal],
   'earning' : SharableEarning__3,
   'referrals' : SharableCount__1,
@@ -916,7 +1146,9 @@ export interface Sort_4 { 'by' : Sort__5, 'order' : Order }
 export interface Sort_5 { 'by' : Sort__6, 'order' : Order }
 export interface Sort_6 { 'by' : Sort__7, 'order' : Order }
 export type Sort__1 = { 'alphabetical' : null } |
+  { 'followers' : null } |
   { 'capitalRaised' : null } |
+  { 'followings' : null } |
   { 'recent' : null };
 export type Sort__2 = { 'icpReward' : null } |
   { 'acornReward' : null } |
@@ -977,6 +1209,72 @@ export type Status__2 = { 'Approved' : null } |
   { 'Rejected' : null } |
   { 'Requested' : null } |
   { 'Expired' : null };
+export type SystemNotificationsBatch = [] | [[SystemVariantParam, List_3]];
+export type SystemVariantParam = {
+    'TallyResult' : {
+      'new' : Array<Principal>,
+      'timestamp' : Time__1,
+      'unchanged' : Array<Principal>,
+      'removed' : Array<Principal>,
+    }
+  } |
+  {
+    'FlagResult' : {
+      'result' : Result,
+      'timestamp' : Time__1,
+      'header' : FlagHeader,
+    }
+  } |
+  {
+    'ProposalExecuted' : {
+      'result' : ExecutedResult,
+      'timestamp' : Time__1,
+      'proposer' : Principal,
+      'proposalId' : bigint,
+    }
+  } |
+  { 'FlagRequested' : { 'timestamp' : Time__1, 'header' : FlagHeader } } |
+  {
+    'SystemGeneric' : {
+      'link' : [] | [Hyperlink],
+      'message' : string,
+      'timestamp' : Time__1,
+    }
+  };
+export type SystemVariantParam__1 = {
+    'TallyResult' : {
+      'new' : Array<Principal>,
+      'timestamp' : Time__1,
+      'unchanged' : Array<Principal>,
+      'removed' : Array<Principal>,
+    }
+  } |
+  {
+    'FlagResult' : {
+      'result' : Result,
+      'timestamp' : Time__1,
+      'header' : FlagHeader,
+    }
+  } |
+  {
+    'ProposalExecuted' : {
+      'result' : ExecutedResult,
+      'timestamp' : Time__1,
+      'proposer' : Principal,
+      'proposalId' : bigint,
+    }
+  } |
+  { 'FlagRequested' : { 'timestamp' : Time__1, 'header' : FlagHeader } } |
+  {
+    'SystemGeneric' : {
+      'link' : [] | [Hyperlink],
+      'message' : string,
+      'timestamp' : Time__1,
+    }
+  };
+export type TernaryChoice = { 'Negative' : null } |
+  { 'Positive' : null } |
+  { 'Neutral' : null };
 export interface TernaryVote { 'value' : bigint, 'choice' : Choice__1 }
 export interface TernaryVote__1 { 'value' : bigint, 'choice' : Choice__1 }
 export interface TernaryVote__2 { 'value' : bigint, 'choice' : Choice__1 }
@@ -987,6 +1285,7 @@ export type Time__3 = bigint;
 export type Time__4 = bigint;
 export type Time__5 = bigint;
 export type Time__6 = bigint;
+export type Time__7 = bigint;
 export interface TopNonPagination {
   'result' : TopResult,
   'callerRank' : [] | [bigint],
@@ -1069,6 +1368,97 @@ export type UpdateLevel = { 'Patch' : null } |
 export type UpdateLevel__1 = { 'Patch' : null } |
   { 'Major' : null } |
   { 'Minor' : null };
+export type UserNotificationsBatch = [] | [[UserVariantParam, List_2]];
+export type UserVariantParam = {
+    'NewEvidencesFromFollowings' : NewEvidencesFromFollowingsData
+  } |
+  {
+    'NewAxiomsToHypothesis' : {
+      'id' : bigint,
+      'data' : NewAxiomsToHypothesisData,
+    }
+  } |
+  { 'NewReferrals' : NewReferralsData } |
+  { 'CustodianElectionResult' : CustodianElectionResultData } |
+  { 'ProposalExecuted' : ProposalExecutedData } |
+  { 'NewBallots' : NewBallotsData } |
+  { 'ProposalResult' : ProposalResultData } |
+  { 'CustodianProposalResult' : CustodianProposalResultData } |
+  {
+    'NewEvidencesToHypothesis' : {
+      'id' : bigint,
+      'data' : NewEvidencesToHypothesisData,
+    }
+  } |
+  { 'CustodianProposalOpened' : CustodianProposalOpenedData } |
+  { 'CustodianProposalDelegated' : CustodianProposalDelegatedData } |
+  {
+    'NewVotesToHypothesis' : {
+      'id' : bigint,
+      'data' : NewVotesToHypothesisData,
+    }
+  } |
+  { 'NewFollowers' : NewFollowersData } |
+  {
+    'NewVotesToEvidence' : { 'id' : bigint, 'data' : NewVotesToEvidenceData }
+  } |
+  { 'NewHypothesesFromFollowings' : NewHypothesesFromFollowingsData } |
+  {
+    'NewVotesToProposal' : { 'id' : bigint, 'data' : NewVotesToProposalData }
+  } |
+  {
+    'NewRepliesToEvidence' : {
+      'id' : bigint,
+      'data' : NewRepliesToEvidenceData,
+    }
+  };
+export type UserVariantParam__1 = {
+    'NewEvidencesFromFollowings' : NewEvidencesFromFollowingsData
+  } |
+  {
+    'NewAxiomsToHypothesis' : {
+      'id' : bigint,
+      'data' : NewAxiomsToHypothesisData,
+    }
+  } |
+  { 'NewReferrals' : NewReferralsData } |
+  { 'CustodianElectionResult' : CustodianElectionResultData } |
+  { 'ProposalExecuted' : ProposalExecutedData } |
+  { 'NewBallots' : NewBallotsData } |
+  { 'ProposalResult' : ProposalResultData } |
+  { 'CustodianProposalResult' : CustodianProposalResultData } |
+  {
+    'NewEvidencesToHypothesis' : {
+      'id' : bigint,
+      'data' : NewEvidencesToHypothesisData,
+    }
+  } |
+  { 'CustodianProposalOpened' : CustodianProposalOpenedData } |
+  { 'CustodianProposalDelegated' : CustodianProposalDelegatedData } |
+  {
+    'NewVotesToHypothesis' : {
+      'id' : bigint,
+      'data' : NewVotesToHypothesisData,
+    }
+  } |
+  { 'NewFollowers' : NewFollowersData } |
+  {
+    'NewVotesToEvidence' : { 'id' : bigint, 'data' : NewVotesToEvidenceData }
+  } |
+  { 'NewHypothesesFromFollowings' : NewHypothesesFromFollowingsData } |
+  {
+    'NewVotesToProposal' : { 'id' : bigint, 'data' : NewVotesToProposalData }
+  } |
+  {
+    'NewRepliesToEvidence' : {
+      'id' : bigint,
+      'data' : NewRepliesToEvidenceData,
+    }
+  };
+export type UsersBatch = [] | [[Principal, List_1]];
+export type UsersNotificationsBatch = [] | [
+  [[Principal, UserVariantParam], List]
+];
 export type Value = { 'value' : ValueProp } |
   { 'infinity' : null };
 export type ValueProp = { 'inclusive' : number } |

@@ -20,7 +20,7 @@ const Symbol = ({ capitalRaised, className }: { capitalRaised: string; className
             return (
                 <HoboIcon
                     className={cn(
-                        'h-3.5 w-3.5 shrink-0 stroke-2 text-inherit md:h-4 md:w-4',
+                        'mr-1 inline-block h-3.5 w-3.5 shrink-0 stroke-2 text-inherit md:h-4 md:w-4',
                         className
                     )}
                 />
@@ -29,7 +29,7 @@ const Symbol = ({ capitalRaised, className }: { capitalRaised: string; className
             return (
                 <SeekerIcon
                     className={cn(
-                        'h-3.5 w-3.5 shrink-0 stroke-2 text-inherit md:h-4 md:w-4',
+                        'mr-1 inline-block h-3.5 w-3.5 shrink-0 stroke-2 text-inherit md:h-4 md:w-4',
                         className
                     )}
                 />
@@ -38,7 +38,7 @@ const Symbol = ({ capitalRaised, className }: { capitalRaised: string; className
             return (
                 <ScribeIcon
                     className={cn(
-                        'h-3.5 w-3.5 shrink-0 stroke-2 text-inherit md:h-4 md:w-4',
+                        'mr-1 inline-block h-3.5 w-3.5 shrink-0 stroke-2 text-inherit md:h-4 md:w-4',
                         className
                     )}
                 />
@@ -47,7 +47,7 @@ const Symbol = ({ capitalRaised, className }: { capitalRaised: string; className
             return (
                 <ScientistIcon
                     className={cn(
-                        'h-3.5 w-3.5 shrink-0 stroke-2 text-inherit md:h-4 md:w-4',
+                        'mr-1 inline-block h-3.5 w-3.5 shrink-0 stroke-2 text-inherit md:h-4 md:w-4',
                         className
                     )}
                 />
@@ -56,7 +56,7 @@ const Symbol = ({ capitalRaised, className }: { capitalRaised: string; className
             return (
                 <PhilosopherIcon
                     className={cn(
-                        'h-3.5 w-3.5 shrink-0 stroke-2 text-inherit md:h-4 md:w-4',
+                        'mr-1 inline-block h-3.5 w-3.5 shrink-0 stroke-2 text-inherit md:h-4 md:w-4',
                         className
                     )}
                 />
@@ -65,7 +65,7 @@ const Symbol = ({ capitalRaised, className }: { capitalRaised: string; className
             return (
                 <EngineerIcon
                     className={cn(
-                        'h-3.5 w-3.5 shrink-0 stroke-2 text-inherit md:h-4 md:w-4',
+                        'mr-1 inline-block h-3.5 w-3.5 shrink-0 stroke-2 text-inherit md:h-4 md:w-4',
                         className
                     )}
                 />
@@ -74,7 +74,7 @@ const Symbol = ({ capitalRaised, className }: { capitalRaised: string; className
             return (
                 <ExplorerIcon
                     className={cn(
-                        'h-3.5 w-3.5 shrink-0 stroke-2 text-inherit md:h-4 md:w-4',
+                        'mr-1 inline-block h-3.5 w-3.5 shrink-0 stroke-2 text-inherit md:h-4 md:w-4',
                         className
                     )}
                 />
@@ -83,7 +83,7 @@ const Symbol = ({ capitalRaised, className }: { capitalRaised: string; className
             return (
                 <LiberatorIcon
                     className={cn(
-                        'h-3.5 w-3.5 shrink-0 stroke-2 text-inherit md:h-4 md:w-4',
+                        'mr-1 inline-block h-3.5 w-3.5 shrink-0 stroke-2 text-inherit md:h-4 md:w-4',
                         className
                     )}
                 />
@@ -102,11 +102,12 @@ const Username = ({
     className?: string
     linkClassName?: string
 }) => {
+    if (!principal) return null
     const parsedPrincipal = Principal.fromUint8Array(principal._arr)
     const { username, capitalRaised } = useUsername(parsedPrincipal)
     if (className)
         return (
-            <span className={cn('flex items-center gap-1', className)}>
+            <span className={cn('flex-nowrap place-items-center gap-1 text-nowrap', className)}>
                 {symbol && <Symbol capitalRaised={capitalRaised} />}
                 {username}
             </span>
@@ -115,19 +116,22 @@ const Username = ({
         return (
             <Link
                 href={`/profile/${parsedPrincipal.toText()}`}
-                className={cn('flex items-center gap-1', linkClassName)}
+                className={cn('flex-nowrap place-items-center gap-1 text-nowrap', linkClassName)}
                 openInNewTab
             >
                 {symbol && <Symbol capitalRaised={capitalRaised} />}
                 {username}
             </Link>
         )
-    return (
-        <>
-            {symbol && <Symbol capitalRaised={capitalRaised} />}
-            {username}
-        </>
-    )
+    if (symbol) {
+        return (
+            <span className="flex-nowrap place-items-center gap-1 text-nowrap">
+                <Symbol capitalRaised={capitalRaised} />
+                {username}
+            </span>
+        )
+    }
+    return <>{username}</>
 }
 
 export const Usernames = ({
@@ -143,7 +147,7 @@ export const Usernames = ({
 }) => {
     if (className)
         return principals.map((principal, index) => (
-            <span key={principal.toText()} className={className}>
+            <span key={index} className={className}>
                 <Username principal={principal} linkClassName={linkClassName} symbol={symbol} />
                 {index === principals.length - 1
                     ? ''
@@ -157,7 +161,7 @@ export const Usernames = ({
             {principals.map((principal, index) => (
                 <>
                     <Username
-                        key={principal.toText()}
+                        key={index}
                         principal={principal}
                         symbol={symbol}
                         linkClassName={linkClassName}

@@ -55,7 +55,7 @@ export const idlFactory = ({ IDL }) => {
     'timestamp' : Time,
   });
   const NewReferralsData = IDL.Record({
-    'principal' : IDL.Principal,
+    'user' : IDL.Principal,
     'claimable' : IDL.Nat,
     'timestamp' : Time,
   });
@@ -80,7 +80,7 @@ export const idlFactory = ({ IDL }) => {
     'proposalId' : IDL.Nat,
   });
   const NewBallotsData = IDL.Record({
-    'principal' : IDL.Principal,
+    'voter' : IDL.Principal,
     'timestamp' : Time,
   });
   const Result = IDL.Variant({
@@ -131,7 +131,7 @@ export const idlFactory = ({ IDL }) => {
     'choice' : TernaryChoice,
   });
   const NewFollowersData = IDL.Record({
-    'principal' : IDL.Principal,
+    'user' : IDL.Principal,
     'timestamp' : Time,
   });
   const NewVotesToEvidenceData = IDL.Record({

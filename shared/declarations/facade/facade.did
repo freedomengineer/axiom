@@ -424,8 +424,8 @@ type NewRepliesToEvidenceData =
 type NewReferralsData = 
  record {
    claimable: nat;
-   "principal": principal;
    timestamp: Time;
+   user: principal;
  };
 type NewHypothesesFromFollowingsData = 
  record {
@@ -435,8 +435,8 @@ type NewHypothesesFromFollowingsData =
  };
 type NewFollowersData = 
  record {
-   "principal": principal;
    timestamp: Time;
+   user: principal;
  };
 type NewEvidencesToHypothesisData = 
  record {
@@ -453,8 +453,8 @@ type NewEvidencesFromFollowingsData =
  };
 type NewBallotsData = 
  record {
-   "principal": principal;
    timestamp: Time;
+   voter: principal;
  };
 type NewAxiomsToHypothesisData = 
  record {

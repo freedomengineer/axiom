@@ -1,5 +1,5 @@
 import { Accordion, AccordionBody, AccordionHeader } from '@material-tailwind/react'
-import { memo, useCallback, useEffect, useMemo, useState } from 'react'
+import { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react'
 
 import DownIcon from '@components/Assets/down.svg'
 import NotificationIcon from '@components/Assets/notification.svg'
@@ -119,44 +119,27 @@ const GroupedNotificationRenderer = memo(
         const renderCapacityItem = (item: any, id: string) => {
             switch (type) {
                 case 'NewFollowers':
-                    return <>started following you.</>
+                    return 'started following you'
                 case 'NewReferrals':
-                    return (
-                        <>
-                            joined Axiom by using your referral link, you can claim{' '}
-                            {e8s.toString(item.claimable)} ACORN.
-                        </>
-                    )
+                    return `joined Axiom by using your referral link, you can claim ${e8s.toString(item.claimable)} ICP.`
                 case 'NewBallots':
-                    return <>voted you in the election.</>
+                    return 'voted you in the election.'
                 case 'NewVotesToHypothesis':
-                    return (
-                        <>
-                            voted {UnwrapVariant(item.choice)} on your hypothesis #{id}.
-                        </>
-                    )
+                    return `voted ${UnwrapVariant(item.choice)} on your hypothesis ${id}.`
                 case 'NewVotesToEvidence':
-                    return (
-                        <>
-                            voted {UnwrapVariant(item.choice)} on your evidence #{id}.
-                        </>
-                    )
+                    return `voted ${UnwrapVariant(item.choice)} on your evidence ${id}.`
                 case 'NewVotesToProposal':
-                    return (
-                        <>
-                            voted {UnwrapVariant(item.choice)} on your proposal #{id}.
-                        </>
-                    )
+                    return `voted ${UnwrapVariant(item.choice)} on your proposal ${id}.`
                 case 'NewAxiomsToHypothesis':
-                    return <>adopted your hypothesis #{id} as their Axioms.</>
+                    return `adopted your hypothesis ${id} as their Axioms.`
                 case 'NewEvidencesToHypothesis':
-                    return <>published new evidences to your hypothesis #{id}.</>
+                    return `published new evidences to your hypothesis ${id}.`
                 case 'NewRepliesToEvidence':
-                    return <>replied to your evidence #{id}.</>
+                    return `replied to your evidence ${id}.`
                 case 'NewHypothesesFromFollowings':
-                    return <>published hypothesis #{id}.</>
+                    return `published hypothesis ${id}.`
                 case 'NewEvidencesFromFollowings':
-                    return <>published evidence #{id}.</>
+                    return `published evidence ${id}.`
             }
         }
         const firstItem = item.capacity[0]
@@ -166,39 +149,39 @@ const GroupedNotificationRenderer = memo(
                 <div
                     onClick={handleOpen}
                     className={cn(
-                        'text-tiny py-normal px-medium gap-x-small flex cursor-pointer items-center justify-between rounded-lg transition-colors hover:bg-primary-50',
+                        'text-tiny py-normal px-medium flex cursor-pointer items-center justify-between rounded-lg transition-colors hover:bg-primary-50',
                         hasUnreadCapacityItems ? 'bg-primary-50' : 'bg-white'
                     )}
                 >
-                    <div className="flex flex-1 flex-wrap items-center gap-1">
+                    <p className="flex-1 leading-relaxed">
                         {totalNum === 1 ? (
                             <>
                                 <Username
                                     symbol
-                                    className="font-semibold text-primary-700"
+                                    className="inline-block font-semibold text-primary-700"
                                     principal={
                                         firstItem?.user ?? firstItem?.voter ?? firstItem?.publisher
                                     }
                                 />
-                                <span> {groupedText}</span>
+                                {` ${groupedText}`}
                             </>
                         ) : (
                             <>
                                 {item.capacity.slice(0, 3).map((item: any, index: number) => (
-                                    <span key={index} className="inline-flex items-center">
+                                    <Fragment key={index}>
                                         <Username
                                             symbol
-                                            className="font-semibold text-primary-700"
+                                            className="inline-block font-semibold text-primary-700"
                                             principal={item.user ?? item.voter ?? item.publisher}
                                         />
-                                        {index < Math.min(2, capacityNum - 1) && <span>,</span>}
-                                    </span>
+                                        {index < Math.min(2, capacityNum - 1) && ', '}
+                                    </Fragment>
                                 ))}
-                                {totalNum > 3 && <span>and {totalNum - 3} other(s)</span>}
-                                <span> {groupedText}</span>
+                                {totalNum > 3 && ` and ${totalNum - 3} other(s)`}
+                                {` ${groupedText}`}
                             </>
                         )}
-                    </div>
+                    </p>
                     <div className="gap-x-small flex items-center">
                         {!allCapacityItemsRead && (
                             <button
@@ -232,23 +215,22 @@ const GroupedNotificationRenderer = memo(
                                     key={index}
                                     onClick={(event) => handleCapacityItemClick(event, index)}
                                     className={cn(
-                                        'text-tiny px-small py-tiny flex w-full cursor-pointer flex-wrap items-center justify-between gap-1 rounded-lg hover:bg-primary-50',
+                                        'text-tiny px-small py-tiny flex w-full cursor-pointer items-center justify-between rounded-lg hover:bg-primary-50',
                                         !isItemRead ? 'bg-primary-50' : 'bg-white'
                                     )}
                                 >
-                                    <span className="flex items-center gap-1 font-normal">
+                                    <p className="flex-1 leading-relaxed">
                                         <Username
                                             symbol
-                                            className="font-semibold text-primary-700"
+                                            className="inline-block font-semibold text-primary-700"
                                             principal={e.user ?? e.voter ?? e.publisher}
                                             linkClassName="text-cold-800"
                                         />
-                                        <span> {renderCapacityItem(e, item.id)}</span>
-                                    </span>
-                                    <div className="gap-x-small flex items-center">
+                                        {` ${renderCapacityItem(e, item.id)}`}
+                                    </p>
+                                    <div className="gap-x-small flex flex-shrink-0 items-center">
                                         <p className="text-extratiny mr-small font-normal text-cold-700">
                                             <span>
-                                                {' '}
                                                 {formatDate({ nano: BigInt(e.timestamp) }, true)}
                                             </span>
                                         </p>
@@ -288,84 +270,104 @@ export const UserNotificationRenderer = memo(
             )
         }
 
-        switch (type) {
-            case 'CustodianElectionResult': {
-                const result = UnwrapVariant(item.result)
-                return (
-                    <p>
-                        {
+        const NormalNotificationRenderer = () => {
+            switch (type) {
+                case 'CustodianElectionResult': {
+                    const result = UnwrapVariant(item.result)
+                    return (
+                        <>
                             {
-                                New: 'You have just become a custodian',
-                                Unchanged: 'You have continued to be a custodian',
-                                Removed: 'You are no longer a custodian',
-                            }[result]
-                        }
-                        . The last period payout for you is {e8s.toString(item.claimable)} ACORN.
-                    </p>
-                )
-            }
-            case 'CustodianProposalResult': {
-                const result = UnwrapVariant(item.result)
-                return (
-                    <p>
-                        Custodians: Proposal #{item.proposalId} by{' '}
-                        <Username
-                            symbol
-                            className="font-semibold text-primary-700"
-                            principal={item.proposer}
-                        />{' '}
-                        has been{' '}
-                        {{ Approved: 'approved', Rejected: 'rejected', Expired: 'expired' }[result]}
-                        .
-                    </p>
-                )
-            }
-            case 'CustodianProposalDelegated':
-                return (
-                    <p>
-                        Custodian:{' '}
-                        <Username
-                            symbol
-                            className="font-semibold text-primary-700"
-                            principal={item.delegator}
-                        />{' '}
-                        has delegated their vote to you on proposal #{item.proposalId}.
-                    </p>
-                )
-            case 'CustodianProposalOpened': {
-                const expiresAt =
-                    BigInt(item.timestamp) +
-                    NANOS_IN_A_DAY *
-                        (daoConfigs?.['PROPOSAL_VOTE_AVAILABILITY_DURATION']?.[1] as bigint)
-                return (
-                    <p>
-                        Custodian: A new proposal #{item.proposalId} has been opened by{' '}
-                        <Username
-                            symbol
-                            className="font-semibold text-primary-700"
-                            principal={item.proposer}
-                        />
-                        . Vote before it expires at {formatDate({ nano: expiresAt }, true)}.
-                    </p>
-                )
-            }
-            case 'ProposalExecuted':
-                return (
-                    <p>
-                        Your proposal #{item.proposalId} has been {UnwrapVariant(item.result)}. You
-                        can claim {e8s.toString((item as any).claimable)} ACORN.
-                    </p>
-                )
-            case 'ProposalResult': {
-                return (
-                    <p>
-                        Your proposal #{item.proposalId} has been {UnwrapVariant(item.result)}.
-                    </p>
-                )
+                                {
+                                    New: 'You have just become a custodian',
+                                    Unchanged: 'You have continued to be a custodian',
+                                    Removed: 'You are no longer a custodian',
+                                }[result]
+                            }
+                            . The last period payout for you is {e8s.toString(item.claimable)}{' '}
+                            ACORN.
+                        </>
+                    )
+                }
+                case 'CustodianProposalResult': {
+                    const result = UnwrapVariant(item.result)
+                    return (
+                        <>
+                            Custodians: Proposal #{item.proposalId} by{' '}
+                            <Username
+                                symbol
+                                className="inline-block font-semibold text-primary-700"
+                                principal={item.proposer}
+                            />{' '}
+                            has been{' '}
+                            {
+                                { Approved: 'approved', Rejected: 'rejected', Expired: 'expired' }[
+                                    result
+                                ]
+                            }
+                            .
+                        </>
+                    )
+                }
+                case 'CustodianProposalDelegated':
+                    return (
+                        <>
+                            Custodian:{' '}
+                            <Username
+                                symbol
+                                className="inline-block font-semibold text-primary-700"
+                                principal={item.delegator}
+                            />{' '}
+                            has delegated their vote to you on proposal #{item.proposalId}.
+                        </>
+                    )
+                case 'CustodianProposalOpened': {
+                    const expiresAt =
+                        BigInt(item.timestamp) +
+                        NANOS_IN_A_DAY *
+                            (daoConfigs?.['PROPOSAL_VOTE_AVAILABILITY_DURATION']?.[1] as bigint)
+                    return (
+                        <>
+                            Custodian: A new proposal #{item.proposalId} has been opened by{' '}
+                            <Username
+                                symbol
+                                className="inline-block font-semibold text-primary-700"
+                                principal={item.proposer}
+                            />
+                            {`. Vote before it expires at ${formatDate({ nano: expiresAt }, true)}.`}
+                        </>
+                    )
+                }
+                case 'ProposalExecuted':
+                    return (
+                        <>
+                            Your proposal #{item.proposalId} has been {UnwrapVariant(item.result)}.
+                            You can claim {e8s.toString((item as any).claimable)} ACORN.
+                        </>
+                    )
+                case 'ProposalResult': {
+                    return (
+                        <>
+                            Your proposal #{item.proposalId} has been {UnwrapVariant(item.result)}.
+                        </>
+                    )
+                }
+                default:
+                    return <>Unsupported User Notification</>
             }
         }
 
-        return <div>Unsupported User Notification</div>
+        return (
+            <div className="rounded-lg border border-cold-200 bg-white">
+                <div className="text-tiny py-normal px-medium flex cursor-pointer items-center justify-between rounded-lg bg-white transition-colors hover:bg-primary-50">
+                    <p className="flex-1 leading-relaxed">
+                        <NormalNotificationRenderer />
+                    </p>
+                    <p className="text-extratiny font-light text-cold-700">
+                        {formatDate({ nano: BigInt(notification.timestamp) }, true)}
+                    </p>
+                </div>
+            </div>
+        )
     }
 )
 
@@ -377,133 +379,149 @@ export const SystemNotificationRenderer = ({
     const [type, data] = UnwrapVariant(notification.data)
     const axiomsConfig = useConfigs('Axioms')
 
-    switch (type) {
-        case 'SystemGeneric': {
-            const link = Unwrap(data.link)
-            return (
-                <div>
-                    <p>{data.message}</p>
-                    {link && (
-                        <Link
-                            href={link.url}
-                            className="text-tiny pre-underline rounded-lg text-cold-800 decoration-cold-800/50 hover:decoration-cold-800/100"
-                            openInNewTab
-                        >
-                            {link.anchorText}
-                        </Link>
-                    )}
-                </div>
-            )
-        }
-        case 'FlagRequested': {
-            const category = UnwrapVariant(data.header.category)
-            const expiresAt =
-                BigInt(data.timestamp) +
-                NANOS_IN_A_DAY *
-                    ((axiomsConfig?.['FLAG_REQUEST_AVAILABILITY_DURATION']?.[1] ?? 0n) as bigint)
-            return (
-                <p>
-                    A flag has been requested by for {category} #{data.header.id}. Vote before it
-                    expires at {formatDate({ nano: expiresAt }, true)}.
-                </p>
-            )
-        }
-        case 'FlagResult': {
-            const category = UnwrapVariant(data.header.category)
-            const result = UnwrapVariant(data.result)
-            return (
-                <p>
-                    {
+    const NormalNotificationRenderer = () => {
+        switch (type) {
+            case 'SystemGeneric': {
+                const link = Unwrap(data.link)
+                return (
+                    <div>
+                        <p>{data.message}</p>
+                        {link && (
+                            <Link
+                                href={link.url}
+                                className="text-tiny pre-underline rounded-lg text-cold-800 decoration-cold-800/50 hover:decoration-cold-800/100"
+                                openInNewTab
+                            >
+                                {link.anchorText}
+                            </Link>
+                        )}
+                    </div>
+                )
+            }
+            case 'FlagRequested': {
+                const category = UnwrapVariant(data.header.category)
+                const expiresAt =
+                    BigInt(data.timestamp) +
+                    NANOS_IN_A_DAY *
+                        ((axiomsConfig?.['FLAG_REQUEST_AVAILABILITY_DURATION']?.[1] ??
+                            0n) as bigint)
+                return (
+                    <>
+                        A flag has been requested by for {category} #{data.header.id}. Vote before
+                        it expires at {formatDate({ nano: expiresAt }, true)}.
+                    </>
+                )
+            }
+            case 'FlagResult': {
+                const category = UnwrapVariant(data.header.category)
+                const result = UnwrapVariant(data.result)
+                return (
+                    <>
                         {
-                            Approved: `${capitalize(category)} #${data.header.id} has been permanently deleted.`,
-                            Rejected: `Attempted to delete ${category} #${data.header.id} has failed since the flag request was rejected.`,
-                            Expired: `Attempted to delete ${category} #${data.header.id} has failed since the flag request expired.`,
-                        }[result]
-                    }
-                </p>
-            )
-        }
-        case 'ProposalExecuted': {
-            const result = UnwrapVariant(data.result)
-            return (
-                <p>
-                    {
+                            {
+                                Approved: `${capitalize(category)} #${data.header.id} has been permanently deleted.`,
+                                Rejected: `Attempted to delete ${category} #${data.header.id} has failed since the flag request was rejected.`,
+                                Expired: `Attempted to delete ${category} #${data.header.id} has failed since the flag request expired.`,
+                            }[result]
+                        }
+                    </>
+                )
+            }
+            case 'ProposalExecuted': {
+                const result = UnwrapVariant(data.result)
+                return (
+                    <>
                         {
-                            Executed: (
-                                <>
-                                    Proposal #{data.proposalId} by @
-                                    <Username
-                                        symbol
-                                        className="font-semibold text-primary-700"
-                                        principal={(data as any).proposer}
-                                    />{' '}
-                                    has been successfully executed.
-                                </>
-                            ),
-                            Failed: (
-                                <>
-                                    Proposal #{data.proposalId} by @
-                                    <Username
-                                        symbol
-                                        className="font-semibold text-primary-700"
-                                        principal={(data as any).proposer}
-                                    />{' '}
-                                    has failed to execute.
-                                </>
-                            ),
-                        }[result]
-                    }
-                </p>
-            )
-        }
-        case 'TallyResult': {
-            const hasNew = data.new.length > 0
-            const hasUnchanged = data.unchanged.length > 0
-            const hasRemoved = data.removed.length > 0
-            return (
-                <p>
-                    The new period has started.
-                    {hasUnchanged && (
-                        <>
-                            {' '}
-                            <Usernames
-                                symbol
-                                className="font-semibold text-primary-700"
-                                principals={data.unchanged}
-                            />{' '}
-                            will continue to be the custodians.
-                        </>
-                    )}
-                    {hasNew && (
-                        <>
-                            {' '}
-                            Welcome new custodians:{' '}
-                            <Usernames
-                                symbol
-                                className="font-semibold text-primary-700"
-                                principals={data.new}
-                            />
-                            .
-                        </>
-                    )}
-                    {hasRemoved && (
-                        <>
-                            {' '}
-                            <Usernames
-                                symbol
-                                className="font-semibold text-primary-700"
-                                principals={data.removed}
-                            />{' '}
-                            will no longer be the custodians, thank you for your contribution to the
-                            Axiom ACE.
-                        </>
-                    )}
-                </p>
-            )
+                            {
+                                Executed: (
+                                    <>
+                                        Proposal #{data.proposalId} by{' '}
+                                        <Username
+                                            symbol
+                                            className="inline-block font-semibold text-primary-700"
+                                            principal={(data as any).proposer}
+                                        />{' '}
+                                        has been successfully executed.
+                                    </>
+                                ),
+                                Failed: (
+                                    <>
+                                        Proposal #{data.proposalId} by @
+                                        <Username
+                                            symbol
+                                            className="inline-block font-semibold text-primary-700"
+                                            principal={(data as any).proposer}
+                                        />{' '}
+                                        has failed to execute.
+                                    </>
+                                ),
+                            }[result]
+                        }
+                    </>
+                )
+            }
+            case 'TallyResult': {
+                const hasNew = data.new.length > 0
+                const hasUnchanged = data.unchanged.length > 0
+                const hasRemoved = data.removed.length > 0
+                return (
+                    <>
+                        The new period has started.
+                        {hasUnchanged && (
+                            <>
+                                {' '}
+                                <Usernames
+                                    symbol
+                                    className="inline-block font-semibold text-primary-700"
+                                    principals={data.unchanged}
+                                />{' '}
+                                will continue to be the custodians.
+                            </>
+                        )}
+                        {hasNew && (
+                            <>
+                                {' '}
+                                Welcome new custodians:{' '}
+                                <Usernames
+                                    symbol
+                                    className="inline-block font-semibold text-primary-700"
+                                    principals={data.new}
+                                />
+                                .
+                            </>
+                        )}
+                        {hasRemoved && (
+                            <>
+                                {' '}
+                                <Usernames
+                                    symbol
+                                    className="inline-block font-semibold text-primary-700"
+                                    principals={data.removed}
+                                />{' '}
+                                will no longer be the custodians, thank you for your contribution to
+                                the Axiom ACE.
+                            </>
+                        )}
+                    </>
+                )
+            }
+            default:
+                return <>Unsupported System Notification</>
         }
     }
 
-    return <div>Unsupported System Notification</div>
+    return (
+        <div className="rounded-lg border border-cold-200 bg-white">
+            <div className="text-tiny py-normal px-medium flex cursor-pointer items-center justify-between rounded-lg bg-white transition-colors hover:bg-primary-50">
+                <p className="flex-1 leading-relaxed">
+                    <NormalNotificationRenderer />
+                </p>
+                <p className="text-extratiny font-light text-cold-700">
+                    {formatDate({ nano: BigInt(notification.timestamp) }, true)}
+                </p>
+            </div>
+        </div>
+    )
 }
 
 const getNotificationLink = (notification: StoredNotification): string | undefined => {

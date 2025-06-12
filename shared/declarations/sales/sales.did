@@ -93,6 +93,7 @@ type Sales =
    expectPackageFound: (nat) -> (nat) query;
    /// PUBLIC ////// ASSERTERS ////////////
    expectPackageNotFound: (nat) -> () query;
+   forceUpdateCapitalRaised: () -> (ForceUpdateCapitalRaisedResult);
    getAchievementPackagePrincipals: () ->
     (vec record {
            Achievement;
@@ -130,6 +131,15 @@ type LogoResult =
    logo_type: text;
  };
 type Key = text;
+type ForceUpdateCapitalRaisedResult = 
+ record {
+   failed: vec record {
+                 text;
+                 text;
+               };
+   success: vec text;
+   unchanged: vec text;
+ };
 type Dip721NonFungibleToken = 
  record {
    logo: LogoResult;
