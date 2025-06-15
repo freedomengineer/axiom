@@ -207,11 +207,11 @@ const InfiniteScrollWrapper = forwardRef(
                     {loading ? (
                         <Spinner className="h-8 w-8" />
                     ) : isEmptyResult ? (
-                        <span className="text-small font-light text-cold-700">
+                        <span className="text-tiny font-normal text-cold-700">
                             No results found
                         </span>
                     ) : hasMore ? null : (
-                        <span className="text-small font-light text-cold-700">
+                        <span className="text-tiny font-normal text-cold-700">
                             Loaded all results
                         </span>
                     )}

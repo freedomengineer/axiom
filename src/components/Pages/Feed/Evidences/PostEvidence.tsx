@@ -1,13 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
-import Spinner from '@components/Primitives/Spinner'
 import useAuth from '@hooks/useAuth'
 import useConfigs from '@hooks/useConfigs'
 import { EVote } from '@utils/feed/evidence'
 import { DAxioms } from 'shared/types/services'
-import { Variant } from 'shared/utils/typings'
+import { Axioms } from 'shared/utils/services'
+import { Variant, Wrap, isNullish } from 'shared/utils/typings'
 
 import PostEvidenceForm from './PostEvidenceForm'
 import PostEvidencePreview from './PostEvidencePreview'
@@ -28,7 +28,7 @@ const PostEvidence = ({
     replyTo?: bigint | null
     onSubmit?: (side: EVote) => void
 }) => {
-    const { principal } = useAuth()
+    const { principal, agent } = useAuth()
     const configs = useConfigs('Axioms')
 
     const [step, setStep] = useState(EStep.Form)
@@ -42,6 +42,13 @@ const PostEvidence = ({
         Picture: null,
     })
     const [localSide, setLocalSide] = useState<EVote | null>(side ?? null)
+    const [replyingEvidence, setReplyingEvidence] = useState<DAxioms.SharableEvidence | null>(null)
+
+    useEffect(() => {
+        if (!isNullish(replyTo)) {
+            Axioms.call(agent).getEvidence(replyTo).then(setReplyingEvidence)
+        }
+    }, [replyTo])
 
     return {
         [EStep.Form]: (
@@ -56,7 +63,7 @@ const PostEvidence = ({
         ),
         [EStep.Preview]: (
             <PostEvidencePreview
-                replyTo={replyTo}
+                replyingEvidence={replyingEvidence}
                 item={{
                     id,
                     callerVote: [],
@@ -67,6 +74,8 @@ const PostEvidence = ({
                         .map(([key, value]) => Variant(key, value) as DAxioms.Format),
                     choice: Variant(localSide ?? EVote.Positive),
                     publisher: principal!,
+                    repliedTo: Wrap(replyingEvidence?.id),
+                    replies: [],
                     hypothesisId: id,
                 }}
                 totalFee={Object.entries(form).reduce(

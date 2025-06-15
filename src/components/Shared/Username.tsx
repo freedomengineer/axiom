@@ -61,7 +61,7 @@ const Symbol = ({ capitalRaised, className }: { capitalRaised: string; className
                     )}
                 />
             )
-        case '1000000000000':
+        case '100000000000':
             return (
                 <EngineerIcon
                     className={cn(
@@ -70,7 +70,7 @@ const Symbol = ({ capitalRaised, className }: { capitalRaised: string; className
                     )}
                 />
             )
-        case '5000000000000':
+        case '500000000000':
             return (
                 <ExplorerIcon
                     className={cn(
@@ -79,11 +79,11 @@ const Symbol = ({ capitalRaised, className }: { capitalRaised: string; className
                     )}
                 />
             )
-        case '10000000000000':
+        case '1000000000000':
             return (
                 <LiberatorIcon
                     className={cn(
-                        'mr-1 inline-block h-3.5 w-3.5 shrink-0 stroke-2 text-inherit md:h-4 md:w-4',
+                        'mr-1 inline-block h-3.5 w-3.5 shrink-0 stroke-[50px] text-inherit md:h-4 md:w-4',
                         className
                     )}
                 />

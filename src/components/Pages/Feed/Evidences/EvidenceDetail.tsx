@@ -7,6 +7,7 @@ import DateTimeIcon from '@components/Assets/date_time.svg'
 import DoneIcon from '@components/Assets/done.svg'
 import FlagIcon from '@components/Assets/flag.svg'
 import HypothesisIcon from '@components/Assets/hypothesis.svg'
+import ReplyIcon from '@components/Assets/reply.svg'
 import ShareIcon from '@components/Assets/share.svg'
 import Link from '@components/Shared/Link'
 import Popup from '@components/Shared/Popup'
@@ -27,9 +28,11 @@ import RequestFlag from '../Flags/RequestFlag'
 const EvidenceDetail = ({
     item,
     className,
+    onReply,
 }: {
     item: DAxioms.SharableEvidence
     className?: string
+    onReply: (id: bigint) => void
 }) => {
     const { principal } = useAuth()
     const { publisher, localItem, vote, votesLoading, handleVote } = useEvidenceDetails(item)
@@ -154,6 +157,9 @@ const EvidenceDetail = ({
                             {localItem.votes.regular[1]}
                         </p>
                     </div>
+                    <button className="hover:opacity-75" onClick={() => onReply(localItem.id)}>
+                        <ReplyIcon className="h-3.5 w-3.5 stroke-[1.5px] md:h-4 md:w-4" />
+                    </button>
                     <button className="hover:opacity-75" onClick={() => setOpen(true)}>
                         <FlagIcon className="h-3.5 w-3.5 stroke-[1.5px] md:h-4 md:w-4" />
                     </button>

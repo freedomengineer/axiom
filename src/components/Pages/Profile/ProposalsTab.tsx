@@ -12,7 +12,7 @@ const ProposalsTab = ({
     if (proposals.length === 0) {
         return (
             <div className="flex h-full w-full flex-col items-center justify-center text-center">
-                <p className="text-small font-light text-cold-700">
+                <p className="text-tiny font-normal text-cold-700">
                     User has not {type === 'Opened' ? 'opened' : 'voted on'} any proposals yet.
                 </p>
             </div>

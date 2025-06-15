@@ -201,7 +201,8 @@ export const markAsRead = async (id: string): Promise<void> => {
 
 export const markCapacityItemAsRead = async (
     notificationId: string,
-    itemIndex: number
+    itemIndex: number,
+    onAllRead?: () => void
 ): Promise<void> => {
     if (!db) return
     const notification = await db.notifications.get(notificationId)
@@ -215,6 +216,10 @@ export const markCapacityItemAsRead = async (
             capacityItemsRead: newCapacityItemsRead,
             isRead: allRead ? 1 : 0,
         })
+
+        if (allRead && onAllRead) {
+            onAllRead()
+        }
     }
 }
 

@@ -46,7 +46,6 @@ import { build, buildBlobImage } from '@libs/url'
 import { deriveIdentity } from 'shared/utils/agent'
 import { Unwrap } from 'shared/utils/typings'
 
-// Separate component for time display to avoid re-rendering the entire Header
 const TimeDisplay = () => {
     const [now, setNow] = useState<number>(Date.now())
 

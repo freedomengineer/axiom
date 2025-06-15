@@ -128,6 +128,7 @@ export interface Filter__3 {
   'publisher' : [] | [Principal],
   'side' : [] | [BinaryChoice],
   'hypothesis' : [] | [bigint],
+  'repliedTo' : [] | [bigint],
 }
 export type Form = Array<Format>;
 export type Format = { 'Note' : Note } |

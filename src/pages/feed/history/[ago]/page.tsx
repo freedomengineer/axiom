@@ -96,7 +96,7 @@ const SpecificHistoryPage = () => {
                                     <p className="text-normal font-medium text-cold-700">
                                         No Payouts Found
                                     </p>
-                                    <p className="text-small font-light text-cold-700">
+                                    <p className="text-tiny font-normal text-cold-700">
                                         There was no ACORN distributed for Age {id} in{' '}
                                         {getCanisterDate({
                                             ago: { nano: BigInt(ago!) * NANOS_IN_A_DAY },

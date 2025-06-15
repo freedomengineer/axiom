@@ -83,6 +83,7 @@ module {
         publisher : ?Principal;
         voter : ?Principal;
         side : ?BinaryChoice;
+        repliedTo : ?Nat;
         q : ?Text
     };
     public type Sort = {
@@ -142,7 +143,7 @@ module {
         let getCallerVote : Nat -> ?BinaryVote = User.callerEvidenceVoteCallback(callerUser);
         Evidence.toSharable(evidence(__, id), id, getCallerVote)
     };
-    public func getEvidences(__ : Self, filter : Filter, sort : Sorted<Sort>, callerUser : ?(Principal, User), getUser : Principal -> User, getHypothesis : Nat -> Hypothesis) : Sharable {
+    public func getEvidences(__ : Self, filter : Filter, sort : Sorted<Sort>, callerUser : ?(Principal, User), getUser : Principal -> User, getHypothesis : Nat -> Hypothesis, getEvidence : Nat -> Evidence) : Sharable {
         let getCallerVote : Nat -> ?BinaryVote = User.callerEvidenceVoteCallback(callerUser);
 
         var filtered : ?[Entry] = null;
@@ -165,6 +166,17 @@ module {
             case (null, _) {};
             case (?hypothesis, null) filtered := ?List.toArrayFilterMap<Nat, Entry>(getHypothesis(hypothesis).evidenceIds, toEntry);
             case (?hypothesis, ?prevResult) filtered := ?Array.filter<Entry>(prevResult, func(_, e) = e.hypothesisId == hypothesis)
+        };
+        switch (filter.repliedTo, filtered) {
+            case (null, _) {};
+            case (?repliedTo, null) filtered := ?List.toArrayFilterMap<Nat, Entry>(getEvidence(repliedTo).replies, toEntry);
+            case (?repliedTo, ?prevResult) filtered := ?Array.filter<Entry>(
+                prevResult,
+                func(_, e) = switch (e.repliedTo) {
+                    case (?x) x == repliedTo;
+                    case (null) false
+                },
+            )
         };
         switch (filter.side, filtered) {
             case (null, _) {};

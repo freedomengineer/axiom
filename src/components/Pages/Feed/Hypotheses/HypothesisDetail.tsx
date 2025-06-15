@@ -61,7 +61,9 @@ const HypothesisDetail = ({ item }: { item: DAxioms.SharableHypothesis }) => {
         handleAxiom,
         handleBookmark,
     } = useHypothesisDetails(item)
-    const [postEvidenceOpen, setPostEvidenceOpen] = useState<EEvidenceVote | undefined | null>(null)
+    const [postEvidenceOpen, setPostEvidenceOpen] = useState<
+        EEvidenceVote | bigint | undefined | null
+    >(null)
     const [flagOpen, setFlagOpen] = useState(false)
     const [copied, setCopied] = useState<boolean>()
 
@@ -112,12 +114,6 @@ const HypothesisDetail = ({ item }: { item: DAxioms.SharableHypothesis }) => {
         setTouchStart(null)
     }
 
-    const handleTouchMove = (e: React.TouchEvent) => {
-        if (touchStart !== null && Math.abs(touchStart - e.touches[0].clientX) > 10) {
-            e.preventDefault()
-        }
-    }
-
     useEffect(() => {
         const checkIsMobile = () => {
             setIsMobile(window.innerWidth < 1024)
@@ -132,16 +128,24 @@ const HypothesisDetail = ({ item }: { item: DAxioms.SharableHypothesis }) => {
             <Popup
                 open={postEvidenceOpen !== null}
                 onClose={() => setPostEvidenceOpen(null)}
-                title="Post Evidence"
-                href={build(['feed', localItem.id, 'evidences', 'post'], {
-                    side: postEvidenceOpen,
-                })}
+                title={
+                    typeof postEvidenceOpen === 'string'
+                        ? `Post Evidence`
+                        : `Post Reply Evidence (To: ${postEvidenceOpen?.toString()})`
+                }
+                href={build(
+                    ['feed', localItem.id, 'evidences', 'post'],
+                    typeof postEvidenceOpen === 'string'
+                        ? { side: postEvidenceOpen }
+                        : { replyTo: postEvidenceOpen?.toString() }
+                )}
                 className="w-full md:w-4/5"
                 Icon={<EditIcon className="h-6 stroke-[1.5px]" />}
             >
                 <PostEvidence
                     id={localItem.id}
-                    side={postEvidenceOpen}
+                    side={typeof postEvidenceOpen === 'string' ? postEvidenceOpen : undefined}
+                    replyTo={typeof postEvidenceOpen === 'bigint' ? postEvidenceOpen : undefined}
                     onSubmit={(side) => {
                         side === EEvidenceVote.Positive
                             ? positiveEvidencesRef.current?.refresh()
@@ -417,7 +421,12 @@ const HypothesisDetail = ({ item }: { item: DAxioms.SharableHypothesis }) => {
                                         hardFilter={positiveFilter}
                                         hardSort={commonSort}
                                         size={2n}
-                                        LayoutComponent={EvidencesLayout}
+                                        LayoutComponent={({ items }) => (
+                                            <EvidencesLayout
+                                                items={items}
+                                                onReply={setPostEvidenceOpen}
+                                            />
+                                        )}
                                         className="h-full w-full"
                                     />
                                 </div>
@@ -434,7 +443,12 @@ const HypothesisDetail = ({ item }: { item: DAxioms.SharableHypothesis }) => {
                                         hardFilter={negativeFilter}
                                         hardSort={commonSort}
                                         size={2n}
-                                        LayoutComponent={EvidencesLayout}
+                                        LayoutComponent={({ items }) => (
+                                            <EvidencesLayout
+                                                items={items}
+                                                onReply={setPostEvidenceOpen}
+                                            />
+                                        )}
                                         className="h-full w-full"
                                     />
                                 </div>
@@ -500,7 +514,12 @@ const HypothesisDetail = ({ item }: { item: DAxioms.SharableHypothesis }) => {
                                                 hardFilter={positiveFilter}
                                                 hardSort={commonSort}
                                                 size={2n}
-                                                LayoutComponent={EvidencesLayout}
+                                                LayoutComponent={({ items }) => (
+                                                    <EvidencesLayout
+                                                        items={items}
+                                                        onReply={setPostEvidenceOpen}
+                                                    />
+                                                )}
                                                 className="h-full w-full"
                                             />
                                         </div>
@@ -514,7 +533,12 @@ const HypothesisDetail = ({ item }: { item: DAxioms.SharableHypothesis }) => {
                                                 hardFilter={negativeFilter}
                                                 hardSort={commonSort}
                                                 size={2n}
-                                                LayoutComponent={EvidencesLayout}
+                                                LayoutComponent={({ items }) => (
+                                                    <EvidencesLayout
+                                                        items={items}
+                                                        onReply={setPostEvidenceOpen}
+                                                    />
+                                                )}
                                                 className="h-full w-full"
                                             />
                                         </div>

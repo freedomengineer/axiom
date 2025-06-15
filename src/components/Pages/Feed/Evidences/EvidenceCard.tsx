@@ -7,6 +7,7 @@ import DoneIcon from '@components/Assets/done.svg'
 import FlagIcon from '@components/Assets/flag.svg'
 import HypothesisIcon from '@components/Assets/hypothesis.svg'
 import NewTabIcon from '@components/Assets/new_tab.svg'
+import ReplyIcon from '@components/Assets/reply.svg'
 import ShareIcon from '@components/Assets/share.svg'
 import Link from '@components/Shared/Link'
 import Popup from '@components/Shared/Popup'
@@ -18,7 +19,7 @@ import { build, buildBlobImage } from '@libs/url'
 import { EVote } from '@utils/feed/evidence'
 import { VOTES as HYPOTHESIS_VOTES } from '@utils/feed/hypothesis'
 import { DAxioms } from 'shared/types/services'
-import { UnwrapVariant, Variant } from 'shared/utils/typings'
+import { Unwrap, UnwrapVariant, Variant, isNullish } from 'shared/utils/typings'
 
 import EvidenceVote from './EvidenceVote'
 import RequestFlag from '../Flags/RequestFlag'
@@ -26,9 +27,11 @@ import RequestFlag from '../Flags/RequestFlag'
 const EvidenceCard = ({
     item,
     className,
+    onReply,
 }: {
     item: DAxioms.SharableEvidence
     className?: string
+    onReply: (id: bigint) => void
 }) => {
     const { principal } = useAuth()
     const { publisher, localItem, vote, votesLoading, handleVote } = useEvidenceDetails(item)
@@ -75,6 +78,11 @@ const EvidenceCard = ({
             <div className={cn('absolute right-0 top-0 rounded-md text-white', VOTE.bgColor)}>
                 <Icon className="p-tiny h-6 w-6 stroke-[1.5px] md:h-7 md:w-7" />
             </div>
+            {!isNullish(Unwrap(localItem.repliedTo)) && (
+                <div className="absolute right-8 top-0 rounded-md bg-cold-700 text-white">
+                    <ReplyIcon className="p-small h-6 w-6 stroke-[1.5px] md:h-7 md:w-7" />
+                </div>
+            )}
             <div className="px-medium py-extralarge gap-normal flex w-full flex-col items-center">
                 {formObject.Picture && (
                     <img
@@ -132,7 +140,7 @@ const EvidenceCard = ({
                     </span>
                 </Link>
                 <div className="hidden w-full md:order-4 md:block" />
-                <div className="order-4 ml-auto flex w-28 flex-shrink-0 place-items-center items-center justify-between md:order-5 md:ml-0 md:w-32">
+                <div className="order-4 ml-auto flex w-32 flex-shrink-0 place-items-center items-center justify-between md:order-5 md:ml-0 md:w-40">
                     <div className="gap-small flex items-center">
                         <EvidenceVote
                             choice={EVote.Positive}
@@ -155,6 +163,14 @@ const EvidenceCard = ({
                         />
                         <p className="text-tiny font-light text-white">
                             {localItem.votes.regular[1]}
+                        </p>
+                    </div>
+                    <div className="gap-small flex items-center">
+                        <button className="hover:opacity-75" onClick={() => onReply(localItem.id)}>
+                            <ReplyIcon className="h-3.5 w-3.5 stroke-[1.5px] md:h-4 md:w-4" />
+                        </button>
+                        <p className="text-tiny font-light text-white">
+                            {localItem.replies.length}
                         </p>
                     </div>
                     <button className="hover:opacity-75" onClick={() => setOpen(true)}>

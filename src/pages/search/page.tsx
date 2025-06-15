@@ -130,7 +130,7 @@ const SearchPage = () => {
             results.users?.result.length === 0 ? (
                 <div className="flex h-full w-full flex-col items-center justify-center text-center">
                     <p className="text-normal font-medium text-cold-700">No Results Found</p>
-                    <p className="text-small font-light text-cold-700">
+                    <p className="text-tiny font-normal text-cold-700">
                         Check your search query and try again.
                     </p>
                 </div>

@@ -71,6 +71,7 @@ export const FILTER_SORT_DECS = {
             hypothesis: Primitive.Nat,
             voter: Primitive.Principal,
             side: ['Positive', 'Negative'],
+            repliedTo: Primitive.Nat,
             q: Primitive.Text,
         },
         sort: {

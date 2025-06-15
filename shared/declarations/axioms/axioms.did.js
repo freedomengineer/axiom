@@ -105,6 +105,7 @@ export const idlFactory = ({ IDL }) => {
     'publisher' : IDL.Opt(IDL.Principal),
     'side' : IDL.Opt(BinaryChoice),
     'hypothesis' : IDL.Opt(IDL.Nat),
+    'repliedTo' : IDL.Opt(IDL.Nat),
   });
   const Sort__4 = IDL.Variant({
     'positivity' : IDL.Null,

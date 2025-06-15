@@ -87,7 +87,7 @@ const MyBookmarksLayout = () => {
         return (
             <div className="flex h-full w-full flex-col items-center justify-center text-center">
                 <p className="text-normal font-medium text-cold-700">No Bookmarks Found</p>
-                <p className="text-small font-light text-cold-700">
+                <p className="text-tiny font-normal text-cold-700">
                     You can save a hypothesis here by clicking the bookmark icon on the hypothesis.
                 </p>
             </div>

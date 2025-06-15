@@ -403,6 +403,7 @@ type Filter__3 =
    hypothesis: opt nat;
    publisher: opt principal;
    q: opt text;
+   repliedTo: opt nat;
    side: opt BinaryChoice;
    voter: opt principal;
  };

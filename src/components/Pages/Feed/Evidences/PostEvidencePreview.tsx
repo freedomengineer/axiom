@@ -23,13 +23,13 @@ const PostEvidencePreview = ({
     totalFee,
     onBack,
     onSubmit,
-    replyTo,
+    replyingEvidence,
 }: {
     item: DAxioms.SharableEvidence
     totalFee: bigint
     onBack: () => void
     onSubmit?: (side: EVote) => void
-    replyTo?: bigint | null
+    replyingEvidence?: DAxioms.SharableEvidence | null
 }) => {
     const navigate = useNavigate()
     const { agent } = useAuth()
@@ -59,7 +59,12 @@ const PostEvidencePreview = ({
             return
         }
         const res = await promise(
-            Axioms.call(agent).publishEvidence(item.id, item.form, item.choice, Wrap(replyTo)),
+            Axioms.call(agent).publishEvidence(
+                item.id,
+                item.form,
+                item.choice,
+                Wrap(replyingEvidence?.id)
+            ),
             'Posting evidence',
             'Posted evidence successfully!'
         )
@@ -74,7 +79,24 @@ const PostEvidencePreview = ({
         <div className="gap-normal flex flex-col md:flex-row md:justify-between">
             <div className="gap-normal pointer-events-none flex w-full flex-col md:w-3/5">
                 <p className="text-medium text-center font-light">Preview</p>
-                <EvidenceCard item={item} className="mx-auto !w-full" />
+                {replyingEvidence && (
+                    <div className="relative">
+                        <EvidenceCard
+                            item={replyingEvidence}
+                            className="mx-auto !w-full"
+                            onReply={() => {}}
+                        />
+                        <div
+                            className="absolute left-5 top-full z-10"
+                            style={{ height: 'calc(50%)', width: '1.25rem' }}
+                        >
+                            <div className="h-full w-full rounded-bl-lg border-b-2 border-l-2 border-cold-800"></div>
+                        </div>
+                    </div>
+                )}
+                <div className={cn('relative', replyingEvidence && 'ml-10')}>
+                    <EvidenceCard item={item} className="mx-auto !w-full" onReply={() => {}} />
+                </div>
             </div>
             <Divider
                 className="hidden md:flex"

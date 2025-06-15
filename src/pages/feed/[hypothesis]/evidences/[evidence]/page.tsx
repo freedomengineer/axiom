@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
 import EvidenceDetail from '@components/Pages/Feed/Evidences/EvidenceDetail'
+import EvidenceDetailGroup from '@components/Pages/Feed/Evidences/EvidenceDetailGroup'
 import Link from '@components/Shared/Link'
 import PageMetadata from '@components/Shared/PageMetadata'
 import siteMetadata from '@data/siteMetadata.json'
@@ -46,7 +47,7 @@ const EvidencePage = () => {
             >
                 Back to Hypothesis {hypothesis!}
             </Link>
-            {item && <EvidenceDetail item={item} className="mx-auto !w-full" />}
+            {item && <EvidenceDetailGroup item={item} className="mx-auto !w-full" />}
         </>
     )
 }

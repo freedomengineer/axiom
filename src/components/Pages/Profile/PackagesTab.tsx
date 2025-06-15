@@ -16,7 +16,7 @@ const PackagesTab = ({ packages }: { packages: ParsedPackages<EPackages> }) => {
 
     if (packages.length === 0) {
         return (
-            <p className="text-small font-light text-cold-700">
+            <p className="text-tiny font-normal text-cold-700">
                 User has not purchased any packages yet.
             </p>
         )

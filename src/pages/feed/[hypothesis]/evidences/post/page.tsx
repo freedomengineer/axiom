@@ -19,14 +19,16 @@ const PostEvidencePage = () => {
 
     const side = searchParams.get('side')
     const eSide = side && side in EVote ? (side as EVote) : undefined
+    const replyTo = searchParams.get('replyTo')
     const pageMetadata: Metadata = {
         url: siteMetadata.siteUrl + metadata.url,
-        title: `Post ${eSide ? `${eSide} ` : ''}Evidence | Hypothesis ${hypothesis} | ${siteMetadata.title}`,
+        title: `Post ${eSide ? `${eSide} ` : ''}${replyTo ? 'Reply ' : ' '}Evidence | Hypothesis ${hypothesis} | ${siteMetadata.title}`,
         description: metadata.description,
     }
 
     try {
         BigInt(hypothesis!)
+        if (replyTo) BigInt(replyTo)
     } catch {
         setPageStatus(PageStatus.NotFound)
     }
@@ -45,7 +47,11 @@ const PostEvidencePage = () => {
                 </Link>
                 <Heading text="Post Evidence" />
             </div>
-            <PostEvidence id={BigInt(hypothesis!)} side={eSide} />
+            <PostEvidence
+                id={BigInt(hypothesis!)}
+                side={eSide}
+                replyTo={replyTo ? BigInt(replyTo) : undefined}
+            />
         </>
     )
 }

@@ -1,7 +1,8 @@
-import { Accordion, AccordionBody, AccordionHeader } from '@material-tailwind/react'
-import { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react'
+import { Fragment, memo, useCallback, useEffect, useState } from 'react'
 
+import CheckIcon from '@components/Assets/check.svg'
 import DownIcon from '@components/Assets/down.svg'
+import EmptyNotificationIcon from '@components/Assets/empty_notification.svg'
 import NotificationIcon from '@components/Assets/notification.svg'
 import useConfigs from '@hooks/useConfigs'
 import useNotification, {
@@ -19,40 +20,6 @@ import { Unwrap, UnwrapVariant } from 'shared/utils/typings'
 
 import Link from './Link'
 import Username, { Usernames } from './Username'
-
-const IconCheckCircle = ({ className }: { className?: string }) => (
-    <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        strokeWidth={1.5}
-        stroke="currentColor"
-        className={className}
-    >
-        <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-        />
-    </svg>
-)
-
-const IconEnvelopeOpen = ({ className }: { className?: string }) => (
-    <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        strokeWidth={1.5}
-        stroke="currentColor"
-        className={className}
-    >
-        <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M21.75 9v.906a2.25 2.25 0 01-1.183 1.981l-6.478 3.488M2.25 9v.906a2.25 2.25 0 001.183 1.981l6.478 3.488m8.839 2.51l-4.66-2.51m0 0l-1.023-.55a2.25 2.25 0 00-2.134 0l-1.022.55m0 0l-4.661 2.51m16.5 1.615a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V8.844a2.25 2.25 0 011.183-1.98l7.5-4.04a2.25 2.25 0 012.134 0l7.5 4.04a2.25 2.25 0 011.183 1.98V19.5z"
-        />
-    </svg>
-)
 
 const GroupedNotificationRenderer = memo(
     ({
@@ -78,17 +45,18 @@ const GroupedNotificationRenderer = memo(
                 e.stopPropagation()
 
                 markAllCapacityItemsAsRead(notification.id)
+                onToggle()
             },
-            [notification.id]
+            [notification.id, onToggle]
         )
 
         const handleCapacityItemClick = useCallback(
             (e: React.MouseEvent, index: number) => {
                 e.preventDefault()
                 e.stopPropagation()
-                markCapacityItemAsRead(notification.id, index)
+                markCapacityItemAsRead(notification.id, index, onToggle)
             },
-            [notification.id]
+            [notification.id, onToggle]
         )
 
         const totalNum = Number(item.total)
@@ -189,7 +157,7 @@ const GroupedNotificationRenderer = memo(
                                 title="Mark all as read"
                                 className="flex-shrink-0 rounded-full font-normal text-primary-700 transition-colors hover:bg-primary-100"
                             >
-                                <IconCheckCircle className="h-4 w-4 stroke-[1.5px] md:h-5 md:w-5" />
+                                <CheckIcon className="h-4 w-4 stroke-[1.5px] md:h-5 md:w-5" />
                             </button>
                         )}
                         <div className="p-tiny flex-shrink-0">
@@ -358,7 +326,12 @@ export const UserNotificationRenderer = memo(
 
         return (
             <div className="rounded-lg border border-cold-200 bg-white">
-                <div className="text-tiny py-normal px-medium flex cursor-pointer items-center justify-between rounded-lg bg-white transition-colors hover:bg-primary-50">
+                <div
+                    className={cn(
+                        'text-tiny py-normal px-medium flex cursor-pointer items-center justify-between rounded-lg transition-colors hover:bg-primary-50',
+                        notification.isRead === 0 ? 'bg-primary-50' : 'bg-white'
+                    )}
+                >
                     <p className="flex-1 leading-relaxed">
                         <NormalNotificationRenderer />
                     </p>
@@ -512,7 +485,12 @@ export const SystemNotificationRenderer = ({
 
     return (
         <div className="rounded-lg border border-cold-200 bg-white">
-            <div className="text-tiny py-normal px-medium flex cursor-pointer items-center justify-between rounded-lg bg-white transition-colors hover:bg-primary-50">
+            <div
+                className={cn(
+                    'text-tiny py-normal px-medium flex cursor-pointer items-center justify-between rounded-lg transition-colors hover:bg-primary-50',
+                    notification.isRead === 0 ? 'bg-primary-50' : 'bg-white'
+                )}
+            >
                 <p className="flex-1 leading-relaxed">
                     <NormalNotificationRenderer />
                 </p>
@@ -771,12 +749,12 @@ const Notifications = () => {
                     ))
                 ) : (
                     <div className="p-large flex flex-col items-center justify-center text-center">
-                        <IconEnvelopeOpen className="h-16 w-16 text-cold-300" />
-                        <p className="text-normal mt-medium font-semibold text-cold-700">
+                        <EmptyNotificationIcon className="mb-medium h-12 w-12 text-cold-300 md:h-16 md:w-16" />
+                        <p className="text-normal font-medium text-cold-700">
                             You're all caught up!
                         </p>
-                        <p className="text-tinyall mt-tiny font-normal text-cold-700">
-                            There are no new notifications in this tab.
+                        <p className="text-tiny font-normal text-cold-700">
+                            There are no new notifications in this tab
                         </p>
                     </div>
                 )}
