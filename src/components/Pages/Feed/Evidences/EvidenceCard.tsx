@@ -140,7 +140,7 @@ const EvidenceCard = ({
                     </span>
                 </Link>
                 <div className="hidden w-full md:order-4 md:block" />
-                <div className="order-4 ml-auto flex w-32 flex-shrink-0 place-items-center items-center justify-between md:order-5 md:ml-0 md:w-40">
+                <div className="order-4 ml-auto flex w-full max-w-44 flex-shrink-0 place-items-center items-center justify-between md:order-5 md:ml-0">
                     <div className="gap-small flex items-center">
                         <EvidenceVote
                             choice={EVote.Positive}

@@ -34,7 +34,7 @@ const OtherEvidencePage = () => {
         } catch {
             setPageStatus(PageStatus.NotFound)
         }
-    }, [])
+    }, [evidence])
 
     return (
         <>
@@ -47,7 +47,7 @@ const OtherEvidencePage = () => {
             >
                 Back to Hypothesis {item?.hypothesisId ?? 0n}
             </Link>
-            {item && <EvidenceDetailGroup item={item} className="mx-auto !w-full" />}
+            {item && <EvidenceDetailGroup item={item} className="mx-auto !w-full" key={item.id} />}
         </>
     )
 }

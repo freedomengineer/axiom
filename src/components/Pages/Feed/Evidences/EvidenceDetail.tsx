@@ -125,14 +125,17 @@ const EvidenceDetail = ({
                         {publisher}
                     </span>
                 </Link>
-                <div className="gap-small order-2 ml-auto flex items-center md:order-3 md:ml-0">
+                <Link
+                    className="gap-small order-2 ml-auto flex items-center hover:opacity-75 md:order-3 md:ml-0"
+                    href={build(['feed', localItem.hypothesisId, 'evidences', localItem.id])}
+                >
                     <DateTimeIcon className="h-3.5 w-3.5 stroke-[1.5px] md:h-4 md:w-4" />
                     <span className="text-tiny md:mr-medium text-nowrap font-light text-white">
                         {formatDate({ nano: localItem.publishDate })}
                     </span>
-                </div>
+                </Link>
                 <div className="hidden w-full md:order-4 md:block" />
-                <div className="order-4 ml-auto flex w-28 flex-shrink-0 place-items-center items-center justify-between md:order-5 md:ml-0 md:w-32">
+                <div className="order-4 ml-auto flex w-full max-w-40 flex-shrink-0 place-items-center items-center justify-between md:order-5 md:ml-0">
                     <div className="gap-tiny flex items-center">
                         <EvidenceVote
                             choice={EVote.Positive}
@@ -157,8 +160,14 @@ const EvidenceDetail = ({
                             {localItem.votes.regular[1]}
                         </p>
                     </div>
-                    <button className="hover:opacity-75" onClick={() => onReply(localItem.id)}>
+                    <button
+                        className="gap-tiny flex items-center hover:opacity-75"
+                        onClick={() => onReply(localItem.id)}
+                    >
                         <ReplyIcon className="h-3.5 w-3.5 stroke-[1.5px] md:h-4 md:w-4" />
+                        <p className="text-tiny font-light text-white md:block">
+                            {localItem.replies.length}
+                        </p>
                     </button>
                     <button className="hover:opacity-75" onClick={() => setOpen(true)}>
                         <FlagIcon className="h-3.5 w-3.5 stroke-[1.5px] md:h-4 md:w-4" />

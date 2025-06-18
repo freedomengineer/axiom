@@ -533,7 +533,14 @@
 
 ```json
 {
-  "filter": {"hypothesis": "Nat", "publisher": "Principal", "voter": "Principal", "side": "#POSITIVE | #NEGATIVE", "q": "Text"},
+  "filter": {
+    "hypothesis": "Nat",
+    "publisher": "Principal",
+    "voter": "Principal",
+    "side": "#POSITIVE | #NEGATIVE",
+    "repliedTo": "Nat",
+    "q": "Text"
+  },
   "sort": {"by": "#RECENT | #POPULARITY | #POSITIVITY | #NEGATIVITY", "order": "#ASCENDING | #DESCENDING"}
 }
 ```
@@ -568,7 +575,14 @@
 
 ```json
 {
-  "filter": {"hypothesis": "Nat", "publisher": "Principal", "voter": "Principal", "side": "#POSITIVE | #NEGATIVE", "q": "Text"},
+  "filter": {
+    "hypothesis": "Nat",
+    "publisher": "Principal",
+    "voter": "Principal",
+    "side": "#POSITIVE | #NEGATIVE",
+    "repliedTo": "Nat",
+    "q": "Text"
+  },
   "sort": {"by": "#RECENT | #POPULARITY | #POSITIVITY | #NEGATIVITY", "order": "#ASCENDING | #DESCENDING"},
   "page": "Nat",
   "limit": "Nat"

@@ -1,13 +1,11 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 
-import EditIcon from '@components/Assets/edit.svg'
 import Popup from '@components/Shared/Popup'
 import useAuth from '@hooks/useAuth'
 import cn from '@libs/class'
-import { build } from '@libs/url'
+import { parseFilterFromObj, parseSortFromObj } from 'shared/default/filter_sort'
 import { DAxioms } from 'shared/types/services'
 import { Axioms } from 'shared/utils/services'
 import { Unwrap, isNullish } from 'shared/utils/typings'
@@ -15,75 +13,159 @@ import { Unwrap, isNullish } from 'shared/utils/typings'
 import EvidenceDetail from './EvidenceDetail'
 import PostEvidence from './PostEvidence'
 
-const EvidenceDetailGroup = ({
-    item,
+const RepliesSection = ({
+    parentId,
+    level,
     className,
-    level = 0,
+    onReply,
 }: {
-    item: DAxioms.SharableEvidence
-    className?: string
-    level?: number
+    parentId: bigint
+    level: number
+    className: string
+    onReply: (id: bigint | null) => void
 }) => {
-    const navigate = useNavigate()
     const { agent } = useAuth()
+    const [replies, setReplies] = useState<DAxioms.SharableEvidence[]>([])
+    const [isExpanded, setIsExpanded] = useState(false)
+    useEffect(() => {
+        Axioms.call(agent, true)
+            .getEvidences(
+                parseFilterFromObj('evidence', { repliedTo: parentId.toString() }),
+                parseSortFromObj('evidence', {
+                    by: 'positivity',
+                    order: 'descending',
+                })
+            )
+            .then(setReplies)
+    }, [parentId, agent])
 
-    const [parentEvidence, setParentEvidence] = useState<DAxioms.SharableEvidence | null>(null)
-    const [childrenEvidence, setChildrenEvidence] = useState<DAxioms.SharableEvidence[]>([])
-    const [expandedChildren, setExpandedChildren] = useState<{ [key: string]: boolean }>({})
-    const [loadingChildren, setLoadingChildren] = useState(false)
+    if (replies.length === 0) return null
+
+    return (
+        <div className={cn('flex w-full flex-col gap-[0.75rem]', className)}>
+            {isExpanded ? (
+                <>
+                    {replies.map((reply, index) => (
+                        <>
+                            <div className="flex w-full">
+                                <div className="relative">
+                                    <div
+                                        className={cn(
+                                            'left-5 top-full z-10 h-[calc(50%+0.75rem)] w-[1rem] translate-y-[1.5rem] md:w-[1.5rem]'
+                                        )}
+                                    >
+                                        <div
+                                            className={cn(
+                                                'h-1/2 w-full rounded-bl-lg border-b-2 border-l-2 border-cold-800'
+                                            )}
+                                        ></div>
+                                    </div>
+                                    <div className="left-5 top-full z-10 h-[calc(100%+1.5rem)] -translate-y-[calc(50%+0.75rem)] border-l-2 border-cold-800"></div>
+                                </div>
+                                <EvidenceDetail
+                                    item={reply}
+                                    onReply={onReply}
+                                    className="!w-[calc(100%-4rem)] md:!w-[calc(100%-6rem)]"
+                                />
+                            </div>
+                            {reply.replies.length > 0 && (
+                                <div
+                                    className={cn(
+                                        `relative h-full w-full`,
+                                        `w-[calc(100%-${level * 1.5}rem)]`
+                                    )}
+                                >
+                                    <div className="left-5 top-0 z-10 flex h-fit">
+                                        <div className="w-[1rem] border-l-2 border-cold-800"></div>
+                                        <RepliesSection
+                                            parentId={reply.id}
+                                            level={level + 1}
+                                            className={'ml-[1.25rem] md:ml-[2rem]'}
+                                            onReply={onReply}
+                                        />
+                                    </div>
+                                </div>
+                            )}
+                        </>
+                    ))}
+                    <div className="flex w-full">
+                        <div className="relative">
+                            <div
+                                className={cn(
+                                    'left-5 top-full z-10 w-[1rem] md:w-[1.5rem]',
+                                    'h-[calc(50%+0.75rem)] -translate-y-[0.75rem]'
+                                )}
+                            >
+                                <div
+                                    className={cn(
+                                        'w-full rounded-bl-lg border-b-2 border-l-2 border-cold-800',
+                                        'h-full'
+                                    )}
+                                ></div>
+                            </div>
+                        </div>
+                        <button
+                            className="py-medium px-semilarge text-small rounded-lg border border-cold-600 bg-cold-100 text-cold-800 hover:bg-cold-200"
+                            onClick={() => setIsExpanded(false)}
+                        >
+                            - Hide {replies.length} replies
+                        </button>
+                    </div>
+                </>
+            ) : (
+                <button onClick={() => setIsExpanded(true)}>
+                    <>
+                        <div className="flex w-full">
+                            <div className="relative">
+                                <div
+                                    className={cn(
+                                        'left-5 top-full z-10 w-[1rem] md:w-[1.5rem]',
+                                        'h-[calc(50%+0.75rem)] -translate-y-[0.75rem]'
+                                    )}
+                                >
+                                    <div
+                                        className={cn(
+                                            'w-full rounded-bl-lg border-b-2 border-l-2 border-cold-800',
+                                            'h-full'
+                                        )}
+                                    ></div>
+                                </div>
+                            </div>
+                            <button
+                                className="py-medium px-semilarge text-small rounded-lg border border-cold-600 bg-cold-100 text-cold-800 hover:bg-cold-200"
+                                onClick={() => setIsExpanded(true)}
+                            >
+                                + View {replies.length} replies
+                            </button>
+                        </div>
+                    </>
+                </button>
+            )}
+        </div>
+    )
+}
+
+const EvidenceDetailGroup = ({ item }: { item: DAxioms.SharableEvidence }) => {
+    const { agent } = useAuth()
     const [openReply, setOpenReply] = useState<bigint | null>(null)
-
-    useEffect(() => {
-        const repliedToId = Unwrap(item.repliedTo)
-        if (!isNullish(repliedToId)) {
-            Axioms.call(agent).getEvidence(repliedToId).then(setParentEvidence)
-        }
-    }, [item.repliedTo, agent])
-
-    useEffect(() => {
-        if (item.replies.length > 0) {
-            setLoadingChildren(true)
-            Promise.all(item.replies.map((replyId) => Axioms.call(agent).getEvidence(replyId)))
-                .then((replies) => {
-                    setChildrenEvidence(replies)
-                    setLoadingChildren(false)
-                })
-                .catch(() => {
-                    setLoadingChildren(false)
-                })
-        }
-    }, [item.replies, agent])
+    const [parentEvidence, setParentEvidence] = useState<
+        DAxioms.SharableEvidence | undefined | null
+    >(isNullish(item.repliedTo) ? null : undefined)
+    const [loadingParent, setLoadingParent] = useState(false)
 
     const handleParentClick = () => {
-        if (parentEvidence) {
-            navigate(build(['feed', parentEvidence.hypothesisId, 'evidences', parentEvidence.id]))
-        }
-    }
-
-    const toggleChildExpansion = (childId: string) => {
-        setExpandedChildren((prev) => ({ ...prev, [childId]: !prev[childId] }))
-    }
-
-    const getIndentClass = (currentLevel: number) => {
-        const indentAmount = Math.min(currentLevel * 10, 40)
-        return currentLevel > 0 ? `ml-${indentAmount}` : ''
+        const repliedToId = Unwrap(item.repliedTo)
+        if (parentEvidence || isNullish(repliedToId)) return
+        setLoadingParent(true)
+        Axioms.call(agent)
+            .getEvidence(repliedToId)
+            .then(setParentEvidence)
+            .finally(() => setLoadingParent(false))
     }
 
     return (
-        <div className={cn('flex flex-col gap-4', className)}>
-            <Popup
-                open={openReply !== null}
-                onClose={() => setOpenReply(null)}
-                title={`Post Reply Evidence (To: ${openReply?.toString()})`}
-                href={build(
-                    ['feed', openReply ?? 0n, 'evidences', 'post'],
-                    typeof openReply === 'string'
-                        ? { side: openReply }
-                        : { replyTo: openReply?.toString() }
-                )}
-                className="w-full md:w-4/5"
-                Icon={<EditIcon className="h-6 stroke-[1.5px]" />}
-            >
+        <div className="flex w-full flex-col gap-[0.75rem]">
+            <Popup open={openReply !== null} onClose={() => setOpenReply(null)} title="Post Reply">
                 <PostEvidence
                     id={item.hypothesisId}
                     replyTo={openReply}
@@ -91,114 +173,51 @@ const EvidenceDetailGroup = ({
                 />
             </Popup>
 
-            {parentEvidence && (
-                <div className={cn('relative', getIndentClass(level))}>
-                    <div
-                        className="absolute left-5 top-0 z-10"
-                        style={{ height: '2rem', width: '1.25rem' }}
-                    >
-                        <div className="h-full w-full rounded-tl-lg border-l-2 border-t-2 border-cold-800"></div>
-                    </div>
-
-                    <div className="flex items-center">
+            {parentEvidence !== null && (
+                <div className="relative w-full">
+                    {parentEvidence === undefined ? (
                         <button
                             onClick={handleParentClick}
-                            className="flex items-center gap-2 rounded-lg border border-cold-600 bg-cold-100 px-3 py-2 text-sm text-cold-800 hover:bg-cold-200"
+                            disabled={loadingParent}
+                            className="py-medium px-semilarge text-small rounded-lg border border-cold-600 bg-cold-100 text-cold-800 hover:bg-cold-200"
                         >
-                            <span className="text-lg font-bold">+</span>
-                            <span>View parent evidence</span>
+                            + View parent evidence
                         </button>
-                    </div>
-                </div>
-            )}
-
-            <div className={cn('relative', getIndentClass(level))}>
-                <EvidenceDetail item={item} className="mx-auto !w-full" onReply={setOpenReply} />
-
-                {item.replies.length > 0 && (
-                    <div
-                        className="absolute left-5 top-full z-10"
-                        style={{ height: 'calc(50%)', width: '1.25rem' }}
-                    >
-                        <div className="h-full w-full rounded-bl-lg border-b-2 border-l-2 border-cold-800"></div>
-                    </div>
-                )}
-            </div>
-
-            {item.replies.length > 0 && (
-                <div className={getIndentClass(level + 1)}>
-                    {loadingChildren ? (
-                        <div className="flex items-center justify-center py-8">
-                            <div className="text-sm text-cold-600">Loading replies...</div>
-                        </div>
                     ) : (
-                        <div className="flex flex-col gap-4">
-                            {childrenEvidence.map((childItem, index) => (
-                                <div key={childItem.id.toString()} className="relative">
-                                    {index === 0 && (
-                                        <div
-                                            className="absolute -left-10 top-0 z-10"
-                                            style={{ height: '50%', width: '2.5rem' }}
-                                        >
-                                            <div className="absolute left-0 top-1/2 h-0.5 w-full bg-cold-800"></div>
-                                        </div>
-                                    )}
-
-                                    <EvidenceDetail
-                                        item={childItem}
-                                        className="mx-auto !w-full"
-                                        onReply={setOpenReply}
-                                    />
-
-                                    {childItem.replies.length > 0 && (
-                                        <div className="mt-2 flex items-center">
-                                            <button
-                                                onClick={() =>
-                                                    toggleChildExpansion(childItem.id.toString())
-                                                }
-                                                className="flex items-center gap-2 rounded-lg border border-cold-600 bg-cold-100 px-3 py-2 text-sm text-cold-800 hover:bg-cold-200"
-                                            >
-                                                <span
-                                                    className={cn(
-                                                        'text-lg font-bold transition-transform',
-                                                        expandedChildren[childItem.id.toString()] &&
-                                                            'rotate-45'
-                                                    )}
-                                                >
-                                                    +
-                                                </span>
-                                                <span>
-                                                    {expandedChildren[childItem.id.toString()]
-                                                        ? 'Hide replies'
-                                                        : `Show ${childItem.replies.length} replies`}
-                                                </span>
-                                            </button>
-                                        </div>
-                                    )}
-
-                                    {expandedChildren[childItem.id.toString()] &&
-                                        childItem.replies.length > 0 && (
-                                            <div className="mt-4 border-l-2 border-cold-300 pl-4">
-                                                <EvidenceDetailGroup
-                                                    item={childItem}
-                                                    level={level + 2}
-                                                />
-                                            </div>
-                                        )}
-
-                                    {index < childrenEvidence.length - 1 && (
-                                        <div
-                                            className="absolute -left-10 top-full z-10"
-                                            style={{ height: '1rem', width: '0.125rem' }}
-                                        >
-                                            <div className="ml-10 h-full w-0.5 bg-cold-800"></div>
-                                        </div>
-                                    )}
-                                </div>
-                            ))}
-                        </div>
+                        parentEvidence && (
+                            <EvidenceDetail
+                                item={parentEvidence}
+                                onReply={setOpenReply}
+                                className="!w-full"
+                            />
+                        )
                     )}
                 </div>
+            )}
+            <div
+                className={cn(
+                    'flex w-full',
+                    parentEvidence !== null && 'ml-[0.75rem] md:ml-[1.5rem]'
+                )}
+            >
+                <div className="relative">
+                    <div className="left-5 top-full z-10 h-[calc(50%+0.75rem)] w-[1rem] -translate-y-[0.75rem] md:w-[1.5rem]">
+                        <div className="h-full w-full rounded-bl-lg border-b-2 border-l-2 border-cold-800"></div>
+                    </div>
+                </div>
+                <EvidenceDetail
+                    item={item}
+                    onReply={setOpenReply}
+                    className="!w-[calc(100%-2rem)] md:!w-[calc(100%-3rem)]"
+                />
+            </div>
+            {item.replies.length > 0 && (
+                <RepliesSection
+                    parentId={item.id}
+                    level={parentEvidence !== null ? 2 : 1}
+                    onReply={setOpenReply}
+                    className="ml-[3rem] md:ml-[4.5rem]"
+                />
             )}
         </div>
     )
