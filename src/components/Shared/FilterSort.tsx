@@ -76,11 +76,13 @@ const FilterSort = <T extends QueryName>({
                             {Object.entries(FILTER_SORT_DECS[name].filter).map(([key, value]) => (
                                 <div
                                     key={key}
-                                    className="gap-small grid w-full grid-cols-3 items-center md:w-[420px]"
+                                    className="gap-small grid w-full grid-cols-5 items-center md:w-[420px]"
                                 >
-                                    <label className="px-normal py-tiny text-left">{key}</label>
+                                    <label className="px-normal py-tiny col-span-2 text-left">
+                                        {key}
+                                    </label>
                                     {value === Primitive.Principal ? (
-                                        <div className="gap-normal col-span-2 flex w-full items-center">
+                                        <div className="gap-normal col-span-3 flex w-full items-center">
                                             <input
                                                 type="text"
                                                 className="py-small px-medium w-full rounded-md border border-cold-600/50 ring-0 focus:outline-none focus:ring-2 focus:ring-cold-600"
@@ -89,7 +91,10 @@ const FilterSort = <T extends QueryName>({
                                                     handleFilterChange(key, e.target.value)
                                                 }
                                             />
-                                            <label className="gap-extratiny flex items-center">
+                                            <label
+                                                className="gap-extratiny flex items-center aria-disabled:pointer-events-none aria-disabled:opacity-50"
+                                                aria-disabled={!principal}
+                                            >
                                                 <input
                                                     type="checkbox"
                                                     className="accent-cold-800"
@@ -97,19 +102,20 @@ const FilterSort = <T extends QueryName>({
                                                         handleFilterChange(
                                                             key,
                                                             e.target.checked
-                                                                ? principal!.toText()
+                                                                ? (principal?.toText() ?? '')
                                                                 : ''
                                                         )
                                                     }
                                                     checked={
-                                                        filterSelected[key] === principal!.toText()
+                                                        filterSelected[key] ===
+                                                        (principal?.toText() ?? '')
                                                     }
                                                 />
                                                 <span>Me</span>
                                             </label>
                                         </div>
                                     ) : value instanceof Array ? (
-                                        <div className="gap-normal col-span-2 flex flex-wrap">
+                                        <div className="gap-normal col-span-3 flex flex-wrap">
                                             {value.map((variant: string) => (
                                                 <label
                                                     key={variant}
@@ -131,7 +137,7 @@ const FilterSort = <T extends QueryName>({
                                     ) : (
                                         <input
                                             type="text"
-                                            className="py-small px-medium col-span-2 w-full rounded-md border border-cold-600/50 ring-0 focus:outline-none focus:ring-2 focus:ring-cold-600"
+                                            className="py-small px-medium col-span-3 w-full rounded-md border border-cold-600/50 ring-0 focus:outline-none focus:ring-2 focus:ring-cold-600"
                                             value={filterSelected[key] || ''}
                                             onChange={(e) =>
                                                 handleFilterChange(key, e.target.value)

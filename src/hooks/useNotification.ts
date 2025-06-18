@@ -42,6 +42,9 @@ const initializeDB = (userPrincipal: string) => {
     }
 }
 
+const _jsonReplacer = (key: string, value: any) =>
+    typeof value === 'bigint' ? value.toString() : value
+
 const _generateId = (notification: NotificationItem): string => {
     const [type, data] = UnwrapVariant(notification)
 
@@ -51,20 +54,19 @@ const _generateId = (notification: NotificationItem): string => {
     if ('capacity' in data) {
         return `notif-group-${type}`
     }
+    const sortedNotification = Object.keys(notification).reduce((acc, key) => {
+        acc[key] = (notification as any)[key]
+        return acc
+    }, {} as any)
 
-    const replacer = (key: string, value: any) =>
-        typeof value === 'bigint' ? value.toString() : value
-
-    return `notif-single-${(JSON as any).stringify(notification, Object.keys(notification).sort(), replacer)}`
+    return `notif-single-${JSON.stringify(sortedNotification, _jsonReplacer)}`
 }
 
 const _hashCapacity = (notification: NotificationItem): string | undefined => {
     const [, data] = UnwrapVariant(notification)
 
     if ('capacity' in data && Array.isArray(data.capacity)) {
-        const replacer = (key: string, value: any) =>
-            typeof value === 'bigint' ? value.toString() : value
-        return (JSON as any).stringify(data.capacity, Object.keys(data.capacity).sort(), replacer)
+        return JSON.stringify(data.capacity, _jsonReplacer)
     }
     return undefined
 }

@@ -382,7 +382,7 @@
 
 ```json
 {
-  "filter": {"votedBy": "Principal", "isCustodian": "Bool"},
+  "filter": {"voter": "Principal", "isCustodian": "Bool"},
   "sort": {"by": "#VOTER | #TOKEN", "order": "#ASCENDING | #DESCENDING"}
 }
 ```
@@ -398,7 +398,7 @@
 
 ```json
 {
-  "filter": {"votedBy": "Principal", "isCustodian": "Bool"},
+  "filter": {"voter": "Principal", "isCustodian": "Bool"},
   "sort": {"by": "#VOTER | #TOKEN", "order": "#ASCENDING | #DESCENDING"},
   "page": "Nat",
   "limit": "Nat"

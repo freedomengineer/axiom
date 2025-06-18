@@ -33,7 +33,7 @@ const SpecificSearchPage = () => {
         title: `Search ${type} | ${siteMetadata.title}`,
         description: metadata.description,
     }
-    const containsPattern = searchParams.get('containsPattern')
+    const q = searchParams.get('q')
 
     return (
         <>
@@ -61,7 +61,7 @@ const SpecificSearchPage = () => {
                     }[type!]
                 }
                 query={queries[type!]}
-                hardFilter={containsPattern ? { containsPattern } : {}}
+                hardFilter={q ? { q } : {}}
             />
         </>
     )

@@ -30,10 +30,10 @@ const SearchPage = () => {
         users?: Pagination<DFacade.Sharable>
     }>({})
 
-    const containsPattern = searchParams.get('containsPattern') ?? ''
+    const q = searchParams.get('q') ?? ''
     const pageMetadata: Metadata = {
         url: siteMetadata.siteUrl + metadata.url,
-        title: `${title} all "${containsPattern}" | ${siteMetadata.title}`,
+        title: `${title} all "${q}" | ${siteMetadata.title}`,
         description: metadata.description,
     }
 
@@ -41,7 +41,7 @@ const SearchPage = () => {
         Promise.all([
             Axioms.call(agent)
                 .getHypothesesPagination(
-                    parseFilterFromObj('hypothesis', { containsPattern }),
+                    parseFilterFromObj('hypothesis', { q }),
                     parseSortFromObj('hypothesis', { by: 'recent', order: 'descending' }),
                     1n,
                     4n
@@ -49,7 +49,7 @@ const SearchPage = () => {
                 .catch(error),
             Axioms.call(agent)
                 .getEvidencesPagination(
-                    parseFilterFromObj('evidence', { containsPattern }),
+                    parseFilterFromObj('evidence', { q }),
                     parseSortFromObj('evidence', { by: 'recent', order: 'descending' }),
                     1n,
                     4n
@@ -57,7 +57,7 @@ const SearchPage = () => {
                 .catch(error),
             Axioms.call(agent)
                 .getFieldsPagination(
-                    parseFilterFromObj('field', { containsPattern }),
+                    parseFilterFromObj('field', { q }),
                     parseSortFromObj('field', { by: 'popularity', order: 'descending' }),
                     1n,
                     4n
@@ -65,7 +65,7 @@ const SearchPage = () => {
                 .catch(error),
             Facade.call(agent)
                 .getUsersPagination(
-                    parseFilterFromObj('user', { containsPattern }),
+                    parseFilterFromObj('user', { q }),
                     parseSortFromObj('user', { by: 'capitalRaised', order: 'descending' }),
                     1n,
                     4n
@@ -76,7 +76,7 @@ const SearchPage = () => {
                 setResults({ hypotheses, evidences, fields, users } as any)
             )
             .catch(error)
-    }, [containsPattern, Axioms, Facade])
+    }, [p, Axioms, Facade])
 
     const Layout = <T,>({
         Component,
@@ -96,7 +96,7 @@ const SearchPage = () => {
                     <Heading text={name} />
                     {result && result!.is !== result!.of ? (
                         <Link
-                            href={build(['search', name], { containsPattern })}
+                            href={build(['search', name], { q })}
                             className="pre-underline text-primary-700 decoration-primary-700/50 hover:decoration-primary-700/100 aria-hidden:hidden"
                             size="normal"
                             icon="forward"

@@ -19,25 +19,25 @@ const ListWrapper = <T,>({
     query: (filter: any, sort: any, page: bigint, size: bigint) => Promise<Pagination<T>>
 }) => {
     const [items, setItems] = useState<Pagination<T>>()
-    const [pattern, setPattern] = useState<string>('')
+    const [q, setQ] = useState<string>('')
     const [loading, setLoading] = useState<boolean>(false)
 
     useEffect(() => {
         setLoading(true)
 
-        const f = parseFilterFromObj(name, { ...hardFilter, containsPattern: pattern })
+        const f = parseFilterFromObj(name, { ...hardFilter, q })
         const s = parseSortFromObj(name, hardSort)
         const p = 1n
 
         query(f, s, p, size)
             .then(setItems)
             .finally(() => setLoading(false))
-    }, [pattern])
+    }, [q])
 
     const loadMore = async () => {
         setLoading(true)
 
-        const f = parseFilterFromObj(name, { ...hardFilter, containsPattern: pattern })
+        const f = parseFilterFromObj(name, { ...hardFilter, q })
         const s = parseSortFromObj(name, hardSort)
         const p = 1n
 
@@ -53,7 +53,7 @@ const ListWrapper = <T,>({
                     type="text"
                     className="px-normal mx-auto h-10 w-full rounded-md border border-cold-800/25 py-1 ring-1 ring-cold-800/25 focus:outline-none focus:ring-2 focus:ring-cold-800"
                     placeholder="Search"
-                    onChange={(e) => setPattern(e.target.value)}
+                    onChange={(e) => setQ(e.target.value)}
                 />
             </div>
             {!items || loading ? (

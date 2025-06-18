@@ -20,9 +20,10 @@ import { build, buildBlobImage } from '@libs/url'
 import { EVote } from '@utils/feed/evidence'
 import { VOTES as HYPOTHESIS_VOTES } from '@utils/feed/hypothesis'
 import { DAxioms } from 'shared/types/services'
-import { UnwrapVariant, Variant } from 'shared/utils/typings'
+import { Unwrap, UnwrapVariant, Variant, isNullish } from 'shared/utils/typings'
 
 import EvidenceVote from './EvidenceVote'
+import PostEvidence from './PostEvidence'
 import RequestFlag from '../Flags/RequestFlag'
 
 const EvidenceDetail = ({
@@ -32,12 +33,16 @@ const EvidenceDetail = ({
 }: {
     item: DAxioms.SharableEvidence
     className?: string
-    onReply: (id: bigint) => void
+    onReply?: (id: bigint) => void
 }) => {
     const { principal } = useAuth()
-    const { publisher, localItem, vote, votesLoading, handleVote } = useEvidenceDetails(item)
+    const { publisher, localItem, vote, votesLoading, handleVote, refreshItem } =
+        useEvidenceDetails(item)
     const [open, setOpen] = useState(false)
     const [copied, setCopied] = useState<boolean>()
+    const [openReply, setOpenReply] = useState<boolean | undefined>(
+        onReply === undefined ? undefined : false
+    )
 
     const handleCopy = () => {
         navigator.clipboard.writeText(
@@ -51,6 +56,10 @@ const EvidenceDetail = ({
         success('Copied share link to clipboard')
         setTimeout(() => setCopied(false), 3000)
     }
+    const handleReply = () => {
+        if (onReply === undefined) setOpenReply(true)
+        else onReply(localItem.id)
+    }
 
     const formObject = Object.fromEntries(localItem.form.map((form) => UnwrapVariant(form)))
     const VOTE = HYPOTHESIS_VOTES[UnwrapVariant(localItem.choice)]
@@ -63,6 +72,22 @@ const EvidenceDetail = ({
                 className
             )}
         >
+            {openReply !== undefined && (
+                <Popup
+                    open={openReply}
+                    onClose={() => setOpenReply(false)}
+                    title={`Post Reply to Evidence ${localItem.id}`}
+                >
+                    <PostEvidence
+                        id={item.hypothesisId}
+                        replyTo={localItem.id}
+                        onSubmit={() => {
+                            setOpenReply(false)
+                            refreshItem()
+                        }}
+                    />
+                </Popup>
+            )}
             <Popup
                 open={open}
                 onClose={() => setOpen(false)}
@@ -78,6 +103,11 @@ const EvidenceDetail = ({
             <div className={cn('absolute right-0 top-0 rounded-md text-white', VOTE.bgColor)}>
                 <Icon className="p-tiny h-6 w-6 stroke-[1.5px] md:h-7 md:w-7" />
             </div>
+            {!isNullish(Unwrap(localItem.repliedTo)) && (
+                <div className="absolute right-8 top-0 rounded-md bg-cold-700 text-white">
+                    <ReplyIcon className="p-small h-6 w-6 stroke-[1.5px] md:h-7 md:w-7" />
+                </div>
+            )}
             <div className="px-medium py-extralarge gap-normal flex w-full flex-col items-center">
                 {formObject.Picture && (
                     <img
@@ -160,15 +190,15 @@ const EvidenceDetail = ({
                             {localItem.votes.regular[1]}
                         </p>
                     </div>
-                    <button
-                        className="gap-tiny flex items-center hover:opacity-75"
-                        onClick={() => onReply(localItem.id)}
-                    >
-                        <ReplyIcon className="h-3.5 w-3.5 stroke-[1.5px] md:h-4 md:w-4" />
+                    <div className="gap-tiny flex items-center">
+                        <ReplyIcon
+                            className="h-3.5 w-3.5 cursor-pointer stroke-[1.5px] hover:opacity-75 md:h-4 md:w-4"
+                            onClick={() => handleReply()}
+                        />
                         <p className="text-tiny font-light text-white md:block">
                             {localItem.replies.length}
                         </p>
-                    </button>
+                    </div>
                     <button className="hover:opacity-75" onClick={() => setOpen(true)}>
                         <FlagIcon className="h-3.5 w-3.5 stroke-[1.5px] md:h-4 md:w-4" />
                     </button>

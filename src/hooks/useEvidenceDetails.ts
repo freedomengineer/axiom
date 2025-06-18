@@ -52,6 +52,7 @@ const useEvidenceDetail = (item: DAxioms.SharableEvidence) => {
         vote,
         votesLoading,
         handleVote,
+        refreshItem,
     }
 }
 

@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react'
 
-import Popup from '@components/Shared/Popup'
 import useAuth from '@hooks/useAuth'
 import cn from '@libs/class'
 import { parseFilterFromObj, parseSortFromObj } from 'shared/default/filter_sort'
@@ -11,22 +10,22 @@ import { Axioms } from 'shared/utils/services'
 import { Unwrap, isNullish } from 'shared/utils/typings'
 
 import EvidenceDetail from './EvidenceDetail'
-import PostEvidence from './PostEvidence'
 
 const RepliesSection = ({
     parentId,
     level,
     className,
-    onReply,
+    noParent,
 }: {
     parentId: bigint
     level: number
     className: string
-    onReply: (id: bigint | null) => void
+    noParent: boolean
 }) => {
     const { agent } = useAuth()
     const [replies, setReplies] = useState<DAxioms.SharableEvidence[]>([])
     const [isExpanded, setIsExpanded] = useState(false)
+
     useEffect(() => {
         Axioms.call(agent, true)
             .getEvidences(
@@ -45,7 +44,7 @@ const RepliesSection = ({
         <div className={cn('flex w-full flex-col gap-[0.75rem]', className)}>
             {isExpanded ? (
                 <>
-                    {replies.map((reply, index) => (
+                    {replies.map((reply) => (
                         <>
                             <div className="flex w-full">
                                 <div className="relative">
@@ -64,8 +63,11 @@ const RepliesSection = ({
                                 </div>
                                 <EvidenceDetail
                                     item={reply}
-                                    onReply={onReply}
-                                    className="!w-[calc(100%-4rem)] md:!w-[calc(100%-6rem)]"
+                                    className={
+                                        noParent
+                                            ? '!w-[calc(100%-2.25rem)] md:!w-[calc(100%-3rem)]'
+                                            : '!w-[calc(100%-4rem)] md:!w-[calc(100%-6rem)]'
+                                    }
                                 />
                             </div>
                             {reply.replies.length > 0 && (
@@ -80,8 +82,8 @@ const RepliesSection = ({
                                         <RepliesSection
                                             parentId={reply.id}
                                             level={level + 1}
+                                            noParent={noParent}
                                             className={'ml-[1.25rem] md:ml-[2rem]'}
-                                            onReply={onReply}
                                         />
                                     </div>
                                 </div>
@@ -105,7 +107,7 @@ const RepliesSection = ({
                             </div>
                         </div>
                         <button
-                            className="py-medium px-semilarge text-small rounded-lg border border-cold-600 bg-cold-100 text-cold-800 hover:bg-cold-200"
+                            className="py-normal px-medium text-tiny rounded-lg border border-cold-600 bg-cold-100 text-cold-800 hover:bg-cold-200"
                             onClick={() => setIsExpanded(false)}
                         >
                             - Hide {replies.length} replies
@@ -132,7 +134,7 @@ const RepliesSection = ({
                                 </div>
                             </div>
                             <button
-                                className="py-medium px-semilarge text-small rounded-lg border border-cold-600 bg-cold-100 text-cold-800 hover:bg-cold-200"
+                                className="py-normal px-medium text-tiny rounded-lg border border-cold-600 bg-cold-100 text-cold-800 hover:bg-cold-200"
                                 onClick={() => setIsExpanded(true)}
                             >
                                 + View {replies.length} replies
@@ -147,10 +149,9 @@ const RepliesSection = ({
 
 const EvidenceDetailGroup = ({ item }: { item: DAxioms.SharableEvidence }) => {
     const { agent } = useAuth()
-    const [openReply, setOpenReply] = useState<bigint | null>(null)
     const [parentEvidence, setParentEvidence] = useState<
         DAxioms.SharableEvidence | undefined | null
-    >(isNullish(item.repliedTo) ? null : undefined)
+    >(isNullish(Unwrap(item.repliedTo)) ? null : undefined)
     const [loadingParent, setLoadingParent] = useState(false)
 
     const handleParentClick = () => {
@@ -165,31 +166,19 @@ const EvidenceDetailGroup = ({ item }: { item: DAxioms.SharableEvidence }) => {
 
     return (
         <div className="flex w-full flex-col gap-[0.75rem]">
-            <Popup open={openReply !== null} onClose={() => setOpenReply(null)} title="Post Reply">
-                <PostEvidence
-                    id={item.hypothesisId}
-                    replyTo={openReply}
-                    onSubmit={() => setOpenReply(null)}
-                />
-            </Popup>
-
             {parentEvidence !== null && (
                 <div className="relative w-full">
                     {parentEvidence === undefined ? (
                         <button
                             onClick={handleParentClick}
                             disabled={loadingParent}
-                            className="py-medium px-semilarge text-small rounded-lg border border-cold-600 bg-cold-100 text-cold-800 hover:bg-cold-200"
+                            className="py-normal px-medium text-tiny rounded-lg border border-cold-600 bg-cold-100 text-cold-800 hover:bg-cold-200"
                         >
                             + View parent evidence
                         </button>
                     ) : (
                         parentEvidence && (
-                            <EvidenceDetail
-                                item={parentEvidence}
-                                onReply={setOpenReply}
-                                className="!w-full"
-                            />
+                            <EvidenceDetail item={parentEvidence} className="!w-full" />
                         )
                     )}
                 </div>
@@ -200,23 +189,32 @@ const EvidenceDetailGroup = ({ item }: { item: DAxioms.SharableEvidence }) => {
                     parentEvidence !== null && 'ml-[0.75rem] md:ml-[1.5rem]'
                 )}
             >
-                <div className="relative">
-                    <div className="left-5 top-full z-10 h-[calc(50%+0.75rem)] w-[1rem] -translate-y-[0.75rem] md:w-[1.5rem]">
-                        <div className="h-full w-full rounded-bl-lg border-b-2 border-l-2 border-cold-800"></div>
+                {parentEvidence !== null && (
+                    <div className="relative">
+                        <div className="left-5 top-full z-10 h-[calc(50%+0.75rem)] w-[1rem] -translate-y-[0.75rem] md:w-[1.5rem]">
+                            <div className="h-full w-full rounded-bl-lg border-b-2 border-l-2 border-cold-800"></div>
+                        </div>
                     </div>
-                </div>
+                )}
                 <EvidenceDetail
                     item={item}
-                    onReply={setOpenReply}
-                    className="!w-[calc(100%-2rem)] md:!w-[calc(100%-3rem)]"
+                    className={
+                        parentEvidence !== null
+                            ? '!w-[calc(100%-2rem)] md:!w-[calc(100%-3rem)]'
+                            : '!w-full'
+                    }
                 />
             </div>
             {item.replies.length > 0 && (
                 <RepliesSection
                     parentId={item.id}
                     level={parentEvidence !== null ? 2 : 1}
-                    onReply={setOpenReply}
-                    className="ml-[3rem] md:ml-[4.5rem]"
+                    noParent={parentEvidence === null}
+                    className={
+                        parentEvidence !== null
+                            ? 'ml-[3rem] md:ml-[4.5rem]'
+                            : 'ml-[1.25rem] md:ml-[1.5rem]'
+                    }
                 />
             )}
         </div>

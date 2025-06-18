@@ -254,7 +254,7 @@ shared ({ caller = indicator }) actor class Facade() = this {
         Pagination.paginate(result, page, limit)
     };
 
-    public query func getNotification(principal : Principal) : async Notifications.Sharable {
-        Notifications.getNotification(notifications, principal)
+    public query ({ caller }) func getNotification() : async Notifications.Sharable {
+        Notifications.getNotification(notifications, caller)
     }
 }

@@ -67,7 +67,7 @@ shared ({ caller = indicator }) actor class Affiliate() = this {
                     ignore (
                         func() : async () {
                             let Facade : FacadeInterface.Facade = await Indicator.Facade();
-                            await Facade.postUserNotification((r, #NewReferrals({ principal; claimable = affiliatePayout.val; timestamp = Time.now() })))
+                            await Facade.postUserNotification((r, #NewReferrals({ user = principal; claimable = affiliatePayout.val; timestamp = Time.now() })))
                         }
                     )();
 

@@ -45,7 +45,7 @@ const PostEvidencePage = () => {
                 >
                     Back to Hypothesis {hypothesis!}
                 </Link>
-                <Heading text="Post Evidence" />
+                <Heading text={replyTo ? `Post Reply to Evidence ${replyTo}` : `Post Evidence`} />
             </div>
             <PostEvidence
                 id={BigInt(hypothesis!)}

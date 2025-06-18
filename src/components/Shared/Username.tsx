@@ -13,7 +13,13 @@ import cn from '@libs/class'
 
 import Link from './Link'
 
-const Symbol = ({ capitalRaised, className }: { capitalRaised: string; className?: string }) => {
+export const Symbol = ({
+    capitalRaised,
+    className,
+}: {
+    capitalRaised: string
+    className?: string
+}) => {
     switch (capitalRaised) {
         case '0':
         case '1000000000':
@@ -83,8 +89,9 @@ const Symbol = ({ capitalRaised, className }: { capitalRaised: string; className
             return (
                 <LiberatorIcon
                     className={cn(
-                        'mr-1 inline-block h-3.5 w-3.5 shrink-0 stroke-[50px] text-inherit md:h-4 md:w-4',
-                        className
+                        'mr-1 inline-block h-3.5 w-3.5 shrink-0 text-inherit md:h-4 md:w-4',
+                        className,
+                        'stroke-[50px]'
                     )}
                 />
             )

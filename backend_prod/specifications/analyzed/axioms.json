@@ -5371,6 +5371,19 @@
           }
         ],
         [
+          "repliedTo",
+          {
+            "origin": "?Nat",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": true,
+            "isAsync": false
+          }
+        ],
+        [
           "q",
           {
             "origin": "?Text",

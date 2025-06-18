@@ -131,7 +131,7 @@ const HypothesisDetail = ({ item }: { item: DAxioms.SharableHypothesis }) => {
                 title={
                     typeof postEvidenceOpen === 'string'
                         ? `Post Evidence`
-                        : `Post Reply Evidence (To: ${postEvidenceOpen?.toString()})`
+                        : `Post Reply to Evidence ${postEvidenceOpen?.toString()}`
                 }
                 href={build(
                     ['feed', localItem.id, 'evidences', 'post'],

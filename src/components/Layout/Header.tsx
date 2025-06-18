@@ -86,7 +86,7 @@ const Header = ({
     const [openMenu, setOpenMenu] = useState<{ [key: string]: string | null }>({})
     const [open, setOpen] = useState<EPopup | null>(null)
 
-    const [pattern, setPattern] = useState<string>('')
+    const [q, setQ] = useState<string>('')
     const [pem, setPem] = useState<{ input: string; identity: Identity | null }>({
         input: '',
         identity: null,
@@ -131,13 +131,13 @@ const Header = ({
                             type="text"
                             placeholder="Search"
                             onFocus={() => setOpen(EPopup.Search)}
-                            onChange={(e) => setPattern(e.target.value)}
+                            onChange={(e) => setQ(e.target.value)}
                             onBlur={() => setTimeout(() => setOpen(null), 150)}
-                            aria-selected={open === EPopup.Search && !!pattern}
+                            aria-selected={open === EPopup.Search && !!q}
                             className="text-tiny px-medium peer h-[2rem] w-full rounded-lg border border-black/10 font-display font-normal focus:border-primary-700 focus:outline-none md:h-[2.25rem]"
                         />
                         <SearchIcon className="right-medium peer absolute h-5 w-5 stroke-[1.5px] text-black/10 peer-aria-selected:text-primary-700" />
-                        {open === EPopup.Search && pattern && (
+                        {open === EPopup.Search && q && (
                             <div className="fixed left-1/2 top-[3.25rem] mx-auto w-[90%] -translate-x-1/2 transform rounded-lg border border-black/10 bg-white shadow-lg md:absolute md:left-0 md:top-12 md:w-full md:translate-x-0">
                                 <div className="px-medium py-small flex flex-col">
                                     <span className="text-normal font-display font-semibold text-primary-700">
@@ -145,27 +145,21 @@ const Header = ({
                                     </span>
                                     <Link
                                         className="text-tiny px-normal py-small rounded-lg font-light hover:bg-black/5"
-                                        href={build(['search', 'hypotheses'], {
-                                            containsPattern: pattern,
-                                        })}
+                                        href={build(['search', 'hypotheses'], { q })}
                                     >
-                                        {`Search "${pattern}" in Hypotheses`}
+                                        {`Search "${q}" in Hypotheses`}
                                     </Link>
                                     <Link
                                         className="text-tiny px-normal py-small rounded-lg font-light hover:bg-black/5"
-                                        href={build(['search', 'fields'], {
-                                            containsPattern: pattern,
-                                        })}
+                                        href={build(['search', 'fields'], { q })}
                                     >
-                                        {`Search "${pattern}" in Fields`}
+                                        {`Search "${q}" in Fields`}
                                     </Link>
                                     <Link
                                         className="text-tiny px-normal py-small rounded-lg font-light hover:bg-black/5"
-                                        href={build(['search', 'evidences'], {
-                                            containsPattern: pattern,
-                                        })}
+                                        href={build(['search', 'evidences'], { q })}
                                     >
-                                        {`Search "${pattern}" in Evidences`}
+                                        {`Search "${q}" in Evidences`}
                                     </Link>
                                     <hr className="my-tiny border-black/10" />
                                     <span className="text-normal font-display font-semibold text-primary-700">
@@ -173,19 +167,15 @@ const Header = ({
                                     </span>
                                     <Link
                                         className="text-tiny px-normal py-small rounded-lg font-light hover:bg-black/5"
-                                        href={build(['search', 'proposals'], {
-                                            containsPattern: pattern,
-                                        })}
+                                        href={build(['search', 'proposals'], { q })}
                                     >
-                                        {`Search "${pattern}" in Proposals`}
+                                        {`Search "${q}" in Proposals`}
                                     </Link>
                                     <Link
                                         className="text-tiny px-normal py-small rounded-lg font-light hover:bg-black/5"
-                                        href={build(['search', 'configs'], {
-                                            containsPattern: pattern,
-                                        })}
+                                        href={build(['search', 'configs'], { q })}
                                     >
-                                        {`Search "${pattern}" in Configs`}
+                                        {`Search "${q}" in Configs`}
                                     </Link>
                                     <hr className="my-tiny border-black/10" />
                                     <span className="text-normal font-display font-semibold text-primary-700">
@@ -193,16 +183,14 @@ const Header = ({
                                     </span>
                                     <Link
                                         className="text-tiny px-normal py-small rounded-lg font-light hover:bg-black/5"
-                                        href={build(['search', 'users'], {
-                                            containsPattern: pattern,
-                                        })}
+                                        href={build(['search', 'users'], { q })}
                                     >
-                                        {`Search "${pattern}" in Users`}
+                                        {`Search "${q}" in Users`}
                                     </Link>
                                     <hr className="my-tiny border-black/10" />
                                     <Link
                                         className="text-tiny px-normal py-small rounded-lg font-light hover:bg-black/5"
-                                        href={build(['search'], { containsPattern: pattern })}
+                                        href={build(['search'], { q })}
                                     >
                                         {`Search All`}
                                     </Link>
@@ -320,7 +308,7 @@ const Header = ({
                                 onMouseEnter={() => setOpenMenu({ User: 'User' })}
                                 className="relative w-full border-none bg-transparent p-0 shadow-none outline-none md:max-w-[20rem]"
                             >
-                                <div className="p-medium mx-auto flex w-[90%] max-w-[20rem] flex-col rounded-lg border border-cold-200 bg-white shadow-lg outline-none">
+                                <div className="p-medium ml-auto mr-4 flex w-[90%] max-w-[20rem] flex-col rounded-lg border border-cold-200 bg-white shadow-lg outline-none md:mr-8">
                                     <TimeDisplay />
                                     <hr className="py-small border-black/10 hover:outline-none" />
                                     <button

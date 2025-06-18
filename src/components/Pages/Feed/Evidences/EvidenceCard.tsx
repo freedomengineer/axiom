@@ -4,6 +4,7 @@ import { useState } from 'react'
 
 import AtIcon from '@components/Assets/at.svg'
 import DoneIcon from '@components/Assets/done.svg'
+import EditIcon from '@components/Assets/edit.svg'
 import FlagIcon from '@components/Assets/flag.svg'
 import HypothesisIcon from '@components/Assets/hypothesis.svg'
 import NewTabIcon from '@components/Assets/new_tab.svg'
@@ -22,6 +23,7 @@ import { DAxioms } from 'shared/types/services'
 import { Unwrap, UnwrapVariant, Variant, isNullish } from 'shared/utils/typings'
 
 import EvidenceVote from './EvidenceVote'
+import PostEvidence from './PostEvidence'
 import RequestFlag from '../Flags/RequestFlag'
 
 const EvidenceCard = ({
@@ -31,12 +33,16 @@ const EvidenceCard = ({
 }: {
     item: DAxioms.SharableEvidence
     className?: string
-    onReply: (id: bigint) => void
+    onReply?: (id: bigint) => void
 }) => {
     const { principal } = useAuth()
-    const { publisher, localItem, vote, votesLoading, handleVote } = useEvidenceDetails(item)
+    const { publisher, localItem, vote, votesLoading, handleVote, refreshItem } =
+        useEvidenceDetails(item)
     const [open, setOpen] = useState(false)
     const [copied, setCopied] = useState<boolean>()
+    const [openReply, setOpenReply] = useState<boolean | undefined>(
+        onReply === undefined ? undefined : false
+    )
 
     const handleCopy = () => {
         navigator.clipboard.writeText(
@@ -50,6 +56,10 @@ const EvidenceCard = ({
         success('Copied share link to clipboard')
         setTimeout(() => setCopied(false), 3000)
     }
+    const handleReply = () => {
+        if (onReply === undefined) setOpenReply(true)
+        else onReply(localItem.id)
+    }
 
     const formObject = Object.fromEntries(localItem.form.map((form) => UnwrapVariant(form)))
     const VOTE = HYPOTHESIS_VOTES[UnwrapVariant(localItem.choice)]
@@ -62,6 +72,26 @@ const EvidenceCard = ({
                 className
             )}
         >
+            {openReply !== undefined && (
+                <Popup
+                    open={openReply}
+                    onClose={() => setOpenReply(false)}
+                    title={`Post Reply to Evidence ${localItem.id}`}
+                    href={build(['feed', localItem.id, 'evidences', 'post'], {
+                        replyTo: localItem.id.toString(),
+                    })}
+                    Icon={<EditIcon className="h-6 stroke-[1.5px]" />}
+                >
+                    <PostEvidence
+                        id={item.hypothesisId}
+                        replyTo={localItem.id}
+                        onSubmit={() => {
+                            refreshItem()
+                            setOpenReply(false)
+                        }}
+                    />
+                </Popup>
+            )}
             <Popup
                 open={open}
                 onClose={() => setOpen(false)}
@@ -166,7 +196,7 @@ const EvidenceCard = ({
                         </p>
                     </div>
                     <div className="gap-small flex items-center">
-                        <button className="hover:opacity-75" onClick={() => onReply(localItem.id)}>
+                        <button className="hover:opacity-75" onClick={() => handleReply()}>
                             <ReplyIcon className="h-3.5 w-3.5 stroke-[1.5px] md:h-4 md:w-4" />
                         </button>
                         <p className="text-tiny font-light text-white">

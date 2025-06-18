@@ -87,27 +87,27 @@ const GroupedNotificationRenderer = memo(
         const renderCapacityItem = (item: any, id: string) => {
             switch (type) {
                 case 'NewFollowers':
-                    return 'started following you'
+                    return 'started following you.'
                 case 'NewReferrals':
                     return `joined Axiom by using your referral link, you can claim ${e8s.toString(item.claimable)} ICP.`
                 case 'NewBallots':
                     return 'voted you in the election.'
                 case 'NewVotesToHypothesis':
-                    return `voted ${UnwrapVariant(item.choice)} on your hypothesis ${id}.`
+                    return `voted ${UnwrapVariant(item.choice)}.`
                 case 'NewVotesToEvidence':
-                    return `voted ${UnwrapVariant(item.choice)} on your evidence ${id}.`
+                    return `voted ${UnwrapVariant(item.choice)}.`
                 case 'NewVotesToProposal':
-                    return `voted ${UnwrapVariant(item.choice)} on your proposal ${id}.`
+                    return `voted ${UnwrapVariant(item.choice)}.`
                 case 'NewAxiomsToHypothesis':
-                    return `adopted your hypothesis ${id} as their Axioms.`
+                    return `adopted your hypothesis.`
                 case 'NewEvidencesToHypothesis':
-                    return `published new evidences to your hypothesis ${id}.`
+                    return `published ${UnwrapVariant(item.side)} evidence ${item.evidenceId}.`
                 case 'NewRepliesToEvidence':
-                    return `replied to your evidence ${id}.`
+                    return `replied to your evidence with ${item.evidenceId}.`
                 case 'NewHypothesesFromFollowings':
-                    return `published hypothesis ${id}.`
+                    return `published hypothesis ${item.hypothesisId}.`
                 case 'NewEvidencesFromFollowings':
-                    return `published evidence ${id}.`
+                    return `published evidence ${item.evidenceId}.`
             }
         }
         const firstItem = item.capacity[0]

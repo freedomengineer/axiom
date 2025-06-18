@@ -10,6 +10,7 @@ import TernaryVotes "../../../library/votes/TernaryVotes";
 
 import Time "mo:base/Time";
 import Text "mo:base/Text";
+import Debug "mo:base/Debug";
 
 module {
     /// PRIVATE ////// DECLARATIONS ////////////
@@ -101,16 +102,16 @@ module {
         timestamp : Time
     };
     public type NewReferralsData = {
-        principal : Principal;
+        user : Principal;
         claimable : Nat;
         timestamp : Time
     };
     public type NewFollowersData = {
-        principal : Principal;
+        user : Principal;
         timestamp : Time
     };
     public type NewBallotsData = {
-        principal : Principal;
+        voter : Principal;
         timestamp : Time
     };
 
@@ -291,10 +292,13 @@ module {
     /// PUBLIC ////// MODIFIERS ////////////
 
     public func pushSystemNotification(__ : Self<SystemVariant>, data : SystemVariantParam, maxNotificationSize : Nat) {
+        Debug.print("pushSystemNotification: " # debug_show (data));
         __.notification := List.smartPush<SystemVariant>(__.notification, data, func(x) = false, maxNotificationSize).0
     };
 
     public func pushUserNotification(__ : Self<UserVariant>, data : UserVariantParam, maxNotificationSize : Nat, maxNotificationCapacity : Nat) {
+        Debug.print("pushUserNotification: " # debug_show (data));
+
         var group : ?UserVariant = List.find<UserVariant>(
             __.notification,
             func(current) = switch (current, data) {
@@ -375,6 +379,7 @@ module {
 
             // grouped with ids
             case (? #NewEvidencesToHypothesis(group), #NewEvidencesToHypothesis(data)) {
+                // no replacement
                 let (res, pushType) = List.smartPush<NewEvidencesToHypothesisData>(group.capacity, data.data, func(x) = false, maxNotificationCapacity);
                 group.capacity := res;
                 switch (pushType) {
@@ -384,7 +389,8 @@ module {
                 #NewEvidencesToHypothesis(group)
             };
             case (? #NewAxiomsToHypothesis(group), #NewAxiomsToHypothesis(data)) {
-                let (res, pushType) = List.smartPush<NewAxiomsToHypothesisData>(group.capacity, data.data, func(x) = false, maxNotificationCapacity);
+                // replace by key [user]
+                let (res, pushType) = List.smartPush<NewAxiomsToHypothesisData>(group.capacity, data.data, func(x) = x.user == data.data.user, maxNotificationCapacity);
                 group.capacity := res;
                 switch (pushType) {
                     case (#replaced) {};
@@ -393,6 +399,7 @@ module {
                 #NewAxiomsToHypothesis(group)
             };
             case (? #NewRepliesToEvidence(group), #NewRepliesToEvidence(data)) {
+                // no replacement
                 let (res, pushType) = List.smartPush<NewRepliesToEvidenceData>(group.capacity, data.data, func(x) = false, maxNotificationCapacity);
                 group.capacity := res;
                 switch (pushType) {
@@ -402,7 +409,8 @@ module {
                 #NewRepliesToEvidence(group)
             };
             case (? #NewVotesToHypothesis(group), #NewVotesToHypothesis(data)) {
-                let (res, pushType) = List.smartPush<NewVotesToHypothesisData>(group.capacity, data.data, func(x) = false, maxNotificationCapacity);
+                // replace by key [voter]
+                let (res, pushType) = List.smartPush<NewVotesToHypothesisData>(group.capacity, data.data, func(x) = x.voter == data.data.voter, maxNotificationCapacity);
                 group.capacity := res;
                 switch (pushType) {
                     case (#replaced) {};
@@ -411,7 +419,8 @@ module {
                 #NewVotesToHypothesis(group)
             };
             case (? #NewVotesToEvidence(group), #NewVotesToEvidence(data)) {
-                let (res, pushType) = List.smartPush<NewVotesToEvidenceData>(group.capacity, data.data, func(x) = false, maxNotificationCapacity);
+                // replace by key [voter]
+                let (res, pushType) = List.smartPush<NewVotesToEvidenceData>(group.capacity, data.data, func(x) = x.voter == data.data.voter, maxNotificationCapacity);
                 group.capacity := res;
                 switch (pushType) {
                     case (#replaced) {};
@@ -420,7 +429,8 @@ module {
                 #NewVotesToEvidence(group)
             };
             case (? #NewVotesToProposal(group), #NewVotesToProposal(data)) {
-                let (res, pushType) = List.smartPush<NewVotesToProposalData>(group.capacity, data.data, func(x) = false, maxNotificationCapacity);
+                // replace by key [voter]
+                let (res, pushType) = List.smartPush<NewVotesToProposalData>(group.capacity, data.data, func(x) = x.voter == data.data.voter, maxNotificationCapacity);
                 group.capacity := res;
                 switch (pushType) {
                     case (#replaced) {};
@@ -431,6 +441,7 @@ module {
 
             // grouped without ids
             case (? #NewHypothesesFromFollowings(group), #NewHypothesesFromFollowings(data)) {
+                // no replacement
                 let (res, pushType) = List.smartPush<NewHypothesesFromFollowingsData>(group.capacity, data, func(x) = false, maxNotificationCapacity);
                 group.capacity := res;
                 switch (pushType) {
@@ -440,6 +451,7 @@ module {
                 #NewHypothesesFromFollowings(group)
             };
             case (? #NewEvidencesFromFollowings(group), #NewEvidencesFromFollowings(data)) {
+                // no replacement
                 let (res, pushType) = List.smartPush<NewEvidencesFromFollowingsData>(group.capacity, data, func(x) = false, maxNotificationCapacity);
                 group.capacity := res;
                 switch (pushType) {
@@ -449,6 +461,7 @@ module {
                 #NewEvidencesFromFollowings(group)
             };
             case (? #NewReferrals(group), #NewReferrals(data)) {
+                // no replacement
                 let (res, pushType) = List.smartPush<NewReferralsData>(group.capacity, data, func(x) = false, maxNotificationCapacity);
                 group.capacity := res;
                 switch (pushType) {
@@ -458,7 +471,8 @@ module {
                 #NewReferrals(group)
             };
             case (? #NewFollowers(group), #NewFollowers(data)) {
-                let (res, pushType) = List.smartPush<NewFollowersData>(group.capacity, data, func(x) = false, maxNotificationCapacity);
+                // replace by key [user]
+                let (res, pushType) = List.smartPush<NewFollowersData>(group.capacity, data, func(x) = x.user == data.user, maxNotificationCapacity);
                 group.capacity := res;
                 switch (pushType) {
                     case (#replaced) {};
@@ -467,7 +481,8 @@ module {
                 #NewFollowers(group)
             };
             case (? #NewBallots(group), #NewBallots(data)) {
-                let (res, pushType) = List.smartPush<NewBallotsData>(group.capacity, data, func(x) = false, maxNotificationCapacity);
+                // replace by key [voter]
+                let (res, pushType) = List.smartPush<NewBallotsData>(group.capacity, data, func(x) = x.voter == data.voter, maxNotificationCapacity);
                 group.capacity := res;
                 switch (pushType) {
                     case (#replaced) {};

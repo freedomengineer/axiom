@@ -56,26 +56,6 @@ module {
         case (#negativity) func(_, e) = (BinaryVotes.getRegularNegativeValue(e.votes), BinaryVotes.getPoweredNegativeValue(e.votes))
     };
 
-    private func _buildRepliesContextOptimized(__ : Self, parentEvidence : Evidence, depthLimit : Nat, currentDepth : Nat, callerUser : ?(Principal, User), getCallerVote : Nat -> ?BinaryVote) : SharableContext {
-        if (currentDepth >= depthLimit) {
-            return []
-        };
-        var contextRepliesList : List.List<(SharableEvidence, SharableContext)> = List.nil();
-        for (replyId in List.toIter(parentEvidence.replies)) {
-            switch (evidenceRemovedOpt(__, replyId)) {
-                case (?replyEvidence) {
-                    let sharableReply = Evidence.toSharable(replyEvidence, replyId, getCallerVote);
-                    let subRepliesContext = _buildRepliesContextOptimized(__, replyEvidence, depthLimit, currentDepth + 1, callerUser, getCallerVote);
-
-                    let currentEntry : (SharableEvidence, SharableContext) = (sharableReply, subRepliesContext);
-                    contextRepliesList := List.push(currentEntry, contextRepliesList)
-                };
-                case (null) {}
-            }
-        };
-        return List.toArray(contextRepliesList)
-    };
-
     /// PUBLIC ////// DECLARATIONS ////////////
 
     public type Filter = {
@@ -231,48 +211,6 @@ module {
                 };
                 let ranking : [Ranking<Entry>] = ClusterTree.getFlattenVals(ordering, #all, flippedOrder);
                 Array.map<Ranking<Entry>, SharableEvidence>(ranking, func({ key }) = toSharable(key))
-            }
-        }
-    };
-
-    public func getEvidenceContext(__ : Self, evidenceId : Nat, depthLimit : Nat, callerUser : ?(Principal, User)) : SharableContext {
-        let getCallerVote : Nat -> ?BinaryVote = User.callerEvidenceVoteCallback(callerUser);
-
-        var currentId = evidenceId;
-        var rootEvidenceOpt : ?Evidence = null;
-        var rootId : Nat = evidenceId;
-
-        var safetyCounter = 0;
-        let maxHops = 100;
-
-        label rootFinding while (safetyCounter < maxHops) {
-            switch (evidenceRemovedOpt(__, currentId)) {
-                case (?e) {
-                    rootEvidenceOpt := ?e;
-                    rootId := currentId;
-
-                    switch (e.repliedTo) {
-                        case (?parentIdInLoop) switch (evidenceRemovedOpt(__, parentIdInLoop)) {
-                            case (?_) currentId := parentIdInLoop;
-                            case (null) break rootFinding
-                        };
-                        case (null) break rootFinding
-                    }
-                };
-                case (null) {
-                    rootEvidenceOpt := null;
-                    break rootFinding
-                }
-            };
-            safetyCounter += 1
-        };
-
-        switch (rootEvidenceOpt) {
-            case (null) return [];
-            case (?rootEvidence) {
-                let sharableRoot = Evidence.toSharable(rootEvidence, rootId, getCallerVote);
-                let repliesContext = _buildRepliesContextOptimized(__, rootEvidence, depthLimit, 1, callerUser, getCallerVote);
-                return [(sharableRoot, repliesContext)]
             }
         }
     };

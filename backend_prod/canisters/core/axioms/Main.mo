@@ -507,7 +507,7 @@ shared ({ caller = indicator }) actor class Axioms() = this {
         ignore (
             func() : async () {
                 let Facade : FacadeInterface.Facade = await Indicator.Facade();
-                var usersNotifications : List.List<(Principal, Notification.UserVariantParam)> = List.nil();
+                var usersNotifications : List.List<(Principal, Notification.UserVariantParam)> = List.make((hypothesis.publisher, #NewEvidencesToHypothesis({ id = hypothesisId; data = { evidenceId; side = choice; publisher = caller; timestamp = Time.now() } })));
                 for (follower in Set.vals(user.followers)) {
                     usersNotifications := List.push((follower, #NewEvidencesFromFollowings({ evidenceId; publisher = caller; timestamp = Time.now() })), usersNotifications)
                 };
@@ -721,7 +721,7 @@ shared ({ caller = indicator }) actor class Axioms() = this {
         ignore (
             func() : async () {
                 let Facade : FacadeInterface.Facade = await Indicator.Facade();
-                await Facade.postUserNotification((principal, #NewFollowers({ principal = caller; timestamp = Time.now() })))
+                await Facade.postUserNotification((principal, #NewFollowers({ user = caller; timestamp = Time.now() })))
             }
         )()
     };
@@ -760,6 +760,7 @@ shared ({ caller = indicator }) actor class Axioms() = this {
     private func _getField(id : Text) : Field.Field = Fields.field(fields, id);
     private func _getAge(age : Nat) : Age.Age = Ages.age(ages, age);
     private func _getHypothesis(id : Nat) : Hypothesis.Hypothesis = Hypotheses.hypothesis(hypotheses, id);
+    private func _getEvidence(id : Nat) : Evidence.Evidence = Evidences.evidence(evidences, id);
 
     private func _getCallerUser(caller : Principal) : ?(Principal, User.User) = switch (not Principal.isAnonymous(caller)) {
         case (true) switch (Users.userOpt(users, caller)) {
@@ -812,11 +813,11 @@ shared ({ caller = indicator }) actor class Axioms() = this {
     };
     public query ({ caller }) func getEvidences(filter : Evidences.Filter, sort : Base.Sort<Evidences.Sort>) : async Evidences.Sharable {
         let callerUser : ?(Principal, User.User) = _getCallerUser(caller);
-        Evidences.getEvidences(evidences, filter, sort, callerUser, _getUser, _getHypothesis)
+        Evidences.getEvidences(evidences, filter, sort, callerUser, _getUser, _getHypothesis, _getEvidence)
     };
     public query ({ caller }) func getEvidencesPagination(filter : Evidences.Filter, sort : Base.Sort<Evidences.Sort>, page : Nat, limit : Nat) : async Pagination.Pagination<Evidence.Sharable> {
         let callerUser : ?(Principal, User.User) = _getCallerUser(caller);
-        let result : Evidences.Sharable = Evidences.getEvidences(evidences, filter, sort, callerUser, _getUser, _getHypothesis);
+        let result : Evidences.Sharable = Evidences.getEvidences(evidences, filter, sort, callerUser, _getUser, _getHypothesis, _getEvidence);
         Pagination.paginate(result, page, limit)
     };
 

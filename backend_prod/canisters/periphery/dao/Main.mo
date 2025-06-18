@@ -568,7 +568,14 @@ shared ({ caller = indicator }) actor class DAO() = this {
                     }
                 }
             };
-            case (#Default(choice)) #Default({ choice })
+            case (#Default(choice)) {
+                switch (choice) {
+                    case (#Delegated) {};
+                    case (#Positive) usersNotifications := List.push((proposal.proposer, #NewVotesToProposal({ id = proposalId; data = { voter = caller; choice = #Positive; timestamp = Time.now() } })), usersNotifications);
+                    case (#Negative) usersNotifications := List.push((proposal.proposer, #NewVotesToProposal({ id = proposalId; data = { voter = caller; choice = #Negative; timestamp = Time.now() } })), usersNotifications)
+                };
+                #Default({ choice })
+            }
         };
         switch (delegableVote) {
             case (#Delegated(_)) {
@@ -743,7 +750,7 @@ shared ({ caller = indicator }) actor class DAO() = this {
         ignore (
             func() : async () {
                 let Facade : FacadeInterface.Facade = await Indicator.Facade();
-                ignore Facade.postUsersNotification(List.fromArray(principals), #NewBallots({ principal = caller; timestamp = Time.now() }))
+                ignore Facade.postUsersNotification(List.fromArray(principals), #NewBallots({ voter = caller; timestamp = Time.now() }))
             }
         )()
     };

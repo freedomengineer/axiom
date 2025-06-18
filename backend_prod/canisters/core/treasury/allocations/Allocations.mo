@@ -31,6 +31,7 @@ module {
         (VariantKey(#Axioms), Allocation.init(E8S.fromFloat(5_000_000_000.0), E8S.new())),
         (VariantKey(#Escrow), Allocation.init(E8S.fromFloat(5_000_000_000.0), E8S.fromFloat(10_000_000.0))), // 16-year contract especially for the Founder
         (VariantKey(#DAO), Allocation.init(E8S.fromFloat(80_000_000.0), E8S.new())),
+        (VariantKey(#Facade), Allocation.init(E8S.new(), E8S.new())),
     ]);
 
     /// PRIVATE ////// QUERIES ////////////

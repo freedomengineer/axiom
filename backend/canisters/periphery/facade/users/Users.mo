@@ -49,6 +49,14 @@ module {
         case (#ascending) func((_, a) : Entry, (_, b) : Entry) = Text.compare(a.username, b.username);
         case (#descending) func((_, a) : Entry, (_, b) : Entry) = Text.compare(b.username, a.username)
     };
+    private func _followers(orderBy : Order) : Compare<Entry> = switch (orderBy) {
+        case (#ascending) func((_, a) : Entry, (_, b) : Entry) = Nat.compare(a.followers.size(), b.followers.size());
+        case (#descending) func((_, a) : Entry, (_, b) : Entry) = Nat.compare(b.followers.size(), a.followers.size())
+    };
+    private func _followings(orderBy : Order) : Compare<Entry> = switch (orderBy) {
+        case (#ascending) func((_, a) : Entry, (_, b) : Entry) = Nat.compare(a.followings.size(), b.followings.size());
+        case (#descending) func((_, a) : Entry, (_, b) : Entry) = Nat.compare(b.followings.size(), a.followings.size())
+    };
 
     /// PUBLIC ////// DECLARATIONS ////////////
 
@@ -187,7 +195,9 @@ module {
             case (#alphabetical, order, null) Array.map<Entry, SharableUser>(Array.sort(Map.getEntries(__), _alphabetical(order)), toSharable);
             case (#recent, order, ?unsorted) Array.map<Entry, SharableUser>(Array.sort(unsorted, _recent(order)), toSharable);
             case (#capitalRaised, order, ?unsorted) Array.map<Entry, SharableUser>(Array.sort(unsorted, _capitalRaised(order)), toSharable);
-            case (#alphabetical, order, ?unsorted) Array.map<Entry, SharableUser>(Array.sort(unsorted, _alphabetical(order)), toSharable)
+            case (#alphabetical, order, ?unsorted) Array.map<Entry, SharableUser>(Array.sort(unsorted, _alphabetical(order)), toSharable);
+            case (#followers, order, ?unsorted) Array.map<Entry, SharableUser>(Array.sort(unsorted, _followers(order)), toSharable);
+            case (#followings, order, ?unsorted) Array.map<Entry, SharableUser>(Array.sort(unsorted, _followings(order)), toSharable)
         }
     };
 

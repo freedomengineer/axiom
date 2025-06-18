@@ -579,7 +579,14 @@ shared ({ caller = indicator }) actor class DAO() = this {
                     }
                 }
             };
-            case (#Default(choice)) #Default({ choice })
+            case (#Default(choice)) {
+                switch (choice) {
+                    case (#Delegated) {};
+                    case (#Positive) usersNotifications := List.push((proposal.proposer, #NewVotesToProposal({ id = proposalId; data = { voter = caller; choice = #Positive; timestamp = getNow() } })), usersNotifications);
+                    case (#Negative) usersNotifications := List.push((proposal.proposer, #NewVotesToProposal({ id = proposalId; data = { voter = caller; choice = #Negative; timestamp = getNow() } })), usersNotifications)
+                };
+                #Default({ choice })
+            }
         };
         switch (delegableVote) {
             case (#Delegated(_)) {

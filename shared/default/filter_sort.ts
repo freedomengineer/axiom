@@ -81,11 +81,11 @@ export const FILTER_SORT_DECS = {
     },
     user: {
         filter: {
-            hasCapitalRaised: Primitive.Nat,
+            capitalRaised: Primitive.Nat,
             q: Primitive.Text,
         },
         sort: {
-            by: ['capitalRaised', 'recent', 'alphabetical'],
+            by: ['capitalRaised', 'recent', 'alphabetical', 'followers', 'followings'],
             order: ['descending', 'ascending'],
         },
     },
