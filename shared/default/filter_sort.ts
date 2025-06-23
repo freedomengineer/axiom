@@ -85,7 +85,7 @@ export const FILTER_SORT_DECS = {
             q: Primitive.Text,
         },
         sort: {
-            by: ['capitalRaised', 'recent', 'alphabetical', 'followers', 'followings'],
+            by: ['capitalRaised', 'recent', 'alphabetical'],
             order: ['descending', 'ascending'],
         },
     },

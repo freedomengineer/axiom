@@ -23,7 +23,7 @@ const PostHypothesisForm = ({
 }: {
     field: string | undefined
     content: string
-    setField: (field: string | undefined) => void
+    setField?: (field: string | undefined) => void
     setContent: (content: string) => void
     onForward: () => void
     onClosePopup?: () => void
@@ -42,8 +42,6 @@ const PostHypothesisForm = ({
           : fields
 
     const validLength = content.length <= configs?.['MAX_HYPOTHESIS_LENGTH'][1]
-
-    console.log(field, fields?.length)
 
     return (
         <>
@@ -83,8 +81,9 @@ const PostHypothesisForm = ({
                             {field ? (
                                 <div className="gap-normal mx-auto flex h-full items-center">
                                     <button
-                                        className="px-normal h-full rounded-lg border border-primary-600"
-                                        onClick={() => setField(undefined)}
+                                        className="px-normal h-full rounded-lg border border-primary-600 disabled:pointer-events-none disabled:opacity-50"
+                                        disabled={!setField}
+                                        onClick={() => setField?.(undefined)}
                                     >
                                         <div className="pointer-events-none my-auto">
                                             <FieldInline
@@ -94,8 +93,9 @@ const PostHypothesisForm = ({
                                         </div>
                                     </button>
                                     <button
-                                        className="px-normal py-tiny h-full w-7 rounded-lg border border-cold-800/75 text-cold-800/75 hover:border-cold-800/100 hover:text-cold-800/100 md:h-9 md:w-9"
-                                        onClick={() => setField(undefined)}
+                                        className="px-normal py-tiny h-full w-7 rounded-lg border border-cold-800/75 text-cold-800/75 hover:border-cold-800/100 hover:text-cold-800/100 disabled:pointer-events-none disabled:opacity-50 md:h-9 md:w-9"
+                                        disabled={!setField}
+                                        onClick={() => setField?.(undefined)}
                                     >
                                         <CloseIcon className="h-full w-full stroke-[1.5px]" />
                                     </button>
@@ -108,7 +108,7 @@ const PostHypothesisForm = ({
                                         className={
                                             'px-normal h-full rounded-lg border border-cold-800/50 hover:border-cold-800/80'
                                         }
-                                        onClick={() => setField(item.name)}
+                                        onClick={() => setField?.(item.name)}
                                         key={i}
                                     >
                                         <div className="pointer-events-none my-auto">
@@ -123,7 +123,7 @@ const PostHypothesisForm = ({
                         <SearchableSelect
                             options={(fields ?? []).map((field) => ({ label: field.name }))}
                             value={field}
-                            onChange={(value) => setField(value)}
+                            onChange={(value) => setField?.(value)}
                             placeholder={
                                 fields?.length === 0 ? 'No fields available' : 'Select a field'
                             }

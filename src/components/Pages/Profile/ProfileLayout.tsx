@@ -486,27 +486,31 @@ const ProfileLayout = ({ id }: { id?: string }) => {
                                         <EditIcon className="absolute right-1 top-1 h-4 w-4 stroke-2 opacity-0 group-hover:opacity-100 md:h-5 md:w-5" />
                                     </button>
                                 )}
-                                {profileUser.facade.links.length > 0 || editable ? (
-                                    <>
-                                        {profileUser.facade.links?.map(
-                                            (link: DFacade.Hyperlink) => (
-                                                <Link
-                                                    className="pre-underline pl-small z-10 mr-auto h-6 decoration-hot-200/50 hover:decoration-hot-200/100 md:h-7"
-                                                    href={link.url}
-                                                    target="_blank"
-                                                    rel="noreferrer"
-                                                    size="small"
-                                                    icon="forward"
-                                                    key={link.url}
-                                                    openInNewTab
-                                                >
-                                                    {link.anchorText}
-                                                </Link>
-                                            )
-                                        )}
-                                    </>
+                                {editable ? (
+                                    profileUser.facade.links.length > 0 ? (
+                                        <>
+                                            {profileUser.facade.links?.map(
+                                                (link: DFacade.Hyperlink) => (
+                                                    <Link
+                                                        className="pre-underline pl-small z-10 mr-auto h-6 decoration-hot-200/50 hover:decoration-hot-200/100 md:h-7"
+                                                        href={link.url}
+                                                        target="_blank"
+                                                        rel="noreferrer"
+                                                        size="small"
+                                                        icon="forward"
+                                                        key={link.url}
+                                                        openInNewTab
+                                                    >
+                                                        {link.anchorText}
+                                                    </Link>
+                                                )
+                                            )}
+                                        </>
+                                    ) : (
+                                        <p className="text-left">Click to add links</p>
+                                    )
                                 ) : (
-                                    <p className="text-center">No links are set.</p>
+                                    <p className="text-left">No links are set</p>
                                 )}
                             </div>
                             <div className="flex h-16 w-[calc(100%+20px)] flex-col">
@@ -518,7 +522,7 @@ const ProfileLayout = ({ id }: { id?: string }) => {
                                         <div className="gap-normal flex items-center">
                                             <FollowerIcon className="h-4 w-4 stroke-2 md:h-5 md:w-5" />
                                             {profileUser.axioms.followers.length}{' '}
-                                            <span className="hidden md:block">followers</span>
+                                            <span className="">followers</span>
                                         </div>
                                     </div>
                                 </button>
@@ -530,7 +534,7 @@ const ProfileLayout = ({ id }: { id?: string }) => {
                                         <div className="gap-normal flex items-center">
                                             <FollowingIcon className="h-4 w-4 stroke-2 md:h-5 md:w-5" />
                                             {profileUser.axioms.followings.length}{' '}
-                                            <span className="hidden md:block">following</span>
+                                            <span className="">following</span>
                                         </div>
                                     </div>
                                 </button>

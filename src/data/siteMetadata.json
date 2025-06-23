@@ -75,7 +75,7 @@
                     "description": "Custodians of The Axiom DAO (ACE)"
                 },
                 "Top 10": {
-                    "url": "/dashboard/top10",
+                    "url": "/dashboard/leaderboard",
                     "description": "Leaderboard of The Axiom"
                 },
                 "Token Charts": {

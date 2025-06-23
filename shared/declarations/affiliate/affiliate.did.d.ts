@@ -11,9 +11,9 @@ export interface Affiliate {
   'getConfig' : ActorMethod<[Key], SharableValue>,
   'getConfigs' : ActorMethod<[], Sharable__2>,
   'getEarning' : ActorMethod<[Principal], Sharable__1>,
-  'getTop' : ActorMethod<[{ 'Referrals' : null }], TopNonPagination>,
+  'getTop' : ActorMethod<[{ 'Referrers' : null }], TopNonPagination>,
   'getTopPagination' : ActorMethod<
-    [{ 'Referrals' : null }, bigint, bigint],
+    [{ 'Referrers' : null }, bigint, bigint],
     TopPagination
   >,
   'getUser' : ActorMethod<[Principal], Sharable>,

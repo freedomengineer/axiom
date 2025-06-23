@@ -6880,14 +6880,6 @@
               [
                 "#alphabetical",
                 null
-              ],
-              [
-                "#followers",
-                null
-              ],
-              [
-                "#followings",
-                null
               ]
             ],
             "isArray": false,

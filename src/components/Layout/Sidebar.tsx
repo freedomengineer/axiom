@@ -6,24 +6,15 @@ import { useLocation } from 'react-router-dom'
 
 import AcornColouredIcon from '@components/Assets/acorn_coloured.svg'
 import AxiomACEIcon from '@components/Assets/axiom_ace.svg'
-import FooterDecoration2 from '@components/Assets/footer_decoration2.svg'
 import ForwardIcon from '@components/Assets/forward.svg'
 import HypothesisIcon from '@components/Assets/hypothesis.svg'
 import ProfileIcon from '@components/Assets/profile.svg'
-import SchoolIcon from '@components/Assets/school.svg'
-import GitHubIcon from '@components/Assets/social/GitHub.svg'
-import InstagramIcon from '@components/Assets/social/Instagram.svg'
-import RedditIcon from '@components/Assets/social/Reddit.svg'
-import TelegramIcon from '@components/Assets/social/Telegram.svg'
-import TikTokIcon from '@components/Assets/social/TikTok.svg'
-import TwitterIcon from '@components/Assets/social/Twitter.svg'
 import FieldInline from '@components/Pages/Feed/Fields/FieldInline'
 import Link from '@components/Shared/Link'
 import siteMetadata from '@data/siteMetadata.json'
 import useAuth from '@hooks/useAuth'
 import useLocalStorage from '@hooks/useLocalStorage'
 import { useSpecificUserData } from '@hooks/useUserData'
-import { formatTime } from '@libs/date'
 
 const MAIN_ROUTES = [
     {
@@ -129,7 +120,7 @@ const Sidebar = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
                                             key={subname}
                                             href={`${(subdata as any).url}${
                                                 {
-                                                    'Top 10': '?key=acornHolders',
+                                                    'Top 10': '?key=PoweredVoters',
                                                 }?.[subname] ?? ''
                                             }`}
                                             className="px-normal py-tiny flex rounded-lg hover:bg-cold-800 hover:text-white aria-checked:bg-cold-800 aria-checked:text-white"

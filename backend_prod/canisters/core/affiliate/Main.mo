@@ -101,11 +101,11 @@ shared ({ caller = indicator }) actor class Affiliate() = this {
         Configs.getConfigs(configs)
     };
 
-    public query ({ caller }) func getTop(category : { #Referrals }) : async Pagination.TopNonPagination {
+    public query ({ caller }) func getTop(category : { #Referrers }) : async Pagination.TopNonPagination {
         let result : Pagination.TopResult = Users.getTop(users, category);
         Pagination.topNonPaginate(result, caller)
     };
-    public query ({ caller }) func getTopPagination(category : { #Referrals }, page : Nat, limit : Nat) : async Pagination.TopPagination {
+    public query ({ caller }) func getTopPagination(category : { #Referrers }, page : Nat, limit : Nat) : async Pagination.TopPagination {
         let result : Pagination.TopResult = Users.getTop(users, category);
         Pagination.topPaginate(result, page, limit, caller)
     };

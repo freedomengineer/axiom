@@ -140,7 +140,7 @@
 #### Arguments:
 
 ```json
-{"category": "#REFERRALS"}
+{"category": "#REFERRERS"}
 ```
 
 #### Returns:
@@ -153,7 +153,7 @@
 #### Arguments:
 
 ```json
-{"category": "#REFERRALS", "page": "Nat", "limit": "Nat"}
+{"category": "#REFERRERS", "page": "Nat", "limit": "Nat"}
 ```
 
 #### Returns:

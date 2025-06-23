@@ -416,7 +416,7 @@
 ```json
 {
   "filter": {"capitalRaised": "Nat", "q": "Text"},
-  "sort": {"by": "#RECENT | #CAPITALRAISED | #ALPHABETICAL | #FOLLOWERS | #FOLLOWINGS", "order": "#ASCENDING | #DESCENDING"}
+  "sort": {"by": "#RECENT | #CAPITALRAISED | #ALPHABETICAL", "order": "#ASCENDING | #DESCENDING"}
 }
 ```
 
@@ -442,7 +442,7 @@
 ```json
 {
   "filter": {"capitalRaised": "Nat", "q": "Text"},
-  "sort": {"by": "#RECENT | #CAPITALRAISED | #ALPHABETICAL | #FOLLOWERS | #FOLLOWINGS", "order": "#ASCENDING | #DESCENDING"},
+  "sort": {"by": "#RECENT | #CAPITALRAISED | #ALPHABETICAL", "order": "#ASCENDING | #DESCENDING"},
   "page": "Nat",
   "limit": "Nat"
 }

@@ -13,6 +13,7 @@ import EvidenceIcon from '@components/Assets/evidence.svg'
 import FieldIcon from '@components/Assets/field.svg'
 import FieldMembersIcon from '@components/Assets/field_members.svg'
 import FlagIcon from '@components/Assets/flag.svg'
+import LoginStep1Icon from '@components/Assets/login_step1.svg'
 import ShareIcon from '@components/Assets/share.svg'
 import Spinner from '@components/Primitives/Spinner'
 import Divider from '@components/Shared/Divider'
@@ -36,8 +37,14 @@ import { Variant } from 'shared/utils/typings'
 
 import EvidencesLayout from './EvidencesLayout'
 import HypothesisVote from './HypothesisVote'
+import PostHypothesis from './PostHypothesis'
 import PostEvidence from '../Evidences/PostEvidence'
 import RequestFlag from '../Flags/RequestFlag'
+
+enum EPopup {
+    RequestFlag,
+    EditHypothesis,
+}
 
 const HypothesisDetail = ({ item }: { item: DAxioms.SharableHypothesis }) => {
     const { agent, principal } = useAuth()
@@ -60,11 +67,12 @@ const HypothesisDetail = ({ item }: { item: DAxioms.SharableHypothesis }) => {
         handleVote,
         handleAxiom,
         handleBookmark,
+        handleRefresh,
     } = useHypothesisDetails(item)
     const [postEvidenceOpen, setPostEvidenceOpen] = useState<
         EEvidenceVote | bigint | undefined | null
     >(null)
-    const [flagOpen, setFlagOpen] = useState(false)
+    const [open, setOpen] = useState<EPopup | null>(null)
     const [copied, setCopied] = useState<boolean>()
 
     const handleCopy = () => {
@@ -155,15 +163,34 @@ const HypothesisDetail = ({ item }: { item: DAxioms.SharableHypothesis }) => {
                 />
             </Popup>
             <Popup
-                open={flagOpen}
-                onClose={() => setFlagOpen(false)}
+                open={open === EPopup.RequestFlag}
+                onClose={() => setOpen(null)}
                 title="Request Flag"
                 className="w-full md:w-auto"
                 Icon={<FlagIcon className="h-6 w-6 stroke-[1.5px] md:h-7 md:w-7" />}
             >
                 <RequestFlag
                     header={{ id: localItem.id, category: Variant('Hypothesis') }}
-                    onSubmit={() => setFlagOpen(false)}
+                    onSubmit={() => setOpen(null)}
+                />
+            </Popup>
+            <Popup
+                open={open === EPopup.EditHypothesis}
+                onClose={() => setOpen(null)}
+                title="Edit Hypothesis"
+                className="w-full md:w-4/5"
+                Icon={<LoginStep1Icon className="h-6 w-6 stroke-[1.5px] md:h-7 md:w-7" />}
+            >
+                <PostHypothesis
+                    isEdit={{
+                        id: localItem.id,
+                        fieldId: localItem.fieldId,
+                        content: localItem.content,
+                    }}
+                    onSubmit={() => {
+                        setOpen(null)
+                        handleRefresh()
+                    }}
                 />
             </Popup>
             <div className="gap-medium relative flex h-full w-full flex-col rounded-lg border border-cold-600 border-opacity-50 hover:border-opacity-100">
@@ -328,7 +355,14 @@ const HypothesisDetail = ({ item }: { item: DAxioms.SharableHypothesis }) => {
                         </span>
                     </div>
                     <div className="hidden w-full md:order-4 md:block" />
-                    <div className="order-4 ml-auto grid h-6 w-32 flex-shrink-0 grid-cols-4 place-items-center items-center md:order-5 md:ml-0 md:w-40">
+                    <div
+                        className={cn(
+                            'order-4 ml-auto grid h-6 flex-shrink-0 place-items-center items-center md:order-5 md:ml-0',
+                            principal?.compareTo(localItem.publisher) === 'eq'
+                                ? 'w-40 grid-cols-5 md:w-48'
+                                : 'w-32 grid-cols-4 md:w-40'
+                        )}
+                    >
                         <div className="w-8 md:w-10">
                             {axiomLoading ? (
                                 <Spinner
@@ -374,6 +408,14 @@ const HypothesisDetail = ({ item }: { item: DAxioms.SharableHypothesis }) => {
                                 <ShareIcon className="mx-auto h-5 w-5 stroke-[1.5px]" />
                             )}
                         </button>
+                        {principal?.compareTo(localItem.publisher) === 'eq' && (
+                            <button
+                                className="w-8 hover:opacity-75 disabled:pointer-events-none md:w-10"
+                                onClick={() => setOpen(EPopup.EditHypothesis)}
+                            >
+                                <LoginStep1Icon className="mx-auto h-5 w-5 stroke-[1.5px]" />
+                            </button>
+                        )}
                     </div>
                 </div>
                 <div className="gap-medium flex h-full w-full flex-col items-center">

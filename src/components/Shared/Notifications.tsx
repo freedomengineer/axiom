@@ -292,7 +292,8 @@ export const UserNotificationRenderer = memo(
                     const expiresAt =
                         BigInt(item.timestamp) +
                         NANOS_IN_A_DAY *
-                            (daoConfigs?.['PROPOSAL_VOTE_AVAILABILITY_DURATION']?.[1] as bigint)
+                            ((daoConfigs?.['PROPOSAL_VOTE_AVAILABILITY_DURATION']?.[1] ??
+                                0n) as bigint)
                     return (
                         <>
                             Custodian: A new proposal #{item.proposalId} has been opened by{' '}
@@ -419,7 +420,7 @@ export const SystemNotificationRenderer = ({
                                 ),
                                 Failed: (
                                     <>
-                                        Proposal #{data.proposalId} by @
+                                        Proposal #{data.proposalId} by{' '}
                                         <Username
                                             symbol
                                             className="inline-block font-semibold text-primary-700"

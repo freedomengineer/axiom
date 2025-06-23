@@ -56,9 +56,9 @@ module {
         User.toSharable(user(__, principal))
     };
 
-    public func getTop(__ : Self, category : { #Referrals }) : [(Principal, Nat)] {
+    public func getTop(__ : Self, category : { #Referrers }) : [(Principal, Nat)] {
         let map : ((Principal, User)) -> ((Principal, Nat)) = switch (category) {
-            case (#Referrals) func(i, e) = (i, e.referrals.val)
+            case (#Referrers) func(i, e) = (i, e.referrals.val)
         };
         Map.getEntriesMap<Principal, User, (Principal, Nat)>(__, map)
     };

@@ -71,8 +71,8 @@ module {
             case (#Influencers) func(i, e) = (i, Set.size(e.followings));
             case (#HypothesisPublishers) func(i, e) = (i, List.size(e.hypotheses));
             case (#EvidencePublishers) func(i, e) = (i, List.size(e.evidences));
-            case (#HypothesisVoters) func(i, e) = (i, e.votedHypotheses.size());
-            case (#EvidenceVoters) func(i, e) = (i, e.votedEvidences.size());
+            case (#HypothesisVoters) func(i, e) = (i, Map.size(e.votedHypotheses));
+            case (#EvidenceVoters) func(i, e) = (i, Map.size(e.votedEvidences));
             case (#AcornEarners) func(i, e) = (i, User.getEarning(e).revenue)
         };
         Map.getEntriesMap<Principal, User, (Principal, Nat)>(__, map)

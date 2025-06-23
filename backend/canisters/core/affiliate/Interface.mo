@@ -13,8 +13,8 @@ module {
         withdrawAll : shared () -> async ();
         getConfig : query (Configs.Key) -> async Configs.SharableValue;
         getConfigs : query () -> async Configs.Sharable;
-        getTop : query ({ #Referrals }) -> async Pagination.TopNonPagination;
-        getTopPagination : query ({ #Referrals }, Nat, Nat) -> async Pagination.TopPagination;
+        getTop : query ({ #Referrers }) -> async Pagination.TopNonPagination;
+        getTopPagination : query ({ #Referrers }, Nat, Nat) -> async Pagination.TopPagination;
         getUser : query (Principal) -> async User.Sharable;
         getEarning : query (Principal) -> async Earning.Sharable;
         expectUserNotFound : query (Principal) -> async ();

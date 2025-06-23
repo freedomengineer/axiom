@@ -5,12 +5,12 @@ import LayoutWrapper from '@components/Layout/LayoutWrapper'
 import Layout from '@layout'
 import AssetsPage from '@pages/dashboard/assets/page'
 import CustodiansPage from '@pages/dashboard/custodians/page'
+import LeaderboardPage from '@pages/dashboard/leaderboard/page'
 import MembershipsPage from '@pages/dashboard/memberships/page'
 import OpenProposalPage from '@pages/dashboard/open/page'
 import DashboardPage from '@pages/dashboard/page'
 import ProposalPage from '@pages/dashboard/proposals/[proposal]/page'
 import ProposalsPage from '@pages/dashboard/proposals/page'
-import Top10Page from '@pages/dashboard/top10/page'
 import EvidencePage from '@pages/feed/[hypothesis]/evidences/[evidence]/page'
 import PostEvidencePage from '@pages/feed/[hypothesis]/evidences/post/page'
 import HypothesisPage from '@pages/feed/[hypothesis]/page'
@@ -123,7 +123,7 @@ const routes: RouteObject[] = [
                     },
                     { path: 'assets', element: <AssetsPage /> },
                     { path: 'memberships', element: <MembershipsPage /> },
-                    { path: 'top10', element: <Top10Page /> },
+                    { path: 'leaderboard', element: <LeaderboardPage /> },
                 ],
             },
             {

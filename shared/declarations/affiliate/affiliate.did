@@ -117,8 +117,8 @@ type Affiliate =
    getConfig: (Key) -> (SharableValue) query;
    getConfigs: () -> (Sharable__2) query;
    getEarning: (principal) -> (Sharable__1) query;
-   getTop: (variant {Referrals;}) -> (TopNonPagination) query;
-   getTopPagination: (variant {Referrals;}, nat, nat) ->
+   getTop: (variant {Referrers;}) -> (TopNonPagination) query;
+   getTopPagination: (variant {Referrers;}, nat, nat) ->
     (TopPagination) query;
    getUser: (principal) -> (Sharable) query;
    /// PROTECTED ////// MODIFIERS ////////////

@@ -291,13 +291,13 @@
       },
       "argTypes": {
         "category": {
-          "origin": "{ #Referrals }",
+          "origin": "{ #Referrers }",
           "singular": {
             "name": "()"
           },
           "entries": [
             [
-              "#Referrals",
+              "#Referrers",
               null
             ]
           ],
@@ -326,13 +326,13 @@
       },
       "argTypes": {
         "category": {
-          "origin": "{ #Referrals }",
+          "origin": "{ #Referrers }",
           "singular": {
             "name": "()"
           },
           "entries": [
             [
-              "#Referrals",
+              "#Referrers",
               null
             ]
           ],
@@ -1375,14 +1375,14 @@
       "isOptional": false,
       "isAsync": true
     },
-    "{ #Referrals }": {
-      "origin": "{ #Referrals }",
+    "{ #Referrers }": {
+      "origin": "{ #Referrers }",
       "singular": {
         "name": "()"
       },
       "entries": [
         [
-          "#Referrals",
+          "#Referrers",
           null
         ]
       ],

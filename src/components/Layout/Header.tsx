@@ -337,7 +337,8 @@ const Header = ({
                                             deleteAllPackagesCache(),
                                             deleteAllStatusCache(),
                                             deleteAllUsernamesCache(),
-                                            localStorage.clear()
+                                            localStorage.clear(),
+                                            setOpenMenu({})
                                         )}
                                     >
                                         Clean up all cache

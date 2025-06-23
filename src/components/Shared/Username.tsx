@@ -154,8 +154,13 @@ export const Usernames = ({
 }) => {
     if (className)
         return principals.map((principal, index) => (
-            <span key={index} className={className}>
-                <Username principal={principal} linkClassName={linkClassName} symbol={symbol} />
+            <span key={index}>
+                <Username
+                    className={className}
+                    principal={principal}
+                    linkClassName={linkClassName}
+                    symbol={symbol}
+                />
                 {index === principals.length - 1
                     ? ''
                     : index === principals.length - 2

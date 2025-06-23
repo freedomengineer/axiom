@@ -75,12 +75,12 @@ export const idlFactory = ({ IDL }) => {
     'getConfigs' : IDL.Func([], [Sharable__2], ['query']),
     'getEarning' : IDL.Func([IDL.Principal], [Sharable__1], ['query']),
     'getTop' : IDL.Func(
-        [IDL.Variant({ 'Referrals' : IDL.Null })],
+        [IDL.Variant({ 'Referrers' : IDL.Null })],
         [TopNonPagination],
         ['query'],
       ),
     'getTopPagination' : IDL.Func(
-        [IDL.Variant({ 'Referrals' : IDL.Null }), IDL.Nat, IDL.Nat],
+        [IDL.Variant({ 'Referrers' : IDL.Null }), IDL.Nat, IDL.Nat],
         [TopPagination],
         ['query'],
       ),

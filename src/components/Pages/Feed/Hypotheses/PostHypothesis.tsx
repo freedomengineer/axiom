@@ -18,16 +18,18 @@ enum EStep {
 const PostHypothesis = ({
     id,
     onSubmit,
+    isEdit,
     isPopup = false,
 }: {
     id?: string
     onSubmit?: () => void
+    isEdit?: { id: bigint; fieldId: string; content: string }
     isPopup?: boolean
 }) => {
     const { agent, principal } = useAuth()
 
-    const [fieldId, setFieldId] = useState<string | undefined>(id)
-    const [content, setContent] = useState<string>('')
+    const [fieldId, setFieldId] = useState<string | undefined>(isEdit?.fieldId ?? id)
+    const [content, setContent] = useState<string>(isEdit?.content ?? '')
     const [step, setStep] = useState<number>(EStep.Form)
 
     useEffect(() => {
@@ -45,7 +47,7 @@ const PostHypothesis = ({
             <PostHypothesisForm
                 field={fieldId}
                 content={content}
-                setField={setFieldId}
+                setField={isEdit ? undefined : setFieldId}
                 setContent={setContent}
                 onForward={() => setStep(EStep.Preview)}
                 onClosePopup={isPopup ? onSubmit : undefined}
@@ -54,7 +56,7 @@ const PostHypothesis = ({
         [EStep.Preview]: principal ? (
             <PostHypothesisPreview
                 item={{
-                    id: 0n,
+                    id: isEdit?.id ?? 0n,
                     content,
                     axioms: 0n,
                     callerVote: [],
@@ -66,6 +68,7 @@ const PostHypothesis = ({
                     fieldId: fieldId!,
                     evidenceIds: [],
                 }}
+                isEdit={isEdit}
                 onBack={() => setStep(EStep.Form)}
                 onSubmit={onSubmit}
             />
