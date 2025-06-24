@@ -3,18 +3,18 @@ import { Principal } from '@dfinity/principal'
 import { useEffect, useState } from 'react'
 
 import { error } from '@libs/toastify'
-import { TOP } from '@utils/dashboard/top'
+import { LEADERBOARD } from '@utils/dashboard/leaderboard'
 import { DAxioms } from 'shared/types/services'
 import { Affiliate, Axioms, Escrow } from 'shared/utils/services'
 import { Variant } from 'shared/utils/typings'
 
-export type TopKey = (typeof TOP)[number]['key']
+export type TopKey = (typeof LEADERBOARD)[number]['key']
 
 export type Top = DAxioms.TopPagination
 export type TopPages = Top[]
 type MemoryData = { topPages: TopPages; timestamp: number; refreshDate: string }
 
-export const PAGE_SIZE = 2n
+export const PAGE_SIZE = 10n
 const STORAGE_PREFIX = 'top_10_'
 
 const memoryCache = new Map<TopKey, MemoryData>()
@@ -75,6 +75,7 @@ const _fetchTop = async (
             case 'Referrers':
                 top = await Affiliate.call(agent).getTopPagination(Variant(key), page, PAGE_SIZE)
                 break
+            case 'Influencers':
             case 'HypothesisPublishers':
             case 'EvidencePublishers':
             case 'HypothesisVoters':

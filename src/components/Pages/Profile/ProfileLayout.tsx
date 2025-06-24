@@ -17,7 +17,8 @@ import Spinner from '@components/Primitives/Spinner'
 import InfiniteScrollWrapperHard from '@components/Shared/InfiniteScrollWrapperHard'
 import Link from '@components/Shared/Link'
 import Popup from '@components/Shared/Popup'
-import Username, { Symbol } from '@components/Shared/Username'
+import UserList from '@components/Shared/UserList'
+import { Symbol } from '@components/Shared/Username'
 import useAuth, { PageStatus } from '@hooks/useAuth'
 import useConfigs from '@hooks/useConfigs'
 import { EPackages, ParsedPackages, parseAchievements, parseMemberships } from '@hooks/usePackages'
@@ -347,56 +348,24 @@ const ProfileLayout = ({ id }: { id?: string }) => {
                     open={open === EPopup.Followers}
                     onClose={() => setOpen(undefined)}
                     title="Followers"
-                    className="w-full md:w-1/5"
+                    className="w-full md:w-fit"
                     Icon={<FollowerIcon className="h-6 w-6 !stroke-[1.5px] md:h-7 md:w-7" />}
                 >
                     <InfiniteScrollWrapperHard
                         items={profileUser.axioms.followers}
-                        LayoutComponent={({ items }) => (
-                            <div className="gap-small flex flex-col">
-                                {items.map((follower, index) => (
-                                    <div
-                                        key={index}
-                                        className="gap-normal text-normal flex items-center"
-                                    >
-                                        <span className="text-cold-600">{index + 1}. </span>
-                                        <Username
-                                            principal={follower}
-                                            symbol
-                                            linkClassName="text-cold-700 pre-underline decoration-cold-700/50 hover:decoration-cold-700/100"
-                                        />
-                                    </div>
-                                ))}
-                            </div>
-                        )}
+                        LayoutComponent={UserList}
                     />
                 </Popup>
                 <Popup
                     open={open === EPopup.Followings}
                     onClose={() => setOpen(undefined)}
                     title="Followings"
-                    className="w-full md:w-1/5"
+                    className="w-full md:w-fit"
                     Icon={<FollowingIcon className="h-6 w-6 !stroke-[1.5px] md:h-7 md:w-7" />}
                 >
                     <InfiniteScrollWrapperHard
                         items={profileUser.axioms.followings}
-                        LayoutComponent={({ items }) => (
-                            <div className="gap-small flex flex-col">
-                                {items.map((following, index) => (
-                                    <div
-                                        key={index}
-                                        className="gap-normal text-normal flex items-center"
-                                    >
-                                        <span className="text-cold-600">{index + 1}. </span>
-                                        <Username
-                                            principal={following}
-                                            symbol
-                                            linkClassName="text-cold-700 pre-underline decoration-cold-700/50 hover:decoration-cold-700/100"
-                                        />
-                                    </div>
-                                ))}
-                            </div>
-                        )}
+                        LayoutComponent={UserList}
                     />
                 </Popup>
                 <div className="gap-small flex w-full flex-col">

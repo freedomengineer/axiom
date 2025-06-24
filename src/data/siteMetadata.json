@@ -74,7 +74,7 @@
                     "url": "/dashboard/custodians",
                     "description": "Custodians of The Axiom DAO (ACE)"
                 },
-                "Top 10": {
+                "Leaderboard": {
                     "url": "/dashboard/leaderboard",
                     "description": "Leaderboard of The Axiom"
                 },

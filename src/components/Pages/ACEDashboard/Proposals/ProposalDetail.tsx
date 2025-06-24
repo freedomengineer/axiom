@@ -2,12 +2,12 @@ import { Principal } from '@dfinity/principal'
 import { useState } from 'react'
 
 import AcornIcon from '@components/Assets/acorn.svg'
-import AtIcon from '@components/Assets/at.svg'
 import ICPIcon from '@components/Assets/icp.svg'
 import StatusFailedIcon from '@components/Assets/status_failed.svg'
 import Divider from '@components/Shared/Divider'
 import Link from '@components/Shared/Link'
 import Popup from '@components/Shared/Popup'
+import { Symbol } from '@components/Shared/Username'
 import useProposalDetails from '@hooks/useProposalDetails'
 import cn from '@libs/class'
 import { getCanisterDateTime, getDateTime } from '@libs/date'
@@ -199,8 +199,11 @@ const ProposalDetail = ({
                         className="gap-small flex items-center hover:opacity-75"
                         href={build(['profile', localItem.proposer.toText()])}
                     >
-                        <AtIcon className="h-5 w-5 stroke-[1.5px]" />
-                        <span className="text-tiny font-light text-white">{proposer}</span>
+                        <Symbol
+                            capitalRaised={proposer.capitalRaised.toString()}
+                            className="mr-0 h-5 w-5"
+                        />
+                        <span className="text-tiny font-light text-white">{proposer.username}</span>
                     </Link>
                     <div className="gap-small flex items-center">
                         <AcornIcon className="h-5 w-5 text-white" />

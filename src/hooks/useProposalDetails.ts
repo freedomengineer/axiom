@@ -8,7 +8,7 @@ import { DAO } from 'shared/utils/services'
 import { Unwrap, UnwrapVariant, Variant } from 'shared/utils/typings'
 
 import useAuth from './useAuth'
-import useUsername, { getUsername } from './useUsername'
+import useUsername, { Displayer, getUsername } from './useUsername'
 
 const useProposalDetails = (item: DDAO.SharableProposal) => {
     const { agent, principal } = useAuth()
@@ -22,6 +22,7 @@ const useProposalDetails = (item: DDAO.SharableProposal) => {
     const [voters, setVoters] = useState<
         [DFacade.Identifier[], DFacade.Identifier[], DFacade.Identifier[], DFacade.Identifier[]]
     >([[], [], [], []])
+    const [delegatee, setDelegatee] = useState<Displayer>()
 
     useEffect(() => {
         setLocalItem(item)
@@ -31,30 +32,41 @@ const useProposalDetails = (item: DDAO.SharableProposal) => {
         Promise.all([
             Promise.all(
                 localItem.votes[0].map((voter) =>
-                    getUsername(voter).then((r) => ({ principal: voter, username: r.username! }))
+                    getUsername(voter).then((r) => ({ ...r, principal: voter }))
                 )
             ),
             Promise.all(
                 localItem.votes[1].map((voter) =>
-                    getUsername(voter).then((r) => ({ principal: voter, username: r.username! }))
+                    getUsername(voter).then((r) => ({ ...r, principal: voter }))
                 )
             ),
             Promise.all(
                 localItem.votes[2].map((voter) =>
-                    getUsername(voter).then((r) => ({ principal: voter, username: r.username! }))
+                    getUsername(voter).then((r) => ({ ...r, principal: voter }))
                 )
             ),
             Promise.all(
                 localItem.votes[3].map((voter) =>
-                    getUsername(voter).then((r) => ({ principal: voter, username: r.username! }))
+                    getUsername(voter).then((r) => ({ ...r, principal: voter }))
                 )
             ),
-        ]).then(setVoters)
+            Unwrap(localItem.callerVote) && 'Delegated' in Unwrap(localItem.callerVote)!
+                ? getUsername((Unwrap(localItem.callerVote) as any).Delegated)
+                : Promise.resolve(undefined),
+        ]).then(([voters, voters2, voters3, voters4, delegatee]) => {
+            setVoters([voters, voters2, voters3, voters4] as any)
+            setDelegatee(delegatee)
+        })
     }, [localItem])
 
     const handleRefresh = async () => {
         const item = await DAO.call(agent).getProposal(localItem.id)
         setLocalItem(item)
+
+        const vote = Unwrap(item.callerVote)
+        if (vote && 'Delegated' in vote) {
+            getUsername(vote.Delegated).then(setDelegatee)
+        }
     }
 
     const votable = [EStatus.Proposed, EStatus.Retried].includes(
@@ -67,10 +79,7 @@ const useProposalDetails = (item: DDAO.SharableProposal) => {
 
     const vote = Unwrap(localItem.callerVote)
     const category = UnwrapVariant(localItem.detachment)[0] as ECategory
-    const { username: proposer } = useUsername(localItem.proposer)
-    const { username: delegatee } = useUsername(
-        (vote && 'Delegated' in vote && vote.Delegated) || null
-    )
+    const proposer = useUsername(localItem.proposer)
 
     const handleVote = async (choice: EVote, delegatedTo?: Principal) => {
         setVotesLoading((prev) => ({ ...prev, [choice]: true }))
@@ -91,6 +100,8 @@ const useProposalDetails = (item: DDAO.SharableProposal) => {
         await handleRefresh()
         setVotesLoading((prev) => ({ ...prev, [choice]: false }))
     }
+
+    console.log(vote)
 
     return {
         proposer,

@@ -1,9 +1,6 @@
-import React from 'react'
-
-import AtIcon from '@components/Assets/at.svg'
 import DownIcon from '@components/Assets/down.svg'
-import NewTabIcon from '@components/Assets/new_tab.svg'
 import Link from '@components/Shared/Link'
+import { Symbol } from '@components/Shared/Username'
 import useUsername from '@hooks/useUsername'
 import cn from '@libs/class'
 import { build } from '@libs/url'
@@ -18,7 +15,7 @@ const CustodianCard = ({
     isExpanded: boolean
     onToggle: () => void
 }) => {
-    const { username } = useUsername(item.principal)
+    const { username, capitalRaised } = useUsername(item.principal)
 
     return (
         <div className="flex w-full flex-col">
@@ -27,7 +24,10 @@ const CustodianCard = ({
                     className="text-medium gap-small flex place-items-center items-center text-left font-normal hover:text-primary-800"
                     href={build(['profile', item.principal.toText()])}
                 >
-                    <AtIcon className="h-4 w-4 stroke-2" />
+                    <Symbol
+                        capitalRaised={capitalRaised.toString()}
+                        className="h-4 w-4 stroke-[3px]"
+                    />
                     <span>{username}</span>
                 </Link>
                 <button onClick={onToggle} className="md:hidden" aria-label="Toggle details">

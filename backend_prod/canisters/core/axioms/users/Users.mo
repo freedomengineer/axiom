@@ -68,7 +68,7 @@ module {
 
     public func getTop(__ : Self, category : { #Influencers; #HypothesisPublishers; #EvidencePublishers; #HypothesisVoters; #EvidenceVoters; #AcornEarners }) : [(Principal, Nat)] {
         let map : ((Principal, User)) -> ((Principal, Nat)) = switch (category) {
-            case (#Influencers) func(i, e) = (i, Set.size(e.followings));
+            case (#Influencers) func(i, e) = (i, Set.size(e.followers));
             case (#HypothesisPublishers) func(i, e) = (i, List.size(e.hypotheses));
             case (#EvidencePublishers) func(i, e) = (i, List.size(e.evidences));
             case (#HypothesisVoters) func(i, e) = (i, Map.size(e.votedHypotheses));

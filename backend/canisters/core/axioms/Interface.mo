@@ -57,8 +57,8 @@ module {
         getFlag : query (Flag.Header) -> async Flag.Sharable;
         getFlags : query (Flags.Filter, Base.Sort<Flags.Sort>) -> async Flags.Sharable;
         getFlagsPagination : query (Flags.Filter, Base.Sort<Flags.Sort>, Nat, Nat) -> async Pagination.Pagination<Flag.Sharable>;
-        getTop : query ({ #HypothesisPublishers; #EvidencePublishers; #HypothesisVoters; #EvidenceVoters; #AcornEarners }) -> async Pagination.TopNonPagination;
-        getTopPagination : query ({ #HypothesisPublishers; #EvidencePublishers; #HypothesisVoters; #EvidenceVoters; #AcornEarners }, Nat, Nat) -> async Pagination.TopPagination;
+        getTop : query ({ #Influencers; #HypothesisPublishers; #EvidencePublishers; #HypothesisVoters; #EvidenceVoters; #AcornEarners }) -> async Pagination.TopNonPagination;
+        getTopPagination : query ({ #Influencers; #HypothesisPublishers; #EvidencePublishers; #HypothesisVoters; #EvidenceVoters; #AcornEarners }, Nat, Nat) -> async Pagination.TopPagination;
         getAgePayout : query (Nat, Nat) -> async Payout.Sharable;
         getAgePayouts : query (Nat) -> async Payouts.Sharable;
         getAgesPayout : query (Nat) -> async Payouts.Sharable;

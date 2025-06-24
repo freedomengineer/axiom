@@ -101,11 +101,13 @@ export const Symbol = ({
 const Username = ({
     principal,
     symbol = false,
+    symbolClassName,
     className,
     linkClassName,
 }: {
     principal: Principal
     symbol?: boolean
+    symbolClassName?: string
     className?: string
     linkClassName?: string
 }) => {
@@ -115,7 +117,7 @@ const Username = ({
     if (className)
         return (
             <span className={cn('flex-nowrap place-items-center gap-1 text-nowrap', className)}>
-                {symbol && <Symbol capitalRaised={capitalRaised} />}
+                {symbol && <Symbol capitalRaised={capitalRaised} className={symbolClassName} />}
                 {username}
             </span>
         )
@@ -126,14 +128,14 @@ const Username = ({
                 className={cn('flex-nowrap place-items-center gap-1 text-nowrap', linkClassName)}
                 openInNewTab
             >
-                {symbol && <Symbol capitalRaised={capitalRaised} />}
+                {symbol && <Symbol capitalRaised={capitalRaised} className={symbolClassName} />}
                 {username}
             </Link>
         )
     if (symbol) {
         return (
             <span className="flex-nowrap place-items-center gap-1 text-nowrap">
-                <Symbol capitalRaised={capitalRaised} />
+                <Symbol capitalRaised={capitalRaised} className={symbolClassName} />
                 {username}
             </span>
         )

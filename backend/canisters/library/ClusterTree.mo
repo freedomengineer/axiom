@@ -69,7 +69,7 @@ module {
             case (#descending) Tree.entriesRev(__)
         };
         var f : Cluster<(K, V)> = List.nil<(K, V)>();
-        for ((k, v) in Tree.entries(__)) {
+        for ((k, v) in e) {
             List.iterate<V>(v, func(e) = f := List.push((k, e), f))
         };
         switch (take) {

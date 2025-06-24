@@ -1647,11 +1647,15 @@
       },
       "argTypes": {
         "category": {
-          "origin": "{ #HypothesisPublishers; #EvidencePublishers; #HypothesisVoters; #EvidenceVoters; #AcornEarners }",
+          "origin": "{ #Influencers; #HypothesisPublishers; #EvidencePublishers; #HypothesisVoters; #EvidenceVoters; #AcornEarners }",
           "singular": {
             "name": "()"
           },
           "entries": [
+            [
+              "#Influencers",
+              null
+            ],
             [
               "#HypothesisPublishers",
               null
@@ -1698,11 +1702,15 @@
       },
       "argTypes": {
         "category": {
-          "origin": "{ #HypothesisPublishers; #EvidencePublishers; #HypothesisVoters; #EvidenceVoters; #AcornEarners }",
+          "origin": "{ #Influencers; #HypothesisPublishers; #EvidencePublishers; #HypothesisVoters; #EvidenceVoters; #AcornEarners }",
           "singular": {
             "name": "()"
           },
           "entries": [
+            [
+              "#Influencers",
+              null
+            ],
             [
               "#HypothesisPublishers",
               null
@@ -7241,12 +7249,16 @@
       "isOptional": false,
       "isAsync": false
     },
-    "{ #HypothesisPublishers; #EvidencePublishers; #HypothesisVoters; #EvidenceVoters; #AcornEarners }": {
-      "origin": "{ #HypothesisPublishers; #EvidencePublishers; #HypothesisVoters; #EvidenceVoters; #AcornEarners }",
+    "{ #Influencers; #HypothesisPublishers; #EvidencePublishers; #HypothesisVoters; #EvidenceVoters; #AcornEarners }": {
+      "origin": "{ #Influencers; #HypothesisPublishers; #EvidencePublishers; #HypothesisVoters; #EvidenceVoters; #AcornEarners }",
       "singular": {
         "name": "()"
       },
       "entries": [
+        [
+          "#Influencers",
+          null
+        ],
         [
           "#HypothesisPublishers",
           null

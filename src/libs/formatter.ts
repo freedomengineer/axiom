@@ -2,7 +2,7 @@ import { ACTOR_SERVICES } from 'shared/constants'
 import { DIndicator } from 'shared/types/services'
 import e8s from 'shared/utils/e8s'
 import proportion, { Proportion } from 'shared/utils/proportion'
-import { UnwrapDVariant, UnwrapVariant, Variant } from 'shared/utils/typings'
+import { UnwrapVariant } from 'shared/utils/typings'
 
 import { formatDate } from './date'
 

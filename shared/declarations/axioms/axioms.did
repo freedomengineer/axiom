@@ -519,6 +519,7 @@ type Axioms =
        EvidenceVoters;
        HypothesisPublishers;
        HypothesisVoters;
+       Influencers;
      }) -> (TopNonPagination) query;
    getTopPagination:
     (variant {
@@ -527,6 +528,7 @@ type Axioms =
        EvidenceVoters;
        HypothesisPublishers;
        HypothesisVoters;
+       Influencers;
      }, nat, nat) -> (TopPagination) query;
    getUser: (principal) -> (Sharable) query;
    /// PROTECTED ////// MODIFIERS ////////////

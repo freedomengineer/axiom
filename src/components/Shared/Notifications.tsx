@@ -13,7 +13,6 @@ import useNotification, {
 } from '@hooks/useNotification'
 import cn from '@libs/class'
 import { formatDate } from '@libs/date'
-import { capitalize } from '@libs/formatter'
 import { NANOS_IN_A_DAY } from 'shared/constants'
 import e8s from 'shared/utils/e8s'
 import { Unwrap, UnwrapVariant } from 'shared/utils/typings'
@@ -74,12 +73,12 @@ const GroupedNotificationRenderer = memo(
             NewFollowers: 'has started following you.',
             NewReferrals: 'has joined Axiom by your referral link.',
             NewBallots: 'voted you in the election.',
-            NewVotesToHypothesis: `voted on your hypothesis ${item.id}.`,
-            NewVotesToEvidence: `voted on your evidence ${item.id}.`,
-            NewVotesToProposal: `voted on your proposal ${item.id}.`,
-            NewAxiomsToHypothesis: `adopted your hypothesis ${item.id} as their Axioms.`,
-            NewEvidencesToHypothesis: `published new evidences to your hypothesis ${item.id}.`,
-            NewRepliesToEvidence: `replied to your evidence ${item.id}.`,
+            NewVotesToHypothesis: `voted on your hypothesis #${item.id}.`,
+            NewVotesToEvidence: `voted on your evidence #${item.id}.`,
+            NewVotesToProposal: `voted on your proposal #${item.id}.`,
+            NewAxiomsToHypothesis: `adopted your hypothesis #${item.id} as their Axioms.`,
+            NewEvidencesToHypothesis: `published new evidences to your hypothesis #${item.id}.`,
+            NewRepliesToEvidence: `replied to your evidence #${item.id}.`,
             NewHypothesesFromFollowings: 'published new hypotheses',
             NewEvidencesFromFollowings: 'published new evidences',
         }[type]
@@ -93,21 +92,21 @@ const GroupedNotificationRenderer = memo(
                 case 'NewBallots':
                     return 'voted you in the election.'
                 case 'NewVotesToHypothesis':
-                    return `voted ${UnwrapVariant(item.choice)}.`
+                    return `voted ${(UnwrapVariant(item.choice) as any).toLowerCase()}.`
                 case 'NewVotesToEvidence':
-                    return `voted ${UnwrapVariant(item.choice)}.`
+                    return `voted ${(UnwrapVariant(item.choice) as any).toLowerCase()}.`
                 case 'NewVotesToProposal':
-                    return `voted ${UnwrapVariant(item.choice)}.`
+                    return `voted ${(UnwrapVariant(item.choice) as any).toLowerCase()}.`
                 case 'NewAxiomsToHypothesis':
                     return `adopted your hypothesis.`
                 case 'NewEvidencesToHypothesis':
-                    return `published ${UnwrapVariant(item.side)} evidence ${item.evidenceId}.`
+                    return `published ${(UnwrapVariant(item.side) as any).toLowerCase()} evidence #${item.evidenceId}.`
                 case 'NewRepliesToEvidence':
-                    return `replied to your evidence with ${item.evidenceId}.`
+                    return `replied to your evidence with evidence #${item.evidenceId}.`
                 case 'NewHypothesesFromFollowings':
-                    return `published hypothesis ${item.hypothesisId}.`
+                    return `published hypothesis #${item.hypothesisId}.`
                 case 'NewEvidencesFromFollowings':
-                    return `published evidence ${item.evidenceId}.`
+                    return `published evidence #${item.evidenceId}.`
             }
         }
         const firstItem = item.capacity[0]
@@ -309,14 +308,16 @@ export const UserNotificationRenderer = memo(
                 case 'ProposalExecuted':
                     return (
                         <>
-                            Your proposal #{item.proposalId} has been {UnwrapVariant(item.result)}.
-                            You can claim {e8s.toString((item as any).claimable)} ACORN.
+                            Your proposal #{item.proposalId} has been{' '}
+                            {UnwrapVariant(item.result).toLowerCase()}. You can claim{' '}
+                            {e8s.toString((item as any).claimable)} ACORN.
                         </>
                     )
                 case 'ProposalResult': {
                     return (
                         <>
-                            Your proposal #{item.proposalId} has been {UnwrapVariant(item.result)}.
+                            Your proposal #{item.proposalId} has been{' '}
+                            {UnwrapVariant(item.result).toLowerCase()}.
                         </>
                     )
                 }
@@ -381,8 +382,8 @@ export const SystemNotificationRenderer = ({
                             0n) as bigint)
                 return (
                     <>
-                        A flag has been requested by for {category} #{data.header.id}. Vote before
-                        it expires at {formatDate({ nano: expiresAt }, true)}.
+                        A flag has been requested by for {category.toLowerCase()} #{data.header.id}.
+                        Vote before it expires at {formatDate({ nano: expiresAt }, true)}.
                     </>
                 )
             }
@@ -393,9 +394,9 @@ export const SystemNotificationRenderer = ({
                     <>
                         {
                             {
-                                Approved: `${capitalize(category)} #${data.header.id} has been permanently deleted.`,
-                                Rejected: `Attempted to delete ${category} #${data.header.id} has failed since the flag request was rejected.`,
-                                Expired: `Attempted to delete ${category} #${data.header.id} has failed since the flag request expired.`,
+                                Approved: `${category} #${data.header.id} has been permanently deleted.`,
+                                Rejected: `Attempted to delete ${category.toLowerCase()} #${data.header.id} has failed since the flag request was rejected.`,
+                                Expired: `Attempted to delete ${category.toLowerCase()} #${data.header.id} has failed since the flag request expired.`,
                             }[result]
                         }
                     </>
@@ -703,7 +704,10 @@ const Notifications = () => {
     }, [])
 
     const handleMarkAllRead = () => {
-        if (activeUnreadCount > 0) actions.markAllAsRead(activeTab)
+        if (activeUnreadCount > 0) {
+            actions.markAllAsRead(activeTab)
+            setAccordionStates({})
+        }
     }
 
     return (

@@ -1,12 +1,10 @@
 import { Principal } from '@dfinity/principal'
 
-import Link from '@components/Shared/Link'
-import useUsername from '@hooks/useUsername'
+import Username from '@components/Shared/Username'
 import cn from '@libs/class'
 
 const TopCard = ({ string, number, index }: { string: string; number: number; index: number }) => {
     const principal = Principal.fromText(string)!
-    const { username } = useUsername(principal)
 
     return (
         <div
@@ -23,19 +21,17 @@ const TopCard = ({ string, number, index }: { string: string; number: number; in
         >
             <span className="w-10 text-right">{index + 1}</span>
             <span className="w-full">
-                <Link
-                    href={`/profile/${string}`}
-                    className={cn(
+                <Username
+                    principal={principal}
+                    symbol
+                    symbolClassName="stroke-[3px]"
+                    linkClassName={cn(
                         'pre-underline group z-10 w-full justify-start',
                         index < 3
                             ? 'text-white decoration-white/50 hover:decoration-white/100'
                             : 'text-cold-700 decoration-cold-700/50 hover:decoration-cold-700/100'
                     )}
-                    size="medium"
-                    openInNewTab
-                >
-                    {username}
-                </Link>
+                />
             </span>
             <span className="pr-normal w-fit text-right">
                 {number.toLocaleString('en-US', { maximumFractionDigits: 8 })}

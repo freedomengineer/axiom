@@ -86,7 +86,7 @@ const SpecificHistoryPage = () => {
                     ))}
                 </TabsHeader>
                 <TabsBody>
-                    <p className="text-small mt-6 text-right text-cold-700">
+                    <p className="text-small py-normal text-right font-medium text-cold-800">
                         Your revenue: {e8s.toString(revenue ?? 0n)} ACORNs
                     </p>
                     {AGES.map(({ id }) => (

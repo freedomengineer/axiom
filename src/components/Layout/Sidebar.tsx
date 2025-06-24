@@ -120,7 +120,7 @@ const Sidebar = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
                                             key={subname}
                                             href={`${(subdata as any).url}${
                                                 {
-                                                    'Top 10': '?key=PoweredVoters',
+                                                    Leaderboard: '?key=PoweredVoters',
                                                 }?.[subname] ?? ''
                                             }`}
                                             className="px-normal py-tiny flex rounded-lg hover:bg-cold-800 hover:text-white aria-checked:bg-cold-800 aria-checked:text-white"

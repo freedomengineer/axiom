@@ -4,7 +4,6 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 
 import AcornIcon from '@components/Assets/acorn.svg'
 import AdoptIcon from '@components/Assets/adopt.svg'
-import AtIcon from '@components/Assets/at.svg'
 import BookmarkIcon from '@components/Assets/bookmark.svg'
 import DateTimeIcon from '@components/Assets/date_time.svg'
 import DoneIcon from '@components/Assets/done.svg'
@@ -22,6 +21,7 @@ import InfiniteScrollWrapper, {
 } from '@components/Shared/InfiniteScrollWrapper'
 import Link from '@components/Shared/Link'
 import Popup from '@components/Shared/Popup'
+import { Symbol } from '@components/Shared/Username'
 import useAuth from '@hooks/useAuth'
 import useHypothesisDetails from '@hooks/useHypothesisDetails'
 import cn from '@libs/class'
@@ -343,9 +343,12 @@ const HypothesisDetail = ({ item }: { item: DAxioms.SharableHypothesis }) => {
                         className="gap-small order-3 flex items-center hover:opacity-75 md:order-2"
                         href={build(['profile', localItem.publisher.toText()])}
                     >
-                        <AtIcon className="h-5 w-5 stroke-[1.5px]" />
+                        <Symbol
+                            capitalRaised={publisher.capitalRaised.toString()}
+                            className="mr-0 h-5 w-5"
+                        />
                         <span className="text-small md:mr-medium text-nowrap font-light text-white">
-                            {publisher}
+                            {publisher.username}
                         </span>
                     </Link>
                     <div className="gap-small order-2 ml-auto flex items-center md:order-3 md:ml-0">

@@ -41,7 +41,7 @@ module {
     private type User = User.User;
 
     private type Entry = (Nat, Evidence);
-    private type Scores = Entry -> (Nat, Nat);
+    private type Scores = Entry -> (Int, Int);
     private type Ordering = ClusterTree<Float, Ranking<Entry>>;
 
     private func _id() : Compare<Entry> = func((i1, _), (i2, _)) = Nat.compare(i1, i2);
@@ -51,9 +51,9 @@ module {
     };
     private func _scores(sortedBy : Sort) : Scores = switch (sortedBy) {
         case (#recent) func(_, e) = E.unreachable();
-        case (#popularity) func(_, e) = (BinaryVotes.getRegularValue(e.votes), BinaryVotes.getPoweredValue(e.votes));
-        case (#positivity) func(_, e) = (BinaryVotes.getRegularPositiveValue(e.votes), BinaryVotes.getPoweredPositiveValue(e.votes));
-        case (#negativity) func(_, e) = (BinaryVotes.getRegularNegativeValue(e.votes), BinaryVotes.getPoweredNegativeValue(e.votes))
+        case (#popularity) func(_, e) = (BinaryVotes.getRegularPositiveDiffValue(e.votes), BinaryVotes.getPoweredPositiveDiffValue(e.votes));
+        case (#positivity) func(_, e) = (BinaryVotes.getRegularPositiveDiffValue(e.votes), BinaryVotes.getPoweredPositiveDiffValue(e.votes));
+        case (#negativity) func(_, e) = (BinaryVotes.getRegularNegativeDiffValue(e.votes), BinaryVotes.getPoweredNegativeDiffValue(e.votes))
     };
 
     /// PUBLIC ////// DECLARATIONS ////////////

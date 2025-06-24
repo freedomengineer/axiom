@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 
-import AtIcon from '@components/Assets/at.svg'
 import DateTimeIcon from '@components/Assets/date_time.svg'
 import DoneIcon from '@components/Assets/done.svg'
 import FlagIcon from '@components/Assets/flag.svg'
@@ -11,6 +10,7 @@ import ReplyIcon from '@components/Assets/reply.svg'
 import ShareIcon from '@components/Assets/share.svg'
 import Link from '@components/Shared/Link'
 import Popup from '@components/Shared/Popup'
+import { Symbol } from '@components/Shared/Username'
 import useAuth from '@hooks/useAuth'
 import useEvidenceDetails from '@hooks/useEvidenceDetails'
 import cn from '@libs/class'
@@ -150,9 +150,12 @@ const EvidenceDetail = ({
                     className="gap-small order-3 flex items-center hover:opacity-75 md:order-2"
                     href={build(['profile', localItem.publisher.toText()])}
                 >
-                    <AtIcon className="h-3.5 w-3.5 stroke-[1.5px] md:h-4 md:w-4" />
+                    <Symbol
+                        capitalRaised={publisher.capitalRaised.toString()}
+                        className="mr-0 h-3.5 w-3.5 md:h-4 md:w-4"
+                    />
                     <span className="text-tiny md:mr-medium text-nowrap font-light text-white">
-                        {publisher}
+                        {publisher.username}
                     </span>
                 </Link>
                 <Link

@@ -79,7 +79,10 @@ module {
     public func getPoweredNegativeValue(__ : Self) : Nat = __.counts[1];
 
     public func getRegularPositiveDiffValue(__ : Self) : Int = Set.size(__.agents[0]) - Set.size(__.agents[1]);
+    public func getRegularNegativeDiffValue(__ : Self) : Int = Set.size(__.agents[1]) - Set.size(__.agents[0]);
+
     public func getPoweredPositiveDiffValue(__ : Self) : Int = __.counts[0] - __.counts[1];
+    public func getPoweredNegativeDiffValue(__ : Self) : Int = __.counts[1] - __.counts[0];
 
     public func getRegularSharable(__ : Self) : OneSideSharable = (Set.size(__.agents[0]), Set.size(__.agents[1]));
     public func getPoweredSharable(__ : Self) : OneSideSharable = (__.counts[0], __.counts[1]);

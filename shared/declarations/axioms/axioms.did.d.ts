@@ -45,6 +45,7 @@ export interface Axioms {
       { 'HypothesisPublishers' : null } |
         { 'AcornEarners' : null } |
         { 'HypothesisVoters' : null } |
+        { 'Influencers' : null } |
         { 'EvidenceVoters' : null } |
         { 'EvidencePublishers' : null },
     ],
@@ -55,6 +56,7 @@ export interface Axioms {
       { 'HypothesisPublishers' : null } |
         { 'AcornEarners' : null } |
         { 'HypothesisVoters' : null } |
+        { 'Influencers' : null } |
         { 'EvidenceVoters' : null } |
         { 'EvidencePublishers' : null },
       bigint,

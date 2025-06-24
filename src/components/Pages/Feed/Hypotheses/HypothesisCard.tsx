@@ -4,7 +4,6 @@ import { PieChart } from '@mui/x-charts/PieChart'
 import { useState } from 'react'
 
 import AdoptIcon from '@components/Assets/adopt.svg'
-import AtIcon from '@components/Assets/at.svg'
 import BookmarkIcon from '@components/Assets/bookmark.svg'
 import DateTimeIcon from '@components/Assets/date_time.svg'
 import DoneIcon from '@components/Assets/done.svg'
@@ -15,6 +14,7 @@ import ShareIcon from '@components/Assets/share.svg'
 import Spinner from '@components/Primitives/Spinner'
 import Link from '@components/Shared/Link'
 import Popup from '@components/Shared/Popup'
+import { Symbol } from '@components/Shared/Username'
 import useAuth from '@hooks/useAuth'
 import useHypothesisDetails from '@hooks/useHypothesisDetails'
 import cn from '@libs/class'
@@ -181,9 +181,12 @@ const HypothesisCard = ({
                         className="!gap-small col-span-4 row-start-2 mr-auto flex h-5 items-center text-left hover:opacity-75"
                         href={build(['profile', localItem.publisher.toText()])}
                     >
-                        <AtIcon className="h-4 w-4 stroke-[1.5px]" />
+                        <Symbol
+                            capitalRaised={publisher.capitalRaised.toString()}
+                            className="mr-0 h-4 w-4"
+                        />
                         <span className="text-tiny truncate font-light text-white">
-                            {publisher}
+                            {publisher.username}
                         </span>
                     </Link>
                     <div className="!gap-small col-span-4 row-start-3 mr-auto flex h-5 items-center text-left">

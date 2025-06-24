@@ -1,6 +1,7 @@
 import { Tab, TabPanel, Tabs, TabsBody, TabsHeader } from '@material-tailwind/react'
 import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
+import { N } from 'vitest/dist/chunks/reporters.66aFHiyX'
 
 import TopCard from '@components/Pages/ACEDashboard/Leaderboard/TopCard'
 import Spinner from '@components/Primitives/Spinner'
@@ -9,10 +10,11 @@ import siteMetadata from '@data/siteMetadata.json'
 import useAuth from '@hooks/useAuth'
 import { PAGE_SIZE, Top, TopKey, getTop } from '@hooks/useTop'
 import cn from '@libs/class'
-import { TOP } from '@utils/dashboard/top'
+import { LEADERBOARD } from '@utils/dashboard/leaderboard'
+import e8s from 'shared/utils/e8s'
 import { Unwrap, isNullish } from 'shared/utils/typings'
 
-const title = 'Top 10'
+const title = 'Leaderboard'
 const metadata = siteMetadata.routes['ACE Dashboard'].routes[title]
 const pageMetadata: Metadata = {
     url: siteMetadata.siteUrl + metadata.url,
@@ -55,7 +57,7 @@ const LeaderboardPage = () => {
                             'bg-transparent border-b-2 border-primary-700 shadow-none rounded-none',
                     }}
                 >
-                    {TOP.map(({ key, label }) => (
+                    {LEADERBOARD.map(({ key, label }) => (
                         <Tab
                             key={key}
                             value={key}
@@ -75,11 +77,14 @@ const LeaderboardPage = () => {
                         value={keyParam}
                         className="gap-medium mt-medium flex w-full flex-col flex-wrap items-center"
                     >
+                        <p className="text-small gap-medium px-medium mx-auto flex w-full max-w-3xl justify-center text-center font-normal text-cold-700">
+                            {LEADERBOARD.find(({ key }) => key === keyParam)?.description}
+                        </p>
                         {!topPage ? (
                             <Spinner className="mx-auto mt-10 h-10 w-10" />
                         ) : (
                             <div className="gap-normal flex w-full flex-col">
-                                <p className="text-normal gap-medium px-medium py-normal mx-auto flex w-full max-w-3xl rounded-lg text-right font-medium">
+                                <p className="text-small gap-medium px-medium mx-auto flex w-full max-w-3xl justify-end font-medium text-cold-800">
                                     Your rank:{' '}
                                     {isNullish(Unwrap(topPage.callerRank))
                                         ? 'N/A'
@@ -90,7 +95,15 @@ const LeaderboardPage = () => {
                                         <TopCard
                                             key={address.toText()}
                                             string={address.toText()}
-                                            number={Number(value)}
+                                            number={
+                                                [
+                                                    'PoweredVoters',
+                                                    'AcornBuriers',
+                                                    'AcornEarners',
+                                                ].includes(keyParam)
+                                                    ? e8s.toNumber(value)
+                                                    : Number(value)
+                                            }
                                             index={i * Number(PAGE_SIZE) + j}
                                         />
                                     ))

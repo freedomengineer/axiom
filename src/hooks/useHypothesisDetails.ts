@@ -11,7 +11,7 @@ import useUsername from './useUsername'
 
 const useHypothesisDetails = (item: DAxioms.SharableHypothesis) => {
     const { agent } = useAuth()
-    const { username: publisher } = useUsername(item.publisher)
+    const publisher = useUsername(item.publisher)
 
     const [localItem, setLocalItem] = useState<DAxioms.SharableHypothesis>(item)
     const [votesLoading, setVotesLoading] = useState<Record<EVote, boolean>>({
