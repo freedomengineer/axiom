@@ -73,9 +73,6 @@ module {
         #negativity
     };
 
-    public type Context = List<((Nat, Evidence), Context)>;
-    public type SharableContext = [(SharableEvidence, SharableContext)];
-
     /// AXIOMS ////// EVIDENCES ////////////
 
     private type Self = Evidences;
