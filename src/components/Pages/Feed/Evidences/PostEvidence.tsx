@@ -83,8 +83,9 @@ const PostEvidence = ({
                         acc +
                         (value
                             ? key === 'Note' && 'extended' in value && value.extended
-                                ? (configs?.['EVIDENCE_EXTENDED_NOTE_FEE'][1] as bigint)
-                                : (configs?.[`EVIDENCE_${key.toUpperCase()}_FEE`][1] as bigint)
+                                ? ((configs?.['EVIDENCE_EXTENDED_NOTE_FEE'][1] as bigint) ?? 0n)
+                                : ((configs?.[`EVIDENCE_${key.toUpperCase()}_FEE`][1] as bigint) ??
+                                  0n)
                             : 0n),
                     0n
                 )}

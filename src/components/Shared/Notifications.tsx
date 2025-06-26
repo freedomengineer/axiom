@@ -1,3 +1,4 @@
+import { Principal } from '@dfinity/principal'
 import { Fragment, memo, useCallback, useEffect, useState } from 'react'
 
 import CheckIcon from '@components/Assets/check.svg'
@@ -50,9 +51,7 @@ const GroupedNotificationRenderer = memo(
         )
 
         const handleCapacityItemClick = useCallback(
-            (e: React.MouseEvent, index: number) => {
-                e.preventDefault()
-                e.stopPropagation()
+            (index: number) => {
                 markCapacityItemAsRead(notification.id, index, onToggle)
             },
             [notification.id, onToggle]
@@ -86,29 +85,59 @@ const GroupedNotificationRenderer = memo(
         const renderCapacityItem = (item: any, id: string) => {
             switch (type) {
                 case 'NewFollowers':
-                    return 'started following you.'
+                    return [
+                        'started following you.',
+                        `/profile/${Principal.fromUint8Array(item.user._arr).toText()}`,
+                    ]
                 case 'NewReferrals':
-                    return `joined Axiom by using your referral link, you can claim ${e8s.toString(item.claimable)} ICP.`
+                    return [
+                        `joined Axiom by using your referral link, you can claim ${e8s.toString(item.claimable)} ICP.`,
+                        `/profile/${Principal.fromUint8Array(item.user._arr).toText()}`,
+                    ]
                 case 'NewBallots':
-                    return 'voted you in the election.'
+                    return ['voted you in the election.', `/dashboard/custodians`]
                 case 'NewVotesToHypothesis':
-                    return `voted ${(UnwrapVariant(item.choice) as any).toLowerCase()}.`
+                    return [
+                        `voted ${(UnwrapVariant(item.choice) as any).toLowerCase()}.`,
+                        `/feed/${item.id}`,
+                    ]
                 case 'NewVotesToEvidence':
-                    return `voted ${(UnwrapVariant(item.choice) as any).toLowerCase()}.`
+                    return [
+                        `voted ${(UnwrapVariant(item.choice) as any).toLowerCase()}.`,
+                        `/feed/evidences/${item.id}`,
+                    ]
                 case 'NewVotesToProposal':
-                    return `voted ${(UnwrapVariant(item.choice) as any).toLowerCase()}.`
+                    return [
+                        `voted ${(UnwrapVariant(item.choice) as any).toLowerCase()}.`,
+                        `/dashboard/proposals/${id}`,
+                    ]
                 case 'NewAxiomsToHypothesis':
-                    return `adopted your hypothesis.`
+                    return [`adopted your hypothesis.`, `/feed/${item.id}`]
                 case 'NewEvidencesToHypothesis':
-                    return `published ${(UnwrapVariant(item.side) as any).toLowerCase()} evidence #${item.evidenceId}.`
+                    return [
+                        `published ${(UnwrapVariant(item.side) as any).toLowerCase()} evidence #${item.evidenceId}.`,
+                        `/feed/${id}/evidences/${item.evidenceId}`,
+                    ]
                 case 'NewRepliesToEvidence':
-                    return `replied to your evidence with evidence #${item.evidenceId}.`
+                    return [
+                        `replied to your evidence with evidence #${item.evidenceId}.`,
+                        `/feed/evidences/${item.evidenceId}`,
+                    ]
                 case 'NewHypothesesFromFollowings':
-                    return `published hypothesis #${item.hypothesisId}.`
+                    return [
+                        `published hypothesis #${item.hypothesisId}.`,
+                        `/feed/${item.hypothesisId}`,
+                    ]
                 case 'NewEvidencesFromFollowings':
-                    return `published evidence #${item.evidenceId}.`
+                    return [
+                        `published evidence #${item.evidenceId}.`,
+                        `/feed/evidences/${item.evidenceId}`,
+                    ]
+                default:
+                    return undefined
             }
         }
+
         const firstItem = item.capacity[0]
 
         return (
@@ -176,11 +205,13 @@ const GroupedNotificationRenderer = memo(
                     <div className="text-tiny pb-tiny pt-tiny border-t border-cold-200 pl-4">
                         {item.capacity.map((e: any, index: number) => {
                             const isItemRead = notification.capacityItemsRead?.[index] === 1
+                            const [text, link] = renderCapacityItem(e, item.id) ?? []
 
                             return (
-                                <div
+                                <Link
                                     key={index}
-                                    onClick={(event) => handleCapacityItemClick(event, index)}
+                                    href={link}
+                                    onClick={() => handleCapacityItemClick(index)}
                                     className={cn(
                                         'text-tiny px-small py-tiny flex w-full cursor-pointer items-center justify-between rounded-lg hover:bg-primary-50',
                                         !isItemRead ? 'bg-primary-50' : 'bg-white'
@@ -193,7 +224,7 @@ const GroupedNotificationRenderer = memo(
                                             principal={e.user ?? e.voter ?? e.publisher}
                                             linkClassName="text-cold-800"
                                         />
-                                        {` ${renderCapacityItem(e, item.id)}`}
+                                        {` ${text}`}
                                     </p>
                                     <div className="gap-x-small flex flex-shrink-0 items-center">
                                         <p className="text-extratiny mr-small font-normal text-cold-700">
@@ -202,7 +233,7 @@ const GroupedNotificationRenderer = memo(
                                             </span>
                                         </p>
                                     </div>
-                                </div>
+                                </Link>
                             )
                         })}
                     </div>
@@ -309,8 +340,8 @@ export const UserNotificationRenderer = memo(
                     return (
                         <>
                             Your proposal #{item.proposalId} has been{' '}
-                            {UnwrapVariant(item.result).toLowerCase()}. You can claim{' '}
-                            {e8s.toString((item as any).claimable)} ACORN.
+                            {UnwrapVariant(item.result).toLowerCase()}, you have{' '}
+                            {e8s.toString((item as any).claimable)} ACORN refunded.
                         </>
                     )
                 case 'ProposalResult': {
@@ -326,9 +357,12 @@ export const UserNotificationRenderer = memo(
             }
         }
 
+        const notificationLink = getNotificationLink(notification)
+
         return (
             <div className="rounded-lg border border-cold-200 bg-white">
-                <div
+                <Link
+                    href={notificationLink ?? ''}
                     className={cn(
                         'text-tiny py-normal px-medium flex cursor-pointer items-center justify-between rounded-lg transition-colors hover:bg-primary-50',
                         notification.isRead === 0 ? 'bg-primary-50' : 'bg-white'
@@ -340,7 +374,7 @@ export const UserNotificationRenderer = memo(
                     <p className="text-extratiny font-light text-cold-700">
                         {formatDate({ nano: BigInt(notification.timestamp) }, true)}
                     </p>
-                </div>
+                </Link>
             </div>
         )
     }
@@ -510,9 +544,9 @@ const getNotificationLink = (notification: StoredNotification): string | undefin
             const [type, item] = UnwrapVariant(notification.data)
             switch (type) {
                 case 'FlagRequested':
-                    return `/dashboard/flags`
+                    return `/feed/flags`
                 case 'FlagResult':
-                    return `/dashboard/flags`
+                    return `/feed/flags`
                 case 'ProposalExecuted':
                     return `/dashboard/proposals/${item.proposalId}`
                 case 'TallyResult':
@@ -526,12 +560,18 @@ const getNotificationLink = (notification: StoredNotification): string | undefin
         case 'user': {
             const [type, item] = UnwrapVariant(notification.data)
             switch (type) {
-                case 'NewFollowers':
-                    return `/dashboard/followers`
-                case 'NewReferrals':
-                    return `/dashboard/referrals`
-                case 'NewBallots':
+                case 'CustodianElectionResult':
                     return `/dashboard/custodians`
+                case 'CustodianProposalResult':
+                    return `/dashboard/proposals/${item.proposalId}`
+                case 'CustodianProposalDelegated':
+                    return `/dashboard/proposals/${item.proposalId}`
+                case 'CustodianProposalOpened':
+                    return `/dashboard/proposals/${item.proposalId}`
+                case 'ProposalExecuted':
+                    return `/dashboard/proposals/${item.proposalId}`
+                case 'ProposalResult':
+                    return `/dashboard/proposals/${item.proposalId}`
                 default:
                     return undefined
             }
@@ -589,7 +629,7 @@ const NotificationItemWrapper = memo(
                             onClick={handleSingleNotificationClick}
                         >
                             {notificationLink ? (
-                                <a href={notificationLink} className="block w-full">
+                                <Link href={notificationLink} className="block w-full">
                                     <div className="flex-grow">
                                         {notification.source === 'system' ? (
                                             <SystemNotificationRenderer
@@ -603,7 +643,7 @@ const NotificationItemWrapper = memo(
                                             />
                                         )}
                                     </div>
-                                </a>
+                                </Link>
                             ) : (
                                 <div className="flex-grow">
                                     {notification.source === 'system' ? (

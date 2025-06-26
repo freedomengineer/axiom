@@ -6,7 +6,7 @@
 - Attributes: `User`, `Users`, `Notification`, `Notifications`, `DIP721`
 - Interfaces: `DIP721Interface`, `ICPUSDInterface`, `SplitInterface`, `TreasuryInterface`, `AffiliateInterface`, `SalesInterface`, `EscrowInterface`, `AxiomsInterface`, `DAOInterface`, `IndicatorInterface`
 - Commons: `C`, `E`
-- Libraries: `Base`, `Configs`, `E8S`, `Format`, `Iter`, `Pagination`
+- Libraries: `Base`, `Configs`, `E8S`, `Format`, `Iter`, `Map`, `Pagination`
 - Bases: `Principal`, `Nat`, `Time`, `Text`
 ## Modifiers
 

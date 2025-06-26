@@ -50,10 +50,10 @@ const Popup = ({
                     className
                 )}
             >
-                <div className="px-semilarge py-medium flex justify-between border-b border-gray-200">
+                <div className="px-semilarge py-medium flex items-center justify-between border-b border-gray-200">
                     <div className="gap-medium flex items-center">
                         {Icon}
-                        <h2 className="text-medium font-light">{title}</h2>
+                        <h2 className="text-normal font-light">{title}</h2>
                     </div>
                     <div className="gap-medium flex items-center justify-end">
                         {href && (
@@ -67,7 +67,8 @@ const Popup = ({
                                 prefetch
                                 openInNewTab
                             >
-                                <span className="font-light">Open in new tab</span>
+                                <span className="hidden font-light md:block">Open in new tab</span>
+                                <span className="block font-light md:hidden">New tab</span>
                                 <NewTabIcon className="h-3 w-3 stroke-[1.5px] md:h-4 md:w-4" />
                             </Link>
                         )}

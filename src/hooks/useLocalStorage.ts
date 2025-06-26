@@ -4,6 +4,7 @@ import { StringifiedFilterSort } from 'shared/default/filter_sort'
 
 export type LocalStorageData = StringifiedFilterSort & {
     alphaStageAlert: boolean
+    version: string
     sideBarToggle1: boolean
     sideBarToggle2: boolean
     sideBarToggle3: boolean
@@ -11,11 +12,12 @@ export type LocalStorageData = StringifiedFilterSort & {
 
 const _default: LocalStorageData = {
     alphaStageAlert: true,
+    version: '0.0.0',
     sideBarToggle1: true,
     sideBarToggle2: true,
     sideBarToggle3: true,
     hypothesis: {
-        filter: { publishedAt: '1' },
+        filter: { age: '1' },
         sort: { by: 'popularity', order: 'descending' },
     },
     field: {

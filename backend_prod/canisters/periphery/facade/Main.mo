@@ -25,6 +25,7 @@ import Configs "../../library/Configs";
 import E8S "../../library/E8S";
 import Format "../../library/Format";
 import Iter "../../library/Iter";
+import Map "../../library/Map";
 import Pagination "../../library/Pagination";
 
 import Principal "mo:base/Principal";
@@ -32,7 +33,37 @@ import Nat "mo:base/Nat";
 import Time "mo:base/Time";
 import Text "mo:base/Text";
 
-shared ({ caller = indicator }) actor class Facade() = this {
+(
+    with migration = func(
+        old : {
+            var users : Map.Map<Principal, { var avatar : ?Format.Picture; var username : Text; capitalRaised : Nat; creationDate : Time.Time; var links : [Format.Hyperlink]; var location : ?Text }>
+        }
+    ) : {
+        var users : Users.Users
+    } {
+        {
+
+            var users : Users.Users = do {
+                let newUsers : Users.Users = Map.new<Principal, User.User>();
+                for ((principal, user) in Map.entries(old.users)) {
+                    Map.put(
+                        newUsers,
+                        Map.PrincipalKey(principal),
+                        {
+                            var avatar = user.avatar;
+                            var username = user.username;
+                            var capitalRaised = user.capitalRaised;
+                            creationDate = user.creationDate;
+                            var links = user.links;
+                            var location = user.location
+                        },
+                    )
+                };
+                newUsers
+            }
+        }
+    }
+) shared ({ caller = indicator }) actor class Facade() = this {
         private stable let Indicator : IndicatorInterface.Indicator = actor (Principal.toText(indicator));
 
     private stable let users : Users.Users = Users.init();

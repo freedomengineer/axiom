@@ -93,8 +93,7 @@ const ConfigsDetachment = ({
                                                 className={cn(
                                                     '!text-tiny py-small px-normal group relative text-nowrap bg-cold-50 text-left font-semibold text-cold-600',
                                                     'border-b border-r border-cold-300',
-                                                    (j === configs.length - 1 ||
-                                                        configs.length === 1) &&
+                                                    i === detachment.actorsConfigs.length - 1 &&
                                                         'border-b-0'
                                                 )}
                                             >

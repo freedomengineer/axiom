@@ -344,14 +344,11 @@ const OpenProposalPreview = ({
                     borderColor="border-cold-800"
                 />
                 <div className="gap-small mt-auto flex justify-between">
-                    <button
-                        className="button w-auto min-w-36 bg-cold-800 md:min-w-48"
-                        onClick={() => onBack()}
-                    >
+                    <button className="button w-full bg-cold-800" onClick={() => onBack()}>
                         Back to General Form
                     </button>
                     <button
-                        className="button w-auto min-w-36 md:min-w-48"
+                        className="button w-full"
                         onClick={isNullish(id) ? post : retry}
                         disabled={!terms[0] || !terms[1] || !isSufficient || loading}
                     >

@@ -1113,6 +1113,13 @@
       "relativePath": "../../library/Iter",
       "depth": 4
     },
+    "Map": {
+      "origin": "import Map \"../../library/Map\";",
+      "name": "Map",
+      "category": "library",
+      "relativePath": "../../library/Map",
+      "depth": 4
+    },
     "Pagination": {
       "origin": "import Pagination \"../../library/Pagination\";",
       "name": "Pagination",
@@ -1172,6 +1179,7 @@
     "E8S",
     "Format",
     "Iter",
+    "Map",
     "Pagination",
     "Principal",
     "Nat",

@@ -1,10 +1,14 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ToastContainer } from 'react-toastify'
 
 import { AlphaStage } from '@components/Shared/Alerts'
+import { deleteAllConfigsCache } from '@hooks/useConfigs'
 import useLocalStorage from '@hooks/useLocalStorage'
+import { deleteAllPackagesCache } from '@hooks/usePackages'
+import { deleteAllStatusCache } from '@hooks/useStatus'
+import { deleteAllUsernamesCache } from '@hooks/useUsername'
 
 import Header from './Header'
 import Middleware from './Middleware'
@@ -19,6 +23,18 @@ const LayoutWrapper = ({
 }>) => {
     const [open, setOpen] = useState<boolean>(false)
     const [showAlert, setShowAlert] = useLocalStorage('alphaStageAlert')
+    const [version, setVersion] = useLocalStorage('version')
+
+    useEffect(() => {
+        if (version !== '1.0.0') {
+            deleteAllConfigsCache()
+            deleteAllPackagesCache()
+            deleteAllStatusCache()
+            deleteAllUsernamesCache()
+            localStorage.clear()
+            setVersion('1.0.0')
+        }
+    }, [version])
 
     return (
         <div className="flex h-[100dvh] max-h-[100dvh] flex-col">

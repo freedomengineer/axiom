@@ -80,22 +80,33 @@ const PostEvidencePreview = ({
             <div className="gap-normal pointer-events-none flex w-full flex-col md:w-3/5">
                 <p className="text-medium text-center font-light">Preview</p>
                 {replyingEvidence && (
-                    <div className="relative">
+                    <div className="relative w-full">
                         <EvidenceCard
                             item={replyingEvidence}
                             className="mx-auto !w-full"
                             onReply={() => {}}
                         />
-                        <div
-                            className="absolute left-5 top-full z-10"
-                            style={{ height: 'calc(50%)', width: '1.25rem' }}
-                        >
-                            <div className="h-full w-full rounded-bl-lg border-b-2 border-l-2 border-cold-800"></div>
-                        </div>
                     </div>
                 )}
-                <div className={cn('relative', replyingEvidence && 'ml-10')}>
-                    <EvidenceCard item={item} className="mx-auto !w-full" onReply={() => {}} />
+                <div
+                    className={cn('flex w-full', replyingEvidence && 'ml-[0.75rem] md:ml-[1.5rem]')}
+                >
+                    {replyingEvidence && (
+                        <div className="relative">
+                            <div className="left-5 top-full z-10 h-[calc(50%+0.75rem)] w-[1rem] -translate-y-[0.75rem] md:w-[1.5rem]">
+                                <div className="h-full w-full rounded-bl-lg border-b-2 border-l-2 border-cold-800"></div>
+                            </div>
+                        </div>
+                    )}
+                    <EvidenceCard
+                        item={item}
+                        className={
+                            replyingEvidence
+                                ? '!w-[calc(100%-2rem)] md:!w-[calc(100%-3rem)]'
+                                : '!w-full'
+                        }
+                        onReply={() => {}}
+                    />
                 </div>
             </div>
             <Divider
@@ -168,14 +179,11 @@ const PostEvidencePreview = ({
                     borderColor="border-cold-800"
                 />
                 <div className="gap-small mt-auto flex justify-between">
-                    <button
-                        className="button w-auto min-w-36 bg-cold-800 md:min-w-48"
-                        onClick={() => onBack()}
-                    >
+                    <button className="button w-full bg-cold-800" onClick={() => onBack()}>
                         Back to Form
                     </button>
                     <button
-                        className="button w-auto min-w-36 md:min-w-48"
+                        className="button w-full"
                         onClick={post}
                         disabled={!terms[0] || !terms[1] || !isSufficient || loading}
                     >

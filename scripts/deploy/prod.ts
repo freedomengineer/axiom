@@ -27,7 +27,7 @@ import {
     execSync(`dfx deploy internet_identity --mode=reinstall --yes`, { stdio: 'ignore' })
     execSync(`dfx deploy xrc --mode=reinstall --yes`, { stdio: 'ignore' })
     execSync(
-        `dfx deploy indicator --mode=reinstall --yes --with-cycles 1_000_000_000_000 && dfx ledger fabricate-cycles --canister indicator_prod --cycles 15_000_000_000_000`
+        `dfx deploy indicator_prod --mode=reinstall --yes --with-cycles 1_000_000_000_000 && dfx ledger fabricate-cycles --canister indicator_prod --cycles 15_000_000_000_000`
     )
 
     const canisterId = execSync(`dfx canister id indicator_prod`).toString().trim()
