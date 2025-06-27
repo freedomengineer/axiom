@@ -31,12 +31,12 @@ const HypothesisPage = () => {
         } catch {
             setPageStatus(PageStatus.NotFound)
         }
-    }, [])
+    }, [hypothesis])
 
     return (
         <>
             <PageMetadata {...pageMetadata} />
-            {item && <HypothesisDetail item={item} />}
+            {item && <HypothesisDetail item={item} key={item.id} />}
         </>
     )
 }

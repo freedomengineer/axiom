@@ -76,7 +76,7 @@ const SearchPage = () => {
                 setResults({ hypotheses, evidences, fields, users } as any)
             )
             .catch(error)
-    }, [p, Axioms, Facade])
+    }, [q, Axioms, Facade])
 
     const Layout = <T,>({
         Component,
