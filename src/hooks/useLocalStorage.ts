@@ -17,7 +17,7 @@ const _default: LocalStorageData = {
     sideBarToggle2: true,
     sideBarToggle3: true,
     hypothesis: {
-        filter: { age: '1' },
+        filter: { age: '2' },
         sort: { by: 'popularity', order: 'descending' },
     },
     field: {

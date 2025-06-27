@@ -227,7 +227,7 @@ import Debug "mo:base/Debug";
             };
             let paidRange : Iter.Iter<Nat> = Iter.range(start, lastId);
             let hypothesisOrdering : ClusterTree.ClusterTree<Float, DoubleRankTree.Ranking<Nat>> = DoubleClusterTree.getAverageRankTreeFromIter(paidRange, scores, Nat.compare);
-            let paidHypotheses : [(Float, DoubleRankTree.Ranking<Nat>)] = ClusterTree.getFlattenEntries(hypothesisOrdering, #trim(maxHypotheses), #descending);
+            let paidHypotheses : [(Float, DoubleRankTree.Ranking<Nat>)] = ClusterTree.getFlattenEntries(hypothesisOrdering, #trim(maxHypotheses), #ascending);
 
             /// n
             let totalHypotheses : Nat = paidHypotheses.size();
@@ -284,7 +284,7 @@ import Debug "mo:base/Debug";
                             }
                         };
                         let evidenceOrdering : ClusterTree.ClusterTree<Float, DoubleRankTree.Ranking<Nat>> = DoubleClusterTree.getAverageRankTreeFromList(hypothesis.evidenceIds, evidenceScores, Nat.compare);
-                        let paidEvidences : [(Float, DoubleRankTree.Ranking<Nat>)] = ClusterTree.getFlattenEntries(evidenceOrdering, #all, #descending);
+                        let paidEvidences : [(Float, DoubleRankTree.Ranking<Nat>)] = ClusterTree.getFlattenEntries(evidenceOrdering, #all, #ascending);
 
                         /// a
                         let EVIDENCE_PAYOUT_DECAY_PROPORTION : Proportion.Proportion = Configs.Proportion(configs, "EVIDENCE_PAYOUT_DECAY_PROPORTION");
@@ -855,7 +855,7 @@ import Debug "mo:base/Debug";
 
     private func _getUser(principal : Principal) : User.User = Users.user(users, principal);
     private func _getField(id : Text) : Field.Field = Fields.field(fields, id);
-    private func _getAge(age : Nat) : Age.Age = Ages.age(ages, age);
+    private func _getAge(age : Nat) : Age.Age = Ages.age(ages, age - 1);
     private func _getHypothesis(id : Nat) : Hypothesis.Hypothesis = Hypotheses.hypothesis(hypotheses, id);
     private func _getEvidence(id : Nat) : Evidence.Evidence = Evidences.evidence(evidences, id);
 

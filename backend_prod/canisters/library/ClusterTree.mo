@@ -64,13 +64,14 @@ module {
         }
     };
     public func getFlattenEntries<K, V>(__ : Self<K, V>, take : Take, order : Order) : [(K, V)] {
+        // flip the order of the entries instead of reversing the List
         let e : Iter<(K, Cluster<V>)> = switch (order) {
-            case (#ascending) Tree.entries(__);
-            case (#descending) Tree.entriesRev(__)
+            case (#ascending) Tree.entriesRev(__);
+            case (#descending) Tree.entries(__)
         };
         var f : Cluster<(K, V)> = List.nil<(K, V)>();
         for ((k, v) in e) {
-            List.iterate<V>(v, func(e) = f := List.push((k, e), f))
+            List.iterate<V>(List.reverse(v), func(e) = f := List.push((k, e), f))
         };
         switch (take) {
             case (#trim(n)) Array.take(List.toArray(f), -n);
