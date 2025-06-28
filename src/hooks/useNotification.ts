@@ -1,4 +1,5 @@
 import { Agent } from '@dfinity/agent'
+import { Principal } from '@dfinity/principal'
 import Dexie, { Table } from 'dexie'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { useEffect, useRef } from 'react'
@@ -43,7 +44,19 @@ const initializeDB = (userPrincipal: string) => {
 }
 
 const _jsonReplacer = (key: string, value: any) =>
-    typeof value === 'bigint' ? value.toString() : value
+    typeof value === 'bigint'
+        ? value.toString()
+        : typeof value === 'object' && value && '__principal__' in value
+          ? { _arr: Principal.fromText(value.__principal__).toUint8Array(), _isPrincipal: true }
+          : value
+
+const _getCapacityItemKey = (item: any): string => {
+    const itemToProcess = { ...item }
+    if (itemToProcess.timestamp && typeof itemToProcess.timestamp === 'number') {
+        itemToProcess.timestamp = BigInt(itemToProcess.timestamp)
+    }
+    return JSON.stringify(itemToProcess, _jsonReplacer)
+}
 
 const _generateId = (notification: NotificationItem): string => {
     const [type, data] = UnwrapVariant(notification)
@@ -161,21 +174,39 @@ export const queryNotifications = async (agent: Agent): Promise<void> => {
                     (newCapacityHash && newCapacityHash !== existingRecord.capacityHash)
                 ) {
                     const timestamp = Number(_getTimestamp(data))
-                    const capacityLength = _getCapacityLength(data)
+                    let capacityItemsRead: number[] | undefined
+                    const newCapacity = (UnwrapVariant(data)[1] as any).capacity
 
-                    const capacityItemsRead =
-                        newCapacityHash === existingRecord.capacityHash
-                            ? existingRecord.capacityItemsRead
-                            : capacityLength > 0
-                              ? new Array(capacityLength).fill(0)
-                              : undefined
+                    if (Array.isArray(newCapacity) && newCapacity.length > 0) {
+                        const oldCapacity = (UnwrapVariant(existingRecord.data)[1] as any).capacity
+                        const oldReadItemsKeys = new Set<string>()
+
+                        if (Array.isArray(oldCapacity) && existingRecord.capacityItemsRead) {
+                            oldCapacity.forEach((oldItem: any, index: number) => {
+                                if (existingRecord.capacityItemsRead?.[index] === 1) {
+                                    oldReadItemsKeys.add(_getCapacityItemKey(oldItem))
+                                }
+                            })
+                        }
+
+                        capacityItemsRead = newCapacity.map((newItem: any) => {
+                            const itemKey = _getCapacityItemKey(newItem)
+                            return oldReadItemsKeys.has(itemKey) ? 1 : 0
+                        })
+                    } else {
+                        capacityItemsRead = undefined
+                    }
+
+                    const isGroupReadAll = capacityItemsRead
+                        ? capacityItemsRead.every((status) => status === 1)
+                        : false
 
                     itemsToUpsert.push({
                         id,
                         timestamp,
                         data,
                         source,
-                        isRead: 0,
+                        isRead: isGroupReadAll ? 1 : 0,
                         capacityHash: newCapacityHash,
                         capacityItemsRead,
                     })
