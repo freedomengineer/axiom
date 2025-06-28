@@ -27,23 +27,45 @@ const LeaderboardPage = () => {
     const [searchParams, setSearchPrams] = useSearchParams()
     const [top, setTop] = useState<{ [key: string]: Top | null }>({})
     const [page, setPage] = useState<bigint>(1n)
-    const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [isInitialLoading, setIsInitialLoading] = useState<boolean>(false)
+    const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false)
 
     const keyParam = searchParams.get('key') as TopKey
-    const topPage = top[page.toString()]
+    const firstPage = top['1']
+
+    const lastLoadedPage = Object.keys(top)
+        .map(Number)
+        .filter((pageNum) => top[pageNum.toString()] !== null)
+        .sort((a, b) => b - a)[0]
+
+    const lastPageData = lastLoadedPage ? top[lastLoadedPage.toString()] : null
+    const hasMoreData = lastPageData ? lastPageData.is < lastPageData.of : true
 
     useEffect(() => {
-        setIsLoading(true)
+        if (page > 1n) {
+            setIsLoadingMore(true)
+        } else {
+            setIsInitialLoading(true)
+        }
+
         getTop(keyParam, page, agent, principal).then((e) => {
             setTop((prev) => ({ ...prev, [page.toString()]: e }))
-            setIsLoading(false)
+            if (page > 1n) {
+                setIsLoadingMore(false)
+            } else {
+                setIsInitialLoading(false)
+            }
         })
     }, [page, agent, principal])
 
     useEffect(() => {
         setTop({})
         setPage(1n)
-        getTop(keyParam, 1n, agent, principal).then((e) => setTop((prev) => ({ ...prev, '1': e })))
+        setIsInitialLoading(true)
+        getTop(keyParam, 1n, agent, principal).then((e) => {
+            setTop((prev) => ({ ...prev, '1': e }))
+            setIsInitialLoading(false)
+        })
     }, [keyParam, agent, principal])
 
     return (
@@ -80,45 +102,54 @@ const LeaderboardPage = () => {
                         <p className="text-small gap-medium px-medium mx-auto flex w-full max-w-3xl justify-center text-center font-normal text-cold-700">
                             {LEADERBOARD.find(({ key }) => key === keyParam)?.description}
                         </p>
-                        {!topPage ? (
+                        {isInitialLoading && !firstPage ? (
                             <Spinner className="mx-auto mt-10 h-10 w-10" />
-                        ) : (
+                        ) : firstPage ? (
                             <div className="gap-normal flex w-full flex-col">
                                 <p className="text-small gap-medium px-medium mx-auto flex w-full max-w-3xl justify-end font-medium text-cold-800">
                                     Your rank:{' '}
-                                    {isNullish(Unwrap(topPage.callerRank))
+                                    {isNullish(Unwrap(firstPage.callerRank))
                                         ? 'N/A'
-                                        : Unwrap(topPage.callerRank)! + 1n}
+                                        : Unwrap(firstPage.callerRank)! + 1n}
                                 </p>
-                                {Object.values(top).map((e: Top | null, i) =>
-                                    e?.result?.map(([address, value], j) => (
-                                        <TopCard
-                                            key={address.toText()}
-                                            string={address.toText()}
-                                            number={
-                                                [
-                                                    'PoweredVoters',
-                                                    'AcornBuriers',
-                                                    'AcornEarners',
-                                                ].includes(keyParam)
-                                                    ? e8s.toNumber(value)
-                                                    : Number(value)
-                                            }
-                                            index={i * Number(PAGE_SIZE) + j}
-                                        />
-                                    ))
-                                )}
-                                {topPage?.is !== topPage?.of && (
+                                {Object.keys(top)
+                                    .sort((a, b) => Number(a) - Number(b))
+                                    .map((pageKey) => {
+                                        const pageData = top[pageKey]
+                                        const pageNumber = Number(pageKey)
+
+                                        return pageData?.result?.map(([address, value], j) => (
+                                            <TopCard
+                                                key={`${pageKey}-${address.toText()}`}
+                                                string={address.toText()}
+                                                number={
+                                                    [
+                                                        'PoweredVoters',
+                                                        'AcornBuriers',
+                                                        'AcornEarners',
+                                                    ].includes(keyParam)
+                                                        ? e8s.toNumber(value)
+                                                        : Number(value)
+                                                }
+                                                index={(pageNumber - 1) * Number(PAGE_SIZE) + j}
+                                            />
+                                        ))
+                                    })}
+                                {hasMoreData && (
                                     <button
                                         className="gap-medium px-medium py-normal text-small mx-auto flex w-fit rounded-lg border border-cold-700 font-medium text-cold-700 hover:bg-cold-50 disabled:pointer-events-none disabled:bg-cold-50"
                                         onClick={() => setPage(page + 1n)}
-                                        disabled={isLoading}
+                                        disabled={isLoadingMore}
                                     >
-                                        {isLoading ? <Spinner className="mx-auto" /> : 'Load more'}
+                                        {isLoadingMore ? (
+                                            <Spinner className="mx-auto" />
+                                        ) : (
+                                            'Load more'
+                                        )}
                                     </button>
                                 )}
                             </div>
-                        )}
+                        ) : null}
                     </TabPanel>
                 </TabsBody>
             </Tabs>

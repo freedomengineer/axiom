@@ -408,7 +408,7 @@ const NomineesTable = () => {
                 name="nominee"
                 hardSort={{ order: 'descending', by: 'token' }}
                 hardSortType={{ column: 3, direction: SortDirection.DESC }}
-                size={10n}
+                size={100n}
                 columns={[
                     { title: 'Username', sortable: true },
                     { title: 'Title', sortable: true, className: 'min-w-[300px]' },

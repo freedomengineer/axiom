@@ -99,12 +99,12 @@ const GroupedNotificationRenderer = memo(
                 case 'NewVotesToHypothesis':
                     return [
                         `voted ${(UnwrapVariant(item.choice) as any).toLowerCase()}.`,
-                        `/feed/${item.id}`,
+                        `/feed/${id}`,
                     ]
                 case 'NewVotesToEvidence':
                     return [
                         `voted ${(UnwrapVariant(item.choice) as any).toLowerCase()}.`,
-                        `/feed/evidences/${item.id}`,
+                        `/feed/evidences/${id}`,
                     ]
                 case 'NewVotesToProposal':
                     return [
@@ -112,7 +112,7 @@ const GroupedNotificationRenderer = memo(
                         `/dashboard/proposals/${id}`,
                     ]
                 case 'NewAxiomsToHypothesis':
-                    return [`adopted your hypothesis.`, `/feed/${item.id}`]
+                    return [`adopted your hypothesis.`, `/feed/${id}`]
                 case 'NewEvidencesToHypothesis':
                     return [
                         `published ${(UnwrapVariant(item.side) as any).toLowerCase()} evidence #${item.evidenceId}.`,
