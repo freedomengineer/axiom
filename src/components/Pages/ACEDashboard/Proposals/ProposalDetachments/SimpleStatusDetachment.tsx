@@ -29,11 +29,11 @@ const SimpleStatusDetachment = ({ actorStatus }: { actorStatus: ActorStatus }) =
                     </tr>
                 </thead>
                 <tbody>
-                    {Object.entries(actorStatus).map(([key, [, value]], index) => {
-                        const isLastRow = index === Object.keys(actorStatus).length - 1
+                    {Object.entries(actorStatus).map(([key, [, value]], i) => {
+                        const isLastRow = i === Object.keys(actorStatus).length - 1
 
                         return (
-                            <tr key={index} className="group cursor-pointer hover:bg-cold-50">
+                            <tr key={i} className="group cursor-pointer hover:bg-cold-50">
                                 <td
                                     className={cn(
                                         '!text-tiny py-small px-normal group relative text-nowrap bg-cold-50 text-left font-semibold text-cold-600',

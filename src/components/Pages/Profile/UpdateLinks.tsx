@@ -96,6 +96,8 @@ const UpdateLinks = ({ onSubmit, links }: { onSubmit: () => void; links: DAxioms
 
     const [newHyperlinks, setNewHyperlinks] = useState<DAxioms.Hyperlink[]>(links)
     const [loading, setLoading] = useState<boolean>(false)
+    const [isSufficient, setIsSufficient] = useState(true)
+
     const validRefs = useRef<React.MutableRefObject<boolean>[]>([])
 
     const initializeValidRefs = useCallback(
@@ -126,7 +128,7 @@ const UpdateLinks = ({ onSubmit, links }: { onSubmit: () => void; links: DAxioms
 
     const update = useCallback(async () => {
         setLoading(true)
-        await promise(
+        const approve = await promise(
             ACORN.call(agent).icrc2_approve({
                 amount: configs?.['UPDATE_HYPERLINKS_FEE'][1] as bigint,
                 spender: { owner: Treasury.principal, subaccount: [] },
@@ -140,6 +142,10 @@ const UpdateLinks = ({ onSubmit, links }: { onSubmit: () => void; links: DAxioms
             'Approving ACORN to Axiom Treasury',
             'Approved ACORN to Axiom Treasury successfully!'
         )
+        if (!approve.success) {
+            setLoading(false)
+            return
+        }
         const res = await promise(
             Facade.call(agent).editLinks(
                 newHyperlinks.filter((link) => link.anchorText !== '' && link.url !== '')
@@ -199,15 +205,20 @@ const UpdateLinks = ({ onSubmit, links }: { onSubmit: () => void; links: DAxioms
                     </button>
                 )}
             </ol>
-            <BalanceChanges amount={configs?.['UPDATE_HYPERLINKS_FEE'][1] as bigint} />
+            <BalanceChanges
+                amount={configs?.['UPDATE_HYPERLINKS_FEE'][1] as bigint}
+                setIsSufficient={setIsSufficient}
+            />
             <div className="flex w-full justify-center">
                 <button
                     className="button w-auto min-w-36 md:min-w-48"
                     onClick={update}
-                    disabled={loading || !isFormValid}
+                    disabled={loading || !isFormValid || !isSufficient}
                 >
                     {loading ? (
                         <Spinner color="white" className="h-4 w-4 md:h-5 md:w-5" />
+                    ) : !isSufficient ? (
+                        <span>Insufficient ACORN balance</span>
                     ) : (
                         <>
                             Update with {valueOf(configs?.['UPDATE_HYPERLINKS_FEE'][1] as bigint)}{' '}

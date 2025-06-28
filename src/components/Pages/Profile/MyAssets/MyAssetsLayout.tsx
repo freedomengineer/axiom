@@ -146,7 +146,7 @@ const MyAssetsLayout = () => {
                 />
                 <EarningCard
                     name="Axioms"
-                    earnableList={['Acorn Drop', 'Flagging Rewards']}
+                    earnableList={['Acorn Drop', 'Flagging Rewards', 'Evidence Refunds']}
                     token="ACORN"
                     getEarning={async () =>
                         (await getSpecificUserData(principal!, 'axiomsEarning'))!

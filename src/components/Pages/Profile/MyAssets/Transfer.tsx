@@ -8,6 +8,8 @@ import Divider from '@components/Shared/Divider'
 import useAuth from '@hooks/useAuth'
 import cn from '@libs/class'
 import { promise } from '@libs/toastify'
+import { N_DECIMALS } from 'shared/constants'
+import e8s from 'shared/utils/e8s'
 import { Facade } from 'shared/utils/services'
 import { amountOf } from 'shared/utils/tokens'
 
@@ -17,9 +19,9 @@ const Transfer = ({ token }: { token: 'ACORN' | 'ICP' }) => {
     const [recipient, setRecipient] = useState<string>('')
     const [recipientUsername, setRecipientUsername] = useState<string>()
     const [recipientPrincipal, setRecipientPrincipal] = useState<Principal>()
-    const [amount, setAmount] = useState<number>(0)
+    const [amount, setAmount] = useState<string>('')
     const [loading, setLoading] = useState<boolean>(false)
-    const [isSufficient, setIsSufficient] = useState<boolean>(true)
+    const [balance, setBalance] = useState<bigint>(0n)
 
     const [balanceRefreshKey, setBalanceRefreshKey] = useState(0)
 
@@ -50,21 +52,25 @@ const Transfer = ({ token }: { token: 'ACORN' | 'ICP' }) => {
     const transfer = async () => {
         setLoading(true)
         await promise(
-            Ledger.call(agent, true).icrc1_transfer({
-                amount: amountOf(amount),
-                to: { owner: recipientPrincipal!, subaccount: [] },
-                fee: [],
-                from_subaccount: [],
-                memo: [],
-                created_at_time: [],
-            }),
+            Ledger.call(agent, true)
+                .icrc1_transfer({
+                    amount: amountOf(Number(amount)),
+                    to: { owner: recipientPrincipal!, subaccount: [] },
+                    fee: [],
+                    from_subaccount: [],
+                    memo: [],
+                    created_at_time: [],
+                })
+                .catch((e) => console.log(e)),
             `Transferring ${token}`,
             `${token} transferred successfully!`
         )
         setBalanceRefreshKey((prevKey) => prevKey + 1)
-        setAmount(0)
+        setAmount('')
         setLoading(false)
     }
+
+    const isInsufficient = !!Number(amount) && Number(amount) > e8s.toNumber(balance)
 
     return (
         <div className="gap-semilarge flex w-full flex-col items-center">
@@ -83,7 +89,7 @@ const Transfer = ({ token }: { token: 'ACORN' | 'ICP' }) => {
                               : 'border-red-400 focus:ring-red-600'
                     )}
                 />
-                {recipient !== '' && (
+                {recipient !== '' && !recipientPrincipal && (
                     <div className="text-tiny flex w-full flex-col text-left">
                         {!recipientPrincipal && (
                             <span className="text-red-600">Invalid principal/username</span>
@@ -91,22 +97,30 @@ const Transfer = ({ token }: { token: 'ACORN' | 'ICP' }) => {
                     </div>
                 )}
                 <input
-                    type="number"
+                    type="text"
                     placeholder="Input your transfer amount"
                     value={amount}
-                    onChange={(e) => setAmount(Number(e.target.value))}
+                    onChange={(e) => {
+                        let val = e.target.value.replace(/,/g, '.')
+                        if (!/^\d*\.?\d*$/.test(val)) return
+                        const [intPart, decPart] = val.split('.')
+                        if (decPart && decPart.length > N_DECIMALS) {
+                            val = `${intPart}.${decPart.slice(0, N_DECIMALS)}`
+                        }
+                        setAmount(val)
+                    }}
                     className={cn(
                         'input',
-                        amount === 0
+                        !Number(amount)
                             ? 'border-cold-400 focus:ring-cold-600'
-                            : !isSufficient
+                            : !isInsufficient
                               ? 'border-green-400 focus:ring-green-600'
                               : 'border-red-400 focus:ring-red-600'
                     )}
                 />
-                {amount > 0 && (
+                {!!Number(amount) && isInsufficient && (
                     <div className="text-tiny flex w-full flex-col text-left">
-                        {isSufficient && (
+                        {isInsufficient && (
                             <span className="text-red-600">
                                 Transfer amount exceeds your balance
                             </span>
@@ -116,9 +130,9 @@ const Transfer = ({ token }: { token: 'ACORN' | 'ICP' }) => {
             </div>
             <BalanceChanges
                 key={balanceRefreshKey}
-                amount={amountOf(amount)}
+                amount={amountOf(Number(amount))}
                 token={token}
-                setIsSufficient={setIsSufficient}
+                setBalance={setBalance}
             />
             <Divider
                 className="mx-auto w-full md:w-4/5"
@@ -129,12 +143,14 @@ const Transfer = ({ token }: { token: 'ACORN' | 'ICP' }) => {
             <button
                 className="button w-auto min-w-36 md:min-w-48"
                 onClick={transfer}
-                disabled={amount === 0 || loading || isSufficient || !recipientPrincipal}
+                disabled={!Number(amount) || isInsufficient || !recipientPrincipal || loading}
             >
                 {loading ? (
                     <Spinner color="white" className="h-4 w-4 md:h-5 md:w-5" />
-                ) : amount === 0 ? (
+                ) : !Number(amount) ? (
                     <span>Input transfer amount</span>
+                ) : isInsufficient ? (
+                    <span>Transfer amount exceeds your balance</span>
                 ) : (
                     <span className="gap-small flex">
                         Transfer with {amount} {SmallIcon}

@@ -32,7 +32,7 @@ const RequestFlag = ({ header, onSubmit }: { header: DAxioms.Header; onSubmit: (
         if (reason.length === 0) return
 
         setLoading(true)
-        await promise(
+        const approve = await promise(
             ACORN.call(agent).icrc2_approve({
                 amount: configs?.['FLAG_REQUEST_FEE'][1] as bigint,
                 spender: { owner: Treasury.principal, subaccount: [] },
@@ -46,6 +46,10 @@ const RequestFlag = ({ header, onSubmit }: { header: DAxioms.Header; onSubmit: (
             'Approving ACORN to Axiom Treasury',
             'Approved ACORN to Axiom Treasury successfully!'
         )
+        if (!approve.success) {
+            setLoading(false)
+            return
+        }
         const res = await promise(
             Axioms.call(agent).requestFlag(header, reason),
             'Requesting flag',
@@ -84,7 +88,7 @@ const RequestFlag = ({ header, onSubmit }: { header: DAxioms.Header; onSubmit: (
                               : 'border-red-400 focus:ring-red-600'
                     )}
                 />
-                {reason.length > 0 && (
+                {reason.length > 0 && (isTooShort || isTooLong) && (
                     <div className="text-tiny flex w-full flex-col text-left">
                         {isTooShort && <span className="text-red-600">Reason is too short</span>}
                         {isTooLong && <span className="text-red-600">Reason is too long</span>}

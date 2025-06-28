@@ -7,6 +7,7 @@ import Spinner from '@components/Primitives/Spinner'
 import BalanceChanges from '@components/Shared/BalanceChanges'
 import useAuth from '@hooks/useAuth'
 import useConfigs from '@hooks/useConfigs'
+import { cacheUsername } from '@hooks/useUsername'
 import cn from '@libs/class'
 import { promise } from '@libs/toastify'
 import { ACORN, Facade, Treasury } from 'shared/utils/services'
@@ -25,13 +26,16 @@ const UpdateUsername = ({ onSubmit }: { onSubmit: () => void }) => {
         if (value.length === 0) return
         Facade.call()
             .getUserIdentifier({ Username: value })
-            .then(() => setIsTaken(true))
+            .then((res) => {
+                cacheUsername(res.principal, res.username, res.capitalRaised.toString())
+                setIsTaken(true)
+            })
             .catch(() => setIsTaken(false))
     }
 
     const update = async () => {
         setLoading(true)
-        await promise(
+        const approve = await promise(
             ACORN.call(agent).icrc2_approve({
                 amount: configs!['UPDATE_USERNAME_FEE'][1] as bigint,
                 spender: { owner: Treasury.principal, subaccount: [] },
@@ -45,6 +49,10 @@ const UpdateUsername = ({ onSubmit }: { onSubmit: () => void }) => {
             'Approving ACORN to Axiom Treasury',
             'Approved ACORN to Axiom Treasury successfully!'
         )
+        if (!approve.success) {
+            setLoading(false)
+            return
+        }
         const res = await promise(
             Facade.call(agent).editUsername(newUsername),
             'Updating username',

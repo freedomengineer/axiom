@@ -8,7 +8,10 @@ import FieldMembersIcon from '@components/Assets/field_members.svg'
 import HypothesisIcon from '@components/Assets/hypothesis.svg'
 import ShareIcon from '@components/Assets/share.svg'
 import Spinner from '@components/Primitives/Spinner'
+import InfiniteScrollWrapperHard from '@components/Shared/InfiniteScrollWrapperHard'
 import Link from '@components/Shared/Link'
+import Popup from '@components/Shared/Popup'
+import UserList from '@components/Shared/UserList'
 import useAuth from '@hooks/useAuth'
 import useFieldDetails from '@hooks/useFieldDetails'
 import cn from '@libs/class'
@@ -16,9 +19,15 @@ import { success } from '@libs/toastify'
 import { build } from '@libs/url'
 import { DAxioms } from 'shared/types/services'
 
+enum EPopup {
+    Members,
+}
+
 const FieldCard = ({ item, className }: { item: DAxioms.SharableField; className?: string }) => {
     const { principal } = useAuth()
     const { localItem, role, loading, handleSubscribe } = useFieldDetails(item)
+
+    const [open, setOpen] = useState<EPopup>()
     const [copied, setCopied] = useState<boolean>()
 
     const handleCopy = () => {
@@ -42,6 +51,15 @@ const FieldCard = ({ item, className }: { item: DAxioms.SharableField; className
                 className
             )}
         >
+            <Popup
+                open={open === EPopup.Members}
+                onClose={() => setOpen(undefined)}
+                title="Members"
+                className="w-full md:w-fit"
+                Icon={<FieldMembersIcon className="h-6 w-6 !stroke-[1.5px] md:h-7 md:w-7" />}
+            >
+                <InfiniteScrollWrapperHard items={localItem.members} LayoutComponent={UserList} />
+            </Popup>
             <div className="gap-small flex place-items-center items-center justify-between text-cold-800">
                 <Link
                     className="text-medium gap-medium flex place-items-center items-center text-left font-normal hover:text-primary-800"
@@ -67,21 +85,18 @@ const FieldCard = ({ item, className }: { item: DAxioms.SharableField; className
             </p>
             <div className="gap-small mt-auto grid h-9 grid-cols-2 place-items-center items-center md:h-10">
                 <div className="text-tiny grid h-full w-full grid-cols-2 items-center divide-x-[1px] font-normal text-white">
-                    <Link
+                    <button
                         className="gap-normal flex h-full w-full items-center justify-center rounded-l-lg bg-cold-800 hover:bg-opacity-75"
-                        href={`${fieldUrl}/members`}
+                        onClick={() => setOpen(EPopup.Members)}
                     >
                         <FieldMembersIcon className="h-3.5 w-4 stroke-[1.5px] md:h-4 md:w-4" />
                         <span>{localItem.members.length}</span>
-                    </Link>
+                    </button>
 
-                    <Link
-                        className="gap-normal flex h-full w-full items-center justify-center rounded-r-lg bg-cold-800 hover:bg-opacity-75"
-                        href={`${fieldUrl}/hypotheses`}
-                    >
+                    <button className="gap-normal pointer-events-none flex h-full w-full items-center justify-center rounded-r-lg bg-cold-800 hover:bg-opacity-75">
                         <HypothesisIcon className="h-4 w-4 stroke-[1.25px] md:h-5 md:w-5" />
                         <span>{localItem.hypothesisIds.length}</span>
-                    </Link>
+                    </button>
                 </div>
                 <button
                     className={cn(

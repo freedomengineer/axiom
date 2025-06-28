@@ -25,6 +25,14 @@ module {
 
     private let { NatKey } = Map;
 
+    /// PUBLIC ////// DECLARATIONS ////////////
+
+    public type ForceUpdateCapitalRaisedResult = {
+        success : [Text];
+        failed : [(Text, Text)];
+        unchanged : [Text]
+    };
+
     /// SALES ////// PACKAGES ////////////
 
     private type Self = Packages;

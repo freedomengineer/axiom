@@ -105,13 +105,13 @@ export type DeployableActorVariant = { 'DAO' : null } |
   { 'Treasury' : null } |
   { 'ICPUSD' : null };
 export interface Filter {
-  'votedBy' : [] | [Principal],
-  'proposedBy' : [] | [Principal],
-  'proposedIn' : [] | [ProposalVariant],
-  'withStatus' : [] | [StatusVariant],
+  'status' : [] | [StatusVariant],
+  'voter' : [] | [Principal],
+  'category' : [] | [ProposalVariant],
+  'proposer' : [] | [Principal],
 }
 export interface Filter__1 {
-  'votedBy' : [] | [Principal],
+  'voter' : [] | [Principal],
   'isCustodian' : [] | [boolean],
 }
 export type Key = string;

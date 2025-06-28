@@ -3,7 +3,7 @@ import AlertIcon from '@components/Assets/alert.svg'
 import Link from './Link'
 import Popup from './Popup'
 
-export const NoFieldsSubscribed = () => {
+export const NoFieldsSubscribed = ({ onConfirm }: { onConfirm?: () => void }) => {
     return (
         <Popup
             open={true}
@@ -11,6 +11,7 @@ export const NoFieldsSubscribed = () => {
             title="No Fields Subscribed"
             Icon={<AlertIcon className="h-6 w-6 !stroke-[1.5px] md:h-7 md:w-7" />}
             className="w-full md:w-2/5"
+            zIndex={10000}
         >
             <div className="gap-medium flex flex-col">
                 <p className="text-small font-cold-800 gap-small grid text-center font-normal">
@@ -24,6 +25,7 @@ export const NoFieldsSubscribed = () => {
                     <Link
                         className="button w-auto min-w-36 bg-cold-700 md:min-w-48"
                         href="/feed/fields"
+                        onClick={() => onConfirm?.()}
                     >
                         Explore Fields
                     </Link>
@@ -47,6 +49,7 @@ export const LongHypothesis = ({
             title="Hypothesis too long"
             Icon={<AlertIcon className="h-6 w-6 !stroke-[1.5px] md:h-7 md:w-7" />}
             className="w-full md:w-2/5"
+            zIndex={10000}
         >
             <div className="gap-medium flex flex-col">
                 <p className="text-small font-cold-800 gap-small grid text-center font-normal">
@@ -81,6 +84,7 @@ export const AlphaStage = ({ onConfirm }: { onConfirm: () => void }) => {
             title="Alpha Stage Warning"
             Icon={<AlertIcon className="h-6 w-6 !stroke-[1.5px] md:h-7 md:w-7" />}
             className="w-full md:w-2/5"
+            zIndex={10000}
         >
             <div className="gap-medium flex flex-col">
                 <p className="text-small font-cold-800 gap-small grid text-center font-normal">

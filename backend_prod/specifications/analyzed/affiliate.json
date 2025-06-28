@@ -255,6 +255,96 @@
       }
     },
     {
+      "name": "getTop",
+      "flag": {
+        "isQuery": true,
+        "callerRequired": true
+      },
+      "argTypes": {
+        "category": {
+          "origin": "{ #Referrers }",
+          "singular": {
+            "name": "()"
+          },
+          "entries": [
+            [
+              "#Referrers",
+              null
+            ]
+          ],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async Pagination.TopNonPagination",
+        "singular": {
+          "name": "TopNonPagination",
+          "parent": "Pagination"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
+      "name": "getTopPagination",
+      "flag": {
+        "isQuery": true,
+        "callerRequired": true
+      },
+      "argTypes": {
+        "category": {
+          "origin": "{ #Referrers }",
+          "singular": {
+            "name": "()"
+          },
+          "entries": [
+            [
+              "#Referrers",
+              null
+            ]
+          ],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        },
+        "page": {
+          "origin": "Nat",
+          "singular": {
+            "name": "Nat"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        },
+        "limit": {
+          "origin": "Nat",
+          "singular": {
+            "name": "Nat"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async Pagination.TopPagination",
+        "singular": {
+          "name": "TopPagination",
+          "parent": "Pagination"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
       "name": "getUser",
       "flag": {
         "isQuery": true,
@@ -366,6 +456,13 @@
       "relativePath": "../../periphery/indicator/Interface",
       "depth": 5
     },
+    "FacadeInterface": {
+      "origin": "import FacadeInterface \"../../periphery/facade/Interface\";",
+      "name": "FacadeInterface",
+      "category": "interface",
+      "relativePath": "../../periphery/facade/Interface",
+      "depth": 5
+    },
     "SplitInterface": {
       "origin": "import SplitInterface \"../split/Interface\";",
       "name": "SplitInterface",
@@ -415,6 +512,13 @@
       "relativePath": "../../library/Iter",
       "depth": 4
     },
+    "Pagination": {
+      "origin": "import Pagination \"../../library/Pagination\";",
+      "name": "Pagination",
+      "category": "library",
+      "relativePath": "../../library/Pagination",
+      "depth": 4
+    },
     "Proportion": {
       "origin": "import Proportion \"../../library/Proportion\";",
       "name": "Proportion",
@@ -448,6 +552,7 @@
     "User",
     "Users",
     "IndicatorInterface",
+    "FacadeInterface",
     "SplitInterface",
     "C",
     "E",
@@ -455,6 +560,7 @@
     "E8S",
     "Earning",
     "Iter",
+    "Pagination",
     "Proportion",
     "Principal",
     "Nat",
@@ -462,6 +568,7 @@
   ],
   "interfaceDependencies": [
     "Configs",
+    "Pagination",
     "User",
     "Earning"
   ],
@@ -1236,6 +1343,175 @@
         ]
       ],
       "isArray": true,
+      "isOptional": false,
+      "isAsync": true
+    },
+    "{ #Referrers }": {
+      "origin": "{ #Referrers }",
+      "singular": {
+        "name": "()"
+      },
+      "entries": [
+        [
+          "#Referrers",
+          null
+        ]
+      ],
+      "isArray": false,
+      "isOptional": false,
+      "isAsync": false
+    },
+    "async Pagination.TopNonPagination": {
+      "origin": "async Pagination.TopNonPagination",
+      "singular": {
+        "name": "()"
+      },
+      "entries": [
+        [
+          "result",
+          {
+            "origin": "TopResult",
+            "singular": {
+              "name": "()"
+            },
+            "entries": [
+              [
+                null,
+                {
+                  "origin": "Principal",
+                  "singular": {
+                    "name": "Principal"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                null,
+                {
+                  "origin": "Nat",
+                  "singular": {
+                    "name": "Nat"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ]
+            ],
+            "isArray": true,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "callerRank",
+          {
+            "origin": "?Nat",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": true,
+            "isAsync": false
+          }
+        ]
+      ],
+      "isArray": false,
+      "isOptional": false,
+      "isAsync": true
+    },
+    "async Pagination.TopPagination": {
+      "origin": "async Pagination.TopPagination",
+      "singular": {
+        "name": "()"
+      },
+      "entries": [
+        [
+          "result",
+          {
+            "origin": "TopResult",
+            "singular": {
+              "name": "()"
+            },
+            "entries": [
+              [
+                null,
+                {
+                  "origin": "Principal",
+                  "singular": {
+                    "name": "Principal"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                null,
+                {
+                  "origin": "Nat",
+                  "singular": {
+                    "name": "Nat"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ]
+            ],
+            "isArray": true,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "callerRank",
+          {
+            "origin": "?Nat",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": true,
+            "isAsync": false
+          }
+        ],
+        [
+          "is",
+          {
+            "origin": "Nat",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "of",
+          {
+            "origin": "Nat",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ]
+      ],
+      "isArray": false,
       "isOptional": false,
       "isAsync": true
     },

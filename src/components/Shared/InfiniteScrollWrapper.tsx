@@ -151,7 +151,7 @@ const InfiniteScrollWrapper = forwardRef(
 
         useEffect(() => {
             initItems()
-        }, [hardFilter, hardSort, initItems])
+        }, [hardFilter, hardSort])
 
         useEffect(() => {
             const target = observerTarget.current
@@ -207,9 +207,13 @@ const InfiniteScrollWrapper = forwardRef(
                     {loading ? (
                         <Spinner className="h-8 w-8" />
                     ) : isEmptyResult ? (
-                        <span className="text-tiny text-cold-800/50">No results found</span>
+                        <span className="text-tiny font-normal text-cold-700">
+                            No results found
+                        </span>
                     ) : hasMore ? null : (
-                        <span className="text-tiny text-cold-800/50">Loaded all results</span>
+                        <span className="text-tiny font-normal text-cold-700">
+                            Loaded all results
+                        </span>
                     )}
                 </div>
             </div>

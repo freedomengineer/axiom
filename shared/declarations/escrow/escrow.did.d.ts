@@ -12,6 +12,14 @@ export interface Escrow {
   'getConfigs' : ActorMethod<[], Sharable__1>,
   'getExpiredAmount' : ActorMethod<[Principal], bigint>,
   'getInterestAmount' : ActorMethod<[Principal], bigint>,
+  'getTop' : ActorMethod<
+    [{ 'PoweredVoters' : null } | { 'AcornBuriers' : null }],
+    TopNonPagination
+  >,
+  'getTopPagination' : ActorMethod<
+    [{ 'PoweredVoters' : null } | { 'AcornBuriers' : null }, bigint, bigint],
+    TopPagination
+  >,
   'getUser' : ActorMethod<[Principal], Sharable>,
   'getVotingPower' : ActorMethod<[Principal], bigint>,
   'initialize' : ActorMethod<[], undefined>,
@@ -19,6 +27,7 @@ export interface Escrow {
   'register' : ActorMethod<[Principal, bigint], undefined>,
   'setConfigs' : ActorMethod<[Array<[Key, SharableValue]>], undefined>,
   'shiftToMidnight' : ActorMethod<[bigint], undefined>,
+  'transferFounderBurial' : ActorMethod<[Principal, Principal], undefined>,
   'withdrawAll' : ActorMethod<[], undefined>,
 }
 export type Key = string;
@@ -57,6 +66,17 @@ export type SharableValue = { 'E8S' : SharableE8S } |
 export type Sharable__1 = Array<[Key, SharableValue]>;
 export type Sharable__2 = Array<SharableBurial>;
 export type Time = bigint;
+export interface TopNonPagination {
+  'result' : TopResult,
+  'callerRank' : [] | [bigint],
+}
+export interface TopPagination {
+  'is' : bigint,
+  'of' : bigint,
+  'result' : TopResult,
+  'callerRank' : [] | [bigint],
+}
+export type TopResult = Array<[Principal, bigint]>;
 export type Value = { 'value' : ValueProp } |
   { 'infinity' : null };
 export type ValueProp = { 'inclusive' : number } |

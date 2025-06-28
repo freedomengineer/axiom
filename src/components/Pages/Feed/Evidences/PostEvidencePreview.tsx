@@ -14,7 +14,7 @@ import { EVote } from '@utils/feed/evidence'
 import { DAxioms } from 'shared/types/services'
 import { ACORN, Axioms, Treasury } from 'shared/utils/services'
 import { valueOf } from 'shared/utils/tokens'
-import { UnwrapVariant } from 'shared/utils/typings'
+import { UnwrapVariant, Wrap } from 'shared/utils/typings'
 
 import EvidenceCard from './EvidenceCard'
 
@@ -23,21 +23,24 @@ const PostEvidencePreview = ({
     totalFee,
     onBack,
     onSubmit,
+    replyingEvidence,
 }: {
     item: DAxioms.SharableEvidence
     totalFee: bigint
     onBack: () => void
     onSubmit?: (side: EVote) => void
+    replyingEvidence?: DAxioms.SharableEvidence | null
 }) => {
     const navigate = useNavigate()
     const { agent } = useAuth()
 
     const [terms, setTerms] = useState<[boolean, boolean]>([false, false])
     const [loading, setLoading] = useState(false)
+    const [isSufficient, setIsSufficient] = useState(true)
 
     const post = async () => {
         setLoading(true)
-        await promise(
+        const approve = await promise(
             ACORN.call(agent).icrc2_approve({
                 amount: totalFee,
                 spender: { owner: Treasury.principal, subaccount: [] },
@@ -51,8 +54,17 @@ const PostEvidencePreview = ({
             'Approving ACORN to Axiom Treasury',
             'Approved ACORN to Axiom Treasury successfully!'
         )
+        if (!approve.success) {
+            setLoading(false)
+            return
+        }
         const res = await promise(
-            Axioms.call(agent).publishEvidence(item.id, item.form, item.choice),
+            Axioms.call(agent).publishEvidence(
+                item.id,
+                item.form,
+                item.choice,
+                Wrap(replyingEvidence?.id)
+            ),
             'Posting evidence',
             'Posted evidence successfully!'
         )
@@ -67,7 +79,35 @@ const PostEvidencePreview = ({
         <div className="gap-normal flex flex-col md:flex-row md:justify-between">
             <div className="gap-normal pointer-events-none flex w-full flex-col md:w-3/5">
                 <p className="text-medium text-center font-light">Preview</p>
-                <EvidenceCard item={item} className="mx-auto !w-full" />
+                {replyingEvidence && (
+                    <div className="relative w-full">
+                        <EvidenceCard
+                            item={replyingEvidence}
+                            className="mx-auto !w-full"
+                            onReply={() => {}}
+                        />
+                    </div>
+                )}
+                <div
+                    className={cn('flex w-full', replyingEvidence && 'ml-[0.75rem] md:ml-[1.5rem]')}
+                >
+                    {replyingEvidence && (
+                        <div className="relative">
+                            <div className="left-5 top-full z-10 h-[calc(50%+0.75rem)] w-[1rem] -translate-y-[0.75rem] md:w-[1.5rem]">
+                                <div className="h-full w-full rounded-bl-lg border-b-2 border-l-2 border-cold-800"></div>
+                            </div>
+                        </div>
+                    )}
+                    <EvidenceCard
+                        item={item}
+                        className={
+                            replyingEvidence
+                                ? '!w-[calc(100%-2rem)] md:!w-[calc(100%-3rem)]'
+                                : '!w-full'
+                        }
+                        onReply={() => {}}
+                    />
+                </div>
             </div>
             <Divider
                 className="hidden md:flex"
@@ -83,7 +123,12 @@ const PostEvidencePreview = ({
             />
             <div className="text-tiny gap-normal flex w-full flex-col md:w-2/5">
                 <p className="text-medium text-center font-light">Confirmation</p>
-                <BalanceChanges token="ACORN" amount={totalFee} sign="-" />
+                <BalanceChanges
+                    token="ACORN"
+                    amount={totalFee}
+                    sign="-"
+                    setIsSufficient={setIsSufficient}
+                />
                 <div
                     className={cn(
                         'gap-normal flex items-center text-cold-700 text-opacity-100',
@@ -134,19 +179,18 @@ const PostEvidencePreview = ({
                     borderColor="border-cold-800"
                 />
                 <div className="gap-small mt-auto flex justify-between">
-                    <button
-                        className="button w-auto min-w-36 bg-cold-700 hover:bg-cold-800 md:min-w-48"
-                        onClick={() => onBack()}
-                    >
+                    <button className="button w-full bg-cold-800" onClick={() => onBack()}>
                         Back to Form
                     </button>
                     <button
-                        className="button w-auto min-w-36 md:min-w-48"
+                        className="button w-full"
                         onClick={post}
-                        disabled={!terms[0] || !terms[1] || loading}
+                        disabled={!terms[0] || !terms[1] || !isSufficient || loading}
                     >
                         {loading ? (
                             <Spinner color="white" className="h-4 w-4 md:h-5 md:w-5" />
+                        ) : !isSufficient ? (
+                            <span>Insufficient ACORN balance</span>
                         ) : (
                             <>
                                 Post with {valueOf(totalFee)}{' '}

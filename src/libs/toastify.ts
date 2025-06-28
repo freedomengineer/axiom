@@ -3,7 +3,7 @@ import { toast } from 'react-toastify'
 import { parseCanister } from './formatter'
 
 const onError = (data: any): string => {
-    console.log(data)
+    console.error(data)
     let canisterId = ''
     let message = ''
     let reason = ''
@@ -14,7 +14,7 @@ const onError = (data: any): string => {
     try {
         message = data.message.match(/ic0.trap` with message: ([^.]+)/)?.[1]
     } catch {
-        message = 'Unknown error'
+        message = typeof data === 'string' ? data : data.message
     }
     try {
         reason = data.message.match(/Reason: ([^.]+)/)?.[1]
@@ -29,20 +29,30 @@ export const promise = async <T>(
     promise: Promise<T>,
     loadingText?: string,
     successText?: string,
-    onSuccess?: (data: T) => string
+    onSuccess?: (data: T) => string,
+    errorPredicate: (data: T) => boolean = (data) =>
+        data !== null && typeof data === 'object' && ('Error' in data || 'Err' in data)
 ): Promise<{ success: true; result: T } | { success: false }> => {
+    const wrappedPromise = promise.then((data) => {
+        if (errorPredicate(data)) {
+            throw onError(
+                JSON.stringify(data['Error' in data ? 'Error' : 'Err'], (_, value) => {
+                    if (typeof value === 'bigint') return value.toString()
+                    return value
+                })
+            )
+        }
+        return data
+    })
+
     toast.promise(
-        promise,
+        wrappedPromise,
         {
             pending: `${loadingText ?? 'Loading'}...`,
             success: {
                 render: ({ data }) => `${successText ?? 'Success!'} ${onSuccess?.(data) ?? ''}`,
             },
-            error: {
-                render: ({ data }) => {
-                    return onError(data)
-                },
-            },
+            error: { render: ({ data }) => onError(data) },
         },
         {
             position: 'top-right',
@@ -52,8 +62,9 @@ export const promise = async <T>(
             draggable: true,
         }
     )
+
     try {
-        const result = await promise
+        const result = await wrappedPromise
         return { success: true, result }
     } catch {
         return { success: false }

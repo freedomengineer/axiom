@@ -47,6 +47,7 @@ export const DEPLOYABLE_ACTORS = [
 ]
 
 export const DECIMALS = BigInt(1e8)
+export const N_DECIMALS = 8
 
 export const ICP_FEE = BigInt(10_000)
 export const ACORN_FEE = BigInt(0)

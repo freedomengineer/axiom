@@ -3,11 +3,11 @@
 ## Dependencies
 
 
-- Attributes: `Package`, `Packages`, `AchievementPackage`, `AchievementPackages`, `EscrowBurial`, `DIP721`
-- Interfaces: `DIP721Interface`, `TreasuryInterface`, `AffiliateInterface`, `EscrowInterface`, `IndicatorInterface`
+- Attributes: `Package`, `Packages`, `AchievementPackage`, `AchievementPackages`, `EscrowBurial`, `FacadeUser`, `DIP721`
+- Interfaces: `DIP721Interface`, `AffiliateInterface`, `EscrowInterface`, `FacadeInterface`, `IndicatorInterface`, `TreasuryInterface`
 - Commons: `E`
-- Libraries: `Array`, `Base`, `Configs`, `E8S`, `Proportion`
-- Bases: `Nat`, `Principal`, `List`, `ExperimentalCycles`, `Debug`
+- Libraries: `Array`, `Base`, `Configs`, `E8S`, `List`, `Proportion`
+- Bases: `Nat`, `Principal`, `ExperimentalCycles`, `Debug`, `Error`
 ## Modifiers
 
 ### 1. `initialize()` returns `()`
@@ -111,9 +111,16 @@
 {"achievement": "#REFERRAL | #OCTUPLEBURIAL"}
 ```
 
-### 9. `upgradePackage()` returns `()`
+### 9. `forceUpdateCapitalRaised()` returns `Packages.ForceUpdateCapitalRaisedResult`
 
-### 10. `mintAchievementPackage(achievement)` returns `()`
+#### Returns:
+```json
+{"success": ["Text"], "failed": [["Text", "Text"]], "unchanged": ["Text"]}
+```
+
+### 10. `upgradePackage()` returns `()`
+
+### 11. `mintAchievementPackage(achievement)` returns `()`
 
 #### Arguments:
 
@@ -121,7 +128,7 @@
 {"achievement": "#REFERRAL | #OCTUPLEBURIAL"}
 ```
 
-### 11. `computeAcornToMint(capitalRaised)` returns `Package.ACORNToMint<Nat>`
+### 12. `computeAcornToMint(capitalRaised)` returns `Package.ACORNToMint<Nat>`
 
 #### Arguments:
 
@@ -134,7 +141,7 @@
 {"liquid": "Nat", "buried": "Nat"}
 ```
 
-### 12. `getOwnedPackages(principal)` returns `Packages.Sharable`
+### 13. `getOwnedPackages(principal)` returns `Packages.Sharable`
 
 #### Arguments:
 
@@ -153,7 +160,7 @@
 ]
 ```
 
-### 13. `getOwnedAchievementPackages(principal)` returns `AchievementPackages.Sharable`
+### 14. `getOwnedAchievementPackages(principal)` returns `AchievementPackages.Sharable`
 
 #### Arguments:
 

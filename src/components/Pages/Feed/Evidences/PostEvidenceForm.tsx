@@ -56,7 +56,7 @@ const PostEvidenceForm = ({ configs, form, side, setForm, setSide, onForward }) 
         <div className="gap-normal flex w-full flex-col place-items-center items-center text-cold-800">
             <div className="gap-normal flex w-full flex-col justify-center">
                 <p className="text-medium text-center font-light">
-                    Which side would your evidence support?
+                    Which side would your evidence support for the hypothesis?
                 </p>
                 <div className="gap-normal mx-auto grid w-full grid-cols-2 md:w-1/2">
                     {[EVote.Positive, EVote.Negative].map((c) => {
@@ -114,7 +114,7 @@ const PostEvidenceForm = ({ configs, form, side, setForm, setSide, onForward }) 
                                                 configs?.[`EVIDENCE_${key.toUpperCase()}_FEE`][1]
                                             )}
                                         </span>
-                                        <AcornIcon className="h-4 stroke-[1.5px] md:h-5 xl:h-6" />
+                                        <AcornIcon className="h-4 -translate-y-0.5 stroke-[1.5px] md:h-5" />
                                     </div>
                                 </div>
                                 <span className="text-tiny mb-auto text-left font-light">
@@ -292,7 +292,7 @@ const PostEvidenceForm = ({ configs, form, side, setForm, setSide, onForward }) 
                 borderColor="border-cold-800"
             />
             <button
-                className="button w-auto min-w-36 bg-cold-700 hover:bg-cold-800 md:min-w-48"
+                className="button w-auto min-w-36 bg-cold-800 md:min-w-48"
                 onClick={() => onForward()}
                 disabled={!side || !selectedFormat || !validNoteLength || !noEmptyFields}
             >

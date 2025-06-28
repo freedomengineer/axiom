@@ -66,13 +66,13 @@ const ModulesDetachment = ({
                 </thead>
                 <tbody>
                     {(!loading || !showOldValue) &&
-                        commitments.map(({ actorVariant, args, moduleHash }, index) => {
-                            const isLastRow = index === commitments.length - 1
+                        commitments.map(({ actorVariant, args, moduleHash }, i) => {
+                            const isLastRow = i === commitments.length - 1
                             const actorName = UnwrapVariant(actorVariant)
 
                             return (
                                 <tr
-                                    key={index}
+                                    key={i}
                                     className="group cursor-pointer hover:bg-cold-50 aria-disabled:cursor-auto"
                                     aria-disabled={!onClick}
                                     onClick={() => onClick?.(actorName)}

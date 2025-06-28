@@ -1,7 +1,14 @@
 'use client'
 
 import { Identity } from '@dfinity/agent'
-import { Menu, MenuHandler, MenuList } from '@material-tailwind/react'
+import {
+    Menu,
+    MenuHandler,
+    MenuList,
+    Popover,
+    PopoverContent,
+    PopoverHandler,
+} from '@material-tailwind/react'
 import { useEffect, useState } from 'react'
 
 import AcornIcon from '@components/Assets/acorn.svg'
@@ -17,15 +24,18 @@ import ExtendedLogoIcon from '@components/Assets/logo/Logo_LandscapeLEAVES-FULLC
 import MiniLogoIcon from '@components/Assets/logo/Logo_MarkACORN-FULLCOLOUR.svg'
 import LogoutIcon from '@components/Assets/logout.svg'
 import MenuIcon from '@components/Assets/menu.svg'
+import NotificationIcon from '@components/Assets/notification.svg'
 import SearchIcon from '@components/Assets/search.svg'
 import PostHypothesis from '@components/Pages/Feed/Hypotheses/PostHypothesis'
 import MyAssetsLayout from '@components/Pages/Profile/MyAssets/MyAssetsLayout'
 import Transfer from '@components/Pages/Profile/MyAssets/Transfer'
 import Link from '@components/Shared/Link'
+import Notifications from '@components/Shared/Notifications'
 import Popup from '@components/Shared/Popup'
 import QRCode from '@components/Shared/QRCode'
 import useAuth from '@hooks/useAuth'
 import { deleteAllConfigsCache } from '@hooks/useConfigs'
+import useNotification, { useNotificationPoller } from '@hooks/useNotification'
 import { deleteAllPackagesCache } from '@hooks/usePackages'
 import { deleteAllStatusCache } from '@hooks/useStatus'
 import useUserData from '@hooks/useUserData'
@@ -36,8 +46,26 @@ import { build, buildBlobImage } from '@libs/url'
 import { deriveIdentity } from 'shared/utils/agent'
 import { Unwrap } from 'shared/utils/typings'
 
+const TimeDisplay = () => {
+    const [now, setNow] = useState<number>(Date.now())
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setNow((prev) => prev + 1000)
+        }, 1000)
+        return () => clearInterval(interval)
+    }, [])
+
+    return (
+        <span className="px-normal py-small rounded-lg hover:text-cold-950 hover:outline-none">
+            {formatCanisterDateTime({ milli: now }, true)}
+        </span>
+    )
+}
+
 enum EPopup {
     Login,
+    Notification,
     Post,
     Claim,
     Search,
@@ -50,26 +78,19 @@ const Header = ({
     openSidebar,
     setOpenSidebar,
 }: Readonly<{ openSidebar: boolean; setOpenSidebar: (open: boolean) => void }>) => {
-    const { isAuthenticated, principal, user, setPemIdentity, login, logout } = useAuth()
+    const { isAuthenticated, principal, agent, user, setPemIdentity, login, logout } = useAuth()
+    const { unreadUserCount, unreadSystemCount } = useNotification()
     const userData = useUserData(principal ?? null)
+    useNotificationPoller(agent ?? null, 10)
 
     const [openMenu, setOpenMenu] = useState<{ [key: string]: string | null }>({})
     const [open, setOpen] = useState<EPopup | null>(null)
 
-    const [pattern, setPattern] = useState<string>('')
-
-    const [now, setNow] = useState<number>(Date.now())
+    const [q, setQ] = useState<string>('')
     const [pem, setPem] = useState<{ input: string; identity: Identity | null }>({
         input: '',
         identity: null,
     })
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setNow((prev) => prev + 1000)
-        }, 1000)
-        return () => clearInterval(interval)
-    }, [])
 
     const handleMainMenu = (title0: string, isOpen: boolean) => {
         setOpenMenu((prev) => ({ ...prev, [title0]: isOpen ? title0 : null }))
@@ -110,76 +131,66 @@ const Header = ({
                             type="text"
                             placeholder="Search"
                             onFocus={() => setOpen(EPopup.Search)}
-                            onChange={(e) => setPattern(e.target.value)}
+                            onChange={(e) => setQ(e.target.value)}
                             onBlur={() => setTimeout(() => setOpen(null), 150)}
-                            aria-selected={open === EPopup.Search && !!pattern}
+                            aria-selected={open === EPopup.Search && !!q}
                             className="text-tiny px-medium peer h-[2rem] w-full rounded-lg border border-black/10 font-display font-normal focus:border-primary-700 focus:outline-none md:h-[2.25rem]"
                         />
                         <SearchIcon className="right-medium peer absolute h-5 w-5 stroke-[1.5px] text-black/10 peer-aria-selected:text-primary-700" />
-                        {open === EPopup.Search && pattern && (
+                        {open === EPopup.Search && q && (
                             <div className="fixed left-1/2 top-[3.25rem] mx-auto w-[90%] -translate-x-1/2 transform rounded-lg border border-black/10 bg-white shadow-lg md:absolute md:left-0 md:top-12 md:w-full md:translate-x-0">
-                                <div className="px-normal flex flex-col py-1.5">
-                                    <span className="text-tiny font-display font-medium text-cold-800">
+                                <div className="px-medium py-small flex flex-col">
+                                    <span className="text-normal font-display font-semibold text-primary-700">
                                         Feed
                                     </span>
                                     <Link
-                                        className="text-tiny px-normal rounded-lg py-1.5 font-light hover:bg-black/5"
-                                        href={build(['search', 'hypotheses'], {
-                                            containsPattern: pattern,
-                                        })}
+                                        className="text-tiny px-normal py-small rounded-lg font-light hover:bg-black/5"
+                                        href={build(['search', 'hypotheses'], { q })}
                                     >
-                                        {`Search "${pattern}" in Hypotheses`}
+                                        {`Search "${q}" in Hypotheses`}
                                     </Link>
                                     <Link
-                                        className="text-tiny px-normal rounded-lg py-1.5 font-light hover:bg-black/5"
-                                        href={build(['search', 'fields'], {
-                                            containsPattern: pattern,
-                                        })}
+                                        className="text-tiny px-normal py-small rounded-lg font-light hover:bg-black/5"
+                                        href={build(['search', 'fields'], { q })}
                                     >
-                                        {`Search "${pattern}" in Fields`}
+                                        {`Search "${q}" in Fields`}
                                     </Link>
                                     <Link
-                                        className="text-tiny px-normal rounded-lg py-1.5 font-light hover:bg-black/5"
-                                        href={build(['search', 'evidences'], {
-                                            containsPattern: pattern,
-                                        })}
+                                        className="text-tiny px-normal py-small rounded-lg font-light hover:bg-black/5"
+                                        href={build(['search', 'evidences'], { q })}
                                     >
-                                        {`Search "${pattern}" in Evidences`}
+                                        {`Search "${q}" in Evidences`}
                                     </Link>
                                     <hr className="my-tiny border-black/10" />
-                                    <span className="text-tiny font-display font-medium text-cold-800">
+                                    <span className="text-normal font-display font-semibold text-primary-700">
                                         Axiom ACE
                                     </span>
                                     <Link
-                                        className="text-tiny px-normal rounded-lg py-1.5 font-light hover:bg-black/5"
-                                        href={build(['search', 'proposals'], {
-                                            containsPattern: pattern,
-                                        })}
+                                        className="text-tiny px-normal py-small rounded-lg font-light hover:bg-black/5"
+                                        href={build(['search', 'proposals'], { q })}
                                     >
-                                        {`Search "${pattern}" in Proposals`}
+                                        {`Search "${q}" in Proposals`}
                                     </Link>
                                     <Link
-                                        className="text-tiny px-normal rounded-lg py-1.5 font-light hover:bg-black/5"
-                                        href={build(['search', 'configs'], {
-                                            containsPattern: pattern,
-                                        })}
+                                        className="text-tiny px-normal py-small rounded-lg font-light hover:bg-black/5"
+                                        href={build(['search', 'configs'], { q })}
                                     >
-                                        {`Search "${pattern}" in Configs`}
+                                        {`Search "${q}" in Configs`}
                                     </Link>
                                     <hr className="my-tiny border-black/10" />
-                                    <span className="text-tiny font-display font-medium text-cold-800">
+                                    <span className="text-normal font-display font-semibold text-primary-700">
                                         Users
                                     </span>
                                     <Link
-                                        className="text-tiny px-normal rounded-lg py-1.5 font-light hover:bg-black/5"
-                                        href={build(['search'], { containsPattern: pattern })}
+                                        className="text-tiny px-normal py-small rounded-lg font-light hover:bg-black/5"
+                                        href={build(['search', 'users'], { q })}
                                     >
-                                        {`Search "${pattern}" in Users`}
+                                        {`Search "${q}" in Users`}
                                     </Link>
                                     <hr className="my-tiny border-black/10" />
                                     <Link
-                                        className="text-tiny px-normal rounded-lg py-1.5 font-light hover:bg-black/5"
-                                        href={build(['search'], { containsPattern: pattern })}
+                                        className="text-tiny px-normal py-small rounded-lg font-light hover:bg-black/5"
+                                        href={build(['search'], { q })}
                                     >
                                         {`Search All`}
                                     </Link>
@@ -214,6 +225,40 @@ const Header = ({
                             <div className="live-animated"></div>
                         </div>
                     </button>
+                    <Popover
+                        open={openMenu['Notification'] === 'Notification'}
+                        handler={(t) => handleMainMenu('Notification', t)}
+                        animate={{ mount: { scale: 1, y: 0 }, unmount: { scale: 1, y: 20 } }}
+                    >
+                        <PopoverHandler
+                            onMouseEnter={() => setOpenMenu({ Notification: 'Notification' })}
+                        >
+                            <button
+                                className="md:px-medium gap-small relative flex h-[1.75rem] w-[1.75rem] items-center rounded-full border-0 border-black/10 px-0 text-primary-700 outline-none hover:bg-black/5 disabled:pointer-events-none disabled:opacity-50 md:h-[2.25rem] md:w-auto md:border"
+                                disabled={!isAuthenticated || !user}
+                            >
+                                <span className="text-tiny hidden font-display font-normal md:block">
+                                    Noti
+                                </span>
+                                <NotificationIcon className="h-5 w-5 stroke-[1.5px]" />
+                                <div
+                                    className="absolute -top-[1.5rem] right-[2rem] z-50 aria-hidden:hidden md:-top-[1.25rem] md:right-[2.25rem]"
+                                    aria-hidden={unreadUserCount + unreadSystemCount === 0}
+                                >
+                                    <div className="live-dot"></div>
+                                    <div className="live-animated"></div>
+                                </div>
+                            </button>
+                        </PopoverHandler>
+                        <PopoverContent
+                            onMouseEnter={() => setOpenMenu({ Notification: 'Notification' })}
+                            className="relative w-full border-none bg-transparent p-0 shadow-none outline-none md:max-w-[40rem]"
+                        >
+                            <div className="p-medium mx-auto w-[90%] max-w-[40rem] rounded-lg border border-cold-200 bg-white shadow-lg outline-none duration-100 ease-in-out">
+                                <Notifications />
+                            </div>
+                        </PopoverContent>
+                    </Popover>
                     {!isAuthenticated ? (
                         <button
                             className="md:px-medium gap-small flex h-[1.75rem] w-[1.75rem] items-center rounded-full border-0 border-black/10 px-0 text-primary-700 hover:bg-black/5 md:h-[2.25rem] md:w-auto md:border"
@@ -225,13 +270,13 @@ const Header = ({
                             <LoginIcon className="h-5 w-5 stroke-[1.5px]" />
                         </button>
                     ) : (
-                        <Menu
-                            allowHover
+                        <Popover
                             open={openMenu['User'] === 'User'}
                             handler={(t) => handleMainMenu('User', t)}
+                            animate={{ mount: { scale: 1, y: 0 }, unmount: { scale: 1, y: 20 } }}
                         >
-                            <MenuHandler>
-                                <button className="md:px-medium gap-small flex h-[1.75rem] w-[1.75rem] items-center rounded-full border-0 border-black/10 px-0 text-primary-700 hover:bg-black/5 md:h-[2.25rem] md:w-auto md:border">
+                            <PopoverHandler onMouseEnter={() => setOpenMenu({ User: 'User' })}>
+                                <button className="md:px-medium gap-small flex h-[1.75rem] w-[1.75rem] items-center rounded-full border-0 border-black/10 px-0 text-primary-700 outline-none hover:bg-black/5 md:h-[2.25rem] md:w-auto md:border">
                                     {user ? (
                                         <>
                                             <span className="text-tiny hidden text-nowrap font-display font-normal md:block">
@@ -258,51 +303,55 @@ const Header = ({
                                         </>
                                     )}
                                 </button>
-                            </MenuHandler>
-                            <MenuList className="text-tiny flex flex-col text-nowrap text-left font-display font-light">
-                                <span className="px-normal py-small rounded-lg hover:text-cold-950 hover:outline-none">
-                                    {formatCanisterDateTime({ milli: now }, true)}
-                                </span>
-                                <hr className="py-small border-black/10 hover:outline-none" />
-                                <button
-                                    className="px-normal py-small rounded-lg text-left hover:bg-cold-500/25 hover:text-cold-950 hover:outline-none"
-                                    onClick={() => setOpen(EPopup.Affiliate)}
-                                >
-                                    My Referral Link
-                                </button>
-                                <button
-                                    className="px-normal py-small rounded-lg text-left hover:bg-cold-500/25 hover:text-cold-950 hover:outline-none"
-                                    onClick={() => setOpen(EPopup.TransferACORN)}
-                                >
-                                    Transfer ACORN
-                                </button>
-                                <button
-                                    className="px-normal py-small rounded-lg text-left hover:bg-cold-500/25 hover:text-cold-950 hover:outline-none"
-                                    onClick={() => setOpen(EPopup.TransferICP)}
-                                >
-                                    Transfer ICP
-                                </button>
-                                <hr className="py-small border-black/10 hover:outline-none" />
-                                <button
-                                    className="py-small rounded-lg font-medium text-red-800 hover:bg-red-800 hover:text-white hover:outline-none"
-                                    onClick={() => (
-                                        deleteAllConfigsCache(),
-                                        deleteAllPackagesCache(),
-                                        deleteAllStatusCache(),
-                                        deleteAllUsernamesCache(),
-                                        localStorage.clear()
-                                    )}
-                                >
-                                    Clean up all cache
-                                </button>
-                                <button
-                                    className="py-small rounded-lg font-medium text-red-800 hover:bg-red-800 hover:text-white hover:outline-none"
-                                    onClick={logout}
-                                >
-                                    Log out
-                                </button>
-                            </MenuList>
-                        </Menu>
+                            </PopoverHandler>
+                            <PopoverContent
+                                onMouseEnter={() => setOpenMenu({ User: 'User' })}
+                                className="relative w-full border-none bg-transparent p-0 shadow-none outline-none md:max-w-[20rem]"
+                            >
+                                <div className="p-medium ml-auto mr-4 flex w-[90%] max-w-[20rem] flex-col rounded-lg border border-cold-200 bg-white shadow-lg outline-none md:mr-8">
+                                    <TimeDisplay />
+                                    <hr className="py-small border-black/10 hover:outline-none" />
+                                    <button
+                                        className="px-normal py-small rounded-lg text-left hover:bg-cold-500/25 hover:text-cold-950 hover:outline-none"
+                                        onClick={() => setOpen(EPopup.Affiliate)}
+                                    >
+                                        My Referral Link
+                                    </button>
+                                    <button
+                                        className="px-normal py-small rounded-lg text-left hover:bg-cold-500/25 hover:text-cold-950 hover:outline-none"
+                                        onClick={() => setOpen(EPopup.TransferACORN)}
+                                    >
+                                        Transfer ACORN
+                                    </button>
+                                    <button
+                                        className="px-normal py-small rounded-lg text-left hover:bg-cold-500/25 hover:text-cold-950 hover:outline-none"
+                                        onClick={() => setOpen(EPopup.TransferICP)}
+                                    >
+                                        Transfer ICP
+                                    </button>
+                                    <hr className="py-small border-black/10 hover:outline-none" />
+                                    <button
+                                        className="py-small rounded-lg font-medium text-red-800 hover:bg-red-800 hover:text-white hover:outline-none"
+                                        onClick={() => (
+                                            deleteAllConfigsCache(),
+                                            deleteAllPackagesCache(),
+                                            deleteAllStatusCache(),
+                                            deleteAllUsernamesCache(),
+                                            localStorage.clear(),
+                                            setOpenMenu({})
+                                        )}
+                                    >
+                                        Clean up all cache
+                                    </button>
+                                    <button
+                                        className="py-small rounded-lg font-medium text-red-800 hover:bg-red-800 hover:text-white hover:outline-none"
+                                        onClick={logout}
+                                    >
+                                        Log out
+                                    </button>
+                                </div>
+                            </PopoverContent>
+                        </Popover>
                     )}
                 </div>
             </div>
@@ -355,7 +404,7 @@ const Header = ({
                     Icon={<EditIcon className="h-6 w-6 !stroke-[1.5px] md:h-7 md:w-7" />}
                     className="w-full md:w-4/5"
                 >
-                    <PostHypothesis onSubmit={() => setOpen(null)} />
+                    <PostHypothesis onSubmit={() => setOpen(null)} isPopup={true} />
                 </Popup>
             )}
             {principal && user && (
@@ -370,6 +419,18 @@ const Header = ({
                     <MyAssetsLayout />
                 </Popup>
             )}
+            {/* {principal && user && (
+                <Popup
+                    open={open === EPopup.Notification}
+                    onClose={() => setOpen(null)}
+                    title="Notifications"
+                    Icon={<NotificationIcon className="h-6 w-6 !stroke-[1.5px] md:h-7 md:w-7" />}
+                    className="w-full md:w-4/5"
+                    href={build(['profile', 'my_notifications'])}
+                >
+                    <Notifications />
+                </Popup>
+            )} */}
             <Popup
                 open={open === EPopup.Login}
                 onClose={() => {

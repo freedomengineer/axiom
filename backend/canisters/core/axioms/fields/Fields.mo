@@ -56,8 +56,8 @@ module {
     /// PUBLIC ////// DECLARATIONS ////////////
 
     public type Filter = {
-        joinedBy : ?Principal;
-        containsPattern : ?Text
+        member : ?Principal;
+        q : ?Text
     };
     public type Sort = {
         #recent;
@@ -131,11 +131,11 @@ module {
         let toEntry : (Text) -> Entry = func(name) = Tree.unwrapEntry(__, TextKey(name));
         let toSharable : (Entry) -> SharableField = func(name, field) = Field.toSharable(field, name, getCallerRole);
 
-        switch (filter.joinedBy) {
+        switch (filter.member) {
             case (null) {};
-            case (?joinedBy) filtered := ?Set.toArrayMap(getUser(joinedBy).joinedFields, toEntry)
+            case (?member) filtered := ?Set.toArrayMap(getUser(member).joinedFields, toEntry)
         };
-        switch (filter.containsPattern, filtered) {
+        switch (filter.q, filtered) {
             case (null, _) {};
             case (?pattern, null) {
                 let patternIns = #text(Text.toLowercase(pattern));

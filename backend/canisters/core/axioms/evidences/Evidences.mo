@@ -24,6 +24,7 @@ module {
     /// PRIVATE ////// DECLARATIONS ////////////
 
     private type Vector<T> = Vector.Vector<T>;
+    private type List<T> = List.List<T>;
     private type Set<T> = Set.Set<T>;
     private type ClusterTree<K, V> = ClusterTree.ClusterTree<K, V>;
     private type Ranking<T> = DoubleRankTree.Ranking<T>;
@@ -40,7 +41,7 @@ module {
     private type User = User.User;
 
     private type Entry = (Nat, Evidence);
-    private type Scores = Entry -> (Nat, Nat);
+    private type Scores = Entry -> (Int, Int);
     private type Ordering = ClusterTree<Float, Ranking<Entry>>;
 
     private func _id() : Compare<Entry> = func((i1, _), (i2, _)) = Nat.compare(i1, i2);
@@ -50,19 +51,20 @@ module {
     };
     private func _scores(sortedBy : Sort) : Scores = switch (sortedBy) {
         case (#recent) func(_, e) = E.unreachable();
-        case (#popularity) func(_, e) = (BinaryVotes.getRegularValue(e.votes), BinaryVotes.getPoweredValue(e.votes));
-        case (#positivity) func(_, e) = (BinaryVotes.getRegularPositiveValue(e.votes), BinaryVotes.getPoweredPositiveValue(e.votes));
-        case (#negativity) func(_, e) = (BinaryVotes.getRegularNegativeValue(e.votes), BinaryVotes.getPoweredNegativeValue(e.votes))
+        case (#popularity) func(_, e) = (BinaryVotes.getRegularPositiveDiffValue(e.votes), BinaryVotes.getPoweredPositiveDiffValue(e.votes));
+        case (#positivity) func(_, e) = (BinaryVotes.getRegularPositiveDiffValue(e.votes), BinaryVotes.getPoweredPositiveDiffValue(e.votes));
+        case (#negativity) func(_, e) = (BinaryVotes.getRegularNegativeDiffValue(e.votes), BinaryVotes.getPoweredNegativeDiffValue(e.votes))
     };
 
     /// PUBLIC ////// DECLARATIONS ////////////
 
     public type Filter = {
-        publishedIn : ?Nat;
-        publishedBy : ?Principal;
-        votedBy : ?Principal;
-        onSide : ?BinaryChoice;
-        containsPattern : ?Text
+        hypothesis : ?Nat;
+        publisher : ?Principal;
+        voter : ?Principal;
+        side : ?BinaryChoice;
+        repliedTo : ?Nat;
+        q : ?Text
     };
     public type Sort = {
         #recent;
@@ -82,9 +84,9 @@ module {
 
     /// PUBLIC ////// MODIFIERS ////////////
 
-    public func publish(__ : Self, evidence : Evidence) : Nat {
+    public func publish(__ : Self, e : Evidence) : Nat {
         let id : Nat = Vector.size(__);
-        Vector.add(__, ?evidence);
+        Vector.add(__, ?e);
         id
     };
 
@@ -110,7 +112,7 @@ module {
         };
         case (null) E.f(#NOT_EXISTED("Evidence"), "Attempted to get a non-existent evidence id " # debug_show (id) # ". Max id available is " # debug_show (lastId(__)))
     };
-    public func evidenceFlaggedOpt(__ : Self, id : Nat) : ?Evidence = switch (Vector.getOpt(__, id)) {
+    public func evidenceRemovedOpt(__ : Self, id : Nat) : ?Evidence = switch (Vector.getOpt(__, id)) {
         case (?evidence) evidence;
         case (null) E.f(#NOT_EXISTED("Evidence"), "Attempted to get a non-existent evidence id " # debug_show (id) # ". Max id available is " # debug_show (lastId(__)))
     };
@@ -118,31 +120,42 @@ module {
         let getCallerVote : Nat -> ?BinaryVote = User.callerEvidenceVoteCallback(callerUser);
         Evidence.toSharable(evidence(__, id), id, getCallerVote)
     };
-    public func getEvidences(__ : Self, filter : Filter, sort : Sorted<Sort>, callerUser : ?(Principal, User), getUser : Principal -> User, getHypothesis : Nat -> Hypothesis) : Sharable {
+    public func getEvidences(__ : Self, filter : Filter, sort : Sorted<Sort>, callerUser : ?(Principal, User), getUser : Principal -> User, getHypothesis : Nat -> Hypothesis, getEvidence : Nat -> Evidence) : Sharable {
         let getCallerVote : Nat -> ?BinaryVote = User.callerEvidenceVoteCallback(callerUser);
 
         var filtered : ?[Entry] = null;
-        let toEntry : Nat -> ?Entry = func(i) = switch (evidenceFlaggedOpt(__, i)) {
+        let toEntry : Nat -> ?Entry = func(i) = switch (evidenceRemovedOpt(__, i)) {
             case (?evidence) ?(i, evidence);
             case (null) null
         };
         let toSharable : Entry -> SharableEvidence = func(id, entry) = Evidence.toSharable(entry, id, getCallerVote);
 
-        switch (filter.votedBy) {
+        switch (filter.voter) {
             case (null) {};
             case (?user) filtered := ?Map.getKeysFilterMap(getUser(user).votedEvidences, toEntry)
         };
-        switch (filter.publishedBy, filtered) {
+        switch (filter.publisher, filtered) {
             case (null, _) {};
             case (?user, null) filtered := ?List.toArrayFilterMap<Nat, Entry>(getUser(user).evidences, toEntry);
             case (?user, ?prevResult) filtered := ?Array.filter<Entry>(prevResult, func(_, e) = e.publisher == user)
         };
-        switch (filter.publishedIn, filtered) {
+        switch (filter.hypothesis, filtered) {
             case (null, _) {};
             case (?hypothesis, null) filtered := ?List.toArrayFilterMap<Nat, Entry>(getHypothesis(hypothesis).evidenceIds, toEntry);
             case (?hypothesis, ?prevResult) filtered := ?Array.filter<Entry>(prevResult, func(_, e) = e.hypothesisId == hypothesis)
         };
-        switch (filter.onSide, filtered) {
+        switch (filter.repliedTo, filtered) {
+            case (null, _) {};
+            case (?repliedTo, null) filtered := ?List.toArrayFilterMap<Nat, Entry>(getEvidence(repliedTo).replies, toEntry);
+            case (?repliedTo, ?prevResult) filtered := ?Array.filter<Entry>(
+                prevResult,
+                func(_, e) = switch (e.repliedTo) {
+                    case (?x) x == repliedTo;
+                    case (null) false
+                },
+            )
+        };
+        switch (filter.side, filtered) {
             case (null, _) {};
             case (?side, null) filtered := ?Vector.toEntriesFilterMap<?Evidence, Entry>(
                 __,
@@ -156,7 +169,7 @@ module {
             );
             case (?side, ?prevResult) filtered := ?Array.filter<Entry>(prevResult, func(_, e) = e.choice == side)
         };
-        switch (filter.containsPattern, filtered) {
+        switch (filter.q, filtered) {
             case (null, _) {};
             case (?pattern, null) {
                 let patternIns = #text(Text.toLowercase(pattern));

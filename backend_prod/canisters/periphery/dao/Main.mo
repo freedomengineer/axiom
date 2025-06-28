@@ -7,8 +7,10 @@ import User "users/User";
 import Detachment "detachments/Detachment";
 import Commitments "../indicator/commitments/Commitments";
 import Installation "../indicator/installations/Installation";
+import Notification "../facade/notifications/Notification";
 
 import IndicatorInterface "../indicator/Interface";
+import FacadeInterface "../facade/Interface";
 import EscrowInterface "../../core/escrow/Interface";
 import SplitInterface "../../core/split/Interface";
 import TreasuryInterface "../../core/treasury/Interface";
@@ -20,10 +22,11 @@ import E "../../common/Errors";
 import Base "../../library/Base";
 import Configs "../../library/Configs";
 import Count "../../library/Count";
+import Delegable "../../library/Delegable";
 import E8S "../../library/E8S";
 import Earning "../../library/Earning";
-import Delegable "../../library/Delegable";
 import Iter "../../library/Iter";
+import List "../../library/List";
 import Pagination "../../library/Pagination";
 import Proportion "../../library/Proportion";
 import Set "../../library/Set";
@@ -98,7 +101,7 @@ shared ({ caller = indicator }) actor class DAO() = this {
 
     /// PRIVATE ////// MODIFIERS ////////////
 
-    private func _executeFieldProposal(proposal : Proposal.Proposal) : async () {
+    private func _executeFieldProposal(proposal : Proposal.Proposal) : async ?Nat {
         try {
             let detachment : Detachment.Field = Detachment.field(proposal.detachment);
             let Axioms : AxiomsInterface.Axioms = await Indicator.Axioms();
@@ -112,12 +115,14 @@ shared ({ caller = indicator }) actor class DAO() = this {
             let refund : E8S.E8S = E8S.getScaleBy(FIELD_PROPOSAL_OPEN_FEE, FIELD_PROPOSAL_APPROVAL_REFUND);
             let proposer : User.User = Users.user(users, proposal.proposer);
             User.depositAcornTransfer(proposer, refund);
-            Proposal.executed(proposal)
+            Proposal.executed(proposal);
+            ?refund.val
         } catch (error) {
-            Proposal.failed(proposal, Error.message(error))
+            Proposal.failed(proposal, Error.message(error));
+            null
         }
     };
-    private func _executeWorkerProposal(proposal : Proposal.Proposal) : async () {
+    private func _executeWorkerProposal(proposal : Proposal.Proposal) : async ?Nat {
         let WORKER_PROPOSAL_OPEN_FEE : E8S.E8S = Configs.E8S(configs, "WORKER_PROPOSAL_OPEN_FEE");
         let WORKER_PROPOSAL_APPROVAL_REFUND : Proportion.Proportion = switch (Nominees.custodianFound(nominees, proposal.proposer)) {
             case (true) Configs.Proportion(configs, "CUSTODIAN_PROPOSAL_APPROVAL_REFUND");
@@ -126,9 +131,10 @@ shared ({ caller = indicator }) actor class DAO() = this {
         let refund : E8S.E8S = E8S.getScaleBy(WORKER_PROPOSAL_OPEN_FEE, WORKER_PROPOSAL_APPROVAL_REFUND);
         let proposer : User.User = Users.user(users, proposal.proposer);
         User.depositAcornTransfer(proposer, refund);
-        Proposal.executed(proposal)
+        Proposal.executed(proposal);
+        ?refund.val
     };
-    private func _executeConfigsProposal(proposal : Proposal.Proposal) : async () {
+    private func _executeConfigsProposal(proposal : Proposal.Proposal) : async ?Nat {
         try {
             let detachment : Detachment.Configs = Detachment.configs(proposal.detachment);
             await Indicator.setActorsConfigs(detachment.actorsConfigs);
@@ -141,80 +147,128 @@ shared ({ caller = indicator }) actor class DAO() = this {
             let refund : E8S.E8S = E8S.getScaleBy(CONFIGS_PROPOSAL_OPEN_FEE, CONFIGS_PROPOSAL_APPROVAL_REFUND);
             let proposer : User.User = Users.user(users, proposal.proposer);
             User.depositAcornTransfer(proposer, refund);
-            Proposal.executed(proposal)
+            Proposal.executed(proposal);
+            ?refund.val
         } catch (error) {
-            Proposal.failed(proposal, Error.message(error))
+            Proposal.failed(proposal, Error.message(error));
+            null
         }
     };
-    private func _executeApprovedProposals() : async () {
-        label executing for (proposal in Proposals.lockedProposals(proposals)) {
-            switch (Proposal.variant(proposal)) {
-                case (#Code) {};
+    private func _executeApprovedProposals() : async List.List<(Nat, ?Nat, Principal)> {
+        var successProposals : List.List<(Nat, ?Nat, Principal)> = List.nil();
+        label executing for ((id, proposal) in Proposals.lockedProposals(proposals)) {
+            let claimable : ?Nat = switch (Proposal.variant(proposal)) {
+                case (#Code) continue executing; // unreachable
                 case (#Field) await _executeFieldProposal(proposal);
                 case (#Worker) await _executeWorkerProposal(proposal);
                 case (#Configs) await _executeConfigsProposal(proposal)
             };
             let proposer : User.User = Users.user(users, proposal.proposer);
             User.depositAcornMint(proposer, proposal.acornReward);
-            User.depositIcp(proposer, proposal.icpReward)
+            User.depositIcp(proposer, proposal.icpReward);
+
+            successProposals := List.push((id, claimable, proposal.proposer), successProposals)
         };
-        Proposals.cleanUpLockedProposals(proposals)
+        Proposals.cleanUpLockedProposals(proposals);
+        successProposals
     };
-    private func _executeCleanUpExpiredProposals() {
+    private func _executeCleanUpExpiredProposals() : List.List<(Nat, Principal)> {
         let PROPOSAL_VOTE_AVAILABILITY_DURATION : Nat = Configs.Duration(configs, "PROPOSAL_VOTE_AVAILABILITY_DURATION");
         Proposals.cleanUpExpiredProposals(proposals, PROPOSAL_VOTE_AVAILABILITY_DURATION)
     };
-    private func _executePayoutCustodians() {
+    private func _executePayoutCustodians() : Nat {
         let PERIOD_CUSTODIAN_PAYOUT : E8S.E8S = Configs.E8S(configs, "PERIOD_CUSTODIAN_PAYOUT");
         for (custodian in Nominees.custodians(nominees)) {
             let user : User.User = Users.user(users, custodian);
             User.depositAcornMint(user, PERIOD_CUSTODIAN_PAYOUT)
-        }
+        };
+        PERIOD_CUSTODIAN_PAYOUT.val
     };
-    private func _executeTallyElection() {
+    private func _executeTallyElection() : ([Principal], [Principal], [Principal]) {
         let MAX_CUSTODIANS : Nat = Configs.Nat(configs, "MAX_CUSTODIANS");
         let BALLOT_AVAILABILITY_DURATION : Nat = Configs.Duration(configs, "BALLOT_AVAILABILITY_DURATION");
 
         let hasExpiredBallot : Principal -> Bool = _hasExpiredBallotCallback(BALLOT_AVAILABILITY_DURATION);
-        let (preservedCustodians, removedCustodians) : (Set.Set<Principal>, Set.Set<Principal>) = Nominees.tally(nominees, MAX_CUSTODIANS, hasExpiredBallot);
+        let (removed, unchanged, new) : (Set.Set<Principal>, Set.Set<Principal>, Set.Set<Principal>) = Nominees.tally(nominees, MAX_CUSTODIANS, hasExpiredBallot);
 
-        if (Set.size(removedCustodians) == 0) return;
+        if (Set.size(removed) == 0) return (Set.toArray(removed), Set.toArray(unchanged), Set.toArray(new));
 
         for ((id, votableProposal) in Proposals.votableProposals(proposals)) {
-            for (preservedCustodian in Set.vals(preservedCustodians)) {
-                let user : User.User = Users.user(users, preservedCustodian);
+            for (custodian in Set.vals(unchanged)) {
+                let user : User.User = Users.user(users, custodian);
                 switch (User.getProposalVote(user, id)) {
-                    case (?(#Delegated(delegatee))) if (Set.includes(removedCustodians, Set.PrincipalVal(delegatee))) {
+                    case (?(#Delegated(delegatee))) if (Set.includes(removed, Set.PrincipalVal(delegatee))) {
                         User.removeProposalVote(user, id);
-                        Proposal.removeVote(votableProposal, preservedCustodian, { choice = #Delegated })
+                        Proposal.removeVote(votableProposal, custodian, { choice = #Delegated })
                     };
                     case (_) {}
                 }
             };
-            for (removedCustodian in Set.vals(removedCustodians)) {
-                let user : User.User = Users.user(users, removedCustodian);
+            for (custodian in Set.vals(removed)) {
+                let user : User.User = Users.user(users, custodian);
                 switch (User.getProposalVote(user, id)) {
-                    case (?(#Default(vote))) Proposal.removeVote(votableProposal, removedCustodian, vote);
-                    case (?(#Delegated(_))) Proposal.removeVote(votableProposal, removedCustodian, { choice = #Delegated });
+                    case (?(#Default(vote))) Proposal.removeVote(votableProposal, custodian, vote);
+                    case (?(#Delegated(_))) Proposal.removeVote(votableProposal, custodian, { choice = #Delegated });
                     case (null) {}
                 };
                 User.removeProposalVote(user, id)
             }
-        }
+        };
+        (Set.toArray(removed), Set.toArray(unchanged), Set.toArray(new))
     };
 
     private func _dailyExecution() : async () {
         let PERIOD_DURATION : Nat = Configs.Duration(configs, "PERIOD_DURATION");
         Count.increment(daysInPeriod);
 
-        _executeCleanUpExpiredProposals();
-        await _executeApprovedProposals();
+        let expiredProposals : List.List<(Nat, Principal)> = _executeCleanUpExpiredProposals();
+        let successProposals : List.List<(Nat, ?Nat, Principal)> = await _executeApprovedProposals();
+
+        var systemNotifications : List.List<Notification.SystemVariantParam> = List.nil();
+        var usersNotifications : List.List<(Principal, Notification.UserVariantParam)> = List.nil();
 
         if (daysInPeriod.val >= PERIOD_DURATION) {
-            _executePayoutCustodians();
-            _executeTallyElection();
-            Count.reset(daysInPeriod)
-        }
+            let claimable : Nat = _executePayoutCustodians();
+            let (removed, unchanged, new) : ([Principal], [Principal], [Principal]) = _executeTallyElection();
+            Count.reset(daysInPeriod);
+
+            systemNotifications := List.push(
+                #TallyResult({ removed; unchanged; new; timestamp = Time.now() }),
+                systemNotifications,
+            );
+            for (custodian in removed.vals()) {
+                usersNotifications := List.push((custodian, #CustodianElectionResult({ result = #Removed; claimable; timestamp = Time.now() })), usersNotifications)
+            };
+            for (custodian in unchanged.vals()) {
+                usersNotifications := List.push((custodian, #CustodianElectionResult({ result = #Unchanged; claimable; timestamp = Time.now() })), usersNotifications)
+            };
+            for (custodian in new.vals()) {
+                usersNotifications := List.push((custodian, #CustodianElectionResult({ result = #New; claimable; timestamp = Time.now() })), usersNotifications)
+            }
+        };
+
+        for ((proposalId, proposer) in List.toIter(expiredProposals)) {
+            usersNotifications := List.push((proposer, #ProposalResult({ proposalId; result = #Expired; timestamp = Time.now() })), usersNotifications)
+        };
+        for ((proposalId, claimable, proposer) in List.toIter(successProposals)) {
+            switch (claimable) {
+                case (null) {
+                    usersNotifications := List.push((proposer, #ProposalExecuted({ proposalId; claimable = 0; result = #Failed; timestamp = Time.now() })), usersNotifications);
+                    systemNotifications := List.push(#ProposalExecuted({ proposalId; proposer; result = #Failed; timestamp = Time.now() }), systemNotifications)
+                };
+                case (?claimable) {
+                    usersNotifications := List.push((proposer, #ProposalExecuted({ proposalId; claimable; result = #Executed; timestamp = Time.now() })), usersNotifications);
+                    systemNotifications := List.push(#ProposalExecuted({ proposalId; proposer; result = #Executed; timestamp = Time.now() }), systemNotifications)
+                }
+            }
+        };
+
+        ignore (
+            func() : async () {
+                let Facade : FacadeInterface.Facade = await Indicator.Facade();
+                ignore (Facade.postSystemNotifications(systemNotifications), Facade.postUsersNotifications(usersNotifications))
+            }
+        )()
     };
 
     /// PROTECTED ////// MODIFIERS ////////////
@@ -259,7 +313,17 @@ shared ({ caller = indicator }) actor class DAO() = this {
             let proposer : User.User = Users.user(users, proposal.proposer);
             User.depositAcornTransfer(proposer, refund)
         };
-        Proposal.failed(proposal, error)
+        Proposal.failed(proposal, error);
+
+        ignore (
+            func() : async () {
+                let Facade : FacadeInterface.Facade = await Indicator.Facade();
+                ignore (
+                    Facade.postUserNotification(proposal.proposer, #ProposalExecuted({ proposalId; result = #Failed; claimable = 0; timestamp = Time.now() })),
+                    Facade.postSystemNotification(#ProposalExecuted({ proposalId; proposer = proposal.proposer; result = #Failed; timestamp = Time.now() })),
+                )
+            }
+        )()
     };
     public shared ({ caller }) func setCodeProposalExecuted(proposalId : Nat) : async () {
         await Indicator.expectAuthorized(caller, [#Indicator]);
@@ -274,7 +338,17 @@ shared ({ caller = indicator }) actor class DAO() = this {
         let refund : E8S.E8S = E8S.getScaleBy(CODE_PROPOSAL_OPEN_FEE, CODE_PROPOSAL_APPROVAL_REFUND);
         let proposer : User.User = Users.user(users, proposal.proposer);
         User.depositAcornTransfer(proposer, refund);
-        Proposal.executed(proposal)
+        Proposal.executed(proposal);
+
+        ignore (
+            func() : async () {
+                let Facade : FacadeInterface.Facade = await Indicator.Facade();
+                ignore (
+                    Facade.postUserNotification(proposal.proposer, #ProposalExecuted({ proposalId; result = #Executed; claimable = refund.val; timestamp = Time.now() })),
+                    Facade.postSystemNotification(#ProposalExecuted({ proposalId; proposer = proposal.proposer; result = #Executed; timestamp = Time.now() })),
+                )
+            }
+        )()
     };
 
     /// PUBLIC ////// MODIFIERS ////////////
@@ -303,6 +377,14 @@ shared ({ caller = indicator }) actor class DAO() = this {
 
         let proposalId = Proposals.lastId(proposals);
         User.proposeProposal(user, proposalId);
+
+        ignore (
+            func() : async () {
+                let Facade : FacadeInterface.Facade = await Indicator.Facade();
+                ignore Facade.postUsersNotification(Iter.toList(Set.vals(nominees.custodians)), #CustodianProposalOpened({ proposalId; proposer = caller; retried = 0; timestamp = Time.now() }))
+            }
+        )();
+
         proposalId
     };
     public shared ({ caller }) func openConfigsProposal(content : Text, acornReward : Nat, icpReward : Nat, actorsConfigs : Installation.ActorsConfigs) : async Nat {
@@ -315,6 +397,14 @@ shared ({ caller = indicator }) actor class DAO() = this {
 
         let proposalId = Proposals.lastId(proposals);
         User.proposeProposal(user, proposalId);
+
+        ignore (
+            func() : async () {
+                let Facade : FacadeInterface.Facade = await Indicator.Facade();
+                ignore Facade.postUsersNotification(Iter.toList(Set.vals(nominees.custodians)), #CustodianProposalOpened({ proposalId; proposer = caller; retried = 0; timestamp = Time.now() }))
+            }
+        )();
+
         proposalId
     };
     public shared ({ caller }) func openWorkerProposal(title : Text, content : Text, acornReward : Nat, icpReward : Nat) : async Nat {
@@ -327,6 +417,14 @@ shared ({ caller = indicator }) actor class DAO() = this {
 
         let proposalId = Proposals.lastId(proposals);
         User.proposeProposal(user, proposalId);
+
+        ignore (
+            func() : async () {
+                let Facade : FacadeInterface.Facade = await Indicator.Facade();
+                ignore Facade.postUsersNotification(Iter.toList(Set.vals(nominees.custodians)), #CustodianProposalOpened({ proposalId; proposer = caller; retried = 0; timestamp = Time.now() }))
+            }
+        )();
+
         proposalId
     };
     public shared ({ caller }) func openFieldProposal(content : Text, name : Text, description : Text) : async Nat {
@@ -341,6 +439,14 @@ shared ({ caller = indicator }) actor class DAO() = this {
 
         let proposalId = Proposals.lastId(proposals);
         User.proposeProposal(user, proposalId);
+
+        ignore (
+            func() : async () {
+                let Facade : FacadeInterface.Facade = await Indicator.Facade();
+                ignore Facade.postUsersNotification(Iter.toList(Set.vals(nominees.custodians)), #CustodianProposalOpened({ proposalId; proposer = caller; retried = 0; timestamp = Time.now() }))
+            }
+        )();
+
         proposalId
     };
 
@@ -364,7 +470,14 @@ shared ({ caller = indicator }) actor class DAO() = this {
             User.removeProposalVote(user, proposalId)
         };
         Proposal.retryConfigs(proposal, updatedContent, updatedAcornReward, updatedIcpReward, updatedActorsConfigs);
-        Proposals.retry(proposals, proposalId)
+        Proposals.retry(proposals, proposalId);
+
+        ignore (
+            func() : async () {
+                let Facade : FacadeInterface.Facade = await Indicator.Facade();
+                ignore Facade.postUsersNotification(Iter.toList(Set.vals(nominees.custodians)), #CustodianProposalOpened({ proposalId; proposer = caller; retried = Proposal.retries(proposal); timestamp = Time.now() }))
+            }
+        )()
     };
     public shared ({ caller }) func retryWorkerProposal(proposalId : Nat, updatedContent : Text, updatedAcornReward : Nat, updatedIcpReward : Nat) : async () {
         let MAX_PROPOSAL_RETRIES : Nat = Configs.Nat(configs, "MAX_PROPOSAL_RETRIES");
@@ -385,7 +498,14 @@ shared ({ caller = indicator }) actor class DAO() = this {
             User.removeProposalVote(user, proposalId)
         };
         Proposal.retryWorker(proposal, updatedContent, updatedAcornReward, updatedIcpReward);
-        Proposals.retry(proposals, proposalId)
+        Proposals.retry(proposals, proposalId);
+
+        ignore (
+            func() : async () {
+                let Facade : FacadeInterface.Facade = await Indicator.Facade();
+                ignore Facade.postUsersNotification(Iter.toList(Set.vals(nominees.custodians)), #CustodianProposalOpened({ proposalId; proposer = caller; retried = Proposal.retries(proposal); timestamp = Time.now() }))
+            }
+        )()
     };
     public shared ({ caller }) func retryFieldProposal(proposalId : Nat, updatedContent : Text, updatedName : Text, updatedDescription : Text) : async () {
         let MAX_PROPOSAL_RETRIES : Nat = Configs.Nat(configs, "MAX_PROPOSAL_RETRIES");
@@ -406,7 +526,14 @@ shared ({ caller = indicator }) actor class DAO() = this {
             User.removeProposalVote(user, proposalId)
         };
         Proposal.retryField(proposal, updatedContent, updatedName, updatedDescription);
-        Proposals.retry(proposals, proposalId)
+        Proposals.retry(proposals, proposalId);
+
+        ignore (
+            func() : async () {
+                let Facade : FacadeInterface.Facade = await Indicator.Facade();
+                ignore Facade.postUsersNotification(Iter.toList(Set.vals(nominees.custodians)), #CustodianProposalOpened({ proposalId; proposer = caller; retried = Proposal.retries(proposal); timestamp = Time.now() }))
+            }
+        )()
     };
 
     public shared ({ caller }) func voteProposal(proposalId : Nat, choice : Delegable.Delegable<UniformBinaryVotes.Choice>) : async () {
@@ -416,15 +543,39 @@ shared ({ caller = indicator }) actor class DAO() = this {
         Proposal.expectVotable(proposal);
         Nominees.expectCustodianFound(nominees, caller);
 
+        var usersNotifications : List.List<(Principal, Notification.UserVariantParam)> = List.nil();
+
         let delegableVote : Delegable.Delegable<UniformBinaryVotes.Vote> = switch (choice) {
             case (#Delegated(delegatee)) {
                 if (delegatee == caller) E.f(#NOT_VALID("Proposal Vote"), "Delegatee cannot be yourself");
                 switch (User.getProposalVote(Users.user(users, delegatee), proposalId)) {
-                    case (?x) x;
-                    case (null) #Delegated(delegatee)
+                    case (?delegateeVote) {
+                        switch (delegateeVote) {
+                            case (#Default({ choice })) {
+                                switch (choice) {
+                                    case (#Delegated) {};
+                                    case (#Positive) usersNotifications := List.push((proposal.proposer, #NewVotesToProposal({ id = proposalId; data = { voter = caller; choice = #Positive; timestamp = Time.now() } })), usersNotifications);
+                                    case (#Negative) usersNotifications := List.push((proposal.proposer, #NewVotesToProposal({ id = proposalId; data = { voter = caller; choice = #Negative; timestamp = Time.now() } })), usersNotifications)
+                                }
+                            };
+                            case (#Delegated(delegatee)) usersNotifications := List.push((delegatee, #CustodianProposalDelegated({ proposalId; delegator = caller; timestamp = Time.now() })), usersNotifications)
+                        };
+                        delegateeVote
+                    };
+                    case (null) {
+                        usersNotifications := List.push((delegatee, #CustodianProposalDelegated({ proposalId; delegator = caller; timestamp = Time.now() })), usersNotifications);
+                        #Delegated(delegatee)
+                    }
                 }
             };
-            case (#Default(choice)) #Default({ choice })
+            case (#Default(choice)) {
+                switch (choice) {
+                    case (#Delegated) {};
+                    case (#Positive) usersNotifications := List.push((proposal.proposer, #NewVotesToProposal({ id = proposalId; data = { voter = caller; choice = #Positive; timestamp = Time.now() } })), usersNotifications);
+                    case (#Negative) usersNotifications := List.push((proposal.proposer, #NewVotesToProposal({ id = proposalId; data = { voter = caller; choice = #Negative; timestamp = Time.now() } })), usersNotifications)
+                };
+                #Default({ choice })
+            }
         };
         switch (delegableVote) {
             case (#Delegated(_)) {
@@ -444,9 +595,7 @@ shared ({ caller = indicator }) actor class DAO() = this {
                         /// update votes for delegating custodian
                         let custodianUser : User.User = Users.user(users, custodian);
                         switch (User.getProposalVote(custodianUser, proposalId)) {
-                            case (?(#Delegated(delegatee))) if (delegatee == caller) {
-                                User.voteProposal(custodianUser, proposalId, delegableVote)
-                            };
+                            case (?(#Delegated(delegatee))) if (delegatee == caller) User.voteProposal(custodianUser, proposalId, delegableVote);
                             case (_) {}
                         }
                     }
@@ -493,6 +642,18 @@ shared ({ caller = indicator }) actor class DAO() = this {
                         case (#Code(detachment)) await Indicator.enqueueUpgradeTask(proposalId, proposal.proposer, detachment.actorsConfigs);
                         case (_) Proposals.lock(proposals, proposalId)
                     };
+
+                    usersNotifications := List.push((proposal.proposer, #ProposalResult({ proposalId; result = #Approved; timestamp = Time.now() })), usersNotifications);
+                    for (custodian in Nominees.custodians(nominees)) {
+                        usersNotifications := List.push((custodian, #CustodianProposalResult({ proposalId; proposer = proposal.proposer; result = #Approved; timestamp = Time.now() })), usersNotifications)
+                    };
+                    ignore (
+                        func() : async () {
+                            let Facade : FacadeInterface.Facade = await Indicator.Facade();
+                            ignore Facade.postUsersNotifications(usersNotifications)
+                        }
+                    )();
+
                     return
                 };
                 let REJECTION_THRESHOLD : Proportion.Proportion = Proportion.getComplement(APPROVAL_THRESHOLD);
@@ -512,10 +673,29 @@ shared ({ caller = indicator }) actor class DAO() = this {
                         let proposer : User.User = Users.user(users, proposal.proposer);
                         User.depositAcornTransfer(proposer, refund)
                     };
+
+                    usersNotifications := List.push((proposal.proposer, #ProposalResult({ proposalId; result = #Rejected; timestamp = Time.now() })), usersNotifications);
+                    for (custodian in Nominees.custodians(nominees)) {
+                        usersNotifications := List.push((custodian, #CustodianProposalResult({ proposalId; proposer = proposal.proposer; result = #Rejected; timestamp = Time.now() })), usersNotifications)
+                    };
+                    ignore (
+                        func() : async () {
+                            let Facade : FacadeInterface.Facade = await Indicator.Facade();
+                            ignore Facade.postUsersNotifications(usersNotifications)
+                        }
+                    )();
+
                     return
                 }
             }
-        }
+        };
+
+        ignore (
+            func() : async () {
+                let Facade : FacadeInterface.Facade = await Indicator.Facade();
+                ignore Facade.postUsersNotifications(usersNotifications)
+            }
+        )()
     };
 
     public shared ({ caller }) func enterElection(title : Text) : async () {
@@ -565,7 +745,14 @@ shared ({ caller = indicator }) actor class DAO() = this {
             ignore Nominee.cleanUpExpiredBallots(nominee, hasExpiredBallot);
             Nominee.castBallot(nominee, caller, value);
             User.castBallot(user, ballotToCast)
-        }
+        };
+
+        ignore (
+            func() : async () {
+                let Facade : FacadeInterface.Facade = await Indicator.Facade();
+                ignore Facade.postUsersNotification(List.fromArray(principals), #NewBallots({ voter = caller; timestamp = Time.now() }))
+            }
+        )()
     };
 
     public shared ({ caller }) func withdrawAll() : async () {

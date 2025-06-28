@@ -27,7 +27,8 @@ module {
         joinField : shared (Text) -> async ();
         leaveField : shared (Text) -> async ();
         publishHypothesis : shared (Text, Text) -> async Nat;
-        publishEvidence : shared (Nat, Evidence.Form, BinaryVotes.Choice) -> async Nat;
+        editHypothesis : shared (Nat, Text) -> async ();
+        publishEvidence : shared (Nat, Evidence.Form, BinaryVotes.Choice, ?Nat) -> async Nat;
         requestFlag : shared (Flag.Header, Text) -> async ();
         voteHypothesis : shared (Nat, TernaryVotes.Choice) -> async ();
         voteEvidence : shared (Nat, BinaryVotes.Choice) -> async ();
@@ -39,8 +40,9 @@ module {
         addToBookmarks : shared (Nat) -> async ();
         removeFromAxioms : shared (Nat) -> async ();
         removeFromBookmarks : shared (Nat) -> async ();
+        follow : shared (Principal) -> async ();
+        unfollow : shared (Principal) -> async ();
         withdrawAll : shared () -> async ();
-        getEarnings : query (Principal) -> async [Earning.Sharable];
         getConfig : query (Configs.Key) -> async Configs.SharableValue;
         getConfigs : query () -> async Configs.Sharable;
         getField : query (Text) -> async Field.Sharable;
@@ -55,6 +57,8 @@ module {
         getFlag : query (Flag.Header) -> async Flag.Sharable;
         getFlags : query (Flags.Filter, Base.Sort<Flags.Sort>) -> async Flags.Sharable;
         getFlagsPagination : query (Flags.Filter, Base.Sort<Flags.Sort>, Nat, Nat) -> async Pagination.Pagination<Flag.Sharable>;
+        getTop : query ({ #Influencers; #HypothesisPublishers; #EvidencePublishers; #HypothesisVoters; #EvidenceVoters; #AcornEarners }) -> async Pagination.TopNonPagination;
+        getTopPagination : query ({ #Influencers; #HypothesisPublishers; #EvidencePublishers; #HypothesisVoters; #EvidenceVoters; #AcornEarners }, Nat, Nat) -> async Pagination.TopPagination;
         getAgePayout : query (Nat, Nat) -> async Payout.Sharable;
         getAgePayouts : query (Nat) -> async Payouts.Sharable;
         getAgesPayout : query (Nat) -> async Payouts.Sharable;

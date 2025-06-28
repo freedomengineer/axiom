@@ -1,10 +1,9 @@
 'use client'
 import { PieChart } from '@mui/x-charts/PieChart'
-import { useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 import AcornIcon from '@components/Assets/acorn.svg'
 import AdoptIcon from '@components/Assets/adopt.svg'
-import AtIcon from '@components/Assets/at.svg'
 import BookmarkIcon from '@components/Assets/bookmark.svg'
 import DateTimeIcon from '@components/Assets/date_time.svg'
 import DoneIcon from '@components/Assets/done.svg'
@@ -13,6 +12,7 @@ import EvidenceIcon from '@components/Assets/evidence.svg'
 import FieldIcon from '@components/Assets/field.svg'
 import FieldMembersIcon from '@components/Assets/field_members.svg'
 import FlagIcon from '@components/Assets/flag.svg'
+import LoginStep1Icon from '@components/Assets/login_step1.svg'
 import ShareIcon from '@components/Assets/share.svg'
 import Spinner from '@components/Primitives/Spinner'
 import Divider from '@components/Shared/Divider'
@@ -21,6 +21,7 @@ import InfiniteScrollWrapper, {
 } from '@components/Shared/InfiniteScrollWrapper'
 import Link from '@components/Shared/Link'
 import Popup from '@components/Shared/Popup'
+import { Symbol } from '@components/Shared/Username'
 import useAuth from '@hooks/useAuth'
 import useHypothesisDetails from '@hooks/useHypothesisDetails'
 import cn from '@libs/class'
@@ -36,13 +37,23 @@ import { Variant } from 'shared/utils/typings'
 
 import EvidencesLayout from './EvidencesLayout'
 import HypothesisVote from './HypothesisVote'
+import PostHypothesis from './PostHypothesis'
 import PostEvidence from '../Evidences/PostEvidence'
 import RequestFlag from '../Flags/RequestFlag'
+
+enum EPopup {
+    RequestFlag,
+    EditHypothesis,
+}
 
 const HypothesisDetail = ({ item }: { item: DAxioms.SharableHypothesis }) => {
     const { agent, principal } = useAuth()
     const positiveEvidencesRef = useRef<InfiniteScrollWrapperHandle>(null)
     const negativeEvidencesRef = useRef<InfiniteScrollWrapperHandle>(null)
+    const evidenceContainerRef = useRef<HTMLDivElement>(null)
+    const [activeSide, setActiveSide] = useState<EEvidenceVote>(EEvidenceVote.Positive)
+    const [touchStart, setTouchStart] = useState<number | null>(null)
+    const [isMobile, setIsMobile] = useState(false)
 
     const {
         publisher,
@@ -56,9 +67,12 @@ const HypothesisDetail = ({ item }: { item: DAxioms.SharableHypothesis }) => {
         handleVote,
         handleAxiom,
         handleBookmark,
+        handleRefresh,
     } = useHypothesisDetails(item)
-    const [postEvidenceOpen, setPostEvidenceOpen] = useState<EEvidenceVote | undefined | null>(null)
-    const [flagOpen, setFlagOpen] = useState(false)
+    const [postEvidenceOpen, setPostEvidenceOpen] = useState<
+        EEvidenceVote | bigint | undefined | null
+    >(null)
+    const [open, setOpen] = useState<EPopup | null>(null)
     const [copied, setCopied] = useState<boolean>()
 
     const handleCopy = () => {
@@ -69,6 +83,10 @@ const HypothesisDetail = ({ item }: { item: DAxioms.SharableHypothesis }) => {
         success('Copied share link to clipboard')
         setTimeout(() => setCopied(false), 3000)
     }
+
+    const positiveFilter = useMemo(() => ({ side: 'Positive', hypothesis: item.id.toString() }), [])
+    const negativeFilter = useMemo(() => ({ side: 'Negative', hypothesis: item.id.toString() }), [])
+    const commonSort = useMemo(() => ({ by: 'positivity', order: 'descending' }), [])
 
     const voteKeys = Object.keys(VOTES) as EVote[]
     const regularVotes = localItem.votes.regular.map((vote: bigint, index: number) => ({
@@ -83,21 +101,59 @@ const HypothesisDetail = ({ item }: { item: DAxioms.SharableHypothesis }) => {
     }))
     const someVote = localItem.votes.regular.some((vote) => vote !== 0n)
 
+    const handleTouchStart = (e: React.TouchEvent) => {
+        setTouchStart(e.touches[0].clientX)
+    }
+
+    const handleTouchEnd = (e: React.TouchEvent) => {
+        if (touchStart === null) return
+
+        const touchEnd = e.changedTouches[0].clientX
+        const diff = touchStart - touchEnd
+
+        if (Math.abs(diff) > 50) {
+            if (diff > 0) {
+                setActiveSide(EEvidenceVote.Negative)
+            } else {
+                setActiveSide(EEvidenceVote.Positive)
+            }
+        }
+
+        setTouchStart(null)
+    }
+
+    useEffect(() => {
+        const checkIsMobile = () => {
+            setIsMobile(window.innerWidth < 1024)
+        }
+        checkIsMobile()
+        window.addEventListener('resize', checkIsMobile)
+        return () => window.removeEventListener('resize', checkIsMobile)
+    }, [])
+
     return (
         <>
             <Popup
                 open={postEvidenceOpen !== null}
                 onClose={() => setPostEvidenceOpen(null)}
-                title="Post Evidence"
-                href={build(['feed', localItem.id, 'evidences', 'post'], {
-                    side: postEvidenceOpen,
-                })}
+                title={
+                    typeof postEvidenceOpen === 'string'
+                        ? `Post Evidence`
+                        : `Post Reply to Evidence ${postEvidenceOpen?.toString()}`
+                }
+                href={build(
+                    ['feed', localItem.id, 'evidences', 'post'],
+                    typeof postEvidenceOpen === 'string'
+                        ? { side: postEvidenceOpen }
+                        : { replyTo: postEvidenceOpen?.toString() }
+                )}
                 className="w-full md:w-4/5"
                 Icon={<EditIcon className="h-6 stroke-[1.5px]" />}
             >
                 <PostEvidence
                     id={localItem.id}
-                    side={postEvidenceOpen}
+                    side={typeof postEvidenceOpen === 'string' ? postEvidenceOpen : undefined}
+                    replyTo={typeof postEvidenceOpen === 'bigint' ? postEvidenceOpen : undefined}
                     onSubmit={(side) => {
                         side === EEvidenceVote.Positive
                             ? positiveEvidencesRef.current?.refresh()
@@ -107,18 +163,37 @@ const HypothesisDetail = ({ item }: { item: DAxioms.SharableHypothesis }) => {
                 />
             </Popup>
             <Popup
-                open={flagOpen}
-                onClose={() => setFlagOpen(false)}
+                open={open === EPopup.RequestFlag}
+                onClose={() => setOpen(null)}
                 title="Request Flag"
                 className="w-full md:w-auto"
                 Icon={<FlagIcon className="h-6 w-6 stroke-[1.5px] md:h-7 md:w-7" />}
             >
                 <RequestFlag
                     header={{ id: localItem.id, category: Variant('Hypothesis') }}
-                    onSubmit={() => setFlagOpen(false)}
+                    onSubmit={() => setOpen(null)}
                 />
             </Popup>
-            <div className="gap-medium flex h-full w-full flex-col overflow-x-hidden rounded-lg border border-cold-600 border-opacity-50 hover:border-opacity-100">
+            <Popup
+                open={open === EPopup.EditHypothesis}
+                onClose={() => setOpen(null)}
+                title="Edit Hypothesis"
+                className="w-full md:w-4/5"
+                Icon={<LoginStep1Icon className="h-6 w-6 stroke-[1.5px] md:h-7 md:w-7" />}
+            >
+                <PostHypothesis
+                    isEdit={{
+                        id: localItem.id,
+                        fieldId: localItem.fieldId,
+                        content: localItem.content,
+                    }}
+                    onSubmit={() => {
+                        setOpen(null)
+                        handleRefresh()
+                    }}
+                />
+            </Popup>
+            <div className="gap-medium relative flex h-full w-full flex-col rounded-lg border border-cold-600 border-opacity-50 hover:border-opacity-100">
                 <div className="max-h-auto flex min-h-60 flex-col place-items-center items-center bg-hypothesis">
                     <p className="text-medium p-normal my-auto flex h-full items-center whitespace-pre-line break-words text-center font-semibold text-primary-900/80 hover:text-primary-800">
                         {localItem?.content.trim()}
@@ -268,9 +343,12 @@ const HypothesisDetail = ({ item }: { item: DAxioms.SharableHypothesis }) => {
                         className="gap-small order-3 flex items-center hover:opacity-75 md:order-2"
                         href={build(['profile', localItem.publisher.toText()])}
                     >
-                        <AtIcon className="h-5 w-5 stroke-[1.5px]" />
+                        <Symbol
+                            capitalRaised={publisher.capitalRaised.toString()}
+                            className="mr-0 h-5 w-5"
+                        />
                         <span className="text-small md:mr-medium text-nowrap font-light text-white">
-                            {publisher}
+                            {publisher.username}
                         </span>
                     </Link>
                     <div className="gap-small order-2 ml-auto flex items-center md:order-3 md:ml-0">
@@ -280,7 +358,14 @@ const HypothesisDetail = ({ item }: { item: DAxioms.SharableHypothesis }) => {
                         </span>
                     </div>
                     <div className="hidden w-full md:order-4 md:block" />
-                    <div className="order-4 ml-auto grid h-6 w-32 flex-shrink-0 grid-cols-4 place-items-center items-center md:order-5 md:ml-0 md:w-40">
+                    <div
+                        className={cn(
+                            'order-4 ml-auto grid h-6 flex-shrink-0 place-items-center items-center md:order-5 md:ml-0',
+                            principal?.compareTo(localItem.publisher) === 'eq'
+                                ? 'w-40 grid-cols-5 md:w-48'
+                                : 'w-32 grid-cols-4 md:w-40'
+                        )}
+                    >
                         <div className="w-8 md:w-10">
                             {axiomLoading ? (
                                 <Spinner
@@ -326,6 +411,14 @@ const HypothesisDetail = ({ item }: { item: DAxioms.SharableHypothesis }) => {
                                 <ShareIcon className="mx-auto h-5 w-5 stroke-[1.5px]" />
                             )}
                         </button>
+                        {principal?.compareTo(localItem.publisher) === 'eq' && (
+                            <button
+                                className="w-8 hover:opacity-75 disabled:pointer-events-none md:w-10"
+                                onClick={() => setOpen(EPopup.EditHypothesis)}
+                            >
+                                <LoginStep1Icon className="mx-auto h-5 w-5 stroke-[1.5px]" />
+                            </button>
+                        )}
                     </div>
                 </div>
                 <div className="gap-medium flex h-full w-full flex-col items-center">
@@ -361,36 +454,143 @@ const HypothesisDetail = ({ item }: { item: DAxioms.SharableHypothesis }) => {
                                 )
                         )}
                     </div>
-                    <div className="px-normal mb-normal gap-normal flex w-full items-stretch justify-between">
-                        <div className="gap-normal flex w-1/2 flex-col items-center">
-                            <InfiniteScrollWrapper<DAxioms.SharableEvidence>
-                                ref={positiveEvidencesRef}
-                                query={Axioms.call(agent, true).getEvidencesPagination}
-                                name="evidence"
-                                hardFilter={{ onSide: 'Positive', publishedIn: localItem.id }}
-                                hardSort={{ sortBy: 'positivity', order: 'descending' }}
-                                size={2n}
-                                LayoutComponent={EvidencesLayout}
-                                className="h-full w-full"
-                            />
-                        </div>
-                        <Divider
-                            direction="vertical"
-                            bgColor="bg-cold-800"
-                            borderColor="border-cold-800"
-                        />
-                        <div className="gap-normal flex w-1/2 flex-col items-center">
-                            <InfiniteScrollWrapper<DAxioms.SharableEvidence>
-                                ref={negativeEvidencesRef}
-                                query={Axioms.call(agent, true).getEvidencesPagination}
-                                name="evidence"
-                                hardFilter={{ onSide: 'Negative', publishedIn: localItem.id }}
-                                hardSort={{ sortBy: 'positivity', order: 'descending' }}
-                                size={2n}
-                                LayoutComponent={EvidencesLayout}
-                                className="h-full w-full"
-                            />
-                        </div>
+
+                    <div className="px-normal mb-normal gap-normal w-full">
+                        {!isMobile && (
+                            <div className="px-normal mb-normal gap-normal flex w-full items-stretch justify-between">
+                                <div className="gap-normal flex w-1/2 flex-col items-center">
+                                    <InfiniteScrollWrapper
+                                        ref={positiveEvidencesRef}
+                                        query={Axioms.call(agent, true).getEvidencesPagination}
+                                        name="evidence"
+                                        hardFilter={positiveFilter}
+                                        hardSort={commonSort}
+                                        size={2n}
+                                        LayoutComponent={({ items }) => (
+                                            <EvidencesLayout
+                                                items={items}
+                                                onReply={setPostEvidenceOpen}
+                                            />
+                                        )}
+                                        className="h-full w-full"
+                                    />
+                                </div>
+                                <Divider
+                                    direction="vertical"
+                                    bgColor="bg-cold-800"
+                                    borderColor="border-cold-800"
+                                />
+                                <div className="gap-normal flex w-1/2 flex-col items-center">
+                                    <InfiniteScrollWrapper
+                                        ref={negativeEvidencesRef}
+                                        query={Axioms.call(agent, true).getEvidencesPagination}
+                                        name="evidence"
+                                        hardFilter={negativeFilter}
+                                        hardSort={commonSort}
+                                        size={2n}
+                                        LayoutComponent={({ items }) => (
+                                            <EvidencesLayout
+                                                items={items}
+                                                onReply={setPostEvidenceOpen}
+                                            />
+                                        )}
+                                        className="h-full w-full"
+                                    />
+                                </div>
+                            </div>
+                        )}
+                        {isMobile && (
+                            <div className="h-full w-full">
+                                <div className="text-small py-normal sticky top-0 z-10 w-full bg-white">
+                                    <div
+                                        className={cn(
+                                            'flex w-[200%] transition-transform duration-300 ease-in-out',
+                                            activeSide === EEvidenceVote.Positive
+                                                ? 'translate-x-0'
+                                                : '-translate-x-1/2'
+                                        )}
+                                    >
+                                        <p className="w-1/2 pr-5 text-right">
+                                            swipe right to see{' '}
+                                            <span
+                                                className={cn(
+                                                    'font-semibold',
+                                                    VOTES[EEvidenceVote.Negative].textColor
+                                                )}
+                                            >
+                                                negative side
+                                            </span>{' '}
+                                            →
+                                        </p>
+                                        <p className="w-1/2 pl-5 text-left">
+                                            ← swipe left to see{' '}
+                                            <span
+                                                className={cn(
+                                                    'font-semibold',
+                                                    VOTES[EEvidenceVote.Positive].textColor
+                                                )}
+                                            >
+                                                positive side
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div
+                                    ref={evidenceContainerRef}
+                                    className="w-full overflow-x-hidden"
+                                    onTouchStart={handleTouchStart}
+                                    onTouchEnd={handleTouchEnd}
+                                >
+                                    <div
+                                        className={cn(
+                                            'flex w-[200%] transition-transform duration-300 ease-in-out',
+                                            activeSide === EEvidenceVote.Positive
+                                                ? 'translate-x-0'
+                                                : '-translate-x-1/2'
+                                        )}
+                                    >
+                                        <div className="w-1/2 flex-shrink-0 px-1">
+                                            <InfiniteScrollWrapper
+                                                ref={positiveEvidencesRef}
+                                                query={
+                                                    Axioms.call(agent, true).getEvidencesPagination
+                                                }
+                                                name="evidence"
+                                                hardFilter={positiveFilter}
+                                                hardSort={commonSort}
+                                                size={2n}
+                                                LayoutComponent={({ items }) => (
+                                                    <EvidencesLayout
+                                                        items={items}
+                                                        onReply={setPostEvidenceOpen}
+                                                    />
+                                                )}
+                                                className="h-full w-full"
+                                            />
+                                        </div>
+                                        <div className="w-1/2 flex-shrink-0 px-1">
+                                            <InfiniteScrollWrapper
+                                                ref={negativeEvidencesRef}
+                                                query={
+                                                    Axioms.call(agent, true).getEvidencesPagination
+                                                }
+                                                name="evidence"
+                                                hardFilter={negativeFilter}
+                                                hardSort={commonSort}
+                                                size={2n}
+                                                LayoutComponent={({ items }) => (
+                                                    <EvidencesLayout
+                                                        items={items}
+                                                        onReply={setPostEvidenceOpen}
+                                                    />
+                                                )}
+                                                className="h-full w-full"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

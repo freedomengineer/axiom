@@ -76,11 +76,11 @@ const EarningCard = ({
 
     if (!earning)
         return (
-            <div className="p-medium flex h-full animate-pulse flex-col items-center justify-center rounded-lg border-2 border-cold-200"></div>
+            <div className="p-medium flex h-full animate-pulse flex-col items-center justify-center rounded-lg border-2 border-cold-300"></div>
         )
 
     return (
-        <div className="gap-medium p-semilarge relative flex h-min w-full flex-col rounded-lg border border-cold-200 bg-white text-cold-800 shadow-md md:h-full">
+        <div className="gap-medium p-semilarge relative flex h-min w-full flex-col rounded-lg border border-cold-300 bg-white text-cold-700 md:h-full">
             <div className="flex items-center justify-between">
                 <h3 className="text-medium font-display font-bold text-primary-700">{name}</h3>
                 <p className="text-tiny font-light italic text-cold-800">

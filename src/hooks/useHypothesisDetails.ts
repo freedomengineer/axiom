@@ -101,6 +101,7 @@ const useHypothesisDetails = (item: DAxioms.SharableHypothesis) => {
         handleVote,
         handleAxiom,
         handleBookmark,
+        handleRefresh,
     }
 }
 

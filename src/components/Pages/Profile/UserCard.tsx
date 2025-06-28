@@ -6,8 +6,9 @@ import ShareIcon from '@components/Assets/share.svg'
 import Link from '@components/Shared/Link'
 import useAuth from '@hooks/useAuth'
 import { success } from '@libs/toastify'
-import { build } from '@libs/url'
+import { build, buildBlobImage } from '@libs/url'
 import { DFacade } from 'shared/types/services'
+import { Unwrap } from 'shared/utils/typings'
 
 const UserCard = ({ item }: { item: DFacade.Sharable }) => {
     const { principal } = useAuth()
@@ -29,7 +30,15 @@ const UserCard = ({ item }: { item: DFacade.Sharable }) => {
                     className="text-medium gap-medium flex place-items-center items-center text-left font-normal hover:text-primary-800"
                     href={build(['profile', item.principal.toText()])}
                 >
-                    <DefaultAvatarIcon className="h-7 w-7 md:h-8 md:w-8" />
+                    {Unwrap(item.avatar) ? (
+                        <img
+                            className="h-7 w-7 rounded-full md:h-8 md:w-8"
+                            src={buildBlobImage(Unwrap(item.avatar)!.blob)}
+                            alt="User Avatar"
+                        />
+                    ) : (
+                        <DefaultAvatarIcon className="h-7 w-7 md:h-8 md:w-8" />
+                    )}
                     <span>{item.username}</span>
                 </Link>
                 <button

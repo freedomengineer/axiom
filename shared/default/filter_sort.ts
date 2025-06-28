@@ -1,6 +1,5 @@
 import { ActorMethod } from '@dfinity/agent'
 
-import { ECategory, EStatus } from '@utils/dashboard/proposal'
 import { DAxioms, DDAO, DFacade } from 'shared/types/services'
 import { DefaultVariant, Primitive, isNullish, parsePrimitive } from 'shared/utils/typings'
 
@@ -41,13 +40,15 @@ export type StringifiedFilterSort = {
 export const FILTER_SORT_DECS = {
     hypothesis: {
         filter: {
+            age: Primitive.Nat,
+            field: Primitive.Text,
+            publisher: Primitive.Principal,
+            voter: Primitive.Principal,
             axiomsFrom: Primitive.Principal,
-            publishedBy: Primitive.Principal,
-            publishedAt: Primitive.Nat,
-            publishedIn: Primitive.Text,
-            votedBy: Primitive.Principal,
             bookmarksFrom: Primitive.Principal,
-            containsPattern: Primitive.Text,
+            userJoinedFields: Primitive.Principal,
+            userFollowedPublishers: Primitive.Principal,
+            q: Primitive.Text,
         },
         sort: {
             by: ['popularity', 'recent', 'positivity', 'neutrality', 'negativity', 'controversy'],
@@ -56,8 +57,8 @@ export const FILTER_SORT_DECS = {
     },
     field: {
         filter: {
-            joinedBy: Primitive.Principal,
-            containsPattern: Primitive.Text,
+            member: Primitive.Principal,
+            q: Primitive.Text,
         },
         sort: {
             by: ['popularity', 'recent', 'alphabetical'],
@@ -66,11 +67,12 @@ export const FILTER_SORT_DECS = {
     },
     evidence: {
         filter: {
-            publishedBy: Primitive.Principal,
-            publishedIn: Primitive.Nat,
-            votedBy: Primitive.Principal,
-            onSide: ['Positive', 'Negative'],
-            containsPattern: Primitive.Text,
+            publisher: Primitive.Principal,
+            hypothesis: Primitive.Nat,
+            voter: Primitive.Principal,
+            side: ['Positive', 'Negative'],
+            repliedTo: Primitive.Nat,
+            q: Primitive.Text,
         },
         sort: {
             by: ['popularity', 'recent', 'positivity', 'negativity'],
@@ -79,8 +81,8 @@ export const FILTER_SORT_DECS = {
     },
     user: {
         filter: {
-            hasCapitalRaised: Primitive.Nat,
-            containsPattern: Primitive.Text,
+            capitalRaised: Primitive.Nat,
+            q: Primitive.Text,
         },
         sort: {
             by: ['capitalRaised', 'recent', 'alphabetical'],
@@ -89,7 +91,7 @@ export const FILTER_SORT_DECS = {
     },
     nominee: {
         filter: {
-            votedBy: Primitive.Principal,
+            voter: Primitive.Principal,
             isCustodian: Primitive.Boolean,
         },
         sort: {
@@ -99,10 +101,18 @@ export const FILTER_SORT_DECS = {
     },
     proposal: {
         filter: {
-            votedBy: Primitive.Principal,
-            proposedBy: Primitive.Principal,
-            proposedIn: Object.keys(ECategory),
-            withStatus: Object.keys(EStatus),
+            proposer: Primitive.Principal,
+            voter: Primitive.Principal,
+            category: ['Code', 'Field', 'Worker', 'Configs'],
+            status: [
+                'Failed',
+                'Approved',
+                'Rejected',
+                'Proposed',
+                'Executed',
+                'Retried',
+                'Expired',
+            ],
         },
         sort: {
             by: ['updated', 'recent', 'acornReward', 'icpReward'],
@@ -111,10 +121,10 @@ export const FILTER_SORT_DECS = {
     },
     flag: {
         filter: {
-            requestedBy: Primitive.Principal,
-            requestedIn: ['Hypothesis', 'Evidence'],
-            votedBy: Primitive.Principal,
-            withStatus: ['Requested', 'Approved', 'Rejected', 'Expired', 'Executed', 'Failed'],
+            requester: Primitive.Principal,
+            voter: Primitive.Principal,
+            category: ['Hypothesis', 'Evidence'],
+            status: ['Requested', 'Approved', 'Rejected', 'Expired', 'Executed', 'Failed'],
         },
         sort: {
             by: ['recent', 'difference'],

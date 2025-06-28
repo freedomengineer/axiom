@@ -27,7 +27,7 @@ const ChooseUsername = ({ choices, setChoice, handleNext }: StepProps) => {
 
     return (
         <>
-            <div className="gap-small text-small flex flex-col text-cold-600">
+            <div className="gap-small text-small flex flex-col text-cold-700">
                 <span>
                     Consider using a pseudonym that is not connected with your real world identity,
                     so that you have the freedom to speak the absolute truth about the reality that

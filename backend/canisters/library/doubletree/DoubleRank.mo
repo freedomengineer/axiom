@@ -9,7 +9,7 @@ module {
 
     /// PUBLIC ////// DECLARATIONS ////////////
 
-    public type Entry = { rank : Nat; score : Nat };
+    public type Entry = { rank : Int; score : Int };
 
     /// LIBRARY ////// DOUBLE RANK ////////////
 

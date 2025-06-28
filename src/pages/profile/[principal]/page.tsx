@@ -19,7 +19,7 @@ const PublicProfilePage = () => {
     return (
         <>
             <PageMetadata {...pageMetadata} />
-            <ProfileLayout id={principal} />
+            <ProfileLayout id={principal} key={principal} />
         </>
     )
 }

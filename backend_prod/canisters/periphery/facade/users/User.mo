@@ -16,7 +16,8 @@ module {
 
     public type Identifier = {
         principal : Principal;
-        username : Text
+        username : Text;
+        capitalRaised : Nat
     };
     public type IdentifierVariant = {
         #Principal : Principal;
@@ -30,7 +31,7 @@ module {
     public type User = {
         var avatar : ?Format.Picture;
         var username : Text;
-        capitalRaised : Nat;
+        var capitalRaised : Nat;
         creationDate : Time;
         var links : [Hyperlink];
         var location : ?Text
@@ -48,13 +49,17 @@ module {
     public func init(username : Text, capitalRaised : Nat) : Self = {
         var username;
         var avatar = null;
-        capitalRaised;
+        var capitalRaised;
         creationDate = Time.now();
         var links = [];
         var location = null
     };
 
     /// PUBLIC ////// MODIFIERS ////////////
+
+    public func updateCapitalRaised(__ : Self, capitalRaised : Nat) {
+        if (capitalRaised > __.capitalRaised) __.capitalRaised := capitalRaised
+    };
 
     public func updateUsername(__ : Self, username : Text) {
         __.username := username
@@ -77,6 +82,7 @@ module {
         __ with principal;
         avatar = __.avatar;
         username = __.username;
+        capitalRaised = __.capitalRaised;
         links = __.links;
         location = switch (__.location) { case (?x) x; case (null) "" }
     }

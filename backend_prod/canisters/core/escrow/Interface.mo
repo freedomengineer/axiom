@@ -2,6 +2,7 @@ import Burial "burials/Burial";
 import Burials "burials/Burials";
 import User "users/User";
 import Configs "../../library/Configs";
+import Pagination "../../library/Pagination";
 
 module {
     public type Escrow = actor {
@@ -14,6 +15,8 @@ module {
         withdrawAll : shared () -> async ();
         getConfig : query (Configs.Key) -> async Configs.SharableValue;
         getConfigs : query () -> async Configs.Sharable;
+        getTop : query ({ #PoweredVoters; #AcornBuriers }) -> async Pagination.TopNonPagination;
+        getTopPagination : query ({ #PoweredVoters; #AcornBuriers }, Nat, Nat) -> async Pagination.TopPagination;
         getUser : query (Principal) -> async User.Sharable;
         getBurials : query (Principal) -> async Burials.Sharable;
         getVotingPower : query (Principal) -> async Nat;

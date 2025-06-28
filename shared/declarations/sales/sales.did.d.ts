@@ -11,6 +11,11 @@ export interface Dip721NonFungibleToken {
   'name' : string,
   'symbol' : string,
 }
+export interface ForceUpdateCapitalRaisedResult {
+  'success' : Array<string>,
+  'unchanged' : Array<string>,
+  'failed' : Array<[string, string]>,
+}
 export type Key = string;
 export interface LogoResult { 'data' : string, 'logo_type' : string }
 export interface Sales {
@@ -24,6 +29,7 @@ export interface Sales {
   'deployPackage' : ActorMethod<[bigint], undefined>,
   'expectPackageFound' : ActorMethod<[bigint], bigint>,
   'expectPackageNotFound' : ActorMethod<[bigint], undefined>,
+  'forceUpdateCapitalRaised' : ActorMethod<[], ForceUpdateCapitalRaisedResult>,
   'getAchievementPackagePrincipals' : ActorMethod<
     [],
     Array<[Achievement, Principal]>

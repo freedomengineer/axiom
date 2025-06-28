@@ -310,14 +310,14 @@ type Key = text;
 type Filter__1 = 
  record {
    isCustodian: opt bool;
-   votedBy: opt principal;
+   voter: opt principal;
  };
 type Filter = 
  record {
-   proposedBy: opt principal;
-   proposedIn: opt ProposalVariant;
-   votedBy: opt principal;
-   withStatus: opt StatusVariant;
+   category: opt ProposalVariant;
+   proposer: opt principal;
+   status: opt StatusVariant;
+   voter: opt principal;
  };
 type DeployableActorVariant = 
  variant {

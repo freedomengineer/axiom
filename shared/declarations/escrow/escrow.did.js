@@ -52,6 +52,17 @@ export const idlFactory = ({ IDL }) => {
     'Duration' : IDL.Nat,
   });
   const Sharable__1 = IDL.Vec(IDL.Tuple(Key, SharableValue));
+  const TopResult = IDL.Vec(IDL.Tuple(IDL.Principal, IDL.Nat));
+  const TopNonPagination = IDL.Record({
+    'result' : TopResult,
+    'callerRank' : IDL.Opt(IDL.Nat),
+  });
+  const TopPagination = IDL.Record({
+    'is' : IDL.Nat,
+    'of' : IDL.Nat,
+    'result' : TopResult,
+    'callerRank' : IDL.Opt(IDL.Nat),
+  });
   const SharableBurials = IDL.Vec(SharableBurial);
   const Sharable = IDL.Record({ 'burials' : SharableBurials });
   const Escrow = IDL.Service({
@@ -64,6 +75,28 @@ export const idlFactory = ({ IDL }) => {
     'getConfigs' : IDL.Func([], [Sharable__1], ['query']),
     'getExpiredAmount' : IDL.Func([IDL.Principal], [IDL.Nat], ['query']),
     'getInterestAmount' : IDL.Func([IDL.Principal], [IDL.Nat], ['query']),
+    'getTop' : IDL.Func(
+        [
+          IDL.Variant({
+            'PoweredVoters' : IDL.Null,
+            'AcornBuriers' : IDL.Null,
+          }),
+        ],
+        [TopNonPagination],
+        ['query'],
+      ),
+    'getTopPagination' : IDL.Func(
+        [
+          IDL.Variant({
+            'PoweredVoters' : IDL.Null,
+            'AcornBuriers' : IDL.Null,
+          }),
+          IDL.Nat,
+          IDL.Nat,
+        ],
+        [TopPagination],
+        ['query'],
+      ),
     'getUser' : IDL.Func([IDL.Principal], [Sharable], ['query']),
     'getVotingPower' : IDL.Func([IDL.Principal], [IDL.Nat], ['query']),
     'initialize' : IDL.Func([], [], []),
@@ -71,6 +104,7 @@ export const idlFactory = ({ IDL }) => {
     'register' : IDL.Func([IDL.Principal, IDL.Nat], [], []),
     'setConfigs' : IDL.Func([IDL.Vec(IDL.Tuple(Key, SharableValue))], [], []),
     'shiftToMidnight' : IDL.Func([IDL.Nat], [], []),
+    'transferFounderBurial' : IDL.Func([IDL.Principal, IDL.Principal], [], []),
     'withdrawAll' : IDL.Func([], [], []),
   });
   return Escrow;

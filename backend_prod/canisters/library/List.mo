@@ -132,7 +132,7 @@ module {
         Result.mapOk(go(xs, null), func(xs : List<R>) : List<R> = reverse(xs))
     };
 
-    func revAppend<T>(l : List<T>, m : List<T>) : List<T> {
+    public func revAppend<T>(l : List<T>, m : List<T>) : List<T> {
         switch l {
             case null { m };
             case (?(h, t)) { revAppend(t, ?(h, m)) }
@@ -410,5 +410,31 @@ module {
                 case _ null
             }
         }
+    };
+
+    public func smartPush<T>(xs : List<T>, e : T, f : T -> Bool, l : Nat) : (List<T>, { #replaced; #overflowed; #none }) {
+        var listAfterPush : List<T> = make(e);
+        var pushType : { #replaced; #overflowed; #none } = #none;
+
+        var i = 1;
+        label listPushing for (x in toIter(xs)) {
+            switch (f(x), pushType, i >= l) {
+                case (true, #none, _) {
+                    // first element matched, flag and skip
+                    pushType := #replaced
+                };
+                case (_, _, true) {
+                    // reached max limit after skip predicated value, break
+                    pushType := #overflowed;
+                    break listPushing
+                };
+                case (_, _, false) {
+                    // not reached max limit, push
+                    listAfterPush := push(x, listAfterPush);
+                    i += 1
+                }
+            }
+        };
+        (reverse(listAfterPush), pushType)
     }
 }

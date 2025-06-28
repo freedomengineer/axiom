@@ -1546,11 +1546,25 @@
       "relativePath": "../indicator/installations/Installation",
       "depth": 4
     },
+    "Notification": {
+      "origin": "import Notification \"../facade/notifications/Notification\";",
+      "name": "Notification",
+      "category": "attribute",
+      "relativePath": "../facade/notifications/Notification",
+      "depth": 4
+    },
     "IndicatorInterface": {
       "origin": "import IndicatorInterface \"../indicator/Interface\";",
       "name": "IndicatorInterface",
       "category": "interface",
       "relativePath": "../indicator/Interface",
+      "depth": 3
+    },
+    "FacadeInterface": {
+      "origin": "import FacadeInterface \"../facade/Interface\";",
+      "name": "FacadeInterface",
+      "category": "interface",
+      "relativePath": "../facade/Interface",
       "depth": 3
     },
     "EscrowInterface": {
@@ -1616,6 +1630,13 @@
       "relativePath": "../../library/Count",
       "depth": 4
     },
+    "Delegable": {
+      "origin": "import Delegable \"../../library/Delegable\";",
+      "name": "Delegable",
+      "category": "library",
+      "relativePath": "../../library/Delegable",
+      "depth": 4
+    },
     "E8S": {
       "origin": "import E8S \"../../library/E8S\";",
       "name": "E8S",
@@ -1630,18 +1651,18 @@
       "relativePath": "../../library/Earning",
       "depth": 4
     },
-    "Delegable": {
-      "origin": "import Delegable \"../../library/Delegable\";",
-      "name": "Delegable",
-      "category": "library",
-      "relativePath": "../../library/Delegable",
-      "depth": 4
-    },
     "Iter": {
       "origin": "import Iter \"../../library/Iter\";",
       "name": "Iter",
       "category": "library",
       "relativePath": "../../library/Iter",
+      "depth": 4
+    },
+    "List": {
+      "origin": "import List \"../../library/List\";",
+      "name": "List",
+      "category": "library",
+      "relativePath": "../../library/List",
       "depth": 4
     },
     "Pagination": {
@@ -1746,7 +1767,9 @@
     "Detachment",
     "Commitments",
     "Installation",
+    "Notification",
     "IndicatorInterface",
+    "FacadeInterface",
     "EscrowInterface",
     "SplitInterface",
     "TreasuryInterface",
@@ -1756,10 +1779,11 @@
     "Base",
     "Configs",
     "Count",
+    "Delegable",
     "E8S",
     "Earning",
-    "Delegable",
     "Iter",
+    "List",
     "Pagination",
     "Proportion",
     "Set",
@@ -3267,7 +3291,7 @@
       },
       "entries": [
         [
-          "votedBy",
+          "voter",
           {
             "origin": "?Principal",
             "singular": {
@@ -4909,7 +4933,7 @@
       },
       "entries": [
         [
-          "proposedBy",
+          "proposer",
           {
             "origin": "?Principal",
             "singular": {
@@ -4922,7 +4946,7 @@
           }
         ],
         [
-          "proposedIn",
+          "category",
           {
             "origin": "?ProposalVariant",
             "singular": {
@@ -4952,7 +4976,7 @@
           }
         ],
         [
-          "votedBy",
+          "voter",
           {
             "origin": "?Principal",
             "singular": {
@@ -4965,7 +4989,7 @@
           }
         ],
         [
-          "withStatus",
+          "status",
           {
             "origin": "?StatusVariant",
             "singular": {

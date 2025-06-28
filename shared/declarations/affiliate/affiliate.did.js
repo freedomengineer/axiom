@@ -42,6 +42,17 @@ export const idlFactory = ({ IDL }) => {
     'revenue' : SharableE8S__1,
     'balance' : SharableE8S__1,
   });
+  const TopResult = IDL.Vec(IDL.Tuple(IDL.Principal, IDL.Nat));
+  const TopNonPagination = IDL.Record({
+    'result' : TopResult,
+    'callerRank' : IDL.Opt(IDL.Nat),
+  });
+  const TopPagination = IDL.Record({
+    'is' : IDL.Nat,
+    'of' : IDL.Nat,
+    'result' : TopResult,
+    'callerRank' : IDL.Opt(IDL.Nat),
+  });
   const SharableEarning = IDL.Record({
     'lastWithdrawAt' : Time,
     'revenue' : SharableE8S__1,
@@ -63,6 +74,16 @@ export const idlFactory = ({ IDL }) => {
     'getConfig' : IDL.Func([Key], [SharableValue], ['query']),
     'getConfigs' : IDL.Func([], [Sharable__2], ['query']),
     'getEarning' : IDL.Func([IDL.Principal], [Sharable__1], ['query']),
+    'getTop' : IDL.Func(
+        [IDL.Variant({ 'Referrers' : IDL.Null })],
+        [TopNonPagination],
+        ['query'],
+      ),
+    'getTopPagination' : IDL.Func(
+        [IDL.Variant({ 'Referrers' : IDL.Null }), IDL.Nat, IDL.Nat],
+        [TopPagination],
+        ['query'],
+      ),
     'getUser' : IDL.Func([IDL.Principal], [Sharable], ['query']),
     'initialize' : IDL.Func([], [], []),
     'putConfigs' : IDL.Func([IDL.Vec(IDL.Tuple(Key, SharableValue))], [], []),

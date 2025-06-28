@@ -86,19 +86,24 @@ const SpecificHistoryPage = () => {
                     ))}
                 </TabsHeader>
                 <TabsBody>
-                    <p className="text-small mt-6 text-right text-cold-700">
+                    <p className="text-small py-normal text-right font-medium text-cold-800">
                         Your revenue: {e8s.toString(revenue ?? 0n)} ACORNs
                     </p>
                     {AGES.map(({ id }) => (
                         <TabPanel key={id} value={id}>
                             {ranks.length === 0 ? (
-                                <p className="text-small text-center text-cold-800">
-                                    No ACORN payouts in{' '}
-                                    {getCanisterDate({
-                                        ago: { nano: BigInt(ago!) * NANOS_IN_A_DAY },
-                                    })}{' '}
-                                    - Age {id}
-                                </p>
+                                <div className="flex h-full w-full flex-col items-center justify-center text-center">
+                                    <p className="text-normal font-medium text-cold-700">
+                                        No Payouts Found
+                                    </p>
+                                    <p className="text-tiny font-normal text-cold-700">
+                                        There was no ACORN distributed for Age {id} in{' '}
+                                        {getCanisterDate({
+                                            ago: { nano: BigInt(ago!) * NANOS_IN_A_DAY },
+                                        })}
+                                        .
+                                    </p>
+                                </div>
                             ) : (
                                 <div className="overflow-x-auto rounded-lg border border-cold-300 md:overflow-hidden">
                                     <table className="min-w-full border-collapse">
@@ -136,13 +141,13 @@ const SpecificHistoryPage = () => {
                                                         regularEntry,
                                                         poweredEntry,
                                                     },
-                                                    index
+                                                    i
                                                 ) => {
-                                                    const isLastRow = index === ranks.length - 1
+                                                    const isLastRow = i === ranks.length - 1
                                                     return (
                                                         <tr
-                                                            key={index}
-                                                            className="group cursor-pointer hover:bg-cold-50"
+                                                            key={i}
+                                                            className="group hover:bg-cold-50"
                                                         >
                                                             <td
                                                                 className={cn(
@@ -154,7 +159,7 @@ const SpecificHistoryPage = () => {
                                                                 <Link
                                                                     href={`/feed/${hypothesisId}`}
                                                                     color="cold-600"
-                                                                    className="pre-underline !text-tiny group z-10 w-full justify-start decoration-cold-600/50 hover:decoration-cold-600/100"
+                                                                    className="pre-underline !text-tiny group z-10 w-full justify-start !font-semibold decoration-cold-600/50 hover:decoration-cold-600/100"
                                                                     icon="forward"
                                                                     size="small"
                                                                     openInNewTab
@@ -187,7 +192,7 @@ const SpecificHistoryPage = () => {
                                                             <td
                                                                 className={cn(
                                                                     '!text-tiny py-small px-normal text-nowrap text-cold-600',
-                                                                    'border-b border-r border-cold-300',
+                                                                    'border-b border-cold-300',
                                                                     isLastRow && 'border-b-0'
                                                                 )}
                                                             >

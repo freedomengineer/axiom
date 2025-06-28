@@ -7,18 +7,23 @@ import { Facade } from 'shared/utils/services'
 const MAX_CACHE_SIZE = 3000
 const CACHE_LIFETIME = 3 * 24 * 60 * 60 * 1000
 
+export type Displayer = {
+    username: string | null
+    capitalRaised: string
+}
+
 class AxiomUsernameCache extends Dexie {
-    users: Table<{ id: string; username: string; timestamp: number }, string>
+    users: Table<{ id: string; username: string; capitalRaised: string; timestamp: number }, string>
     constructor() {
         super('AxiomUsernameCache')
-        this.version(2).stores({ users: '&id, username, timestamp' })
+        this.version(2).stores({ users: '&id, username, capitalRaised, timestamp' })
         this.users = this.table('users')
     }
 }
 
 const db = new AxiomUsernameCache()
-const memoryCache = new Map<string, string>()
-const pendingRequests = new Map<string, Promise<string | null>>()
+const memoryCache = new Map<string, Displayer>()
+const pendingRequests = new Map<string, Promise<Displayer>>()
 
 const _ensureMemoryCacheSize = () => {
     if (memoryCache.size <= MAX_CACHE_SIZE) return
@@ -37,39 +42,42 @@ const _cleanupCache = async () => {
         .catch(() => {})
 }
 
-const _fetchUsername = async (id: Principal): Promise<string | null> => {
+const _fetchUsername = async (id: Principal): Promise<Displayer> => {
     try {
-        const username = await Facade.call()
+        const { username, capitalRaised } = await Facade.call()
             .getUserIdentifier({ Principal: id })
-            .then((res) => res.username)
+            .then((res) => ({
+                username: res.username,
+                capitalRaised: res.capitalRaised.toString(),
+            }))
 
         const idStr = id.toString()
-        memoryCache.set(idStr, username)
+        memoryCache.set(idStr, { username, capitalRaised })
         _ensureMemoryCacheSize()
 
-        db.users.put({ id: idStr, username, timestamp: Date.now() }).catch((e) => {
+        db.users.put({ id: idStr, username, capitalRaised, timestamp: Date.now() }).catch((e) => {
             console.error('Error storing username in IndexedDB:', e)
         })
 
-        return username
+        return { username, capitalRaised }
     } catch {
-        return null
+        return { username: null, capitalRaised: '0' }
     }
 }
-const _getUsernameSync = (id: Principal): string | null => {
-    if (!id) return null
+const _getUsernameSync = (id: Principal): Displayer => {
+    if (!id) return { username: null, capitalRaised: '0' }
 
     const idStr = id.toString()
 
     if (memoryCache.has(idStr)) {
         console.log(`useUsername: found CachedItem for username ${idStr}`)
-        return memoryCache.get(idStr) || null
+        return memoryCache.get(idStr) || { username: null, capitalRaised: '0' }
     }
 
-    return null
+    return { username: null, capitalRaised: '0' }
 }
-const _getUsername = async (id: Principal): Promise<string | null> => {
-    if (!id) return null
+const _getUsername = async (id: Principal): Promise<Displayer> => {
+    if (!id) return { username: null, capitalRaised: '0' }
 
     const idStr = id.toString()
 
@@ -82,9 +90,9 @@ const _getUsername = async (id: Principal): Promise<string | null> => {
         const cachedUser = await db.users.get(idStr)
         if (cachedUser && Date.now() - cachedUser.timestamp < CACHE_LIFETIME) {
             console.log(`useUsername: found StoredItem for username ${idStr}`)
-            memoryCache.set(idStr, cachedUser.username)
+            memoryCache.set(idStr, cachedUser)
             _ensureMemoryCacheSize()
-            return cachedUser.username
+            return { username: cachedUser.username, capitalRaised: cachedUser.capitalRaised }
         }
     } catch (e) {
         console.error('Error reading from IndexedDB:', e)
@@ -97,11 +105,11 @@ const _getUsername = async (id: Principal): Promise<string | null> => {
 
     return request
 }
-export const getUsername = async (id: Principal): Promise<string | null> => {
-    if (!id) return null
+export const getUsername = async (id: Principal): Promise<Displayer> => {
+    if (!id) return { username: null, capitalRaised: '0' }
 
     const syncResult = _getUsernameSync(id)
-    if (syncResult !== null) return syncResult
+    if (syncResult.username !== null) return syncResult
 
     return _getUsername(id)
 }
@@ -113,30 +121,28 @@ export const deleteAllUsernamesCache = async (): Promise<void> => {
     } catch {}
 }
 
-const useUsername = (id: Principal | null): string | null => {
-    const [username, setUsername] = useState<string | null>(() => {
-        return id ? _getUsernameSync(id) : null
-    })
+const useUsername = (id: Principal | null): Displayer => {
+    const [data, setData] = useState<Displayer>({ username: null, capitalRaised: '0' })
 
     useEffect(() => {
-        if (username || !id) return
+        if (data.username || !id) return
 
         _getUsername(id)
-            .then(setUsername)
-            .catch(() => setUsername(null))
-    }, [id?.toString(), username])
+            .then((username) => setData(username))
+            .catch(() => setData({ username: null, capitalRaised: '0' }))
+    }, [id?.toString(), data.username])
 
-    return username
+    return data
 }
 
-export const cacheUsername = (id: Principal, username: string): void => {
+export const cacheUsername = (id: Principal, username: string, capitalRaised: string): void => {
     if (!id || !username) return
 
     const idStr = id.toString()
-    memoryCache.set(idStr, username)
+    memoryCache.set(idStr, { username, capitalRaised })
     _ensureMemoryCacheSize()
 
-    db.users.put({ id: idStr, username, timestamp: Date.now() }).catch((e) => {
+    db.users.put({ id: idStr, username, capitalRaised, timestamp: Date.now() }).catch((e) => {
         console.error('Error caching username:', e)
     })
 }

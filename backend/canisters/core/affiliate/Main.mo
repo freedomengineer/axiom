@@ -2,6 +2,7 @@ import User "users/User";
 import Users "users/Users";
 
 import IndicatorInterface "../../periphery/indicator/Interface";
+import FacadeInterface "../../periphery/facade/Interface";
 import SplitInterface "../split/Interface";
 
 import C "../../common/Constants";
@@ -11,6 +12,7 @@ import Configs "../../library/Configs";
 import E8S "../../library/E8S";
 import Earning "../../library/Earning";
 import Iter "../../library/Iter";
+import Pagination "../../library/Pagination";
 import Proportion "../../library/Proportion";
 
 import Principal "mo:base/Principal";
@@ -71,6 +73,14 @@ shared ({ caller = indicator }) actor class Affiliate() = this {
                     User.deposit(u, affiliatePayout);
                     User.referred(u);
                     Users.register(users, principal, referrer, getNow);
+
+                    ignore (
+                        func() : async () {
+                            let Facade : FacadeInterface.Facade = await Indicator.Facade();
+                            await Facade.postUserNotification((r, #NewReferrals({ user = principal; claimable = affiliatePayout.val; timestamp = getNow() })))
+                        }
+                    )();
+
                     return
                 };
                 case (null) {}
@@ -99,6 +109,15 @@ shared ({ caller = indicator }) actor class Affiliate() = this {
     };
     public query func getConfigs() : async Configs.Sharable {
         Configs.getConfigs(configs)
+    };
+
+    public query ({ caller }) func getTop(category : { #Referrers }) : async Pagination.TopNonPagination {
+        let result : Pagination.TopResult = Users.getTop(users, category);
+        Pagination.topNonPaginate(result, caller)
+    };
+    public query ({ caller }) func getTopPagination(category : { #Referrers }, page : Nat, limit : Nat) : async Pagination.TopPagination {
+        let result : Pagination.TopResult = Users.getTop(users, category);
+        Pagination.topPaginate(result, page, limit, caller)
     };
 
     public query func getUser(principal : Principal) : async User.Sharable {

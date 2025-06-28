@@ -28,6 +28,23 @@ type Value =
    infinity;
    value: ValueProp;
  };
+type TopResult = 
+ vec record {
+       principal;
+       nat;
+     };
+type TopPagination = 
+ record {
+   callerRank: opt nat;
+   is: nat;
+   of: nat;
+   result: TopResult;
+ };
+type TopNonPagination = 
+ record {
+   callerRank: opt nat;
+   result: TopResult;
+ };
 type Time = int;
 type Sharable__2 = 
  vec record {
@@ -100,6 +117,9 @@ type Affiliate =
    getConfig: (Key) -> (SharableValue) query;
    getConfigs: () -> (Sharable__2) query;
    getEarning: (principal) -> (Sharable__1) query;
+   getTop: (variant {Referrers;}) -> (TopNonPagination) query;
+   getTopPagination: (variant {Referrers;}, nat, nat) ->
+    (TopPagination) query;
    getUser: (principal) -> (Sharable) query;
    /// PROTECTED ////// MODIFIERS ////////////
    initialize: () -> ();

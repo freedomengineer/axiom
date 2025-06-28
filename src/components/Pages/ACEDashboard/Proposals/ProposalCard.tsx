@@ -2,12 +2,12 @@ import { Principal } from '@dfinity/principal'
 import { useState } from 'react'
 
 import AcornIcon from '@components/Assets/acorn.svg'
-import AtIcon from '@components/Assets/at.svg'
 import ICPIcon from '@components/Assets/icp.svg'
 import StatusFailedIcon from '@components/Assets/status_failed.svg'
 import Divider from '@components/Shared/Divider'
 import Link from '@components/Shared/Link'
 import Popup from '@components/Shared/Popup'
+import { Symbol } from '@components/Shared/Username'
 import useProposalDetails from '@hooks/useProposalDetails'
 import cn from '@libs/class'
 import { getCanisterDateTime, getDateTime } from '@libs/date'
@@ -43,7 +43,7 @@ const ProposalCard = ({ item, className }: { item: DDAO.SharableProposal; classN
     return (
         <div
             className={cn(
-                'text-small gap-medium relative my-auto flex h-min w-full flex-col rounded-lg border border-cold-600 border-opacity-50 font-normal hover:border-opacity-100',
+                'text-small gap-medium relative my-auto flex h-min w-full flex-col rounded-lg border border-cold-600 border-opacity-50 font-normal text-cold-800 hover:border-opacity-100',
                 className
             )}
         >
@@ -83,7 +83,7 @@ const ProposalCard = ({ item, className }: { item: DDAO.SharableProposal; classN
             >
                 <span className="text-medium">{localItem.title}</span>
             </Link>
-            <p className="px-large text-small whitespace-pre-wrap text-cold-600">
+            <p className="px-large text-small whitespace-pre-wrap text-cold-700">
                 {localItem.content}
             </p>
             {category !== ECategory.Worker && (
@@ -197,8 +197,11 @@ const ProposalCard = ({ item, className }: { item: DDAO.SharableProposal; classN
                         className="gap-small flex items-center hover:opacity-75"
                         href={build(['profile', localItem.proposer.toText()])}
                     >
-                        <AtIcon className="h-4 w-4 stroke-[1.5px]" />
-                        <span className="text-tiny font-light text-white">{proposer}</span>
+                        <Symbol
+                            capitalRaised={proposer.capitalRaised.toString()}
+                            className="mr-0 h-4 w-4"
+                        />
+                        <span className="text-tiny font-light text-white">{proposer.username}</span>
                     </Link>
                     <div className="gap-small flex items-center">
                         <AcornIcon className="h-4 w-4 text-white" />

@@ -1,6 +1,12 @@
 import User "users/User";
 import Users "users/Users";
 
+import Notification "notifications/Notification";
+import Notifications "notifications/Notifications";
+
+import DIP721 "../../core/dip721/Main";
+import DIP721Interface "../../core/dip721/Interface";
+
 import ICPUSDInterface "../../core/icpusd/Interface";
 import SplitInterface "../../core/split/Interface";
 import TreasuryInterface "../../core/treasury/Interface";
@@ -16,10 +22,10 @@ import E "../../common/Errors";
 
 import Base "../../library/Base";
 import Configs "../../library/Configs";
-import Date "../../library/Date";
 import E8S "../../library/E8S";
 import Format "../../library/Format";
 import Iter "../../library/Iter";
+import Map "../../library/Map";
 import Pagination "../../library/Pagination";
 
 import Principal "mo:base/Principal";
@@ -27,10 +33,41 @@ import Nat "mo:base/Nat";
 import Time "mo:base/Time";
 import Text "mo:base/Text";
 
-shared ({ caller = indicator }) actor class Facade() = this {
+(
+    with migration = func(
+        old : {
+            var users : Map.Map<Principal, { var avatar : ?Format.Picture; var username : Text; capitalRaised : Nat; creationDate : Time.Time; var links : [Format.Hyperlink]; var location : ?Text }>
+        }
+    ) : {
+        var users : Users.Users
+    } {
+        {
+
+            var users : Users.Users = do {
+                let newUsers : Users.Users = Map.new<Principal, User.User>();
+                for ((principal, user) in Map.entries(old.users)) {
+                    Map.put(
+                        newUsers,
+                        Map.PrincipalKey(principal),
+                        {
+                            var avatar = user.avatar;
+                            var username = user.username;
+                            var capitalRaised = user.capitalRaised;
+                            creationDate = user.creationDate;
+                            var links = user.links;
+                            var location = user.location
+                        },
+                    )
+                };
+                newUsers
+            }
+        }
+    }
+) shared ({ caller = indicator }) actor class Facade() = this {
         private stable let Indicator : IndicatorInterface.Indicator = actor (Principal.toText(indicator));
 
     private stable let users : Users.Users = Users.init();
+    private stable let notifications : Notifications.Notifications = Notifications.init();
 
     private stable let configs : Configs.Configs = Configs.make([
         ("MIN_USERNAME_LENGTH", #Nat(3)), /// Minimum length of a username
@@ -51,6 +88,10 @@ shared ({ caller = indicator }) actor class Facade() = this {
         ("UPDATE_LOCATION_FEE", #E8S(E8S.fromFloat(1.0))),
         ("UPDATE_AVATAR_FEE", #E8S(E8S.fromFloat(10.0))),
         ("UPDATE_HYPERLINKS_FEE", #E8S(E8S.fromFloat(10.0))),
+
+        /// New Configs
+        ("MAX_NOTIFICATION_SIZE", #Nat(50)),
+        ("MAX_NOTIFICATION_CAPACITY", #Nat(10)),
     ]);
 
     /// PROTECTED ////// MODIFIERS ////////////
@@ -69,6 +110,60 @@ shared ({ caller = indicator }) actor class Facade() = this {
     public shared ({ caller }) func putConfigs(entries : [(Configs.Key, Configs.SharableValue)]) : async () {
         await Indicator.expectAuthorized(caller, [#Indicator]);
         Configs.putBatch(configs, entries)
+    };
+
+    public shared ({ caller }) func updateCapitalRaised(principal : Principal, capitalRaised : Nat) : async () {
+        await Indicator.expectAuthorized(caller, [#Sales]);
+        let user : User.User = Users.user(users, principal);
+        User.updateCapitalRaised(user, capitalRaised)
+    };
+
+    public shared ({ caller }) func postUserNotification(principal : Principal, data : Notification.UserVariantParam) : async () {
+        await Indicator.expectAuthorized(caller, [#Axioms, #DAO, #Affiliate]);
+
+        let MAX_NOTIFICATION_SIZE : Nat = Configs.Nat(configs, "MAX_NOTIFICATION_SIZE");
+        let MAX_NOTIFICATION_CAPACITY : Nat = Configs.Nat(configs, "MAX_NOTIFICATION_CAPACITY");
+        Notifications.postUserNotification(notifications, principal, data, MAX_NOTIFICATION_SIZE, MAX_NOTIFICATION_CAPACITY)
+    };
+    public shared ({ caller }) func postUsersNotification(batch : Notifications.UsersBatch, data : Notification.UserVariantParam) : async () {
+        await Indicator.expectAuthorized(caller, [#Axioms, #DAO, #Affiliate]);
+
+        let MAX_NOTIFICATION_SIZE : Nat = Configs.Nat(configs, "MAX_NOTIFICATION_SIZE");
+        let MAX_NOTIFICATION_CAPACITY : Nat = Configs.Nat(configs, "MAX_NOTIFICATION_CAPACITY");
+        Notifications.postUsersNotification(notifications, batch, data, MAX_NOTIFICATION_SIZE, MAX_NOTIFICATION_CAPACITY)
+    };
+    public shared ({ caller }) func postUserNotifications(principal : Principal, batch : Notifications.UserNotificationsBatch) : async () {
+        await Indicator.expectAuthorized(caller, [#Axioms, #DAO, #Affiliate]);
+
+        let MAX_NOTIFICATION_SIZE : Nat = Configs.Nat(configs, "MAX_NOTIFICATION_SIZE");
+        let MAX_NOTIFICATION_CAPACITY : Nat = Configs.Nat(configs, "MAX_NOTIFICATION_CAPACITY");
+        Notifications.postUserNotifications(notifications, principal, batch, MAX_NOTIFICATION_SIZE, MAX_NOTIFICATION_CAPACITY)
+    };
+    public shared ({ caller }) func postUsersNotifications(batch : Notifications.UsersNotificationsBatch) : async () {
+        await Indicator.expectAuthorized(caller, [#Axioms, #DAO, #Affiliate]);
+
+        let MAX_NOTIFICATION_SIZE : Nat = Configs.Nat(configs, "MAX_NOTIFICATION_SIZE");
+        let MAX_NOTIFICATION_CAPACITY : Nat = Configs.Nat(configs, "MAX_NOTIFICATION_CAPACITY");
+        Notifications.postUsersNotifications(notifications, batch, MAX_NOTIFICATION_SIZE, MAX_NOTIFICATION_CAPACITY)
+    };
+
+    public shared ({ caller }) func postSystemNotification(data : Notification.SystemVariantParam) : async () {
+        await Indicator.expectAuthorized(caller, [#DAO, #Axioms]);
+
+        let MAX_NOTIFICATION_SIZE : Nat = Configs.Nat(configs, "MAX_NOTIFICATION_SIZE");
+        Notifications.postSystemNotification(notifications, data, MAX_NOTIFICATION_SIZE)
+    };
+    public shared ({ caller }) func postSystemNotifications(batch : Notifications.SystemNotificationsBatch) : async () {
+        await Indicator.expectAuthorized(caller, [#DAO, #Axioms]);
+
+        let MAX_NOTIFICATION_SIZE : Nat = Configs.Nat(configs, "MAX_NOTIFICATION_SIZE");
+        Notifications.postSystemNotifications(notifications, batch, MAX_NOTIFICATION_SIZE)
+    };
+    public shared ({ caller }) func postSystemGenericNotification(message : Text, link : ?Format.Hyperlink) : async () {
+        await Indicator.expectAuthorized(caller, [#Founder]);
+
+        let MAX_NOTIFICATION_SIZE : Nat = Configs.Nat(configs, "MAX_NOTIFICATION_SIZE");
+        Notifications.postSystemNotification(notifications, #SystemGeneric({ message; link; timestamp = Time.now() }), MAX_NOTIFICATION_SIZE)
     };
 
     /// PUBLIC ////// MODIFIERS ////////////
@@ -169,17 +264,28 @@ shared ({ caller = indicator }) actor class Facade() = this {
     public query func getUserIdentifier(from : User.IdentifierVariant) : async User.Identifier {
         Users.getIdentifier(users, from)
     };
+    public query func getUsersIdentifier() : async [User.Identifier] {
+        Users.getIdentifiers(users)
+    };
+    public query func getUsersPrincipal() : async [Principal] {
+        Users.getPrincipals(users)
+    };
     public query func getUsersCount() : async Nat {
         Users.getCount(users)
     };
+
     public query func getUser(principal : Principal) : async User.Sharable {
         Users.getUser(users, principal)
     };
     public query func getUsers(filter : Users.Filter, sort : Base.Sort<Users.Sort>) : async [User.Sharable] {
         Users.getUsers(users, filter, sort)
     };
-    public query ({ caller }) func getUsersPagination(filter : Users.Filter, sort : Base.Sort<Users.Sort>, page : Nat, limit : Nat) : async Pagination.Pagination<User.Sharable> {
+    public query func getUsersPagination(filter : Users.Filter, sort : Base.Sort<Users.Sort>, page : Nat, limit : Nat) : async Pagination.Pagination<User.Sharable> {
         let result : Users.Sharable = Users.getUsers(users, filter, sort);
         Pagination.paginate(result, page, limit)
+    };
+
+    public query ({ caller }) func getNotification() : async Notifications.Sharable {
+        Notifications.getNotification(notifications, caller)
     }
 }

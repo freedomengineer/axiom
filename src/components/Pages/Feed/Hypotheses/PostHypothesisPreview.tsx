@@ -21,10 +21,12 @@ import HypothesisCard from './HypothesisCard'
 
 const PostHypothesisPreview = ({
     item,
+    isEdit,
     onBack,
     onSubmit,
 }: {
     item: DAxioms.SharableHypothesis
+    isEdit?: { id: bigint; fieldId: string; content: string }
     onBack: () => void
     onSubmit?: () => void
 }) => {
@@ -34,12 +36,17 @@ const PostHypothesisPreview = ({
 
     const [terms, setTerms] = useState<[boolean, boolean]>([false, false])
     const [loading, setLoading] = useState(false)
+    const [isSufficient, setIsSufficient] = useState(true)
+
+    const fee = (
+        isEdit ? configs?.['HYPOTHESIS_EDIT_FEE'][1] : configs?.['HYPOTHESIS_PUBLISH_FEE'][1]
+    ) as bigint
 
     const post = async () => {
         setLoading(true)
-        await promise(
+        const approve = await promise(
             ACORN.call(agent).icrc2_approve({
-                amount: configs!['HYPOTHESIS_PUBLISH_FEE'][1] as bigint,
+                amount: fee,
                 spender: { owner: Treasury.principal, subaccount: [] },
                 fee: [],
                 from_subaccount: [],
@@ -51,15 +58,21 @@ const PostHypothesisPreview = ({
             'Approving ACORN to Axiom Treasury',
             'Approved ACORN to Axiom Treasury successfully!'
         )
+        if (!approve.success) {
+            setLoading(false)
+            return
+        }
         const res = await promise(
-            Axioms.call(agent).publishHypothesis(item.fieldId, item.content),
-            'Posting hypothesis',
-            'Posted hypothesis successfully!'
+            isEdit
+                ? Axioms.call(agent).editHypothesis(item.id, item.content)
+                : Axioms.call(agent).publishHypothesis(item.fieldId, item.content),
+            `${isEdit ? 'Editing' : 'Posting'} hypothesis`,
+            `${isEdit ? 'Edited' : 'Posted'} hypothesis successfully!`
         )
         setLoading(false)
         if (res.success) {
             onSubmit?.()
-            navigate(build(['feed', res.result]))
+            navigate(build(['feed', isEdit?.id ?? (res.result as bigint)]))
         }
     }
 
@@ -85,8 +98,9 @@ const PostHypothesisPreview = ({
                 <p className="text-medium text-center font-light">Confirmation</p>
                 <BalanceChanges
                     token="ACORN"
-                    amount={configs?.['HYPOTHESIS_PUBLISH_FEE'][1] as bigint}
+                    amount={fee}
                     sign="-"
+                    setIsSufficient={setIsSufficient}
                 />
                 <div
                     className={cn(
@@ -138,23 +152,21 @@ const PostHypothesisPreview = ({
                     borderColor="border-cold-800"
                 />
                 <div className="gap-small mt-auto flex justify-between">
-                    <button
-                        className="button w-auto min-w-36 bg-cold-700 hover:bg-cold-800 md:min-w-48"
-                        onClick={() => onBack()}
-                    >
+                    <button className="button w-full bg-cold-800" onClick={() => onBack()}>
                         Back to Form
                     </button>
                     <button
-                        className="button w-auto min-w-36 md:min-w-48"
+                        className="button w-full"
                         onClick={post}
-                        disabled={!terms[0] || !terms[1] || loading}
+                        disabled={!terms[0] || !terms[1] || !isSufficient || loading}
                     >
                         {loading ? (
                             <Spinner color="white" className="h-4 w-4 md:h-5 md:w-5" />
+                        ) : !isSufficient ? (
+                            <span>Insufficient ACORN balance</span>
                         ) : (
                             <>
-                                Post with{' '}
-                                {valueOf(configs?.['HYPOTHESIS_PUBLISH_FEE'][1] as bigint)}{' '}
+                                {isEdit ? 'Edit' : 'Post'} with {valueOf(fee)}{' '}
                                 <AcornIcon className="h-4 w-4 stroke-[1.5px] md:h-5 md:w-5" />
                             </>
                         )}

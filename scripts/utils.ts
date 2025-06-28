@@ -52,8 +52,8 @@ const _getDeploymentArgs = (canister: CanisterName, actorsPrincipal: IndicatorAc
             [
                 {
                     Init: {
-                        token_symbol: 'Acorn Token',
-                        token_name: 'ACORN',
+                        token_symbol: 'ACORN',
+                        token_name: 'Acorn Token',
                         minting_account: { owner: actorsPrincipal['Indicator'], subaccount: [] },
                         transfer_fee: 0,
                         metadata: [

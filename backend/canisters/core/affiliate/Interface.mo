@@ -1,6 +1,7 @@
 import User "users/User";
 import Configs "../../library/Configs";
 import Earning "../../library/Earning";
+import Pagination "../../library/Pagination";
 
 module {
     public type Affiliate = actor {
@@ -12,6 +13,8 @@ module {
         withdrawAll : shared () -> async ();
         getConfig : query (Configs.Key) -> async Configs.SharableValue;
         getConfigs : query () -> async Configs.Sharable;
+        getTop : query ({ #Referrers }) -> async Pagination.TopNonPagination;
+        getTopPagination : query ({ #Referrers }, Nat, Nat) -> async Pagination.TopPagination;
         getUser : query (Principal) -> async User.Sharable;
         getEarning : query (Principal) -> async Earning.Sharable;
         expectUserNotFound : query (Principal) -> async ();

@@ -4,9 +4,9 @@
 
 
 - Attributes: `User`, `Users`
-- Interfaces: `IndicatorInterface`, `SplitInterface`
+- Interfaces: `IndicatorInterface`, `FacadeInterface`, `SplitInterface`
 - Commons: `C`, `E`
-- Libraries: `Configs`, `E8S`, `Earning`, `Iter`, `Proportion`
+- Libraries: `Configs`, `E8S`, `Earning`, `Iter`, `Pagination`, `Proportion`
 - Bases: `Principal`, `Nat`, `Time`
 ## Modifiers
 
@@ -135,7 +135,33 @@
 ]
 ```
 
-### 3. `getUser(principal)` returns `User.Sharable`
+### 3. `getTop(category)` returns `Pagination.TopNonPagination`
+
+#### Arguments:
+
+```json
+{"category": "#REFERRERS"}
+```
+
+#### Returns:
+```json
+{"result": [["Principal", "Nat"]], "callerRank": "Nat"}
+```
+
+### 4. `getTopPagination(category, page, limit)` returns `Pagination.TopPagination`
+
+#### Arguments:
+
+```json
+{"category": "#REFERRERS", "page": "Nat", "limit": "Nat"}
+```
+
+#### Returns:
+```json
+{"result": [["Principal", "Nat"]], "callerRank": "Nat", "is": "Nat", "of": "Nat"}
+```
+
+### 5. `getUser(principal)` returns `User.Sharable`
 
 #### Arguments:
 
@@ -148,7 +174,7 @@
 {"referrer": "Principal", "referrals": "Nat", "earning": {"revenue": "Nat", "balance": "Nat", "lastWithdrawAt": "Time"}}
 ```
 
-### 4. `getEarning(principal)` returns `Earning.Sharable`
+### 6. `getEarning(principal)` returns `Earning.Sharable`
 
 #### Arguments:
 
@@ -161,7 +187,7 @@
 {"revenue": "Nat", "balance": "Nat", "lastWithdrawAt": "Time"}
 ```
 
-### 5. `expectUserNotFound(principal)` returns `()`
+### 7. `expectUserNotFound(principal)` returns `()`
 
 #### Arguments:
 

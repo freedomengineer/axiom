@@ -80,6 +80,11 @@ export const idlFactory = ({ IDL }) => {
   const Treasury = IDL.Service({
     'claim' : IDL.Func([IDL.Principal, IDL.Nat], [], []),
     'delegatedClaim' : IDL.Func([Variant, IDL.Principal, IDL.Nat], [], []),
+    'delegatedExternalTransfer' : IDL.Func(
+        [Variant, IDL.Principal, IDL.Nat],
+        [],
+        [],
+      ),
     'externalMint' : IDL.Func([IDL.Principal, IDL.Nat], [], []),
     'externalTransfer' : IDL.Func([IDL.Principal, IDL.Nat], [], []),
     'getAllocated' : IDL.Func([Variant], [Sharable], ['query']),

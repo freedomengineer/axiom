@@ -8,12 +8,10 @@
     "siteLogo": "/images/acorn.png",
     "siteBanner": "/images/banner.png",
     "socials": {
-        "GitHub": "https://",
-        "Instagram": "https://",
-        "Reddit": "https://",
-        "Telegram": "https://",
-        "TikTok": "https://",
-        "Twitter": "https://"
+        "GitHub": "https://github.com/freedomengineer",
+        "X (Twitter)": "https://x.com/axiom_info",
+        "YouTube": "https://www.youtube.com/@axiom_show",
+        "Discord": "https://discord.gg/qsZK9ggzaH"
     },
     "routes": {
         "Home": {
@@ -62,29 +60,31 @@
         },
         "ACE Dashboard": {
             "url": "/dashboard",
-            "description": "Axiom Dashboard",
+            "description": "Autonomous Cryptographic Enterprise (ACE) Dashboard",
             "routes": {
                 "Open Proposal": {
                     "url": "/dashboard/open",
-                    "description": "Open A Proposal"
+                    "description": "Open A Proposal in The Axiom DAO (ACE)"
                 },
                 "Proposals": {
                     "url": "/dashboard/proposals",
-                    "description": "All Proposals"
+                    "description": "All Proposals of The Axiom DAO (ACE)"
                 },
                 "Custodians": {
                     "url": "/dashboard/custodians",
-                    "description": "Custodians Of The DAO"
-                }
-            }
-        },
-        "Assets": {
-            "url": "/assets",
-            "description": "Assets Dashboard",
-            "routes": {
+                    "description": "Custodians of The Axiom DAO (ACE)"
+                },
+                "Leaderboard": {
+                    "url": "/dashboard/leaderboard",
+                    "description": "Leaderboard of The Axiom"
+                },
+                "Token Charts": {
+                    "url": "/dashboard/assets",
+                    "description": "Token Charts of The Axiom"
+                },
                 "Memberships": {
-                    "url": "/assets/memberships",
-                    "description": "Membership Sales"
+                    "url": "/dashboard/memberships",
+                    "description": "Memberships Sales of The Axiom"
                 }
             }
         },
@@ -95,14 +95,6 @@
                 "Axiom FAQ": {
                     "url": "/school/axiom_faq",
                     "description": "Axiom FAQ"
-                },
-                "Roadmap": {
-                    "url": "/school/roadmap",
-                    "description": "Axiom Roadmap"
-                },
-                "Whitepaper": {
-                    "url": "/school/whitepaper",
-                    "description": "Axiom Whitepaper"
                 }
             }
         },
@@ -117,14 +109,6 @@
                 "My Bookmarks": {
                     "url": "/profile/my_bookmarks",
                     "description": "My Bookmarks"
-                },
-                "My Ballots": {
-                    "url": "/profile/my_ballots",
-                    "description": "My Ballots"
-                },
-                "My Votes": {
-                    "url": "/profile/my_votes",
-                    "description": "My Votes Dashboard"
                 }
             }
         }

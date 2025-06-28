@@ -3,7 +3,9 @@ import { Menu, MenuHandler, MenuList } from '@material-tailwind/react'
 import { useState } from 'react'
 
 import Spinner from '@components/Primitives/Spinner'
+import { Symbol } from '@components/Shared/Username'
 import useAuth from '@hooks/useAuth'
+import { Displayer } from '@hooks/useUsername'
 import cn from '@libs/class'
 import { EVote, VOTES } from '@utils/dashboard/proposal'
 import { DDAO, DFacade } from 'shared/types/services'
@@ -15,7 +17,7 @@ const DelegatedProposalVote = ({
     voters,
     className = '',
 }: {
-    vote: [Opt<DDAO.Delegable__2>, string | null]
+    vote: [Opt<DDAO.Delegable__2>, Displayer | null]
     handleVote: (to: Principal) => Promise<void>
     loading: boolean
     voters: [DFacade.Identifier[], DFacade.Identifier[], DFacade.Identifier[], DFacade.Identifier[]]
@@ -53,7 +55,11 @@ const DelegatedProposalVote = ({
                                 <>
                                     <hr className="hidden h-6 w-[2px] bg-white md:block" />
                                     <div className="gap-small flex items-center">
-                                        <span>@{vote[1]}</span>
+                                        <Symbol
+                                            capitalRaised={vote[1]?.capitalRaised.toString() ?? ''}
+                                            className="mr-0 h-4 w-4"
+                                        />
+                                        <span>{vote[1]?.username}</span>
                                     </div>
                                 </>
                             )}
@@ -76,7 +82,13 @@ const DelegatedProposalVote = ({
                                         handleVote(voter.principal)
                                     }}
                                 >
-                                    <span>@{voter.username}</span>
+                                    <div className="gap-small flex items-center">
+                                        <Symbol
+                                            capitalRaised={voter.capitalRaised.toString()}
+                                            className="mr-0 h-4 w-4"
+                                        />
+                                        <span>{voter.username}</span>
+                                    </div>
                                 </button>
                             </div>
                         )
@@ -94,7 +106,13 @@ const DelegatedProposalVote = ({
                                         handleVote(voter.principal)
                                     }}
                                 >
-                                    <span>@{voter.username}</span>
+                                    <div className="gap-small flex items-center">
+                                        <Symbol
+                                            capitalRaised={voter.capitalRaised.toString()}
+                                            className="mr-0 h-4 w-4"
+                                        />
+                                        <span>{voter.username}</span>
+                                    </div>
                                 </button>
                             </div>
                         )
@@ -112,7 +130,13 @@ const DelegatedProposalVote = ({
                                         handleVote(voter.principal)
                                     }}
                                 >
-                                    <span>@{voter.username}</span>
+                                    <div className="gap-small flex items-center">
+                                        <Symbol
+                                            capitalRaised={voter.capitalRaised.toString()}
+                                            className="mr-0 h-4 w-4"
+                                        />
+                                        <span>{voter.username}</span>
+                                    </div>
                                 </button>
                             </div>
                         )
@@ -128,7 +152,13 @@ const DelegatedProposalVote = ({
                                         handleVote(voter.principal)
                                     }}
                                 >
-                                    <span>@{voter.username}</span>
+                                    <div className="gap-small flex items-center">
+                                        <Symbol
+                                            capitalRaised={voter.capitalRaised.toString()}
+                                            className="mr-0 h-4 w-4"
+                                        />
+                                        <span>{voter.username}</span>
+                                    </div>
                                 </button>
                             </div>
                         )

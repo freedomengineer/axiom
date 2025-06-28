@@ -5,9 +5,11 @@ import HypothesisCard from '../Feed/Hypotheses/HypothesisCard'
 const AxiomsTab = ({ axioms }: { axioms: DAxioms.SharableHypothesis[] }) => {
     if (axioms.length === 0) {
         return (
-            <p className="text-normal text-center font-light text-cold-800">
-                User has no adopted axioms yet
-            </p>
+            <div className="flex h-full w-full flex-col items-center justify-center text-center">
+                <p className="text-tiny font-normal text-cold-700">
+                    User has not adopted any axioms yet.
+                </p>
+            </div>
         )
     }
 

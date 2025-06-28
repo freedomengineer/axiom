@@ -13,6 +13,7 @@ const Popup = ({
     href,
     Icon,
     className,
+    zIndex = 9999,
     children,
 }: {
     open: boolean
@@ -21,6 +22,7 @@ const Popup = ({
     href?: string
     Icon?: React.ReactNode
     className?: string
+    zIndex?: number
     children: React.ReactNode
 }) => {
     if (!open) return null
@@ -38,17 +40,20 @@ const Popup = ({
     if (!visible) return null
 
     return createPortal(
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black bg-opacity-50 text-cold-700">
+        <div
+            className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 text-cold-700"
+            style={{ zIndex }}
+        >
             <div
                 className={cn(
                     'relative h-fit max-w-[95vw] rounded-lg bg-white shadow-lg md:max-w-[85vw]',
                     className
                 )}
             >
-                <div className="px-semilarge py-medium flex justify-between border-b border-gray-200">
+                <div className="px-semilarge py-medium flex items-center justify-between border-b border-gray-200">
                     <div className="gap-medium flex items-center">
                         {Icon}
-                        <h2 className="text-medium font-light">{title}</h2>
+                        <h2 className="text-normal font-light">{title}</h2>
                     </div>
                     <div className="gap-medium flex items-center justify-end">
                         {href && (
@@ -62,7 +67,8 @@ const Popup = ({
                                 prefetch
                                 openInNewTab
                             >
-                                <span className="font-light">Open in new tab</span>
+                                <span className="hidden font-light md:block">Open in new tab</span>
+                                <span className="block font-light md:hidden">New tab</span>
                                 <NewTabIcon className="h-3 w-3 stroke-[1.5px] md:h-4 md:w-4" />
                             </Link>
                         )}
@@ -73,7 +79,7 @@ const Popup = ({
                         )}
                     </div>
                 </div>
-                <div className="py-semilarge px-extralarge mx-auto h-auto max-h-[80dvh] w-full max-w-[95vw] overflow-y-auto md:max-w-[85vw]">
+                <div className="py-semilarge px-extralarge mx-auto h-auto max-h-[80dvh] w-full overflow-y-auto">
                     {children}
                 </div>
             </div>

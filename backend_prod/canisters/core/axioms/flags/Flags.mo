@@ -44,10 +44,10 @@ module {
 
     private let { Key } = Flag;
 
-    private func _votedBy((h, _) : Entry, x : User) : Bool = User.hasFlagVoted(x, h);
-    private func _requestedBy(x : Principal) : Entry -> Bool = func(_, e) = e.requester == x;
-    private func _requestedIn(x : Category) : Entry -> Bool = func(h, _) = h.category == x;
-    private func _withStatus(x : Status) : Entry -> Bool = func(_, e) = e.status == x;
+    private func _voter((h, _) : Entry, x : User) : Bool = User.hasFlagVoted(x, h);
+    private func _requester(x : Principal) : Entry -> Bool = func(_, e) = e.requester == x;
+    private func _category(x : Category) : Entry -> Bool = func(h, _) = h.category == x;
+    private func _status(x : Status) : Entry -> Bool = func(_, e) = e.status == x;
 
     private func _recent(orderBy : Order) : Compare<Entry> = switch (orderBy) {
         case (#ascending) func((_, a), (_, b)) = Int.compare(a.requestDate, b.requestDate);
@@ -61,10 +61,10 @@ module {
     /// PUBLIC ////// DECLARATIONS ////////////
 
     public type Filter = {
-        requestedBy : ?Principal;
-        requestedIn : ?Category;
-        votedBy : ?Principal;
-        withStatus : ?Status
+        requester : ?Principal;
+        voter : ?Principal;
+        category : ?Category;
+        status : ?Status
     };
     public type Sort = {
         #recent;
@@ -108,7 +108,8 @@ module {
         )
     };
 
-    public func cleanUpExpiredFlags(__ : Self, duration : Nat) {
+    public func cleanUpExpiredFlags(__ : Self, duration : Nat) : List<Header> {
+        var expired : List<Header> = List.nil();
         __.requesting := List.filter<Header>(
             __.requesting,
             func(e) {
@@ -116,12 +117,14 @@ module {
                 switch (Flag.isExpired(x, duration)) {
                     case (true) {
                         Flag.expired(x);
+                        expired := List.push(e, expired);
                         false
                     };
                     case (false) true
                 }
             },
-        )
+        );
+        expired
     };
 
     /// PUBLIC ////// ACCESSORS ////////////
@@ -145,24 +148,24 @@ module {
         let toEntry : Header -> Entry = func(h) = (h, flag(__, h));
         let toSharable : Entry -> SharableFlag = func(h, entry) = Flag.toSharable(entry, h, getCallerVote);
 
-        switch (filter.votedBy) {
+        switch (filter.voter) {
             case (null) {};
             case (?voter) filtered := ?Map.getKeysMap(getUser(voter).votedFlags, toEntry)
         };
-        switch (filter.requestedBy, filtered) {
+        switch (filter.requester, filtered) {
             case (null, _) {};
-            case (?requester, null) filtered := ?Map.getEntriesFilterMap<Header, Flag, Entry>(__.requests, func(x) = switch (_requestedBy(requester)(x)) { case (true) ?x; case (false) null });
-            case (?requester, ?prevResult) filtered := ?Array.filter<Entry>(prevResult, _requestedBy(requester))
+            case (?requester, null) filtered := ?Map.getEntriesFilterMap<Header, Flag, Entry>(__.requests, func(x) = switch (_requester(requester)(x)) { case (true) ?x; case (false) null });
+            case (?requester, ?prevResult) filtered := ?Array.filter<Entry>(prevResult, _requester(requester))
         };
-        switch (filter.requestedIn, filtered) {
+        switch (filter.category, filtered) {
             case (null, _) {};
-            case (?category, null) filtered := ?Map.getEntriesFilterMap<Header, Flag, Entry>(__.requests, func(x) = switch (_requestedIn(category)(x)) { case (true) ?x; case (false) null });
-            case (?category, ?prevResult) filtered := ?Array.filter<Entry>(prevResult, _requestedIn(category))
+            case (?category, null) filtered := ?Map.getEntriesFilterMap<Header, Flag, Entry>(__.requests, func(x) = switch (_category(category)(x)) { case (true) ?x; case (false) null });
+            case (?category, ?prevResult) filtered := ?Array.filter<Entry>(prevResult, _category(category))
         };
-        switch (filter.withStatus, filtered) {
+        switch (filter.status, filtered) {
             case (null, _) {};
-            case (?status, null) filtered := ?Map.getEntriesFilterMap<Header, Flag, Entry>(__.requests, func(x) = switch (_withStatus(status)(x)) { case (true) ?x; case (false) null });
-            case (?status, ?prevResult) filtered := ?Array.filter<Entry>(prevResult, _withStatus(status))
+            case (?status, null) filtered := ?Map.getEntriesFilterMap<Header, Flag, Entry>(__.requests, func(x) = switch (_status(status)(x)) { case (true) ?x; case (false) null });
+            case (?status, ?prevResult) filtered := ?Array.filter<Entry>(prevResult, _status(status))
         };
 
         switch (sort.by, sort.order, filtered) {

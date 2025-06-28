@@ -140,16 +140,6 @@ module {
         }
     };
 
-    /// PRIVATE ////// ACCESSORS ////////////
-
-    private func _retries(__ : Self) : Nat {
-        var retries : Nat = 0;
-        for (milestone in __.timeline.vals()) {
-            if (milestone.status == #Retried) retries += 1
-        };
-        retries
-    };
-
     /// PUBLIC ////// MODIFIERS ////////////
 
     // public func retryCode(__ : Self, updatedContent : Text, updatedReward : Nat, updatedInstallation : SharableInstallation, getNow : () -> Int) {
@@ -218,6 +208,14 @@ module {
 
     /// PUBLIC ////// ACCESSORS ////////////
 
+    public func retries(__ : Self) : Nat {
+        var retries : Nat = 0;
+        for (milestone in __.timeline.vals()) {
+            if (milestone.status == #Retried) retries += 1
+        };
+        retries
+    };
+
     public func variant(__ : Self) : Detachment.Variant = Detachment.variant(__.detachment);
 
     public func status(__ : Self) : Status = __.timeline[__.timeline.size() - 1].status;
@@ -237,7 +235,7 @@ module {
     public func isExpired(__ : Self, duration : Nat, getNow : () -> Int) : Bool = Date.getMidnightsElapsed(getNow(), lastUpdatedDate(__)) >= duration;
 
     public func votable(__ : Self) : Bool = (status(__) == #Proposed or status(__) == #Retried);
-    public func retriable(__ : Self, retryLimit : Nat) : Bool = switch (status(__), _retries(__) < retryLimit) {
+    public func retriable(__ : Self, retryLimit : Nat) : Bool = switch (status(__), retries(__) < retryLimit) {
         case (#Failed(_), true) true;
         case (#Rejected, true) true;
         case (#Expired, true) true;

@@ -1,4 +1,5 @@
 import Spinner from '@components/Primitives/Spinner'
+import { Displayer } from '@hooks/useUsername'
 import cn from '@libs/class'
 import { EVote, VOTES } from '@utils/dashboard/proposal'
 import { DDAO } from 'shared/types/services'
@@ -12,7 +13,7 @@ const ProposalVote = ({
     className = '',
 }: {
     choice: EVote
-    vote: [Opt<DDAO.Delegable__2>, string | null]
+    vote: [Opt<DDAO.Delegable__2>, Displayer | null]
     handleVote: () => void
     loading: boolean
     className?: string

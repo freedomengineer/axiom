@@ -49,6 +49,10 @@ export interface Sharable__3 {
 export interface Treasury {
   'claim' : ActorMethod<[Principal, bigint], undefined>,
   'delegatedClaim' : ActorMethod<[Variant, Principal, bigint], undefined>,
+  'delegatedExternalTransfer' : ActorMethod<
+    [Variant, Principal, bigint],
+    undefined
+  >,
   'externalMint' : ActorMethod<[Principal, bigint], undefined>,
   'externalTransfer' : ActorMethod<[Principal, bigint], undefined>,
   'getAllocated' : ActorMethod<[Variant], Sharable>,

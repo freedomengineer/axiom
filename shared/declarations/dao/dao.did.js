@@ -52,7 +52,7 @@ export const idlFactory = ({ IDL }) => {
     'callerBallot' : IDL.Opt(IDL.Nat),
   });
   const Filter__1 = IDL.Record({
-    'votedBy' : IDL.Opt(IDL.Principal),
+    'voter' : IDL.Opt(IDL.Principal),
     'isCustodian' : IDL.Opt(IDL.Bool),
   });
   const Sort__2 = IDL.Variant({ 'token' : IDL.Null, 'voter' : IDL.Null });
@@ -182,12 +182,6 @@ export const idlFactory = ({ IDL }) => {
     'detachment' : SharableDetachment,
     'timeline' : IDL.Vec(Milestone),
   });
-  const ProposalVariant = IDL.Variant({
-    'Code' : IDL.Null,
-    'Field' : IDL.Null,
-    'Configs' : IDL.Null,
-    'Worker' : IDL.Null,
-  });
   const StatusVariant = IDL.Variant({
     'Failed' : IDL.Null,
     'Approved' : IDL.Null,
@@ -197,11 +191,17 @@ export const idlFactory = ({ IDL }) => {
     'Retried' : IDL.Null,
     'Expired' : IDL.Null,
   });
+  const ProposalVariant = IDL.Variant({
+    'Code' : IDL.Null,
+    'Field' : IDL.Null,
+    'Configs' : IDL.Null,
+    'Worker' : IDL.Null,
+  });
   const Filter = IDL.Record({
-    'votedBy' : IDL.Opt(IDL.Principal),
-    'proposedBy' : IDL.Opt(IDL.Principal),
-    'proposedIn' : IDL.Opt(ProposalVariant),
-    'withStatus' : IDL.Opt(StatusVariant),
+    'status' : IDL.Opt(StatusVariant),
+    'voter' : IDL.Opt(IDL.Principal),
+    'category' : IDL.Opt(ProposalVariant),
+    'proposer' : IDL.Opt(IDL.Principal),
   });
   const Sort__1 = IDL.Variant({
     'icpReward' : IDL.Null,

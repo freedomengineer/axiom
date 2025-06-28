@@ -3,10 +3,10 @@
 ## Dependencies
 
 
-- Attributes: `Proposal`, `Proposals`, `Nominees`, `Nominee`, `Users`, `User`, `Detachment`, `Commitments`, `Installation`
-- Interfaces: `IndicatorInterface`, `EscrowInterface`, `SplitInterface`, `TreasuryInterface`, `AxiomsInterface`
+- Attributes: `Proposal`, `Proposals`, `Nominees`, `Nominee`, `Users`, `User`, `Detachment`, `Commitments`, `Installation`, `Notification`
+- Interfaces: `IndicatorInterface`, `FacadeInterface`, `EscrowInterface`, `SplitInterface`, `TreasuryInterface`, `AxiomsInterface`
 - Commons: `C`, `E`
-- Libraries: `Base`, `Configs`, `Count`, `E8S`, `Earning`, `Delegable`, `Iter`, `Pagination`, `Proportion`, `Set`, `UniformBinaryVotes`, `Version`
+- Libraries: `Base`, `Configs`, `Count`, `Delegable`, `E8S`, `Earning`, `Iter`, `List`, `Pagination`, `Proportion`, `Set`, `UniformBinaryVotes`, `Version`
 - Bases: `Principal`, `Text`, `Time`, `Error`, `Nat`, `Int`, `Debug`, `Timer`
 ## Modifiers
 
@@ -390,7 +390,7 @@
 
 ```json
 {
-  "filter": {"votedBy": "Principal", "isCustodian": "Bool"},
+  "filter": {"voter": "Principal", "isCustodian": "Bool"},
   "sort": {"by": "#VOTER | #TOKEN", "order": "#ASCENDING | #DESCENDING"}
 }
 ```
@@ -406,7 +406,7 @@
 
 ```json
 {
-  "filter": {"votedBy": "Principal", "isCustodian": "Bool"},
+  "filter": {"voter": "Principal", "isCustodian": "Bool"},
   "sort": {"by": "#VOTER | #TOKEN", "order": "#ASCENDING | #DESCENDING"},
   "page": "Nat",
   "limit": "Nat"
@@ -531,10 +531,10 @@
 ```json
 {
   "filter": {
-    "proposedBy": "Principal",
-    "proposedIn": "#CODE | #FIELD | #WORKER | #CONFIGS",
-    "votedBy": "Principal",
-    "withStatus": "#RETRIED | #PROPOSED | #APPROVED | #EXECUTED | #FAILED | #REJECTED | #EXPIRED"
+    "proposer": "Principal",
+    "category": "#CODE | #FIELD | #WORKER | #CONFIGS",
+    "voter": "Principal",
+    "status": "#RETRIED | #PROPOSED | #APPROVED | #EXECUTED | #FAILED | #REJECTED | #EXPIRED"
   },
   "sort": {"by": "#RECENT | #UPDATED | #ACORNREWARD | #ICPREWARD", "order": "#ASCENDING | #DESCENDING"}
 }
@@ -643,10 +643,10 @@
 ```json
 {
   "filter": {
-    "proposedBy": "Principal",
-    "proposedIn": "#CODE | #FIELD | #WORKER | #CONFIGS",
-    "votedBy": "Principal",
-    "withStatus": "#RETRIED | #PROPOSED | #APPROVED | #EXECUTED | #FAILED | #REJECTED | #EXPIRED"
+    "proposer": "Principal",
+    "category": "#CODE | #FIELD | #WORKER | #CONFIGS",
+    "voter": "Principal",
+    "status": "#RETRIED | #PROPOSED | #APPROVED | #EXECUTED | #FAILED | #REJECTED | #EXPIRED"
   },
   "sort": {"by": "#RECENT | #UPDATED | #ACORNREWARD | #ICPREWARD", "order": "#ASCENDING | #DESCENDING"},
   "page": "Nat",
