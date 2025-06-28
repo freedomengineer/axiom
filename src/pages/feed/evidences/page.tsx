@@ -44,7 +44,7 @@ const EvidencesPage = () => {
                     hardSort={filterSortData.sort}
                     query={Axioms.call(agent, true).getEvidencesPagination}
                     className="h-full w-full"
-                    size={12n}
+                    size={6n}
                 />
             </div>
         </>

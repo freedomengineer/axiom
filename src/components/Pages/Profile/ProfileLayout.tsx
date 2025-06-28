@@ -26,7 +26,6 @@ import { cacheUsername } from '@hooks/useUsername'
 import cn from '@libs/class'
 import { success } from '@libs/toastify'
 import { buildBlobImage } from '@libs/url'
-import { parseFilterFromObj, parseSortFromObj } from 'shared/default/filter_sort'
 import { DAxioms, DDAO, DFacade } from 'shared/types/services'
 import { Axioms, DAO, Facade, Sales } from 'shared/utils/services'
 import { Unwrap } from 'shared/utils/typings'
@@ -116,29 +115,8 @@ const ProfileLayout = ({ id }: { id?: string }) => {
         dao: DDAO.Sharable__1
         axioms: DAxioms.Sharable
     }>()
-    const [userData, setUserData] = useState<{
-        [EFullTab.Packages]: ParsedPackages<EPackages> | null
-        [EFullTab.Axioms]: DAxioms.SharableHypothesis[] | null
-        [EFullTab.Fields]: DAxioms.SharableField[] | null
-        [EFullTab.PublishedHypotheses]: DAxioms.SharableHypothesis[] | null
-        [EFullTab.VotedHypotheses]: DAxioms.SharableHypothesis[] | null
-        [EFullTab.PublishedEvidences]: DAxioms.SharableEvidence[] | null
-        [EFullTab.VotedEvidences]: DAxioms.SharableEvidence[] | null
-        [EFullTab.OpenedProposals]: DDAO.SharableProposal[] | null
-        [EFullTab.VotedProposals]: DDAO.SharableProposal[] | null
-    }>({
-        [EFullTab.Packages]: null,
-        [EFullTab.Axioms]: null,
-        [EFullTab.Fields]: null,
-        [EFullTab.PublishedHypotheses]: null,
-        [EFullTab.VotedHypotheses]: null,
-        [EFullTab.PublishedEvidences]: null,
-        [EFullTab.VotedEvidences]: null,
-        [EFullTab.OpenedProposals]: null,
-        [EFullTab.VotedProposals]: null,
-    })
+    const [userPackages, setUserPackages] = useState<ParsedPackages<EPackages>>()
     const [open, setOpen] = useState<EPopup>()
-    const [loading, setLoading] = useState(true)
     const [loadingFollow, setLoadingFollow] = useState(false)
     const [copied, setCopied] = useState(false)
     try {
@@ -169,90 +147,24 @@ const ProfileLayout = ({ id }: { id?: string }) => {
 
     useEffect(() => {
         try {
-            if (!salesConfigs || userData[fullTab] !== null) return
+            if (!salesConfigs || userPackages) return
 
-            setLoading(true)
-
-            switch (fullTab) {
-                case EFullTab.Packages:
-                    Promise.all([
-                        Sales.call().getOwnedPackages(profilePrincipal),
-                        Sales.call().getOwnedAchievementPackages(profilePrincipal),
-                    ]).then(([memberships, achievements]) =>
-                        setUserData((prev) => ({
-                            ...prev,
-                            [ETab.Packages]: [
-                                ...parseMemberships(memberships, salesConfigs),
-                                ...parseAchievements(achievements, salesConfigs),
-                            ] as any,
-                        }))
-                    )
-                    break
-                case EFullTab.Fields:
-                    Axioms.call(agent)
-                        .getFields(
-                            parseFilterFromObj('field', {
-                                member: profilePrincipal.toText(),
-                            }),
-                            parseSortFromObj('field', { by: 'recent', order: 'descending' })
-                        )
-                        .then((res) => setUserData((prev) => ({ ...prev, [EFullTab.Fields]: res })))
-                    break
-                case EFullTab.Axioms:
-                case EFullTab.PublishedHypotheses:
-                case EFullTab.VotedHypotheses:
-                    Axioms.call(agent)
-                        .getHypotheses(
-                            parseFilterFromObj('hypothesis', {
-                                [{
-                                    [EFullTab.Axioms]: 'axiomsFrom',
-                                    [EFullTab.PublishedHypotheses]: 'publisher',
-                                    [EFullTab.VotedHypotheses]: 'voter',
-                                }[fullTab]]: profilePrincipal.toText(),
-                            }),
-                            parseSortFromObj('hypothesis', { by: 'recent', order: 'descending' })
-                        )
-                        .then((res) => setUserData((prev) => ({ ...prev, [fullTab]: res })))
-                    break
-                case EFullTab.PublishedEvidences:
-                case EFullTab.VotedEvidences:
-                    Axioms.call(agent)
-                        .getEvidences(
-                            parseFilterFromObj('evidence', {
-                                [{
-                                    [EFullTab.PublishedEvidences]: 'publisher',
-                                    [EFullTab.VotedEvidences]: 'voter',
-                                }[fullTab]]: profilePrincipal.toText(),
-                            }),
-                            parseSortFromObj('evidence', { by: 'recent', order: 'descending' })
-                        )
-                        .then((res) => setUserData((prev) => ({ ...prev, [fullTab]: res })))
-                    break
-                case EFullTab.OpenedProposals:
-                case EFullTab.VotedProposals:
-                    DAO.call(agent)
-                        .getProposals(
-                            parseFilterFromObj('proposal', {
-                                [{
-                                    [EFullTab.OpenedProposals]: 'proposer',
-                                    [EFullTab.VotedProposals]: 'voter',
-                                }[fullTab]]: profilePrincipal.toText(),
-                            }),
-                            parseSortFromObj('proposal', { by: 'recent', order: 'descending' })
-                        )
-                        .then((res) => setUserData((prev) => ({ ...prev, [fullTab]: res })))
-                    break
-            }
-        } catch {
-        } finally {
-            setLoading(false)
-        }
-    }, [salesConfigs, fullTab])
+            Promise.all([
+                Sales.call(agent, true).getOwnedPackages(profilePrincipal),
+                Sales.call(agent, true).getOwnedAchievementPackages(profilePrincipal),
+            ]).then(([memberships, achievements]) =>
+                setUserPackages([
+                    ...parseMemberships(memberships, salesConfigs),
+                    ...parseAchievements(achievements, salesConfigs),
+                ] as any)
+            )
+        } catch {}
+    }, [salesConfigs])
 
     if (!profileUser) return null
 
     const dataCounts = {
-        [EFullTab.Packages]: userData[EFullTab.Packages]?.length ?? 'N/A',
+        [EFullTab.Packages]: userPackages?.length ?? 'N/A',
         [EFullTab.Axioms]: profileUser.axioms.axioms.length,
         [EFullTab.Fields]: profileUser.axioms.joinedFields.length,
         [EFullTab.PublishedHypotheses]: profileUser.axioms.hypotheses.length,
@@ -573,24 +485,13 @@ const ProfileLayout = ({ id }: { id?: string }) => {
                     >
                         {
                             {
-                                [ETab.Packages]:
-                                    loading || !userData[tab as unknown as EFullTab] ? (
-                                        <Spinner className="mx-auto h-8 w-8 md:h-10 md:w-10" />
-                                    ) : (
-                                        <PackagesTab packages={userData[EFullTab.Packages]!} />
-                                    ),
-                                [ETab.Axioms]:
-                                    loading || !userData[tab as unknown as EFullTab] ? (
-                                        <Spinner className="mx-auto h-8 w-8 md:h-10 md:w-10" />
-                                    ) : (
-                                        <AxiomsTab axioms={userData[EFullTab.Axioms]!} />
-                                    ),
-                                [ETab.Fields]:
-                                    loading || !userData[tab as unknown as EFullTab] ? (
-                                        <Spinner className="mx-auto h-8 w-8 md:h-10 md:w-10" />
-                                    ) : (
-                                        <FieldsTab fields={userData[EFullTab.Fields]!} />
-                                    ),
+                                [ETab.Packages]: !userPackages ? (
+                                    <Spinner className="mx-auto h-8 w-8 md:h-10 md:w-10" />
+                                ) : (
+                                    <PackagesTab packages={userPackages} />
+                                ),
+                                [ETab.Axioms]: <AxiomsTab principal={profilePrincipal} />,
+                                [ETab.Fields]: <FieldsTab principal={profilePrincipal} />,
                                 [ETab.Hypotheses]: (
                                     <Tabs value={fullTab} className="w-full">
                                         <TabsHeader
@@ -629,18 +530,14 @@ const ProfileLayout = ({ id }: { id?: string }) => {
                                                 value={fullTab}
                                                 className="gap-medium mt-medium p-medium flex w-full flex-col items-center"
                                             >
-                                                {loading || !userData[fullTab] ? (
-                                                    <Spinner className="mx-auto h-8 w-8 md:h-10 md:w-10" />
-                                                ) : (
-                                                    <HypothesesTab
-                                                        hypotheses={userData[fullTab]!}
-                                                        type={
-                                                            fullTab.includes('Published')
-                                                                ? 'Published'
-                                                                : 'Voted'
-                                                        }
-                                                    />
-                                                )}
+                                                <HypothesesTab
+                                                    principal={profilePrincipal}
+                                                    type={
+                                                        fullTab.includes('Published')
+                                                            ? 'Published'
+                                                            : 'Voted'
+                                                    }
+                                                />
                                             </TabPanel>
                                         </TabsBody>
                                     </Tabs>
@@ -683,18 +580,14 @@ const ProfileLayout = ({ id }: { id?: string }) => {
                                                 value={fullTab}
                                                 className="gap-medium mt-medium p-medium flex w-full flex-col items-center"
                                             >
-                                                {loading || !userData[fullTab] ? (
-                                                    <Spinner className="mx-auto h-8 w-8 md:h-10 md:w-10" />
-                                                ) : (
-                                                    <EvidencesTab
-                                                        evidences={userData[fullTab]!}
-                                                        type={
-                                                            fullTab.includes('Published')
-                                                                ? 'Published'
-                                                                : 'Voted'
-                                                        }
-                                                    />
-                                                )}
+                                                <EvidencesTab
+                                                    principal={profilePrincipal}
+                                                    type={
+                                                        fullTab.includes('Published')
+                                                            ? 'Published'
+                                                            : 'Voted'
+                                                    }
+                                                />
                                             </TabPanel>
                                         </TabsBody>
                                     </Tabs>
@@ -737,18 +630,14 @@ const ProfileLayout = ({ id }: { id?: string }) => {
                                                 value={fullTab}
                                                 className="gap-medium mt-medium p-medium flex w-full flex-col items-center"
                                             >
-                                                {loading || !userData[fullTab] ? (
-                                                    <Spinner className="mx-auto h-8 w-8 md:h-10 md:w-10" />
-                                                ) : (
-                                                    <ProposalsTab
-                                                        proposals={userData[fullTab]!}
-                                                        type={
-                                                            fullTab.includes('Opened')
-                                                                ? 'Opened'
-                                                                : 'Voted'
-                                                        }
-                                                    />
-                                                )}
+                                                <ProposalsTab
+                                                    principal={profilePrincipal}
+                                                    type={
+                                                        fullTab.includes('Opened')
+                                                            ? 'Opened'
+                                                            : 'Voted'
+                                                    }
+                                                />
                                             </TabPanel>
                                         </TabsBody>
                                     </Tabs>

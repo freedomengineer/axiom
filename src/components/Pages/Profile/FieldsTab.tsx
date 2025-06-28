@@ -1,24 +1,30 @@
-import { DAxioms } from 'shared/types/services'
+import { Principal } from '@dfinity/principal'
+
+import InfiniteScrollWrapper from '@components/Shared/InfiniteScrollWrapper'
+import useAuth from '@hooks/useAuth'
+import { Axioms } from 'shared/utils/services'
 
 import FieldCard from '../Feed/Fields/FieldCard'
 
-const FieldsTab = ({ fields }: { fields: DAxioms.SharableField[] }) => {
-    if (fields.length === 0) {
-        return (
-            <div className="flex h-full w-full flex-col items-center justify-center text-center">
-                <p className="text-tiny font-normal text-cold-700">
-                    User has not joined any fields yet.
-                </p>
-            </div>
-        )
-    }
+const FieldsTab = ({ principal }: { principal: Principal }) => {
+    const { agent } = useAuth()
 
     return (
-        <div className="gap-medium mx-auto flex w-full max-w-full flex-wrap justify-center md:max-w-[1500px]">
-            {fields.map((item, i) => (
-                <FieldCard key={i} item={item} className="w-full" />
-            ))}
-        </div>
+        <InfiniteScrollWrapper
+            LayoutComponent={({ items }) => (
+                <div className="gap-medium mx-auto flex w-full max-w-full flex-wrap justify-center md:max-w-[1500px]">
+                    {items.map((item, i) => (
+                        <FieldCard key={i} item={item} className="w-full" />
+                    ))}
+                </div>
+            )}
+            name="field"
+            hardFilter={{ member: principal.toText() }}
+            hardSort={{ by: 'recent', order: 'descending' }}
+            query={Axioms.call(agent, true).getFieldsPagination}
+            className="h-full"
+            size={6n}
+        />
     )
 }
 
