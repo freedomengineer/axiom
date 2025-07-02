@@ -3,7 +3,6 @@ export const idlFactory = ({ IDL }) => {
   const List_1 = IDL.Rec();
   const List_2 = IDL.Rec();
   const List_3 = IDL.Rec();
-  const List_4 = IDL.Rec();
   const Account = IDL.Record({
     'owner' : IDL.Principal,
     'subaccount' : IDL.Opt(IDL.Vec(IDL.Nat8)),
@@ -186,12 +185,12 @@ export const idlFactory = ({ IDL }) => {
     'getConfigs' : IDL.Func([], [Sharable__3], ['query']),
     'getEarning' : IDL.Func([IDL.Principal], [Sharable__7], ['query']),
     'getTop' : IDL.Func(
-        [IDL.Variant({ 'Referrals' : IDL.Null })],
+        [IDL.Variant({ 'Referrers' : IDL.Null })],
         [TopNonPagination],
         ['query'],
       ),
     'getTopPagination' : IDL.Func(
-        [IDL.Variant({ 'Referrals' : IDL.Null }), IDL.Nat, IDL.Nat],
+        [IDL.Variant({ 'Referrers' : IDL.Null }), IDL.Nat, IDL.Nat],
         [TopPagination],
         ['query'],
       ),
@@ -268,6 +267,7 @@ export const idlFactory = ({ IDL }) => {
     'publisher' : IDL.Opt(IDL.Principal),
     'side' : IDL.Opt(BinaryChoice__1),
     'hypothesis' : IDL.Opt(IDL.Nat),
+    'repliedTo' : IDL.Opt(IDL.Nat),
   });
   const Sort__7 = IDL.Variant({
     'positivity' : IDL.Null,
@@ -533,6 +533,7 @@ export const idlFactory = ({ IDL }) => {
             'HypothesisPublishers' : IDL.Null,
             'AcornEarners' : IDL.Null,
             'HypothesisVoters' : IDL.Null,
+            'Influencers' : IDL.Null,
             'EvidenceVoters' : IDL.Null,
             'EvidencePublishers' : IDL.Null,
           }),
@@ -546,6 +547,7 @@ export const idlFactory = ({ IDL }) => {
             'HypothesisPublishers' : IDL.Null,
             'AcornEarners' : IDL.Null,
             'HypothesisVoters' : IDL.Null,
+            'Influencers' : IDL.Null,
             'EvidenceVoters' : IDL.Null,
             'EvidencePublishers' : IDL.Null,
           }),
@@ -767,8 +769,6 @@ export const idlFactory = ({ IDL }) => {
     'of' : IDL.Nat,
     'result' : IDL.Vec(Sharable__17),
   });
-  List_4.fill(IDL.Opt(IDL.Tuple(IDL.Nat, List_4)));
-  const List__1 = IDL.Opt(IDL.Tuple(IDL.Nat, List_4));
   const SharableEarning__1 = IDL.Record({
     'lastWithdrawAt' : Time,
     'revenue' : SharableE8S__1,
@@ -783,13 +783,13 @@ export const idlFactory = ({ IDL }) => {
   });
   const Sharable__16 = IDL.Record({
     'ballots' : IDL.Vec(IDL.Tuple(IDL.Principal, IDL.Nat)),
-    'referendums' : List__1,
+    'referendums' : IDL.Vec(IDL.Nat),
     'icpEarning' : SharableEarning__1,
     'referendumVotes' : IDL.Vec(IDL.Tuple(IDL.Nat, TernaryVote)),
     'acornEarning' : SharableEarning__1,
     'lastUpdateBallot' : Time__4,
     'proposalVotes' : IDL.Vec(IDL.Tuple(IDL.Nat, Delegable__1)),
-    'proposals' : List__1,
+    'proposals' : IDL.Vec(IDL.Nat),
   });
   const UpdateLevel = IDL.Variant({
     'Patch' : IDL.Null,
@@ -1176,9 +1176,7 @@ export const idlFactory = ({ IDL }) => {
   });
   const Sort__1 = IDL.Variant({
     'alphabetical' : IDL.Null,
-    'followers' : IDL.Null,
     'capitalRaised' : IDL.Null,
-    'followings' : IDL.Null,
     'recent' : IDL.Null,
   });
   const Sort = IDL.Record({ 'by' : Sort__1, 'order' : Order });
@@ -1393,9 +1391,8 @@ export const idlFactory = ({ IDL }) => {
   });
   const ACORNToMint = IDL.Record({ 'buried' : IDL.Nat, 'liquid' : IDL.Nat });
   const ForceUpdateCapitalRaisedResult = IDL.Record({
-    'success' : IDL.Vec(IDL.Text),
-    'unchanged' : IDL.Vec(IDL.Text),
-    'failed' : IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
+    'success' : IDL.Vec(IDL.Principal),
+    'failed' : IDL.Vec(IDL.Tuple(IDL.Principal, IDL.Text)),
   });
   const LogoResult = IDL.Record({ 'data' : IDL.Text, 'logo_type' : IDL.Text });
   const Dip721NonFungibleToken = IDL.Record({
@@ -1429,7 +1426,7 @@ export const idlFactory = ({ IDL }) => {
     'expectPackageFound' : IDL.Func([IDL.Nat], [IDL.Nat], ['query']),
     'expectPackageNotFound' : IDL.Func([IDL.Nat], [], ['query']),
     'forceUpdateCapitalRaised' : IDL.Func(
-        [],
+        [IDL.Vec(IDL.Principal)],
         [ForceUpdateCapitalRaisedResult],
         [],
       ),

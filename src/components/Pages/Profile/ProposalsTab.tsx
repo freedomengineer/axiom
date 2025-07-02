@@ -24,7 +24,7 @@ const ProposalsTab = ({ principal, type }: { principal: Principal; type: 'Opened
             }
             hardSort={{ by: 'recent', order: 'descending' }}
             query={DAO.call(agent, true).getProposalsPagination}
-            className="h-full"
+            className="h-full w-full"
             size={3n}
         />
     )

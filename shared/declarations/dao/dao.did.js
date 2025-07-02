@@ -1,5 +1,4 @@
 export const idlFactory = ({ IDL }) => {
-  const List__1 = IDL.Rec();
   const Key = IDL.Text;
   const SharableE8S = IDL.Nat;
   const SharableDate = IDL.Nat;
@@ -233,8 +232,6 @@ export const idlFactory = ({ IDL }) => {
     'of' : IDL.Nat,
     'result' : IDL.Vec(Sharable__2),
   });
-  List__1.fill(IDL.Opt(IDL.Tuple(IDL.Nat, List__1)));
-  const List = IDL.Opt(IDL.Tuple(IDL.Nat, List__1));
   const SharableEarning = IDL.Record({
     'lastWithdrawAt' : Time,
     'revenue' : SharableE8S__1,
@@ -254,13 +251,13 @@ export const idlFactory = ({ IDL }) => {
   });
   const Sharable__1 = IDL.Record({
     'ballots' : IDL.Vec(IDL.Tuple(IDL.Principal, IDL.Nat)),
-    'referendums' : List,
+    'referendums' : IDL.Vec(IDL.Nat),
     'icpEarning' : SharableEarning,
     'referendumVotes' : IDL.Vec(IDL.Tuple(IDL.Nat, TernaryVote)),
     'acornEarning' : SharableEarning,
     'lastUpdateBallot' : Time__1,
     'proposalVotes' : IDL.Vec(IDL.Tuple(IDL.Nat, Delegable__1)),
-    'proposals' : List,
+    'proposals' : IDL.Vec(IDL.Nat),
   });
   const UpdateLevel = IDL.Variant({
     'Patch' : IDL.Null,

@@ -452,8 +452,6 @@ type Sort__1 =
  variant {
    alphabetical;
    capitalRaised;
-   followers;
-   followings;
    recent;
  };
 type Sort_6 = 
@@ -654,12 +652,12 @@ type Sharable__16 =
                         nat;
                         Delegable__1;
                       };
-   proposals: List__1;
+   proposals: vec nat;
    referendumVotes: vec record {
                           nat;
                           TernaryVote;
                         };
-   referendums: List__1;
+   referendums: vec nat;
  };
 type Sharable__15 = vec SharableBurial;
 type Sharable__14 = record {burials: SharableBurials;};
@@ -1035,7 +1033,8 @@ type Sales =
    deployPackage: (nat) -> ();
    expectPackageFound: (nat) -> (nat) query;
    expectPackageNotFound: (nat) -> () query;
-   forceUpdateCapitalRaised: () -> (ForceUpdateCapitalRaisedResult);
+   forceUpdateCapitalRaised: (vec principal) ->
+    (ForceUpdateCapitalRaisedResult);
    getAchievementPackagePrincipals: () ->
     (vec record {
            Achievement;
@@ -1242,16 +1241,6 @@ type LogoResult =
    data: text;
    logo_type: text;
  };
-type List__1 = 
- opt record {
-       nat;
-       List_4;
-     };
-type List_4 = 
- opt record {
-       nat;
-       List_4;
-     };
 type List_3 = 
  opt record {
        SystemVariantParam;
@@ -1399,11 +1388,10 @@ type Form = vec Format;
 type ForceUpdateCapitalRaisedResult = 
  record {
    failed: vec record {
-                 text;
+                 principal;
                  text;
                };
-   success: vec text;
-   unchanged: vec text;
+   success: vec principal;
  };
 type FlagHeader = 
  record {
@@ -1415,6 +1403,7 @@ type Filter__6 =
    hypothesis: opt nat;
    publisher: opt principal;
    q: opt text;
+   repliedTo: opt nat;
    side: opt BinaryChoice__1;
    voter: opt principal;
  };
@@ -1783,6 +1772,7 @@ type Axioms =
        EvidenceVoters;
        HypothesisPublishers;
        HypothesisVoters;
+       Influencers;
      }) -> (TopNonPagination) query;
    getTopPagination:
     (variant {
@@ -1791,6 +1781,7 @@ type Axioms =
        EvidenceVoters;
        HypothesisPublishers;
        HypothesisVoters;
+       Influencers;
      }, nat, nat) -> (TopPagination) query;
    getUser: (principal) -> (Sharable__22) query;
    initialize: () -> ();
@@ -1867,8 +1858,8 @@ type Affiliate =
    getConfig: (Key) -> (SharableValue) query;
    getConfigs: () -> (Sharable__3) query;
    getEarning: (principal) -> (Sharable__7) query;
-   getTop: (variant {Referrals;}) -> (TopNonPagination) query;
-   getTopPagination: (variant {Referrals;}, nat, nat) ->
+   getTop: (variant {Referrers;}) -> (TopNonPagination) query;
+   getTopPagination: (variant {Referrers;}, nat, nat) ->
     (TopPagination) query;
    getUser: (principal) -> (Sharable__33) query;
    initialize: () -> ();

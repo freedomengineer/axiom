@@ -244,8 +244,6 @@ export const queryNotifications = async (agent: Agent): Promise<void> => {
         processNotifications(userNotifications, 'user')
         processNotifications(systemNotifications, 'system')
 
-        console.log({ itemsToUpsert })
-
         if (itemsToUpsert.length > 0) {
             await db.notifications.bulkPut(itemsToUpsert)
         }

@@ -1,5 +1,4 @@
 import { Principal } from '@dfinity/principal'
-import { useEffect, useState } from 'react'
 
 import InfiniteScrollWrapper from '@components/Shared/InfiniteScrollWrapper'
 import useAuth from '@hooks/useAuth'

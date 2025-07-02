@@ -7832,26 +7832,12 @@
         [
           "proposals",
           {
-            "origin": "List.List<T>",
+            "origin": "[Nat]",
             "singular": {
-              "name": "()"
+              "name": "Nat"
             },
-            "entries": [
-              [
-                null,
-                {
-                  "origin": "Nat",
-                  "singular": {
-                    "name": "Nat"
-                  },
-                  "entries": [],
-                  "isArray": false,
-                  "isOptional": false,
-                  "isAsync": false
-                }
-              ]
-            ],
-            "isArray": false,
+            "entries": [],
+            "isArray": true,
             "isOptional": false,
             "isAsync": false
           }
@@ -7859,26 +7845,12 @@
         [
           "referendums",
           {
-            "origin": "List.List<T>",
+            "origin": "[Nat]",
             "singular": {
-              "name": "()"
+              "name": "Nat"
             },
-            "entries": [
-              [
-                null,
-                {
-                  "origin": "Nat",
-                  "singular": {
-                    "name": "Nat"
-                  },
-                  "entries": [],
-                  "isArray": false,
-                  "isOptional": false,
-                  "isAsync": false
-                }
-              ]
-            ],
-            "isArray": false,
+            "entries": [],
+            "isArray": true,
             "isOptional": false,
             "isAsync": false
           }

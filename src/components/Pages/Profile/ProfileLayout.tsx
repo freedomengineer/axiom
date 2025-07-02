@@ -111,9 +111,9 @@ const ProfileLayout = ({ id }: { id?: string }) => {
 
     const { agent, principal, refreshUser, setPageStatus } = useAuth()
     const [profileUser, setProfileUser] = useState<{
-        facade: DFacade.Sharable
-        dao: DDAO.Sharable__1
-        axioms: DAxioms.Sharable
+        facade?: DFacade.Sharable
+        dao?: DDAO.Sharable__1
+        axioms?: DAxioms.Sharable
     }>()
     const [userPackages, setUserPackages] = useState<ParsedPackages<EPackages>>()
     const [open, setOpen] = useState<EPopup>()
@@ -132,9 +132,17 @@ const ProfileLayout = ({ id }: { id?: string }) => {
 
     useEffect(() => {
         Promise.all([
-            editable ? refreshUser() : Facade.call(null, true).getUser(profilePrincipal),
-            DAO.call(agent).getUser(profilePrincipal),
-            Axioms.call(agent).getUser(profilePrincipal),
+            editable
+                ? refreshUser().catch(() => undefined)
+                : Facade.call(null, true)
+                      .getUser(profilePrincipal)
+                      .catch(() => undefined),
+            DAO.call(agent)
+                .getUser(profilePrincipal)
+                .catch(() => undefined),
+            Axioms.call(agent)
+                .getUser(profilePrincipal)
+                .catch(() => undefined),
         ]).then(([facade, dao, axioms]) => {
             if (facade) {
                 cacheUsername(profilePrincipal, facade.username, facade.capitalRaised.toString())
@@ -161,18 +169,18 @@ const ProfileLayout = ({ id }: { id?: string }) => {
         } catch {}
     }, [salesConfigs])
 
-    if (!profileUser) return null
+    if (!profileUser || !profileUser.facade || !profileUser.axioms) return null
 
     const dataCounts = {
         [EFullTab.Packages]: userPackages?.length ?? 'N/A',
-        [EFullTab.Axioms]: profileUser.axioms.axioms.length,
-        [EFullTab.Fields]: profileUser.axioms.joinedFields.length,
-        [EFullTab.PublishedHypotheses]: profileUser.axioms.hypotheses.length,
-        [EFullTab.VotedHypotheses]: profileUser.axioms.votedHypotheses.length,
-        [EFullTab.PublishedEvidences]: profileUser.axioms.evidences.length,
-        [EFullTab.VotedEvidences]: profileUser.axioms.votedEvidences.length,
-        [EFullTab.OpenedProposals]: profileUser.dao.proposals.length,
-        [EFullTab.VotedProposals]: profileUser.dao.proposalVotes.length,
+        [EFullTab.Axioms]: profileUser.axioms?.axioms.length ?? 0,
+        [EFullTab.Fields]: profileUser.axioms?.joinedFields.length ?? 0,
+        [EFullTab.PublishedHypotheses]: profileUser.axioms?.hypotheses.length ?? 0,
+        [EFullTab.VotedHypotheses]: profileUser.axioms?.votedHypotheses.length ?? 0,
+        [EFullTab.PublishedEvidences]: profileUser.axioms?.evidences.length ?? 0,
+        [EFullTab.VotedEvidences]: profileUser.axioms?.votedEvidences.length ?? 0,
+        [EFullTab.OpenedProposals]: profileUser.dao?.proposals.length ?? 0,
+        [EFullTab.VotedProposals]: profileUser.dao?.proposalVotes.length ?? 0,
     }
 
     const handleCopy = (name: string, text: string) => {

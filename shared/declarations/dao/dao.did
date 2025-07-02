@@ -148,12 +148,12 @@ type Sharable__1 =
                         nat;
                         Delegable__1;
                       };
-   proposals: List;
+   proposals: vec nat;
    referendumVotes: vec record {
                           nat;
                           TernaryVote;
                         };
-   referendums: List;
+   referendums: vec nat;
  };
 type SharableWorker = record {};
 type SharableValue = 
@@ -296,16 +296,6 @@ type Milestone =
    date: Time__2;
    status: Status;
  };
-type List__1 = 
- opt record {
-       nat;
-       List__1;
-     };
-type List = 
- opt record {
-       nat;
-       List__1;
-     };
 type Key = text;
 type Filter__1 = 
  record {

@@ -111,11 +111,17 @@
 {"achievement": "#REFERRAL | #OCTUPLEBURIAL"}
 ```
 
-### 9. `forceUpdateCapitalRaised()` returns `Packages.ForceUpdateCapitalRaisedResult`
+### 9. `forceUpdateCapitalRaised(users)` returns `Packages.ForceUpdateCapitalRaisedResult`
+
+#### Arguments:
+
+```json
+{"users": ["Principal"]}
+```
 
 #### Returns:
 ```json
-{"success": ["Text"], "failed": [["Text", "Text"]], "unchanged": ["Text"]}
+{"success": ["Principal"], "failed": [["Principal", "Text"]]}
 ```
 
 ### 10. `upgradePackage()` returns `()`

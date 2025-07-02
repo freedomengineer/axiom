@@ -54,95 +54,7 @@ import Timer "mo:base/Timer";
 import Float "mo:base/Float";
 import Debug "mo:base/Debug";
 
-(
-    with migration = func(
-        old : {
-            var hypotheses : Vector.Vector<?{ content : Text; publisher : Principal; var publishDate : Int; fieldId : Text; votes : TernaryVotes.Votes; var evidenceIds : List.List<Nat>; axioms : Count.Count }>;
-            var evidences : Vector.Vector<?{ form : Evidence.Form; publisher : Principal; publishDate : Int; hypothesisId : Nat; votes : BinaryVotes.Votes; choice : BinaryVotes.Choice }>;
-            var users : Map.Map<Principal, { mintEarning : Earning.Earning; transferEarning : Earning.Earning; axioms : Set.Set<Nat>; bookmarks : Set.Set<Nat>; joinedFields : Set.Set<Text>; var hypotheses : List.List<Nat>; var evidences : List.List<Nat>; votedHypotheses : Map.Map<Nat, TernaryVotes.Vote>; votedEvidences : Map.Map<Nat, BinaryVotes.Vote>; votedFlags : Map.Map<Flag.Header, BinaryVotes.Vote> }>
-        }
-    ) : {
-        var hypotheses : Hypotheses.Hypotheses;
-        var evidences : Evidences.Evidences;
-        var users : Users.Users
-    } {
-        {
-            var hypotheses : Hypotheses.Hypotheses = do {
-                let newHypotheses : Hypotheses.Hypotheses = Vector.new<?Hypothesis.Hypothesis>();
-                for (hypothesis in Vector.vals(old.hypotheses)) {
-                    Vector.add<?Hypothesis.Hypothesis>(
-                        newHypotheses,
-                        switch (hypothesis) {
-                            case (null) null;
-                            case (?oldHypothesis)(
-                                ?{
-                                    var content = oldHypothesis.content;
-                                    publisher = oldHypothesis.publisher;
-                                    var publishDate = oldHypothesis.publishDate;
-                                    fieldId = oldHypothesis.fieldId;
-                                    votes = oldHypothesis.votes;
-                                    var evidenceIds = oldHypothesis.evidenceIds;
-                                    axioms = oldHypothesis.axioms
-                                }
-                            )
-                        },
-                    )
-                };
-                newHypotheses
-            };
-            var evidences : Evidences.Evidences = do {
-                let newEvidences : Evidences.Evidences = Vector.new<?Evidence.Evidence>();
-                for (evidence in Vector.vals(old.evidences)) {
-                    Vector.add<?Evidence.Evidence>(
-                        newEvidences,
-                        switch (evidence) {
-                            case (null) null;
-                            case (?oldEvidence)(
-                                ?{
-                                    form = oldEvidence.form;
-                                    publisher = oldEvidence.publisher;
-                                    publishDate = oldEvidence.publishDate;
-                                    hypothesisId = oldEvidence.hypothesisId;
-                                    votes = oldEvidence.votes;
-                                    choice = oldEvidence.choice;
-
-                                    repliedTo = null;
-                                    var replies = List.nil()
-                                }
-                            )
-                        },
-                    )
-                };
-                newEvidences
-            };
-            var users : Users.Users = do {
-                let newUsers : Users.Users = Map.new<Principal, User.User>();
-                for ((principal, user) in Map.entries(old.users)) {
-                    Map.put(
-                        newUsers,
-                        Map.PrincipalKey(principal),
-                        {
-                            mintEarning = user.mintEarning;
-                            transferEarning = user.transferEarning;
-                            axioms = user.axioms;
-                            bookmarks = user.bookmarks;
-                            joinedFields = user.joinedFields;
-                            var hypotheses = user.hypotheses;
-                            var evidences = user.evidences;
-                            votedHypotheses = user.votedHypotheses;
-                            votedEvidences = user.votedEvidences;
-                            votedFlags = user.votedFlags;
-
-                            followers = Set.new<Principal>();
-                            followings = Set.new<Principal>()
-                        },
-                    )
-                };
-                newUsers
-            }
-        }
-    }
-) shared ({ caller = indicator }) actor class Axioms() = this {
+shared ({ caller = indicator }) actor class Axioms() = this {
     ////// TEMPORARY IMPLEMENTATION ////////////
     private stable var shiftedTime : Int = 0;
     private func getNow() : Int = shiftedTime + Time.now();
@@ -361,7 +273,7 @@ import Debug "mo:base/Debug";
                 User.depositMint(user, payout)
             };
 
-            let payout : Payout.Payout = { ranks; recipients };
+            let payout : Payout.Payout = { ranks = List.reverse(ranks); recipients };
             Payouts.paid(payouts, payout)
         }
     };
