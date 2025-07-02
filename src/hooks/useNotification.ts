@@ -44,22 +44,44 @@ const initializeDB = (userPrincipal: string) => {
 }
 
 const _jsonReplacer = (key: string, value: any) =>
-    typeof value === 'bigint'
-        ? value.toString()
-        : typeof value === 'object' && value && '__principal__' in value
-          ? { _arr: Principal.fromText(value.__principal__).toUint8Array(), _isPrincipal: true }
-          : value
+    typeof value === 'bigint' ? value.toString() : value
+
+const _getCanonicalObject = (obj: any): any => {
+    if (obj === null || typeof obj !== 'object') {
+        if (typeof obj === 'bigint') return obj.toString()
+        return obj
+    }
+
+    if (obj instanceof Principal) {
+        return obj.toText()
+    }
+    if (typeof obj.__principal__ === 'string') {
+        return obj.__principal__
+    }
+
+    if (obj._isPrincipal === true && obj._arr) {
+        return Principal.fromUint8Array(obj._arr).toText()
+    }
+
+    if (Array.isArray(obj)) {
+        return obj.map(_getCanonicalObject)
+    }
+
+    const newObj: { [key: string]: any } = {}
+
+    for (const key of Object.keys(obj).sort()) {
+        newObj[key] = _getCanonicalObject(obj[key])
+    }
+    return newObj
+}
 
 const _getCapacityItemKey = (item: any): string => {
-    const itemToProcess = { ...item }
-    if (itemToProcess.timestamp && typeof itemToProcess.timestamp === 'number') {
-        itemToProcess.timestamp = BigInt(itemToProcess.timestamp)
-    }
-    return JSON.stringify(itemToProcess, _jsonReplacer)
+    return JSON.stringify(_getCanonicalObject(item))
 }
 
 const _generateId = (notification: NotificationItem): string => {
-    const [type, data] = UnwrapVariant(notification)
+    const canonicalNotif = _getCanonicalObject(notification)
+    const [type, data] = UnwrapVariant(canonicalNotif) as any
 
     if ('id' in data && data.id !== undefined) {
         return `notif-group-${type}-${data.id.toString()}`
@@ -67,19 +89,15 @@ const _generateId = (notification: NotificationItem): string => {
     if ('capacity' in data) {
         return `notif-group-${type}`
     }
-    const sortedNotification = Object.keys(notification).reduce((acc, key) => {
-        acc[key] = (notification as any)[key]
-        return acc
-    }, {} as any)
 
-    return `notif-single-${JSON.stringify(sortedNotification, _jsonReplacer)}`
+    return `notif-single-${JSON.stringify(canonicalNotif)}`
 }
 
 const _hashCapacity = (notification: NotificationItem): string | undefined => {
     const [, data] = UnwrapVariant(notification)
 
     if ('capacity' in data && Array.isArray(data.capacity)) {
-        return JSON.stringify(data.capacity, _jsonReplacer)
+        return JSON.stringify(_getCanonicalObject(data.capacity))
     }
     return undefined
 }
@@ -189,6 +207,15 @@ export const queryNotifications = async (agent: Agent): Promise<void> => {
                             })
                         }
 
+                        console.log({
+                            oldCapacity: Array.from(oldCapacity),
+                            newCapacity: newCapacity,
+                            oldCapacityKeys: Array.from(oldCapacity).map((item) =>
+                                _getCapacityItemKey(item)
+                            ),
+                            newCapacityKeys: newCapacity.map((item) => _getCapacityItemKey(item)),
+                        })
+
                         capacityItemsRead = newCapacity.map((newItem: any) => {
                             const itemKey = _getCapacityItemKey(newItem)
                             return oldReadItemsKeys.has(itemKey) ? 1 : 0
@@ -216,6 +243,8 @@ export const queryNotifications = async (agent: Agent): Promise<void> => {
 
         processNotifications(userNotifications, 'user')
         processNotifications(systemNotifications, 'system')
+
+        console.log({ itemsToUpsert })
 
         if (itemsToUpsert.length > 0) {
             await db.notifications.bulkPut(itemsToUpsert)
