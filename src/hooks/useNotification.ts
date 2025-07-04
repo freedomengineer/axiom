@@ -1,4 +1,5 @@
 import { Agent } from '@dfinity/agent'
+import { Principal } from '@dfinity/principal'
 import Dexie, { Table } from 'dexie'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { useEffect, useRef } from 'react'
@@ -45,8 +46,42 @@ const initializeDB = (userPrincipal: string) => {
 const _jsonReplacer = (key: string, value: any) =>
     typeof value === 'bigint' ? value.toString() : value
 
+const _getCanonicalObject = (obj: any): any => {
+    if (obj === null || typeof obj !== 'object') {
+        if (typeof obj === 'bigint') return obj.toString()
+        return obj
+    }
+
+    if (obj instanceof Principal) {
+        return obj.toText()
+    }
+    if (typeof obj.__principal__ === 'string') {
+        return obj.__principal__
+    }
+
+    if (obj._isPrincipal === true && obj._arr) {
+        return Principal.fromUint8Array(obj._arr).toText()
+    }
+
+    if (Array.isArray(obj)) {
+        return obj.map(_getCanonicalObject)
+    }
+
+    const newObj: { [key: string]: any } = {}
+
+    for (const key of Object.keys(obj).sort()) {
+        newObj[key] = _getCanonicalObject(obj[key])
+    }
+    return newObj
+}
+
+const _getCapacityItemKey = (item: any): string => {
+    return JSON.stringify(_getCanonicalObject(item))
+}
+
 const _generateId = (notification: NotificationItem): string => {
-    const [type, data] = UnwrapVariant(notification)
+    const canonicalNotif = _getCanonicalObject(notification)
+    const [type, data] = UnwrapVariant(canonicalNotif) as any
 
     if ('id' in data && data.id !== undefined) {
         return `notif-group-${type}-${data.id.toString()}`
@@ -54,19 +89,15 @@ const _generateId = (notification: NotificationItem): string => {
     if ('capacity' in data) {
         return `notif-group-${type}`
     }
-    const sortedNotification = Object.keys(notification).reduce((acc, key) => {
-        acc[key] = (notification as any)[key]
-        return acc
-    }, {} as any)
 
-    return `notif-single-${JSON.stringify(sortedNotification, _jsonReplacer)}`
+    return `notif-single-${JSON.stringify(canonicalNotif)}`
 }
 
 const _hashCapacity = (notification: NotificationItem): string | undefined => {
     const [, data] = UnwrapVariant(notification)
 
     if ('capacity' in data && Array.isArray(data.capacity)) {
-        return JSON.stringify(data.capacity, _jsonReplacer)
+        return JSON.stringify(_getCanonicalObject(data.capacity))
     }
     return undefined
 }
@@ -161,21 +192,48 @@ export const queryNotifications = async (agent: Agent): Promise<void> => {
                     (newCapacityHash && newCapacityHash !== existingRecord.capacityHash)
                 ) {
                     const timestamp = Number(_getTimestamp(data))
-                    const capacityLength = _getCapacityLength(data)
+                    let capacityItemsRead: number[] | undefined
+                    const newCapacity = (UnwrapVariant(data)[1] as any).capacity
 
-                    const capacityItemsRead =
-                        newCapacityHash === existingRecord.capacityHash
-                            ? existingRecord.capacityItemsRead
-                            : capacityLength > 0
-                              ? new Array(capacityLength).fill(0)
-                              : undefined
+                    if (Array.isArray(newCapacity) && newCapacity.length > 0) {
+                        const oldCapacity = (UnwrapVariant(existingRecord.data)[1] as any).capacity
+                        const oldReadItemsKeys = new Set<string>()
+
+                        if (Array.isArray(oldCapacity) && existingRecord.capacityItemsRead) {
+                            oldCapacity.forEach((oldItem: any, index: number) => {
+                                if (existingRecord.capacityItemsRead?.[index] === 1) {
+                                    oldReadItemsKeys.add(_getCapacityItemKey(oldItem))
+                                }
+                            })
+                        }
+
+                        console.log({
+                            oldCapacity: Array.from(oldCapacity),
+                            newCapacity: newCapacity,
+                            oldCapacityKeys: Array.from(oldCapacity).map((item) =>
+                                _getCapacityItemKey(item)
+                            ),
+                            newCapacityKeys: newCapacity.map((item) => _getCapacityItemKey(item)),
+                        })
+
+                        capacityItemsRead = newCapacity.map((newItem: any) => {
+                            const itemKey = _getCapacityItemKey(newItem)
+                            return oldReadItemsKeys.has(itemKey) ? 1 : 0
+                        })
+                    } else {
+                        capacityItemsRead = undefined
+                    }
+
+                    const isGroupReadAll = capacityItemsRead
+                        ? capacityItemsRead.every((status) => status === 1)
+                        : false
 
                     itemsToUpsert.push({
                         id,
                         timestamp,
                         data,
                         source,
-                        isRead: 0,
+                        isRead: isGroupReadAll ? 1 : 0,
                         capacityHash: newCapacityHash,
                         capacityItemsRead,
                     })

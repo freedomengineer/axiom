@@ -6,6 +6,7 @@ import { ToastContainer } from 'react-toastify'
 import { AlphaStage } from '@components/Shared/Alerts'
 import { deleteAllConfigsCache } from '@hooks/useConfigs'
 import useLocalStorage from '@hooks/useLocalStorage'
+import { deleteAllNotificationsCache } from '@hooks/useNotification'
 import { deleteAllPackagesCache } from '@hooks/usePackages'
 import { deleteAllStatusCache } from '@hooks/useStatus'
 import { deleteAllUsernamesCache } from '@hooks/useUsername'
@@ -26,13 +27,14 @@ const LayoutWrapper = ({
     const [version, setVersion] = useLocalStorage('version')
 
     useEffect(() => {
-        if (version !== '1.0.0') {
+        if (version !== '0.0.1') {
             deleteAllConfigsCache()
             deleteAllPackagesCache()
             deleteAllStatusCache()
             deleteAllUsernamesCache()
+            deleteAllNotificationsCache()
             localStorage.clear()
-            setVersion('1.0.0')
+            setVersion('0.0.1')
         }
     }, [version])
 

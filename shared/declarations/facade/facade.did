@@ -203,8 +203,6 @@ type Sort__1 =
  variant {
    alphabetical;
    capitalRaised;
-   followers;
-   followings;
    recent;
  };
 type Sort = 

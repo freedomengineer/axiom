@@ -31,12 +31,12 @@ const ProposalPage = () => {
         } catch {
             setPageStatus(PageStatus.NotFound)
         }
-    }, [])
+    }, [proposal])
 
     return (
         <>
             <PageMetadata {...pageMetadata} />
-            {item && <ProposalDetail item={item} />}
+            {item && <ProposalDetail item={item} key={item.id} />}
         </>
     )
 }

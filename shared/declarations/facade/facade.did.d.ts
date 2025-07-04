@@ -297,9 +297,7 @@ export type Sharable__1 = [
 export type Sharable__2 = Array<[Key, SharableValue]>;
 export interface Sort { 'by' : Sort__1, 'order' : Order }
 export type Sort__1 = { 'alphabetical' : null } |
-  { 'followers' : null } |
   { 'capitalRaised' : null } |
-  { 'followings' : null } |
   { 'recent' : null };
 export type SystemNotificationsBatch = [] | [[SystemVariantParam, List_3]];
 export type SystemVariantParam = {

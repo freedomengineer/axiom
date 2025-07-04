@@ -36,7 +36,7 @@ const ProposalsPage = () => {
                 hardSort={filterSortData.sort}
                 query={DAO.call(agent, true).getProposalsPagination}
                 className="h-full"
-                size={4n}
+                size={6n}
             />
         </>
     )

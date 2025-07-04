@@ -101,8 +101,6 @@ const useProposalDetails = (item: DDAO.SharableProposal) => {
         setVotesLoading((prev) => ({ ...prev, [choice]: false }))
     }
 
-    console.log(vote)
-
     return {
         proposer,
         localItem,

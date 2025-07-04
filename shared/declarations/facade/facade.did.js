@@ -276,9 +276,7 @@ export const idlFactory = ({ IDL }) => {
   });
   const Sort__1 = IDL.Variant({
     'alphabetical' : IDL.Null,
-    'followers' : IDL.Null,
     'capitalRaised' : IDL.Null,
-    'followings' : IDL.Null,
     'recent' : IDL.Null,
   });
   const Order = IDL.Variant({

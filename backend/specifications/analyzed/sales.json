@@ -360,7 +360,18 @@
         "isQuery": false,
         "callerRequired": true
       },
-      "argTypes": {},
+      "argTypes": {
+        "users": {
+          "origin": "[Principal]",
+          "singular": {
+            "name": "Principal"
+          },
+          "entries": [],
+          "isArray": true,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
       "returnType": {
         "origin": "async Packages.ForceUpdateCapitalRaisedResult",
         "singular": {
@@ -1294,6 +1305,16 @@
       "isOptional": false,
       "isAsync": false
     },
+    "[Principal]": {
+      "origin": "[Principal]",
+      "singular": {
+        "name": "Principal"
+      },
+      "entries": [],
+      "isArray": true,
+      "isOptional": false,
+      "isAsync": false
+    },
     "async Packages.ForceUpdateCapitalRaisedResult": {
       "origin": "async Packages.ForceUpdateCapitalRaisedResult",
       "singular": {
@@ -1303,9 +1324,9 @@
         [
           "success",
           {
-            "origin": "[Text]",
+            "origin": "[Principal]",
             "singular": {
-              "name": "Text"
+              "name": "Principal"
             },
             "entries": [],
             "isArray": true,
@@ -1316,7 +1337,7 @@
         [
           "failed",
           {
-            "origin": "[(Text, Text)]",
+            "origin": "[(Principal, Text)]",
             "singular": {
               "name": "()"
             },
@@ -1324,9 +1345,9 @@
               [
                 null,
                 {
-                  "origin": "Text",
+                  "origin": "Principal",
                   "singular": {
-                    "name": "Text"
+                    "name": "Principal"
                   },
                   "entries": [],
                   "isArray": false,
@@ -1348,19 +1369,6 @@
                 }
               ]
             ],
-            "isArray": true,
-            "isOptional": false,
-            "isAsync": false
-          }
-        ],
-        [
-          "unchanged",
-          {
-            "origin": "[Text]",
-            "singular": {
-              "name": "Text"
-            },
-            "entries": [],
             "isArray": true,
             "isOptional": false,
             "isAsync": false

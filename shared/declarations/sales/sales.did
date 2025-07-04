@@ -93,7 +93,8 @@ type Sales =
    expectPackageFound: (nat) -> (nat) query;
    /// PUBLIC ////// ASSERTERS ////////////
    expectPackageNotFound: (nat) -> () query;
-   forceUpdateCapitalRaised: () -> (ForceUpdateCapitalRaisedResult);
+   forceUpdateCapitalRaised: (vec principal) ->
+    (ForceUpdateCapitalRaisedResult);
    getAchievementPackagePrincipals: () ->
     (vec record {
            Achievement;
@@ -134,11 +135,10 @@ type Key = text;
 type ForceUpdateCapitalRaisedResult = 
  record {
    failed: vec record {
-                 text;
+                 principal;
                  text;
                };
-   success: vec text;
-   unchanged: vec text;
+   success: vec principal;
  };
 type Dip721NonFungibleToken = 
  record {

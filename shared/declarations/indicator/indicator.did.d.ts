@@ -61,9 +61,9 @@ export interface Affiliate {
   'getConfig' : ActorMethod<[Key], SharableValue>,
   'getConfigs' : ActorMethod<[], Sharable__3>,
   'getEarning' : ActorMethod<[Principal], Sharable__7>,
-  'getTop' : ActorMethod<[{ 'Referrals' : null }], TopNonPagination>,
+  'getTop' : ActorMethod<[{ 'Referrers' : null }], TopNonPagination>,
   'getTopPagination' : ActorMethod<
-    [{ 'Referrals' : null }, bigint, bigint],
+    [{ 'Referrers' : null }, bigint, bigint],
     TopPagination
   >,
   'getUser' : ActorMethod<[Principal], Sharable__33>,
@@ -143,6 +143,7 @@ export interface Axioms {
       { 'HypothesisPublishers' : null } |
         { 'AcornEarners' : null } |
         { 'HypothesisVoters' : null } |
+        { 'Influencers' : null } |
         { 'EvidenceVoters' : null } |
         { 'EvidencePublishers' : null },
     ],
@@ -153,6 +154,7 @@ export interface Axioms {
       { 'HypothesisPublishers' : null } |
         { 'AcornEarners' : null } |
         { 'HypothesisVoters' : null } |
+        { 'Influencers' : null } |
         { 'EvidenceVoters' : null } |
         { 'EvidencePublishers' : null },
       bigint,
@@ -454,12 +456,12 @@ export interface Filter__6 {
   'publisher' : [] | [Principal],
   'side' : [] | [BinaryChoice__1],
   'hypothesis' : [] | [bigint],
+  'repliedTo' : [] | [bigint],
 }
 export interface FlagHeader { 'id' : bigint, 'category' : Category }
 export interface ForceUpdateCapitalRaisedResult {
-  'success' : Array<string>,
-  'unchanged' : Array<string>,
-  'failed' : Array<[string, string]>,
+  'success' : Array<Principal>,
+  'failed' : Array<[Principal, string]>,
 }
 export type Form = Array<Format>;
 export type Format = { 'Note' : Note } |
@@ -554,8 +556,6 @@ export type List = [] | [[[Principal, UserVariantParam], List]];
 export type List_1 = [] | [[Principal, List_1]];
 export type List_2 = [] | [[UserVariantParam, List_2]];
 export type List_3 = [] | [[SystemVariantParam, List_3]];
-export type List_4 = [] | [[bigint, List_4]];
-export type List__1 = [] | [[bigint, List_4]];
 export interface LogoResult { 'data' : string, 'logo_type' : string }
 export interface Milestone { 'status' : Status, 'date' : Time__5 }
 export interface NewAxiomsToHypothesisData {
@@ -683,7 +683,10 @@ export interface Sales {
   'deployPackage' : ActorMethod<[bigint], undefined>,
   'expectPackageFound' : ActorMethod<[bigint], bigint>,
   'expectPackageNotFound' : ActorMethod<[bigint], undefined>,
-  'forceUpdateCapitalRaised' : ActorMethod<[], ForceUpdateCapitalRaisedResult>,
+  'forceUpdateCapitalRaised' : ActorMethod<
+    [Array<Principal>],
+    ForceUpdateCapitalRaisedResult
+  >,
   'getAchievementPackagePrincipals' : ActorMethod<
     [],
     Array<[Achievement, Principal]>
@@ -1006,13 +1009,13 @@ export interface Sharable__14 { 'burials' : SharableBurials }
 export type Sharable__15 = Array<SharableBurial>;
 export interface Sharable__16 {
   'ballots' : Array<[Principal, bigint]>,
-  'referendums' : List__1,
+  'referendums' : Array<bigint>,
   'icpEarning' : SharableEarning__1,
   'referendumVotes' : Array<[bigint, TernaryVote]>,
   'acornEarning' : SharableEarning__1,
   'lastUpdateBallot' : Time__4,
   'proposalVotes' : Array<[bigint, Delegable__1]>,
-  'proposals' : List__1,
+  'proposals' : Array<bigint>,
 }
 export interface Sharable__17 {
   'id' : bigint,
@@ -1146,9 +1149,7 @@ export interface Sort_4 { 'by' : Sort__5, 'order' : Order }
 export interface Sort_5 { 'by' : Sort__6, 'order' : Order }
 export interface Sort_6 { 'by' : Sort__7, 'order' : Order }
 export type Sort__1 = { 'alphabetical' : null } |
-  { 'followers' : null } |
   { 'capitalRaised' : null } |
-  { 'followings' : null } |
   { 'recent' : null };
 export type Sort__2 = { 'icpReward' : null } |
   { 'acornReward' : null } |

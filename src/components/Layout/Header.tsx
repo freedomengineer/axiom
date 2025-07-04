@@ -35,7 +35,10 @@ import Popup from '@components/Shared/Popup'
 import QRCode from '@components/Shared/QRCode'
 import useAuth from '@hooks/useAuth'
 import { deleteAllConfigsCache } from '@hooks/useConfigs'
-import useNotification, { useNotificationPoller } from '@hooks/useNotification'
+import useNotification, {
+    deleteAllNotificationsCache,
+    useNotificationPoller,
+} from '@hooks/useNotification'
 import { deleteAllPackagesCache } from '@hooks/usePackages'
 import { deleteAllStatusCache } from '@hooks/useStatus'
 import useUserData from '@hooks/useUserData'
@@ -337,6 +340,7 @@ const Header = ({
                                             deleteAllPackagesCache(),
                                             deleteAllStatusCache(),
                                             deleteAllUsernamesCache(),
+                                            deleteAllNotificationsCache(),
                                             localStorage.clear(),
                                             setOpenMenu({})
                                         )}

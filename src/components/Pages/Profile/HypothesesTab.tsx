@@ -1,31 +1,40 @@
-import { DAxioms } from 'shared/types/services'
+import { Principal } from '@dfinity/principal'
+
+import InfiniteScrollWrapper from '@components/Shared/InfiniteScrollWrapper'
+import useAuth from '@hooks/useAuth'
+import { Axioms } from 'shared/utils/services'
 
 import HypothesisCard from '../Feed/Hypotheses/HypothesisCard'
 
 const HypothesesTab = ({
-    hypotheses,
+    principal,
     type,
 }: {
-    hypotheses: DAxioms.SharableHypothesis[]
+    principal: Principal
     type: 'Published' | 'Voted'
 }) => {
-    if (hypotheses.length === 0) {
-        return (
-            <div className="flex h-full w-full flex-col items-center justify-center text-center">
-                <p className="text-tiny font-normal text-cold-700">
-                    User has not {type === 'Published' ? 'published' : 'voted on'} any hypotheses
-                    yet.
-                </p>
-            </div>
-        )
-    }
+    const { agent } = useAuth()
 
     return (
-        <div className="gap-medium mx-auto flex w-full max-w-full flex-wrap justify-center md:max-w-[1500px]">
-            {hypotheses.map((item, i) => (
-                <HypothesisCard key={i} item={item} className="w-full" />
-            ))}
-        </div>
+        <InfiniteScrollWrapper
+            LayoutComponent={({ items }) => (
+                <div className="gap-medium mx-auto flex w-full max-w-full flex-wrap justify-center md:max-w-[1500px]">
+                    {items.map((item, i) => (
+                        <HypothesisCard key={i} item={item} className="w-full" />
+                    ))}
+                </div>
+            )}
+            name="hypothesis"
+            hardFilter={
+                type === 'Published'
+                    ? { publisher: principal.toText() }
+                    : { voter: principal.toText() }
+            }
+            hardSort={{ by: 'recent', order: 'descending' }}
+            query={Axioms.call(agent, true).getHypothesesPagination}
+            className="h-full w-full"
+            size={6n}
+        />
     )
 }
 

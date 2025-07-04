@@ -64,8 +64,8 @@ module {
     public type Sharable = {
         acornEarning : SharableEarning;
         icpEarning : SharableEarning;
-        proposals : List<Nat>;
-        referendums : List<Nat>;
+        proposals : [Nat];
+        referendums : [Nat];
         proposalVotes : [(Nat, Delegable<UniformBinaryVote>)];
         referendumVotes : [(Nat, TernaryVote)];
         ballots : [(Principal, Nat)];
@@ -206,8 +206,8 @@ module {
     public func getReferendumVote(__ : Self, id : Nat) : ?TernaryVote = Map.get(__.referendumVotes, NatKey(id));
 
     public func toSharable(__ : Self, duration : Nat, getBallot : Principal -> Nat) : Sharable = {
-        proposals = __.proposals;
-        referendums = __.referendums;
+        proposals = List.toArray(__.proposals);
+        referendums = List.toArray(__.referendums);
         acornEarning = getAcornEarning(__);
         icpEarning = Earning.toSharable(__.icpEarning);
         proposalVotes = Map.getEntries(__.proposalVotes);

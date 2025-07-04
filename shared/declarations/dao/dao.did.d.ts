@@ -115,8 +115,6 @@ export interface Filter__1 {
   'isCustodian' : [] | [boolean],
 }
 export type Key = string;
-export type List = [] | [[bigint, List__1]];
-export type List__1 = [] | [[bigint, List__1]];
 export interface Milestone { 'status' : Status, 'date' : Time__2 }
 export type Order = { 'descending' : null } |
   { 'ascending' : null };
@@ -209,13 +207,13 @@ export type SharableValue = { 'E8S' : SharableE8S } |
 export type SharableWorker = {};
 export interface Sharable__1 {
   'ballots' : Array<[Principal, bigint]>,
-  'referendums' : List,
+  'referendums' : Array<bigint>,
   'icpEarning' : SharableEarning,
   'referendumVotes' : Array<[bigint, TernaryVote]>,
   'acornEarning' : SharableEarning,
   'lastUpdateBallot' : Time__1,
   'proposalVotes' : Array<[bigint, Delegable__1]>,
-  'proposals' : List,
+  'proposals' : Array<bigint>,
 }
 export interface Sharable__2 {
   'id' : bigint,

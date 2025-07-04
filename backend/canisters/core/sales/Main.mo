@@ -140,20 +140,17 @@ shared ({ caller = indicator }) actor class Sales() = this {
         ignore await _deployAchievementPackage(package)
     };
 
-    public shared ({ caller }) func forceUpdateCapitalRaised() : async Packages.ForceUpdateCapitalRaisedResult {
-        await Indicator.expectAuthorized(caller, [#Founder]);
+    public shared ({ caller }) func forceUpdateCapitalRaised(users : [Principal]) : async Packages.ForceUpdateCapitalRaisedResult {
         let Facade : FacadeInterface.Facade = await Indicator.Facade();
-        let users : [FacadeUser.Identifier] = await Facade.getUsersIdentifier();
-        var usersCapitalRaised : List.List<(FacadeUser.Identifier, async [Package.Sharable])> = List.nil();
+        var usersCapitalRaised : List.List<(Principal, async [Package.Sharable])> = List.nil();
         for (user in users.vals()) {
-            let packagesFuture : async [Package.Sharable] = getOwnedPackages(user.principal);
-            usersCapitalRaised := List.push<(FacadeUser.Identifier, async [Package.Sharable])>((user, packagesFuture), usersCapitalRaised)
+            let packagesFuture : async [Package.Sharable] = getOwnedPackages(user);
+            usersCapitalRaised := List.push<(Principal, async [Package.Sharable])>((user, packagesFuture), usersCapitalRaised)
         };
 
-        var success : List.List<Text> = List.nil();
-        var failed : List.List<(Text, Text)> = List.nil();
-        var unchanged : List.List<Text> = List.nil();
-        var updatesFutures : List.List<(Text, async ())> = List.nil();
+        var success : List.List<Principal> = List.nil();
+        var failed : List.List<(Principal, Text)> = List.nil();
+        var updatesFutures : List.List<(Principal, async ())> = List.nil();
 
         for ((user, packagesFuture) in List.toIter(List.reverse(usersCapitalRaised))) {
             let ownedPackages : [Package.Sharable] = await packagesFuture;
@@ -161,26 +158,20 @@ shared ({ caller = indicator }) actor class Sales() = this {
             for (package in ownedPackages.vals()) {
                 if (package.capitalRaised > highestCapitalRaised) highestCapitalRaised := package.capitalRaised
             };
-            switch (highestCapitalRaised > user.capitalRaised) {
-                case (true) updatesFutures := List.push<(Text, async ())>((user.username, Facade.updateCapitalRaised(user.principal, highestCapitalRaised)), updatesFutures);
-                case (false) unchanged := List.push<Text>(user.username, unchanged)
-            }
+            updatesFutures := List.push<(Principal, async ())>((user, Facade.updateCapitalRaised(user, highestCapitalRaised)), updatesFutures);
+
         };
 
-        for ((username, updateFuture) in List.toIter(List.reverse(updatesFutures))) {
+        for ((principal, updateFuture) in List.toIter(List.reverse(updatesFutures))) {
             try {
                 await updateFuture;
-                success := List.push<Text>(username, success)
+                success := List.push<Principal>(principal, success)
             } catch (e) {
-                failed := List.push<(Text, Text)>((username, Error.message(e)), failed)
+                failed := List.push<(Principal, Text)>((principal, Error.message(e)), failed)
             }
         };
 
-        {
-            success = List.toArray(success);
-            failed = List.toArray(failed);
-            unchanged = List.toArray(unchanged)
-        }
+        { success = List.toArray(success); failed = List.toArray(failed) }
     };
 
     /// PUBLIC ////// MODIFIERS ////////////

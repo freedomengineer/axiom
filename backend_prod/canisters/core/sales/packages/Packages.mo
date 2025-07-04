@@ -28,9 +28,8 @@ module {
     /// PUBLIC ////// DECLARATIONS ////////////
 
     public type ForceUpdateCapitalRaisedResult = {
-        success : [Text];
-        failed : [(Text, Text)];
-        unchanged : [Text]
+        success : [Principal];
+        failed : [(Principal, Text)]
     };
 
     /// SALES ////// PACKAGES ////////////

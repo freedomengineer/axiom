@@ -5,9 +5,8 @@ export const idlFactory = ({ IDL }) => {
   });
   const ACORNToMint = IDL.Record({ 'buried' : IDL.Nat, 'liquid' : IDL.Nat });
   const ForceUpdateCapitalRaisedResult = IDL.Record({
-    'success' : IDL.Vec(IDL.Text),
-    'unchanged' : IDL.Vec(IDL.Text),
-    'failed' : IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
+    'success' : IDL.Vec(IDL.Principal),
+    'failed' : IDL.Vec(IDL.Tuple(IDL.Principal, IDL.Text)),
   });
   const LogoResult = IDL.Record({ 'data' : IDL.Text, 'logo_type' : IDL.Text });
   const Dip721NonFungibleToken = IDL.Record({
@@ -77,7 +76,7 @@ export const idlFactory = ({ IDL }) => {
     'expectPackageFound' : IDL.Func([IDL.Nat], [IDL.Nat], ['query']),
     'expectPackageNotFound' : IDL.Func([IDL.Nat], [], ['query']),
     'forceUpdateCapitalRaised' : IDL.Func(
-        [],
+        [IDL.Vec(IDL.Principal)],
         [ForceUpdateCapitalRaisedResult],
         [],
       ),

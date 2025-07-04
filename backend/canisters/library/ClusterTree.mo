@@ -59,7 +59,7 @@ module {
         };
         let f : Cluster<V> = List.flatten(Iter.toList<Cluster<V>>(e));
         switch (take) {
-            case (#trim(n)) Array.take(List.toArray(f), -n);
+            case (#trim(n)) Array.take(List.toArray(f), n);
             case (#all) List.toArray(f)
         }
     };
@@ -74,7 +74,7 @@ module {
             List.iterate<V>(List.reverse(v), func(e) = f := List.push((k, e), f))
         };
         switch (take) {
-            case (#trim(n)) Array.take(List.toArray(f), -n);
+            case (#trim(n)) Array.take(List.toArray(f), n);
             case (#all) List.toArray(f)
         }
     }
