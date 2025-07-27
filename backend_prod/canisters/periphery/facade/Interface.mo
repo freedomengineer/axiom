@@ -27,6 +27,7 @@ module {
         editLinks : shared ([Format.Hyperlink]) -> async ();
         getConfig : query (Configs.Key) -> async Configs.SharableValue;
         getConfigs : query () -> async Configs.Sharable;
+        getUserCapitalRaised : query (Principal) -> async Nat;
         getUserIdentifier : query (User.IdentifierVariant) -> async User.Identifier;
         getUsersIdentifier : query () -> async [User.Identifier];
         getUsersPrincipal : query () -> async [Principal];

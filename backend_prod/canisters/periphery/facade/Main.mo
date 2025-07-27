@@ -231,6 +231,11 @@ shared ({ caller = indicator }) actor class Facade() = this {
         Configs.getConfigs(configs)
     };
 
+    public query func getUserCapitalRaised(principal : Principal) : async Nat {
+        let user : User.User = Users.user(users, principal);
+        user.capitalRaised
+    };
+
     public query func getUserIdentifier(from : User.IdentifierVariant) : async User.Identifier {
         Users.getIdentifier(users, from)
     };

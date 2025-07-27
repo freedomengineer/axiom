@@ -362,7 +362,20 @@
 ]
 ```
 
-### 3. `getUserIdentifier(from)` returns `User.Identifier`
+### 3. `getUserCapitalRaised(principal)` returns `Nat`
+
+#### Arguments:
+
+```json
+{"principal": "Principal"}
+```
+
+#### Returns:
+```json
+"Nat"
+```
+
+### 4. `getUserIdentifier(from)` returns `User.Identifier`
 
 #### Arguments:
 
@@ -375,28 +388,28 @@
 {"principal": "Principal", "username": "Text", "capitalRaised": "Nat"}
 ```
 
-### 4. `getUsersIdentifier()` returns `[User.Identifier]`
+### 5. `getUsersIdentifier()` returns `[User.Identifier]`
 
 #### Returns:
 ```json
 [{"principal": "Principal", "username": "Text", "capitalRaised": "Nat"}]
 ```
 
-### 5. `getUsersPrincipal()` returns `[Principal]`
+### 6. `getUsersPrincipal()` returns `[Principal]`
 
 #### Returns:
 ```json
 ["Principal"]
 ```
 
-### 6. `getUsersCount()` returns `Nat`
+### 7. `getUsersCount()` returns `Nat`
 
 #### Returns:
 ```json
 "Nat"
 ```
 
-### 7. `getUser(principal)` returns `User.Sharable`
+### 8. `getUser(principal)` returns `User.Sharable`
 
 #### Arguments:
 
@@ -417,7 +430,7 @@
 }
 ```
 
-### 8. `getUsers(filter, sort)` returns `[User.Sharable]`
+### 9. `getUsers(filter, sort)` returns `[User.Sharable]`
 
 #### Arguments:
 
@@ -443,7 +456,7 @@
 ]
 ```
 
-### 9. `getUsersPagination(filter, sort, page, limit)` returns `Pagination.Pagination<User.Sharable>`
+### 10. `getUsersPagination(filter, sort, page, limit)` returns `Pagination.Pagination<User.Sharable>`
 
 #### Arguments:
 
@@ -473,7 +486,7 @@
 }
 ```
 
-### 10. `getNotification()` returns `Notifications.Sharable`
+### 11. `getNotification()` returns `Notifications.Sharable`
 
 #### Returns:
 ```json

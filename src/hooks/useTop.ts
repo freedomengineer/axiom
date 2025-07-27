@@ -86,7 +86,10 @@ const _fetchTop = async (
         }
 
         const topPages = _getStoredItem(key, principal)?.topPages ?? []
-        topPages[Number(page) - 1] = top!
+        const pageIndex = Number(page) - 1
+        topPages[pageIndex] = top!
+        topPages.splice(pageIndex + 1)
+
         const data = { topPages, timestamp: Date.now(), refreshDate: _getCurrentUtcDateString() }
         memoryCache.set(key, data)
         _setStoredItem(key, data, principal)

@@ -27,6 +27,15 @@ const LayoutWrapper = ({
     const [version, setVersion] = useLocalStorage('version')
 
     useEffect(() => {
+        const oldDomain = 'zcdoa-uyaaa-aaaap-qpztq-cai.icp0.io'
+        const newDomain = 'axiom.info'
+
+        const currentUrl = new URL(window.location.href)
+        if (process.env.DFX_NETWORK === 'ic' && currentUrl.hostname === oldDomain) {
+            currentUrl.hostname = newDomain
+            window.location.replace(currentUrl.toString())
+        }
+
         if (version !== '0.0.1') {
             deleteAllConfigsCache()
             deleteAllPackagesCache()

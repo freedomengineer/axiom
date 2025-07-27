@@ -1,4 +1,6 @@
 import Flag "../flags/Flag";
+import UserConfig "../user_configs/UserConfig";
+import UserConfigs "../user_configs/UserConfigs";
 
 import E "../../../common/Errors";
 
@@ -28,7 +30,9 @@ module {
     private type TernaryVote = TernaryVotes.Vote;
 
     private type FlagHeader = Flag.Header;
-
+    private type UserConfig = UserConfig.Config;
+    private type UserConfigs = UserConfigs.Configs;
+    private type SharableUserConfigs = UserConfigs.Sharable;
     private let { NatKey } = Map;
     private let { NatVal; TextVal; PrincipalVal } = Set;
     private let { Key = FlagKey } = Flag;
@@ -80,7 +84,8 @@ module {
         var evidences : List<Nat>;
         votedHypotheses : Map<Nat, TernaryVote>;
         votedEvidences : Map<Nat, BinaryVote>;
-        votedFlags : Map<FlagHeader, BinaryVote>
+        votedFlags : Map<FlagHeader, BinaryVote>;
+        configs : UserConfigs
     };
     public type Sharable = {
         principal : Principal;
@@ -95,7 +100,8 @@ module {
         votedHypotheses : [(Nat, TernaryVote)];
         votedEvidences : [(Nat, BinaryVote)];
         callerFollowing : ?Bool;
-        callerFollower : ?Bool
+        callerFollower : ?Bool;
+        configs : SharableUserConfigs
     };
 
     public func init(getNow : () -> Int) : Self = {
@@ -110,7 +116,8 @@ module {
         var evidences = List.nil();
         votedHypotheses = Map.new<Nat, TernaryVote>();
         votedEvidences = Map.new<Nat, BinaryVote>();
-        votedFlags = Map.new<FlagHeader, BinaryVote>()
+        votedFlags = Map.new<FlagHeader, BinaryVote>();
+        configs = UserConfigs.init()
     };
     public func fromFounder(getNow : () -> Int) : Self = {
         mintEarning = Earning.new(getNow);
@@ -124,7 +131,8 @@ module {
         var evidences = List.nil();
         votedHypotheses = Map.new<Nat, TernaryVote>();
         votedEvidences = Map.new<Nat, BinaryVote>();
-        votedFlags = Map.new<FlagHeader, BinaryVote>()
+        votedFlags = Map.new<FlagHeader, BinaryVote>();
+        configs = UserConfigs.init()
     };
 
     /// PUBLIC ////// MODIFIERS ////////////
@@ -272,6 +280,7 @@ module {
         evidences = List.toArray(__.evidences);
         votedHypotheses = Map.getEntries(__.votedHypotheses);
         votedEvidences = Map.getEntries(__.votedEvidences);
+        configs = UserConfigs.toSharable(__.configs);
         callerFollowing = getCallerFollowing(principal);
         callerFollower = getCallerFollower(principal)
     };

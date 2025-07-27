@@ -108,6 +108,9 @@ shared ({ caller = indicator }) actor class DAO() = this {
         ("REFERENDUM_OPEN_FEE", #E8S(E8S.fromFloat(10_000.0))), // Fee (in 10^8) for each launch (current: 10,000 * 10^8)
         ("REFERENDUM_APPROVAL_THRESHOLD", #Proportion(Proportion.make(4, 5))), // Proportion (in %) of the positive vote threshold for approval (current: 80%)
         ("REFERENDUM_APPROVAL_REFUND", #Proportion(Proportion.make(0, 1))), // Proportion (in %) of the fee refunded for approval (current: 0%)
+
+        /// New Configs v0.2.2
+        ("ENTER_ELECTION_CAPITAL_RAISED_THRESHOLD", #E8S(E8S.fromFloat(1_000.0))),
     ]);
 
     /// PRIVATE ////// MODIFIERS ////////////
@@ -710,9 +713,15 @@ shared ({ caller = indicator }) actor class DAO() = this {
     };
 
     public shared ({ caller }) func enterElection(title : Text) : async () {
+        let ENTER_ELECTION_CAPITAL_RAISED_THRESHOLD : E8S.E8S = Configs.E8S(configs, "ENTER_ELECTION_CAPITAL_RAISED_THRESHOLD");
+
         Users.expectFound(users, caller);
         Nominees.expectNomineeNotFound(nominees, caller);
         Nominees.expectTitleValid(title, configs);
+
+        let Facade : FacadeInterface.Facade = await Indicator.Facade();
+        let capitalRaised : Nat = await Facade.getUserCapitalRaised(caller);
+        if (capitalRaised < ENTER_ELECTION_CAPITAL_RAISED_THRESHOLD.val) E.f(#NOT_VALID("Nominee"), "Your account tier is not eligible to enter the election, your capital raised: " # debug_show capitalRaised # ", threshold: " # debug_show ENTER_ELECTION_CAPITAL_RAISED_THRESHOLD.val);
 
         let nominee : Nominee.Nominee = Nominee.init(title);
         Nominees.nominate(nominees, caller, nominee)

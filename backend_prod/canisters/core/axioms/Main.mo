@@ -15,6 +15,7 @@ import Flag "flags/Flag";
 import Flags "flags/Flags";
 
 import Notification "../../periphery/facade/notifications/Notification";
+import Packages "../sales/packages/Packages";
 
 import EscrowInterface "../escrow/Interface";
 import TreasuryInterface "../treasury/Interface";
@@ -100,10 +101,16 @@ shared ({ caller = indicator }) actor class Axioms() = this {
         ("MIN_URL_LENGTH", #Nat(11)),
         ("MAX_URL_LENGTH", #Nat(1000)),
 
-        /// New Configs
+        /// New Configs v0.1.2
         ("MAX_HYPOTHESIS_LENGTH", #Nat(2000)),
+
+        /// New Configs v0.2.0
         ("EVIDENCE_PAYOUT_DECAY_PROPORTION", #Proportion(Proportion.make(50, 100))),
         ("HYPOTHESIS_EDIT_FEE", #E8S(E8S.fromFloat(10.0))),
+
+        /// New Configs v0.2.2
+        ("MAX_DAILY_HYPOTHESES_BY_TIER", #Nat(1)),
+        ("MAX_DAILY_EVIDENCES_BY_TIER", #Nat(2)),
     ]);
 
     /// PRIVATE ////// MODIFIERS ////////////
@@ -349,6 +356,49 @@ shared ({ caller = indicator }) actor class Axioms() = this {
         await _payout()
     };
 
+    private func _getUserDailyLimit(user : User.User, tier : Nat, category : { #Hypothesis; #Evidence }) : Proportion.Proportion {
+        switch (category) {
+            case (#Hypothesis) {
+                let MAX_DAILY_HYPOTHESES_BY_TIER : Nat = Configs.Nat(configs, "MAX_DAILY_HYPOTHESES_BY_TIER");
+                let maxDailyHypotheses : Nat = MAX_DAILY_HYPOTHESES_BY_TIER * tier;
+
+                var publishedHypotheses : Nat = 0;
+                label hypothesisIterating for (hypothesisId in List.toIter(user.hypotheses)) {
+                    let hypothesis : ?Hypothesis.Hypothesis = Hypotheses.hypothesisRemovedOpt(hypotheses, hypothesisId);
+                    switch (hypothesis) {
+                        case (?hypothesis) {
+                            switch (Date.getMidnightsElapsed(Time.now(), hypothesis.publishDate) < 1) {
+                                case (true) publishedHypotheses += 1;
+                                case (false) break hypothesisIterating
+                            }
+                        };
+                        case (null) continue hypothesisIterating
+                    }
+                };
+                Proportion.make(publishedHypotheses, maxDailyHypotheses)
+            };
+            case (#Evidence) {
+                let MAX_DAILY_EVIDENCES_BY_TIER : Nat = Configs.Nat(configs, "MAX_DAILY_EVIDENCES_BY_TIER");
+                let maxDailyEvidences : Nat = MAX_DAILY_EVIDENCES_BY_TIER * tier;
+
+                var publishedEvidences : Nat = 0;
+                label evidenceIterating for (evidenceId in List.toIter(user.evidences)) {
+                    let evidence : ?Evidence.Evidence = Evidences.evidenceRemovedOpt(evidences, evidenceId);
+                    switch (evidence) {
+                        case (?evidence) {
+                            switch (Date.getMidnightsElapsed(Time.now(), evidence.publishDate) < 1) {
+                                case (true) publishedEvidences += 1;
+                                case (false) break evidenceIterating
+                            }
+                        };
+                        case (null) continue evidenceIterating
+                    }
+                };
+                Proportion.make(publishedEvidences, maxDailyEvidences)
+            }
+        }
+    };
+
     /// PROTECTED ////// MODIFIERS ////////////
 
     public shared ({ caller }) func initialize() : async () {
@@ -408,6 +458,12 @@ shared ({ caller = indicator }) actor class Axioms() = this {
         let user : User.User = Users.user(users, caller);
         let field : Field.Field = Fields.field(fields, fieldId);
         Field.expectMember(field, caller);
+
+        let Facade : FacadeInterface.Facade = await Indicator.Facade();
+        let capitalRaised : Nat = await Facade.getUserCapitalRaised(caller);
+        let (tier, tierName) : (Nat, Text) = Packages.getPackageTier(capitalRaised);
+        let dailyLimit : Proportion.Proportion = _getUserDailyLimit(user, tier, #Hypothesis);
+        if (dailyLimit.part >= dailyLimit.whole) E.f(#NOT_VALID("Hypothesis"), "You have reached your daily limit of " # debug_show dailyLimit # " hypotheses for " # tierName # " accounts");
 
         let Treasury : TreasuryInterface.Treasury = await Indicator.Treasury();
         await Treasury.delegatedClaim(#DAO, caller, HYPOTHESIS_PUBLISH_FEE.val);
@@ -501,6 +557,12 @@ shared ({ caller = indicator }) actor class Axioms() = this {
         let user : User.User = Users.user(users, caller);
         let hypothesis : Hypothesis.Hypothesis = Hypotheses.hypothesis(hypotheses, hypothesisId);
 
+        let Facade : FacadeInterface.Facade = await Indicator.Facade();
+        let capitalRaised : Nat = await Facade.getUserCapitalRaised(caller);
+        let (tier, tierName) : (Nat, Text) = Packages.getPackageTier(capitalRaised);
+        let dailyLimit : Proportion.Proportion = _getUserDailyLimit(user, tier, #Evidence);
+        if (dailyLimit.part >= dailyLimit.whole) E.f(#NOT_VALID("Evidence"), "You have reached your daily limit of " # debug_show dailyLimit # " evidences for " # tierName # " accounts");
+
         let Treasury : TreasuryInterface.Treasury = await Indicator.Treasury();
         await Treasury.delegatedClaim(#DAO, caller, publishFee.val);
 
@@ -581,13 +643,22 @@ shared ({ caller = indicator }) actor class Axioms() = this {
         )()
     };
 
-    public shared ({ caller }) func voteHypothesis(hypothesisId : Nat, choice : TernaryVotes.Choice) : async () {
+    public shared ({ caller }) func voteHypothesis(hypothesisId : Nat, choice : TernaryVotes.Choice, scale : ?Nat) : async () {
         let user : User.User = Users.user(users, caller);
         let hypothesis : Hypothesis.Hypothesis = Hypotheses.hypothesis(hypotheses, hypothesisId);
 
+        let scaleProportion : Proportion.Proportion = switch (scale) {
+            case (null) Proportion.make(1, 1);
+            case (?scale) {
+                if (scale < 0 or scale > 100) E.f(#NOT_VALID("Vote"), "Vote scale must be between 0 and 100");
+                Proportion.make(scale, 100)
+            }
+        };
+
         let Escrow : EscrowInterface.Escrow = await Indicator.Escrow();
         let value : Nat = await Escrow.getVotingPower(caller);
-        let vote : TernaryVotes.Vote = { choice; value };
+        let scaledValue : Nat = value * scaleProportion.part / scaleProportion.whole;
+        let vote : TernaryVotes.Vote = { choice; value = scaledValue };
         switch (User.getHypothesisVote(user, hypothesisId)) {
             case (null) Hypothesis.addVote(hypothesis, caller, vote);
             case (?existedVote) Hypothesis.updateVote(hypothesis, caller, existedVote, vote)
@@ -601,13 +672,22 @@ shared ({ caller = indicator }) actor class Axioms() = this {
             }
         )()
     };
-    public shared ({ caller }) func voteEvidence(evidenceId : Nat, choice : BinaryVotes.Choice) : async () {
+    public shared ({ caller }) func voteEvidence(evidenceId : Nat, choice : BinaryVotes.Choice, scale : ?Nat) : async () {
         let user : User.User = Users.user(users, caller);
         let evidence : Evidence.Evidence = Evidences.evidence(evidences, evidenceId);
 
+        let scaleProportion : Proportion.Proportion = switch (scale) {
+            case (null) Proportion.make(1, 1);
+            case (?scale) {
+                if (scale < 0 or scale > 100) E.f(#NOT_VALID("Vote"), "Vote scale must be between 0 and 100");
+                Proportion.make(scale, 100)
+            }
+        };
+
         let Escrow : EscrowInterface.Escrow = await Indicator.Escrow();
         let value : Nat = await Escrow.getVotingPower(caller);
-        let vote : BinaryVotes.Vote = { choice; value };
+        let scaledValue : Nat = value * scaleProportion.part / scaleProportion.whole;
+        let vote : BinaryVotes.Vote = { choice; value = scaledValue };
         switch (User.getEvidenceVote(user, evidenceId)) {
             case (null) Evidence.addVote(evidence, caller, vote);
             case (?existedVote) Evidence.updateVote(evidence, caller, existedVote, vote)

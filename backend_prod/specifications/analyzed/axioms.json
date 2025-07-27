@@ -469,6 +469,16 @@
           "isArray": false,
           "isOptional": false,
           "isAsync": false
+        },
+        "scale": {
+          "origin": "?Nat",
+          "singular": {
+            "name": "Nat"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": true,
+          "isAsync": false
         }
       },
       "returnType": {
@@ -508,6 +518,16 @@
           "entries": [],
           "isArray": false,
           "isOptional": false,
+          "isAsync": false
+        },
+        "scale": {
+          "origin": "?Nat",
+          "singular": {
+            "name": "Nat"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": true,
           "isAsync": false
         }
       },
@@ -2062,6 +2082,13 @@
       "relativePath": "../../periphery/facade/notifications/Notification",
       "depth": 6
     },
+    "Packages": {
+      "origin": "import Packages \"../sales/packages/Packages\";",
+      "name": "Packages",
+      "category": "attribute",
+      "relativePath": "../sales/packages/Packages",
+      "depth": 4
+    },
     "EscrowInterface": {
       "origin": "import EscrowInterface \"../escrow/Interface\";",
       "name": "EscrowInterface",
@@ -2318,6 +2345,7 @@
     "Flag",
     "Flags",
     "Notification",
+    "Packages",
     "EscrowInterface",
     "TreasuryInterface",
     "FacadeInterface",
@@ -4123,6 +4151,32 @@
           }
         ],
         [
+          "agoStart",
+          {
+            "origin": "?Nat",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": true,
+            "isAsync": false
+          }
+        ],
+        [
+          "agoEnd",
+          {
+            "origin": "?Nat",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": true,
+            "isAsync": false
+          }
+        ],
+        [
           "field",
           {
             "origin": "?Text",
@@ -5325,6 +5379,32 @@
         "name": "()"
       },
       "entries": [
+        [
+          "agoStart",
+          {
+            "origin": "?Nat",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": true,
+            "isAsync": false
+          }
+        ],
+        [
+          "agoEnd",
+          {
+            "origin": "?Nat",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": true,
+            "isAsync": false
+          }
+        ],
         [
           "hypothesis",
           {
@@ -8191,6 +8271,46 @@
             "entries": [],
             "isArray": false,
             "isOptional": true,
+            "isAsync": false
+          }
+        ],
+        [
+          "configs",
+          {
+            "origin": "SharableUserConfigs",
+            "singular": {
+              "name": "()"
+            },
+            "entries": [
+              [
+                "#ExcludedPublishers",
+                {
+                  "origin": "[Principal]",
+                  "singular": {
+                    "name": "Principal"
+                  },
+                  "entries": [],
+                  "isArray": true,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#ExcludedFields",
+                {
+                  "origin": "[Text]",
+                  "singular": {
+                    "name": "Text"
+                  },
+                  "entries": [],
+                  "isArray": true,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ]
+            ],
+            "isArray": true,
+            "isOptional": false,
             "isAsync": false
           }
         ]

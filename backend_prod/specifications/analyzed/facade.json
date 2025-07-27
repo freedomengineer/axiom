@@ -645,6 +645,35 @@
       }
     },
     {
+      "name": "getUserCapitalRaised",
+      "flag": {
+        "isQuery": true,
+        "callerRequired": false
+      },
+      "argTypes": {
+        "principal": {
+          "origin": "Principal",
+          "singular": {
+            "name": "Principal"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async Nat",
+        "singular": {
+          "name": "Nat"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
       "name": "getUserIdentifier",
       "flag": {
         "isQuery": true,
@@ -6497,6 +6526,16 @@
       "isOptional": false,
       "isAsync": true
     },
+    "async Nat": {
+      "origin": "async Nat",
+      "singular": {
+        "name": "Nat"
+      },
+      "entries": [],
+      "isArray": false,
+      "isOptional": false,
+      "isAsync": true
+    },
     "User.IdentifierVariant": {
       "origin": "User.IdentifierVariant",
       "singular": {
@@ -6641,16 +6680,6 @@
       },
       "entries": [],
       "isArray": true,
-      "isOptional": false,
-      "isAsync": true
-    },
-    "async Nat": {
-      "origin": "async Nat",
-      "singular": {
-        "name": "Nat"
-      },
-      "entries": [],
-      "isArray": false,
       "isOptional": false,
       "isAsync": true
     },

@@ -30,8 +30,8 @@ module {
         editHypothesis : shared (Nat, Text) -> async ();
         publishEvidence : shared (Nat, Evidence.Form, BinaryVotes.Choice, ?Nat) -> async Nat;
         requestFlag : shared (Flag.Header, Text) -> async ();
-        voteHypothesis : shared (Nat, TernaryVotes.Choice) -> async ();
-        voteEvidence : shared (Nat, BinaryVotes.Choice) -> async ();
+        voteHypothesis : shared (Nat, TernaryVotes.Choice, ?Nat) -> async ();
+        voteEvidence : shared (Nat, BinaryVotes.Choice, ?Nat) -> async ();
         voteFlag : shared (Flag.Header, BinaryVotes.Choice) -> async ();
         removeHypothesisVote : shared (Nat) -> async ();
         removeEvidenceVote : shared (Nat) -> async ();
