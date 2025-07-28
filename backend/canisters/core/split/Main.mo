@@ -106,30 +106,6 @@ shared ({ caller = indicator }) actor class Split() = this {
             case (#Ok(_)) {}
         }
     };
-    public shared ({ caller }) func affiliateExternalTransfer(recipient : Principal, distributedAmount : Nat, lockedAmount : Nat) : async () {
-        await Indicator.expectAuthorized(caller, [#Facade]);
-
-        let senderVariant : Actor.Variant = await Indicator.getVariant(caller);
-        let senderDistribution : Distribution.Distribution = Distributions.distribution(distributions, senderVariant);
-        let distributedAmountE8S : E8S.E8S = E8S.make(distributedAmount);
-
-        Earning.expectEnoughBalance(senderDistribution.earning, distributedAmountE8S);
-        if (distributedAmount + lockedAmount <= C.ICP_FEE) E.f(#INTERNAL_FAILURE("Insufficient Amount"), "Attempted to withdraw " # debug_show (distributedAmount + lockedAmount) # " which is less than the ICP fee " # debug_show C.ICP_FEE);
-
-        let transferResult : ICP.TransferFromResult = await ICP.icrc1_transfer({
-            amount = distributedAmount + lockedAmount - C.ICP_FEE;
-            to = { owner = recipient; subaccount = null };
-            from_subaccount = null;
-            created_at_time = null;
-            fee = null;
-            memo = null
-        });
-        switch (transferResult) {
-            case (#Err(e)) E.f(#EXTERNAL_FAILURE("ICP Transfer"), debug_show e);
-            case (#Ok(_)) Distribution.withdraw(senderDistribution, distributedAmountE8S, getNow)
-        }
-    };
-
     public shared ({ caller }) func affiliateSplit(splitAmounts : [(Actor.Variant, Nat)]) : async () {
         await Indicator.expectAuthorized(caller, [#Affiliate]);
 

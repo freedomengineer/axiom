@@ -834,12 +834,12 @@ shared ({ caller = indicator }) actor class Axioms() = this {
         let Treasury : TreasuryInterface.Treasury = await Indicator.Treasury();
 
         if (not E8S.isZero(transferBalance)) {
-            await Treasury.delegatedExternalTransfer(#DAO, caller, transferBalance.val);
-            User.withdrawTransfer(user, transferBalance)
+            User.withdrawTransfer(user, transferBalance);
+            await Treasury.delegatedExternalTransfer(#DAO, caller, transferBalance.val)
         };
         if (not E8S.isZero(mintBalance)) {
-            await Treasury.externalMint(caller, mintBalance.val);
-            User.withdrawMint(user, mintBalance)
+            User.withdrawMint(user, mintBalance);
+            await Treasury.externalMint(caller, mintBalance.val)
         }
     };
 

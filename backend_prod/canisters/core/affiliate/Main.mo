@@ -50,22 +50,29 @@ shared ({ caller = indicator }) actor class Affiliate() = this {
 
     /// PRIVATE ////// MODIFIERS ////////////
 
-    private func _cleanUpExpiredCoupons() : List.List<Coupon.Coupon> {
+    private func _cleanUpExpiredCoupons() : List.List<(Text, Coupon.Coupon)> {
         let COUPON_AVAILABILITY_DURATION : Nat = Configs.Duration(configs, "COUPON_AVAILABILITY_DURATION");
         Coupons.cleanUpExpiredCoupons(coupons, COUPON_AVAILABILITY_DURATION)
     };
     private func _dailyExecution() : async () {
-        let expired : List.List<Coupon.Coupon> = _cleanUpExpiredCoupons();
-        // ignore (
-        //     func() : async () {
-        //         let Facade : FacadeInterface.Facade = await Indicator.Facade();
-        //         let systemNotifications : List.List<Notification.SystemVariantParam> = List.map<Coupon.Coupon, Notification.SystemVariantParam>(
-        //             expired,
-        //             func(header) = #FlagResult({ header; result = #Expired; timestamp = Time.now() }),
-        //         );
-        //         await Facade.postSystemNotifications(systemNotifications)
-        //     }
-        // )()
+        let expired : List.List<(Text, Coupon.Coupon)> = _cleanUpExpiredCoupons();
+        ignore (
+            func() : async () {
+                let Facade : FacadeInterface.Facade = await Indicator.Facade();
+                let usersNotifications : List.List<(Principal, Notification.UserVariantParam)> = List.map<(Text, Coupon.Coupon), (Principal, Notification.UserVariantParam)>(
+                    expired,
+                    func(key, coupon) = (
+                        coupon.creator,
+                        #CouponExpired({
+                            key;
+                            claimable = Coupon.icpClaimable(coupon);
+                            timestamp = Time.now()
+                        }),
+                    ),
+                );
+                await Facade.postUsersNotifications(usersNotifications)
+            }
+        )()
     };
 
     /// PROTECTED ////// MODIFIERS ////////////
@@ -159,7 +166,7 @@ shared ({ caller = indicator }) actor class Affiliate() = this {
         ignore (
             func() : async () {
                 let Facade : FacadeInterface.Facade = await Indicator.Facade();
-                await Facade.postUserNotification((coupon.creator, #NewReferrals({ user = principal; claimable = 0; timestamp = Time.now() })))
+                await Facade.postUserNotification((coupon.creator, #CouponRedeemed({ key; user = principal; timestamp = Time.now() })))
             }
         )();
 
@@ -168,6 +175,12 @@ shared ({ caller = indicator }) actor class Affiliate() = this {
     /// PUBLIC ////// MODIFIERS ////////////
 
     public shared ({ caller }) func createCoupon(capitalRaised : Nat) : async [Nat8] {
+        let COUPON_LIMIT_PER_TIER : Nat = Configs.Nat(configs, "COUPON_LIMIT_PER_TIER");
+        let COUPON_AVAILABILITY_DURATION : Nat = Configs.Duration(configs, "COUPON_AVAILABILITY_DURATION");
+
+        let user : User.User = Users.user(users, caller);
+        Coupons.expectCreatable(coupons, user.coupons, capitalRaised, COUPON_LIMIT_PER_TIER, COUPON_AVAILABILITY_DURATION);
+
         let random : [Nat8] = Blob.toArray(await Random.blob());
 
         func get(bytes : [Nat8]) : (Text, [Nat8]) {
@@ -176,8 +189,8 @@ shared ({ caller = indicator }) actor class Affiliate() = this {
             (key, code)
         };
 
-        var pair : (Text, [Nat8]) = get(Array.take(random, 128));
-        if (Coupons.found(coupons, pair.0)) pair := get(Array.take(random, -128));
+        var pair : (Text, [Nat8]) = get(Array.take(random, 16));
+        if (Coupons.found(coupons, pair.0)) pair := get(Array.take(random, -16));
         if (Coupons.found(coupons, pair.0)) E.f(#NOT_VALID("Random code"), "The randomized coupon code was duplicated, please try again with new one.");
 
         let Sales : SalesInterface.Sales = await Indicator.Sales();
@@ -198,52 +211,35 @@ shared ({ caller = indicator }) actor class Affiliate() = this {
         await Split.affiliateDeposit(caller, daoAmount + founderAmount);
 
         Coupons.create(coupons, pair.0, caller, capitalRaised, splitAmounts, pair.1);
+        User.couponCreated(user, pair.0);
         pair.1
     };
 
     public shared ({ caller }) func withdrawAll() : async () {
+        let user : User.User = Users.user(users, caller);
+        let balance : Nat = User.getBalance(user);
+
+        if (balance <= 0) E.f(#NOT_VALID("Withdrawal"), "No affiliate rewards available to withdraw");
+
+        let Split : SplitInterface.Split = await Indicator.Split();
+
+        User.withdraw(user, E8S.make(balance));
+        await Split.externalTransfer(caller, balance)
+    };
+
+    public shared ({ caller }) func withdrawExpiredCoupons() : async () {
         let COUPON_AVAILABILITY_DURATION : Nat = Configs.Duration(configs, "COUPON_AVAILABILITY_DURATION");
 
         let user : User.User = Users.user(users, caller);
-
-        let balance : Nat = User.getBalance(user);
         let expiredAmount : Nat = Coupons.getExpiredAmount(coupons, user.coupons, COUPON_AVAILABILITY_DURATION);
 
-        switch (balance > 0, expiredAmount > 0) {
-            case (false, false) {};
-            case (true, false) {
-                User.withdraw(user, E8S.make(balance));
+        if (expiredAmount <= 0) E.f(#NOT_VALID("Withdrawal"), "No expired coupons available to withdraw");
 
-                try {
-                    let Split : SplitInterface.Split = await Indicator.Split();
-                    await Split.externalTransfer(caller, balance)
-                } catch (e) {
-                    User.deposit(user, E8S.make(balance))
-                }
-            };
-            case (false, true) {
-                let (newCoupons, expiredCoupons) : (List.List<Text>, List.List<Text>) = Coupons.withdrawExpiredCoupons(coupons, user.coupons, COUPON_AVAILABILITY_DURATION);
-                User.assignCoupon(user, newCoupons);
+        let Split : SplitInterface.Split = await Indicator.Split();
 
-                try {
-                    let Split : SplitInterface.Split = await Indicator.Split();
-                    await Split.affiliateTransfer(caller, expiredAmount)
-                } catch (e) {
-                    User.assignCoupon(user, List.append(newCoupons, expiredCoupons))
-                }
-            };
-            case (true, true) {
-                let (newCoupons, expiredCoupons) : (List.List<Text>, List.List<Text>) = Coupons.withdrawExpiredCoupons(coupons, user.coupons, COUPON_AVAILABILITY_DURATION);
-                User.assignCoupon(user, newCoupons);
-
-                try {
-                    let Split : SplitInterface.Split = await Indicator.Split();
-                    await Split.affiliateExternalTransfer(caller, balance, expiredAmount)
-                } catch (e) {
-                    User.assignCoupon(user, List.append(newCoupons, expiredCoupons))
-                }
-            }
-        }
+        let (newCoupons, _) : (List.List<Text>, List.List<Text>) = Coupons.withdrawExpiredCoupons(coupons, user.coupons, COUPON_AVAILABILITY_DURATION);
+        User.assignCoupon(user, newCoupons);
+        await Split.affiliateTransfer(caller, expiredAmount)
     };
 
     /// PRIVATE ////// ACCESSORS ////////////
@@ -300,6 +296,11 @@ shared ({ caller = indicator }) actor class Affiliate() = this {
     public query func getEarning(principal : Principal) : async Earning.Sharable {
         let user : User.User = Users.user(users, principal);
         User.getEarning(user)
+    };
+    public query func getCouponsEarning(principal : Principal) : async Earning.Sharable {
+        let COUPON_AVAILABILITY_DURATION : Nat = Configs.Duration(configs, "COUPON_AVAILABILITY_DURATION");
+        let user : User.User = Users.user(users, principal);
+        Coupons.getEarning(coupons, user.coupons, COUPON_AVAILABILITY_DURATION)
     };
 
     /// PUBLIC ////// ASSERTERS ////////////

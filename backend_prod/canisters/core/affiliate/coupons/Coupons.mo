@@ -6,7 +6,7 @@ import E "../../../common/Errors";
 
 import Array "../../../library/Array";
 import Base "../../../library/Base";
-import Hexadecimal "../../../library/Hexadecimal";
+import Earning "../../../library/Earning";
 import List "../../../library/List";
 import Map "../../../library/Map";
 import SHA256 "../../../library/SHA256";
@@ -26,6 +26,8 @@ module {
     private type ActorVariant = Actor.Variant;
     private type User = User.User;
     private type Coupon = Coupon.Coupon;
+    private type Earning = Earning.Earning;
+    private type SharableEarning = Earning.Sharable;
     private type SharableCoupon = Coupon.Sharable;
     private type PrivateSharableCoupon = Coupon.PrivateSharable;
     private type StatusVariant = Coupon.StatusVariant;
@@ -101,8 +103,8 @@ module {
         __.available := List.push(key, __.available)
     };
 
-    public func cleanUpExpiredCoupons(__ : Self, duration : Nat) : List<Coupon> {
-        var expired : List<Coupon> = List.nil();
+    public func cleanUpExpiredCoupons(__ : Self, duration : Nat) : List<(Text, Coupon)> {
+        var expired : List<(Text, Coupon)> = List.nil();
         __.available := List.filter<Text>(
             __.available,
             func(e) {
@@ -110,7 +112,7 @@ module {
                 switch (Coupon.isExpired(x, duration)) {
                     case (true) {
                         Coupon.expired(x);
-                        expired := List.push(x, expired);
+                        expired := List.push((e, x), expired);
                         false
                     };
                     case (false) true
@@ -121,14 +123,14 @@ module {
     };
 
     public func lock(__ : Self, key : Text, by : Principal) {
-        Coupon.locked(coupon(__, key), by);
-        __.available := List.deleteFirst<Text>(__.available, key, func(x : Text) = x == key)
-    };
-    public func redeem(__ : Self, key : Text, by : Principal) {
-        Coupon.redeemed(coupon(__, key), by)
+        Coupon.locked(coupon(__, key), by)
     };
     public func fail(__ : Self, key : Text, by : Principal, reason : Text) {
         Coupon.failed(coupon(__, key), by, reason)
+    };
+    public func redeem(__ : Self, key : Text, by : Principal) {
+        Coupon.redeemed(coupon(__, key), by);
+        __.available := List.deleteFirst<Text>(__.available, key, func(x : Text) = x == key)
     };
 
     public func withdrawExpiredCoupons(__ : Self, userCoupons : List<Text>, duration : Nat) : (List<Text>, List<Text>) {
@@ -144,6 +146,7 @@ module {
                 newUserCoupons := List.push(key, newUserCoupons)
             }
         };
+
         (newUserCoupons, expiredCoupons)
     };
 
@@ -153,11 +156,11 @@ module {
 
     public func foundByCode(__ : Self, code : [Nat8]) : Bool = Map.includes(__.coupons, Key(SHA256.fromBytes(code)));
 
-    public func creatable(__ : Self, creator : Principal, capitalRaised : Nat, limit : Nat) : Bool {
+    public func creatable(__ : Self, userCoupons : List<Text>, capitalRaised : Nat, limit : Nat, duration : Nat) : Bool {
         var count : Nat = 0;
-        for (key in List.toIter(__.available)) {
+        for (key in List.toIter(userCoupons)) {
             let x : Coupon = coupon(__, key);
-            if (x.creator == creator and x.capitalRaised >= capitalRaised) count += 1;
+            if (x.capitalRaised >= capitalRaised and not Coupon.isExpired(x, duration)) count += 1;
             if (count >= limit) return false
         };
         true
@@ -167,7 +170,7 @@ module {
         var amount : Nat = 0;
         for (key in List.toIter(userCoupons)) {
             let x : Coupon = coupon(__, key);
-            amount += Coupon.icpPaid(x)
+            if (Coupon.variant(x) != #Redeemed) amount += Coupon.icpPaid(x)
         };
         amount
     };
@@ -178,6 +181,17 @@ module {
             if (Coupon.isExpired(x, duration)) amount += Coupon.icpPaid(x)
         };
         amount
+    };
+    public func getEarning(__ : Self, userCoupons : List<Text>, duration : Nat) : SharableEarning {
+        var revenue : Nat = 0;
+        var balance : Nat = 0;
+        for (key in List.toIter(userCoupons)) {
+            let x : Coupon = coupon(__, key);
+            let amount : Nat = Coupon.icpPaid(x);
+            if (Coupon.variant(x) != #Redeemed) revenue += amount;
+            if (Coupon.isExpired(x, duration)) balance += amount
+        };
+        { revenue; balance; lastWithdrawAt = 0 }
     };
 
     public func coupon(__ : Self, key : Text) : Coupon = switch (Map.get(__.coupons, Key(key))) {
@@ -243,5 +257,12 @@ module {
             case (#capitalRaised, order) Array.sort<PrivateSharableCoupon>(Array.map<Entry, PrivateSharableCoupon>(filtered, toSharable), _capitalRaisedPrivate(order));
             case (#icpPaid, order) Array.sort<PrivateSharableCoupon>(Array.map<Entry, PrivateSharableCoupon>(filtered, toSharable), _icpPaidPrivate(order))
         }
+    };
+
+    /// PUBLIC ////// ASSERTERS ////////////
+
+    public func expectCreatable(__ : Self, userCoupons : List<Text>, capitalRaised : Nat, limit : Nat, duration : Nat) {
+        if (creatable(__, userCoupons, capitalRaised, limit, duration)) return;
+        E.f(#NOT_VALID("Coupon"), "Attempted to create more coupons with the capital raised " # debug_show capitalRaised # " and than limit " # debug_show limit)
     }
 }

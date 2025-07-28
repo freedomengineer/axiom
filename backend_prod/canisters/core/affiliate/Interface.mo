@@ -17,6 +17,7 @@ module {
         redeemCoupon : shared ([Nat8], Principal) -> async ();
         createCoupon : shared (Nat) -> async [Nat8];
         withdrawAll : shared () -> async ();
+        withdrawExpiredCoupons : shared () -> async ();
         getConfig : query (Configs.Key) -> async Configs.SharableValue;
         getConfigs : query () -> async Configs.Sharable;
         getCoupon : query (Text) -> async Coupon.Sharable;
@@ -29,6 +30,7 @@ module {
         getTopPagination : query ({ #Referrers }, Nat, Nat) -> async Pagination.TopPagination;
         getUser : query (Principal) -> async User.Sharable;
         getEarning : query (Principal) -> async Earning.Sharable;
+        getCouponsEarning : query (Principal) -> async Earning.Sharable;
         expectUserNotFound : query (Principal) -> async ();
     };
 };

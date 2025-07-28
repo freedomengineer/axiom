@@ -790,16 +790,16 @@ shared ({ caller = indicator }) actor class DAO() = this {
         let Split : SplitInterface.Split = await Indicator.Split();
 
         if (not E8S.isZero(acornMintBalance)) {
-            await Treasury.externalMint(caller, acornMintBalance.val);
-            User.withdrawAcornMint(user, acornMintBalance, getNow)
+            User.withdrawAcornMint(user, acornMintBalance, getNow);
+            await Treasury.externalMint(caller, acornMintBalance.val)
         };
         if (not E8S.isZero(acornTransferBalance)) {
-            await Treasury.externalTransfer(caller, acornTransferBalance.val);
-            User.withdrawAcornTransfer(user, acornTransferBalance, getNow)
+            User.withdrawAcornTransfer(user, acornTransferBalance, getNow);
+            await Treasury.externalTransfer(caller, acornTransferBalance.val)
         };
         if (not E8S.isZero(icpBalance)) {
-            await Split.externalTransfer(caller, icpBalance.val);
-            User.withdrawIcp(user, icpBalance, getNow)
+            User.withdrawIcp(user, icpBalance, getNow);
+            await Split.externalTransfer(caller, icpBalance.val)
         }
     };
 

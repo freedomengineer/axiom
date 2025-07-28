@@ -391,6 +391,24 @@
       }
     },
     {
+      "name": "withdrawExpiredCoupons",
+      "flag": {
+        "isQuery": false,
+        "callerRequired": true
+      },
+      "argTypes": {},
+      "returnType": {
+        "origin": "async ()",
+        "singular": {
+          "name": "()"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
       "name": "getConfig",
       "flag": {
         "isQuery": true,
@@ -920,6 +938,36 @@
     },
     {
       "name": "getEarning",
+      "flag": {
+        "isQuery": true,
+        "callerRequired": false
+      },
+      "argTypes": {
+        "principal": {
+          "origin": "Principal",
+          "singular": {
+            "name": "Principal"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async Earning.Sharable",
+        "singular": {
+          "name": "Sharable",
+          "parent": "Earning"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
+      "name": "getCouponsEarning",
       "flag": {
         "isQuery": true,
         "callerRequired": false

@@ -63,6 +63,16 @@ module {
         result : Result;
         timestamp : Time
     };
+    public type CouponRedeemedData = {
+        key : Text;
+        user : Principal;
+        timestamp : Time
+    };
+    public type CouponExpiredData = {
+        key : Text;
+        claimable : Nat;
+        timestamp : Time
+    };
 
     public type NewEvidencesToHypothesisData = {
         evidenceId : Nat;
@@ -122,6 +132,8 @@ module {
         #CustodianProposalOpened : CustodianProposalOpenedData;
         #ProposalExecuted : ProposalExecutedData;
         #ProposalResult : ProposalResultData;
+        #CouponRedeemed : CouponRedeemedData;
+        #CouponExpired : CouponExpiredData;
 
         #NewHypothesesFromFollowings : NewHypothesesFromFollowingsData;
         #NewEvidencesFromFollowings : NewEvidencesFromFollowingsData;
@@ -143,6 +155,8 @@ module {
         #CustodianProposalOpened : CustodianProposalOpenedData;
         #ProposalExecuted : ProposalExecutedData;
         #ProposalResult : ProposalResultData;
+        #CouponRedeemed : CouponRedeemedData;
+        #CouponExpired : CouponExpiredData;
 
         #NewHypothesesFromFollowings : {
             var capacity : List<NewHypothesesFromFollowingsData>;
@@ -203,6 +217,8 @@ module {
         #CustodianProposalOpened : CustodianProposalOpenedData;
         #ProposalExecuted : ProposalExecutedData;
         #ProposalResult : ProposalResultData;
+        #CouponRedeemed : CouponRedeemedData;
+        #CouponExpired : CouponExpiredData;
 
         #NewHypothesesFromFollowings : {
             capacity : [NewHypothesesFromFollowingsData];
@@ -498,6 +514,8 @@ module {
             case (_, #CustodianProposalOpened(data)) #CustodianProposalOpened(data);
             case (_, #ProposalExecuted(data)) #ProposalExecuted(data);
             case (_, #ProposalResult(data)) #ProposalResult(data);
+            case (_, #CouponRedeemed(data)) #CouponRedeemed(data);
+            case (_, #CouponExpired(data)) #CouponExpired(data);
 
             // unreachable
             case (_, _) E.unreachable()
@@ -545,6 +563,8 @@ module {
                 case (#CustodianProposalOpened(data)) #CustodianProposalOpened(data);
                 case (#ProposalExecuted(data)) #ProposalExecuted(data);
                 case (#ProposalResult(data)) #ProposalResult(data);
+                case (#CouponRedeemed(data)) #CouponRedeemed(data);
+                case (#CouponExpired(data)) #CouponExpired(data);
 
                 // grouped without ids
                 case (#NewHypothesesFromFollowings(group)) #NewHypothesesFromFollowings({

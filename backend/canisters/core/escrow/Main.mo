@@ -99,11 +99,15 @@ shared ({ caller = indicator }) actor class Escrow() = this {
         if (interestAmount == 0 and expiredAmount == 0) E.f(#NOT_VALID("Withdrawal"), "No expired burials or interest available to withdraw");
 
         let Treasury : TreasuryInterface.Treasury = await Indicator.Treasury();
-        await Treasury.externalMint(caller, interestAmount);
-        await Treasury.externalTransfer(caller, expiredAmount);
+        if (interestAmount > 0) {
+            User.markAsWithdrawn(user, getNow);
+            await Treasury.externalMint(caller, interestAmount)
+        };
+        if (expiredAmount > 0) {
+            User.cleanUpExpired(user, getNow);
+            await Treasury.externalTransfer(caller, expiredAmount)
+        };
 
-        User.cleanUpExpired(user, getNow);
-        User.markAsWithdrawn(user, getNow)
     };
 
     /// PUBLIC ////// ACCESSORS ////////////

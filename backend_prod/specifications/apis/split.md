@@ -88,15 +88,7 @@
 {"recipient": "Principal", "amount": "Nat"}
 ```
 
-### 6. `affiliateExternalTransfer(recipient, distributedAmount, lockedAmount)` returns `()`
-
-#### Arguments:
-
-```json
-{"recipient": "Principal", "distributedAmount": "Nat", "lockedAmount": "Nat"}
-```
-
-### 7. `affiliateSplit(splitAmounts)` returns `()`
+### 6. `affiliateSplit(splitAmounts)` returns `()`
 
 #### Arguments:
 
@@ -111,7 +103,7 @@
 }
 ```
 
-### 8. `internalTransfer(recipientVariant, amount)` returns `()`
+### 7. `internalTransfer(recipientVariant, amount)` returns `()`
 
 #### Arguments:
 
@@ -122,7 +114,7 @@
 }
 ```
 
-### 9. `externalTransfer(recipient, amount)` returns `()`
+### 8. `externalTransfer(recipient, amount)` returns `()`
 
 #### Arguments:
 

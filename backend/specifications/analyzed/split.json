@@ -266,55 +266,6 @@
       }
     },
     {
-      "name": "affiliateExternalTransfer",
-      "flag": {
-        "isQuery": false,
-        "callerRequired": true
-      },
-      "argTypes": {
-        "recipient": {
-          "origin": "Principal",
-          "singular": {
-            "name": "Principal"
-          },
-          "entries": [],
-          "isArray": false,
-          "isOptional": false,
-          "isAsync": false
-        },
-        "distributedAmount": {
-          "origin": "Nat",
-          "singular": {
-            "name": "Nat"
-          },
-          "entries": [],
-          "isArray": false,
-          "isOptional": false,
-          "isAsync": false
-        },
-        "lockedAmount": {
-          "origin": "Nat",
-          "singular": {
-            "name": "Nat"
-          },
-          "entries": [],
-          "isArray": false,
-          "isOptional": false,
-          "isAsync": false
-        }
-      },
-      "returnType": {
-        "origin": "async ()",
-        "singular": {
-          "name": "()"
-        },
-        "entries": [],
-        "isArray": false,
-        "isOptional": false,
-        "isAsync": true
-      }
-    },
-    {
       "name": "affiliateSplit",
       "flag": {
         "isQuery": false,

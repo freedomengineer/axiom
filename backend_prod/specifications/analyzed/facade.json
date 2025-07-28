@@ -1944,6 +1944,112 @@
           }
         ],
         [
+          "#CouponRedeemed",
+          {
+            "origin": "CouponRedeemedData",
+            "singular": {
+              "name": "()"
+            },
+            "entries": [
+              [
+                "key",
+                {
+                  "origin": "Text",
+                  "singular": {
+                    "name": "Text"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "user",
+                {
+                  "origin": "Principal",
+                  "singular": {
+                    "name": "Principal"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "timestamp",
+                {
+                  "origin": "Time",
+                  "singular": {
+                    "name": "Time"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ]
+            ],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "#CouponExpired",
+          {
+            "origin": "CouponExpiredData",
+            "singular": {
+              "name": "()"
+            },
+            "entries": [
+              [
+                "key",
+                {
+                  "origin": "Text",
+                  "singular": {
+                    "name": "Text"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "claimable",
+                {
+                  "origin": "Nat",
+                  "singular": {
+                    "name": "Nat"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "timestamp",
+                {
+                  "origin": "Time",
+                  "singular": {
+                    "name": "Time"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ]
+            ],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
           "#NewHypothesesFromFollowings",
           {
             "origin": "NewHypothesesFromFollowingsData",
@@ -3126,6 +3232,112 @@
                             null
                           ]
                         ],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "timestamp",
+                      {
+                        "origin": "Time",
+                        "singular": {
+                          "name": "Time"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#CouponRedeemed",
+                {
+                  "origin": "CouponRedeemedData",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      "key",
+                      {
+                        "origin": "Text",
+                        "singular": {
+                          "name": "Text"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "user",
+                      {
+                        "origin": "Principal",
+                        "singular": {
+                          "name": "Principal"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "timestamp",
+                      {
+                        "origin": "Time",
+                        "singular": {
+                          "name": "Time"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#CouponExpired",
+                {
+                  "origin": "CouponExpiredData",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      "key",
+                      {
+                        "origin": "Text",
+                        "singular": {
+                          "name": "Text"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "claimable",
+                      {
+                        "origin": "Nat",
+                        "singular": {
+                          "name": "Nat"
+                        },
+                        "entries": [],
                         "isArray": false,
                         "isOptional": false,
                         "isAsync": false
@@ -4336,6 +4548,112 @@
                                   null
                                 ]
                               ],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ],
+                          [
+                            "timestamp",
+                            {
+                              "origin": "Time",
+                              "singular": {
+                                "name": "Time"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ]
+                        ],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "#CouponRedeemed",
+                      {
+                        "origin": "CouponRedeemedData",
+                        "singular": {
+                          "name": "()"
+                        },
+                        "entries": [
+                          [
+                            "key",
+                            {
+                              "origin": "Text",
+                              "singular": {
+                                "name": "Text"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ],
+                          [
+                            "user",
+                            {
+                              "origin": "Principal",
+                              "singular": {
+                                "name": "Principal"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ],
+                          [
+                            "timestamp",
+                            {
+                              "origin": "Time",
+                              "singular": {
+                                "name": "Time"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ]
+                        ],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "#CouponExpired",
+                      {
+                        "origin": "CouponExpiredData",
+                        "singular": {
+                          "name": "()"
+                        },
+                        "entries": [
+                          [
+                            "key",
+                            {
+                              "origin": "Text",
+                              "singular": {
+                                "name": "Text"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ],
+                          [
+                            "claimable",
+                            {
+                              "origin": "Nat",
+                              "singular": {
+                                "name": "Nat"
+                              },
+                              "entries": [],
                               "isArray": false,
                               "isOptional": false,
                               "isAsync": false
@@ -7708,6 +8026,112 @@
                             null
                           ]
                         ],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "timestamp",
+                      {
+                        "origin": "Time",
+                        "singular": {
+                          "name": "Time"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#CouponRedeemed",
+                {
+                  "origin": "CouponRedeemedData",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      "key",
+                      {
+                        "origin": "Text",
+                        "singular": {
+                          "name": "Text"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "user",
+                      {
+                        "origin": "Principal",
+                        "singular": {
+                          "name": "Principal"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "timestamp",
+                      {
+                        "origin": "Time",
+                        "singular": {
+                          "name": "Time"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#CouponExpired",
+                {
+                  "origin": "CouponExpiredData",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      "key",
+                      {
+                        "origin": "Text",
+                        "singular": {
+                          "name": "Text"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "claimable",
+                      {
+                        "origin": "Nat",
+                        "singular": {
+                          "name": "Nat"
+                        },
+                        "entries": [],
                         "isArray": false,
                         "isOptional": false,
                         "isAsync": false

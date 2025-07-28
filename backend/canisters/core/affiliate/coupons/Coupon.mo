@@ -118,12 +118,20 @@ module {
 
     /// PUBLIC ////// ACCESSORS ////////////
 
-    public func isExpired(__ : Self, duration : Nat, getNow : () -> Int) : Bool = Date.getMidnightsElapsed(__.creationDate, getNow()) >= duration;
+    public func isExpired(__ : Self, duration : Nat, getNow : () -> Int) : Bool = variant(__) != #Redeemed and Date.getMidnightsElapsed(__.creationDate, getNow()) >= duration;
 
     public func icpPaid(__ : Self) : Nat = switch (Array.find<(ActorVariant, Nat)>(__.splitAmounts, func(x) = x.0 == #Affiliate)) {
         case (?(_, icpPaid)) icpPaid;
         case (null) E.f(#NOT_VALID("Coupon"), "Attempted to get the ICP paid for a coupon that does not have an affiliate split")
     };
+    public func icpClaimable(__ : Self) : Nat = Array.foldLeft<(ActorVariant, Nat), Nat>(
+        __.splitAmounts,
+        0,
+        func(acc, x) = switch (x.0) {
+            case (#Affiliate) acc;
+            case (_) acc + x.1
+        },
+    );
 
     public func variant(__ : Self) : StatusVariant = switch (__.status) {
         case (#Available) #Available;

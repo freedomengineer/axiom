@@ -136,6 +136,8 @@
 
 ### 9. `withdrawAll()` returns `()`
 
+### 10. `withdrawExpiredCoupons()` returns `()`
+
 ## Accessors
 
 ### 1. `getConfig(key)` returns `Configs.SharableValue`
@@ -459,7 +461,20 @@
 {"revenue": "Nat", "balance": "Nat", "lastWithdrawAt": "Time"}
 ```
 
-### 13. `expectUserNotFound(principal)` returns `()`
+### 13. `getCouponsEarning(principal)` returns `Earning.Sharable`
+
+#### Arguments:
+
+```json
+{"principal": "Principal"}
+```
+
+#### Returns:
+```json
+{"revenue": "Nat", "balance": "Nat", "lastWithdrawAt": "Time"}
+```
+
+### 14. `expectUserNotFound(principal)` returns `()`
 
 #### Arguments:
 
