@@ -188,6 +188,190 @@
       }
     },
     {
+      "name": "affiliateDeposit",
+      "flag": {
+        "isQuery": false,
+        "callerRequired": true
+      },
+      "argTypes": {
+        "sender": {
+          "origin": "Principal",
+          "singular": {
+            "name": "Principal"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        },
+        "amount": {
+          "origin": "Nat",
+          "singular": {
+            "name": "Nat"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async ()",
+        "singular": {
+          "name": "()"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
+      "name": "affiliateTransfer",
+      "flag": {
+        "isQuery": false,
+        "callerRequired": true
+      },
+      "argTypes": {
+        "recipient": {
+          "origin": "Principal",
+          "singular": {
+            "name": "Principal"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        },
+        "amount": {
+          "origin": "Nat",
+          "singular": {
+            "name": "Nat"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async ()",
+        "singular": {
+          "name": "()"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
+      "name": "affiliateExternalTransfer",
+      "flag": {
+        "isQuery": false,
+        "callerRequired": true
+      },
+      "argTypes": {
+        "recipient": {
+          "origin": "Principal",
+          "singular": {
+            "name": "Principal"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        },
+        "distributedAmount": {
+          "origin": "Nat",
+          "singular": {
+            "name": "Nat"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        },
+        "lockedAmount": {
+          "origin": "Nat",
+          "singular": {
+            "name": "Nat"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async ()",
+        "singular": {
+          "name": "()"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
+      "name": "affiliateSplit",
+      "flag": {
+        "isQuery": false,
+        "callerRequired": true
+      },
+      "argTypes": {
+        "splitAmounts": {
+          "origin": "[(Actor.Variant, Nat)]",
+          "singular": {
+            "name": "()"
+          },
+          "entries": [
+            [
+              null,
+              {
+                "origin": "Actor.Variant",
+                "singular": {
+                  "name": "Variant",
+                  "parent": "Actor"
+                },
+                "entries": [],
+                "isArray": false,
+                "isOptional": false,
+                "isAsync": false
+              }
+            ],
+            [
+              null,
+              {
+                "origin": "Nat",
+                "singular": {
+                  "name": "Nat"
+                },
+                "entries": [],
+                "isArray": false,
+                "isOptional": false,
+                "isAsync": false
+              }
+            ]
+          ],
+          "isArray": true,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async ()",
+        "singular": {
+          "name": "()"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
       "name": "internalTransfer",
       "flag": {
         "isQuery": false,
@@ -869,6 +1053,96 @@
       },
       "entries": [],
       "isArray": false,
+      "isOptional": false,
+      "isAsync": false
+    },
+    "[(Actor.Variant, Nat)]": {
+      "origin": "[(Actor.Variant, Nat)]",
+      "singular": {
+        "name": "()"
+      },
+      "entries": [
+        [
+          null,
+          {
+            "origin": "Actor.Variant",
+            "singular": {
+              "name": "()"
+            },
+            "entries": [
+              [
+                "#Treasury",
+                null
+              ],
+              [
+                "#Split",
+                null
+              ],
+              [
+                "#Affiliate",
+                null
+              ],
+              [
+                "#Escrow",
+                null
+              ],
+              [
+                "#Sales",
+                null
+              ],
+              [
+                "#Axioms",
+                null
+              ],
+              [
+                "#DAO",
+                null
+              ],
+              [
+                "#Facade",
+                null
+              ],
+              [
+                "#Indicator",
+                null
+              ],
+              [
+                "#ICPUSD",
+                null
+              ],
+              [
+                "#Frontend",
+                null
+              ],
+              [
+                "#ACORN",
+                null
+              ],
+              [
+                "#Founder",
+                null
+              ]
+            ],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          null,
+          {
+            "origin": "Nat",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ]
+      ],
+      "isArray": true,
       "isOptional": false,
       "isAsync": false
     },

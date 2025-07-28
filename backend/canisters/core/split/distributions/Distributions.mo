@@ -27,7 +27,7 @@ module {
 
     private let { VariantKey } = Actor;
 
-    private func _getProportion(actorVariant : ActorVariant, configs : Configs) : Proportion = switch (actorVariant) {
+    public func getProportion(actorVariant : ActorVariant, configs : Configs) : Proportion = switch (actorVariant) {
         case (#Affiliate) Configs.Proportion(configs, "AFFILIATE_PROPORTION");
         case (#DAO) Configs.Proportion(configs, "DAO_PROPORTION");
         case (#Founder) Configs.Proportion(configs, "FOUNDER_PROPORTION");
@@ -55,9 +55,16 @@ module {
 
     public func deposit(__ : Self, depositAmount : E8S, configs : Configs) {
         for ((actorVariant, distribution) in Map.entries(__)) {
-            let proportion : Proportion = _getProportion(actorVariant, configs);
+            let proportion : Proportion = getProportion(actorVariant, configs);
             let proportionalAmount : E8S = E8S.getScaleBy(depositAmount, proportion);
             Distribution.deposit(distribution, proportionalAmount)
+        }
+    };
+
+    public func affiliateDeposit(__ : Self, splitAmounts : [(ActorVariant, Nat)]) {
+        for ((actorVariant, amount) in splitAmounts.vals()) {
+            let amountE8S : E8S = E8S.make(amount);
+            Distribution.deposit(distribution(__, actorVariant), amountE8S)
         }
     };
 
@@ -70,10 +77,10 @@ module {
         }
     };
     public func getDistribution(__ : Self, actorVariant : ActorVariant, configs : Configs) : SharableDistribution {
-        Distribution.toSharable(distribution(__, actorVariant), actorVariant, _getProportion(actorVariant, configs))
+        Distribution.toSharable(distribution(__, actorVariant), actorVariant, getProportion(actorVariant, configs))
     };
     public func getDistributions(__ : Self, configs : Configs) : Sharable {
-        Map.getEntriesMap<ActorVariant, Distribution, SharableDistribution>(__, func(i, e) = Distribution.toSharable(e, i, _getProportion(i, configs)))
+        Map.getEntriesMap<ActorVariant, Distribution, SharableDistribution>(__, func(i, e) = Distribution.toSharable(e, i, getProportion(i, configs)))
     };
 
     public func totalRevenue(__ : Self) : E8S {

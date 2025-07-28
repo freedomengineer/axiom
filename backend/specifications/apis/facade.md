@@ -3,11 +3,11 @@
 ## Dependencies
 
 
-- Attributes: `User`, `Users`, `Notification`, `Notifications`, `DIP721`
+- Attributes: `User`, `Users`, `Notification`, `Notifications`, `Coupon`, `DIP721`
 - Interfaces: `DIP721Interface`, `ICPUSDInterface`, `SplitInterface`, `TreasuryInterface`, `AffiliateInterface`, `SalesInterface`, `EscrowInterface`, `AxiomsInterface`, `DAOInterface`, `IndicatorInterface`
 - Commons: `C`, `E`
 - Libraries: `Base`, `Configs`, `E8S`, `Format`, `Iter`, `Map`, `Pagination`
-- Bases: `Principal`, `Nat`, `Time`, `Text`
+- Bases: `Principal`, `Nat`, `Time`, `Text`, `Error`
 ## Modifiers
 
 ### 1. `shiftToMidnight(days)` returns `()`
@@ -279,7 +279,15 @@
 {"username": "Text", "capitalRaised": "Nat", "referrer": "Principal"}
 ```
 
-### 14. `editUsername(username)` returns `()`
+### 14. `registerWithCoupon(username, coupon)` returns `()`
+
+#### Arguments:
+
+```json
+{"username": "Text", "coupon": ["Nat8"]}
+```
+
+### 15. `editUsername(username)` returns `()`
 
 #### Arguments:
 
@@ -287,7 +295,7 @@
 {"username": "Text"}
 ```
 
-### 15. `editLocation(location)` returns `()`
+### 16. `editLocation(location)` returns `()`
 
 #### Arguments:
 
@@ -295,7 +303,7 @@
 {"location": "Text"}
 ```
 
-### 16. `editAvatar(picture)` returns `()`
+### 17. `editAvatar(picture)` returns `()`
 
 #### Arguments:
 
@@ -303,7 +311,7 @@
 {"picture": {"blob": "Blob"}}
 ```
 
-### 17. `editLinks(links)` returns `()`
+### 18. `editLinks(links)` returns `()`
 
 #### Arguments:
 

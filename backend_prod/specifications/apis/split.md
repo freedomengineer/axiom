@@ -72,7 +72,46 @@
 {"sender": "Principal", "amount": "Nat"}
 ```
 
-### 4. `internalTransfer(recipientVariant, amount)` returns `()`
+### 4. `affiliateDeposit(sender, amount)` returns `()`
+
+#### Arguments:
+
+```json
+{"sender": "Principal", "amount": "Nat"}
+```
+
+### 5. `affiliateTransfer(recipient, amount)` returns `()`
+
+#### Arguments:
+
+```json
+{"recipient": "Principal", "amount": "Nat"}
+```
+
+### 6. `affiliateExternalTransfer(recipient, distributedAmount, lockedAmount)` returns `()`
+
+#### Arguments:
+
+```json
+{"recipient": "Principal", "distributedAmount": "Nat", "lockedAmount": "Nat"}
+```
+
+### 7. `affiliateSplit(splitAmounts)` returns `()`
+
+#### Arguments:
+
+```json
+{
+  "splitAmounts": [
+    [
+      "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN | #FOUNDER",
+      "Nat"
+    ]
+  ]
+}
+```
+
+### 8. `internalTransfer(recipientVariant, amount)` returns `()`
 
 #### Arguments:
 
@@ -83,7 +122,7 @@
 }
 ```
 
-### 5. `externalTransfer(recipient, amount)` returns `()`
+### 9. `externalTransfer(recipient, amount)` returns `()`
 
 #### Arguments:
 

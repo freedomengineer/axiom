@@ -131,7 +131,7 @@ module {
         fromArrayMut<A>(a)
     };
 
-    ////////////////////////////////////////////////////////////////////////
+    /// MODIFIED AREA /////////////////////////////////////////////////
 
     public func toArrayMap<A, B>(xs : Iter<A>, f : A -> B) : [B] {
         let buffer = Buffer.Buffer<B>(8);

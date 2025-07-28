@@ -40,6 +40,8 @@ export type StringifiedFilterSort = {
 export const FILTER_SORT_DECS = {
     hypothesis: {
         filter: {
+            agoStart: Primitive.Nat,
+            agoEnd: Primitive.Nat,
             age: Primitive.Nat,
             field: Primitive.Text,
             publisher: Primitive.Principal,
@@ -67,6 +69,8 @@ export const FILTER_SORT_DECS = {
     },
     evidence: {
         filter: {
+            agoStart: Primitive.Nat,
+            agoEnd: Primitive.Nat,
             publisher: Primitive.Principal,
             hypothesis: Primitive.Nat,
             voter: Primitive.Principal,

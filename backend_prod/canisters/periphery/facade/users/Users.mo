@@ -41,13 +41,13 @@ module {
         case (#ascending) func((_, a) : Entry, (_, b) : Entry) = Int.compare(a.creationDate, b.creationDate);
         case (#descending) func((_, a) : Entry, (_, b) : Entry) = Int.compare(b.creationDate, a.creationDate)
     };
-    private func _capitalRaised(orderBy : Order) : Compare<Entry> = switch (orderBy) {
-        case (#ascending) func((_, a) : Entry, (_, b) : Entry) = Nat.compare(a.capitalRaised, b.capitalRaised);
-        case (#descending) func((_, a) : Entry, (_, b) : Entry) = Nat.compare(b.capitalRaised, a.capitalRaised)
+    private func _capitalRaised(orderBy : Order) : Compare<SharableUser> = switch (orderBy) {
+        case (#ascending) func(a : SharableUser, b : SharableUser) = Nat.compare(a.capitalRaised, b.capitalRaised);
+        case (#descending) func(a : SharableUser, b : SharableUser) = Nat.compare(b.capitalRaised, a.capitalRaised)
     };
-    private func _alphabetical(orderBy : Order) : Compare<Entry> = switch (orderBy) {
-        case (#ascending) func((_, a) : Entry, (_, b) : Entry) = Text.compare(a.username, b.username);
-        case (#descending) func((_, a) : Entry, (_, b) : Entry) = Text.compare(b.username, a.username)
+    private func _alphabetical(orderBy : Order) : Compare<SharableUser> = switch (orderBy) {
+        case (#ascending) func(a : SharableUser, b : SharableUser) = Text.compare(a.username, b.username);
+        case (#descending) func(a : SharableUser, b : SharableUser) = Text.compare(b.username, a.username)
     };
 
     /// PUBLIC ////// DECLARATIONS ////////////
@@ -155,7 +155,7 @@ module {
             case (null) {};
             case (?capitalRaised) filtered := ?Map.getEntriesFilterMap<Principal, User, Entry>(
                 __,
-                func(i, e) = switch (e.capitalRaised >= capitalRaised) {
+                func(i, e) = switch (e.capitalRaised == capitalRaised) {
                     case (true) ?(i, e);
                     case (false) null
                 },
@@ -181,11 +181,11 @@ module {
 
         switch (sort.by, sort.order, filtered) {
             case (#recent, order, null) Array.map<Entry, SharableUser>(Array.sort(Map.getEntries(__), _recent(order)), toSharable);
-            case (#capitalRaised, order, null) Array.map<Entry, SharableUser>(Array.sort(Map.getEntries(__), _capitalRaised(order)), toSharable);
-            case (#alphabetical, order, null) Array.map<Entry, SharableUser>(Array.sort(Map.getEntries(__), _alphabetical(order)), toSharable);
+            case (#capitalRaised, order, null) Array.sort<SharableUser>(Map.getEntriesMap<Principal, User, SharableUser>(__, toSharable), _capitalRaised(order));
+            case (#alphabetical, order, null) Array.sort<SharableUser>(Map.getEntriesMap<Principal, User, SharableUser>(__, toSharable), _alphabetical(order));
             case (#recent, order, ?unsorted) Array.map<Entry, SharableUser>(Array.sort(unsorted, _recent(order)), toSharable);
-            case (#capitalRaised, order, ?unsorted) Array.map<Entry, SharableUser>(Array.sort(unsorted, _capitalRaised(order)), toSharable);
-            case (#alphabetical, order, ?unsorted) Array.map<Entry, SharableUser>(Array.sort(unsorted, _alphabetical(order)), toSharable)
+            case (#capitalRaised, order, ?unsorted) Array.sort(Array.map<Entry, SharableUser>(unsorted, toSharable), _capitalRaised(order));
+            case (#alphabetical, order, ?unsorted) Array.sort(Array.map<Entry, SharableUser>(unsorted, toSharable), _alphabetical(order))
         }
     };
 
