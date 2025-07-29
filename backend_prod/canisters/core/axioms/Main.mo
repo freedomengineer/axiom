@@ -13,6 +13,7 @@ import User "users/User";
 import Users "users/Users";
 import Flag "flags/Flag";
 import Flags "flags/Flags";
+import UserConfigs "user_configs/UserConfigs";
 
 import Notification "../../periphery/facade/notifications/Notification";
 import Packages "../sales/packages/Packages";
@@ -55,7 +56,44 @@ import Timer "mo:base/Timer";
 import Float "mo:base/Float";
 import Debug "mo:base/Debug";
 
-shared ({ caller = indicator }) actor class Axioms() = this {
+(
+    with migration = func(
+        old : {
+            var users : Map.Map<Principal, { mintEarning : Earning.Earning; transferEarning : Earning.Earning; followers : Set.Set<Principal>; followings : Set.Set<Principal>; axioms : Set.Set<Nat>; bookmarks : Set.Set<Nat>; joinedFields : Set.Set<Text>; var hypotheses : List.List<Nat>; var evidences : List.List<Nat>; votedHypotheses : Map.Map<Nat, TernaryVotes.Vote>; votedEvidences : Map.Map<Nat, BinaryVotes.Vote>; votedFlags : Map.Map<Flag.Header, BinaryVotes.Vote> }>
+        }
+    ) : {
+        var users : Users.Users
+    } {
+        {
+
+            var users : Users.Users = do {
+                let newUsers : Users.Users = Map.new<Principal, User.User>();
+                for ((principal, user) in Map.entries(old.users)) {
+                    Map.put(
+                        newUsers,
+                        Map.PrincipalKey(principal),
+                        {
+                            mintEarning = user.mintEarning;
+                            transferEarning = user.transferEarning;
+                            followers = user.followers;
+                            followings = user.followings;
+                            axioms = user.axioms;
+                            bookmarks = user.bookmarks;
+                            joinedFields = user.joinedFields;
+                            var hypotheses = user.hypotheses;
+                            var evidences = user.evidences;
+                            votedHypotheses = user.votedHypotheses;
+                            votedEvidences = user.votedEvidences;
+                            votedFlags = user.votedFlags;
+                            configs = UserConfigs.init()
+                        },
+                    )
+                };
+                newUsers
+            }
+        }
+    }
+) shared ({ caller = indicator }) actor class Axioms() = this {
         private stable let Indicator : IndicatorInterface.Indicator = actor (Principal.toText(indicator));
 
     private stable let ages : Ages.Ages = Ages.init();
@@ -643,22 +681,31 @@ shared ({ caller = indicator }) actor class Axioms() = this {
         )()
     };
 
-    public shared ({ caller }) func voteHypothesis(hypothesisId : Nat, choice : TernaryVotes.Choice, scale : ?Nat) : async () {
+    public shared ({ caller }) func voteHypothesis(hypothesisId : Nat, choice : TernaryVotes.Choice, custom : ?TernaryVotes.CustomValue) : async () {
         let user : User.User = Users.user(users, caller);
         let hypothesis : Hypothesis.Hypothesis = Hypotheses.hypothesis(hypotheses, hypothesisId);
 
-        let scaleProportion : Proportion.Proportion = switch (scale) {
-            case (null) Proportion.make(1, 1);
-            case (?scale) {
-                if (scale < 0 or scale > 100) E.f(#NOT_VALID("Vote"), "Vote scale must be between 0 and 100");
-                Proportion.make(scale, 100)
-            }
-        };
-
         let Escrow : EscrowInterface.Escrow = await Indicator.Escrow();
         let value : Nat = await Escrow.getVotingPower(caller);
-        let scaledValue : Nat = value * scaleProportion.part / scaleProportion.whole;
-        let vote : TernaryVotes.Vote = { choice; value = scaledValue };
+        let customValue : Nat = switch (custom) {
+            case (null) value;
+            case (? #Value(x)) {
+                if (x < 0 or x > value) E.f(#NOT_VALID("Vote"), "Custom value must be between 0 and " # debug_show value # ", current value is " # debug_show x);
+                switch (x < 1) {
+                    case (true) 1;
+                    case (false) x
+                }
+            };
+            case (? #Scale(x)) {
+                if (x < 0 or x > 100) E.f(#NOT_VALID("Vote"), "Vote scale must be between 0 and 100, current scale is " # debug_show x);
+                let newValue : Nat = value * x / 100;
+                switch (newValue < 1) {
+                    case (true) 1;
+                    case (false) newValue
+                }
+            }
+        };
+        let vote : TernaryVotes.Vote = { choice; value = customValue };
         switch (User.getHypothesisVote(user, hypothesisId)) {
             case (null) Hypothesis.addVote(hypothesis, caller, vote);
             case (?existedVote) Hypothesis.updateVote(hypothesis, caller, existedVote, vote)
@@ -672,22 +719,31 @@ shared ({ caller = indicator }) actor class Axioms() = this {
             }
         )()
     };
-    public shared ({ caller }) func voteEvidence(evidenceId : Nat, choice : BinaryVotes.Choice, scale : ?Nat) : async () {
+    public shared ({ caller }) func voteEvidence(evidenceId : Nat, choice : BinaryVotes.Choice, custom : ?TernaryVotes.CustomValue) : async () {
         let user : User.User = Users.user(users, caller);
         let evidence : Evidence.Evidence = Evidences.evidence(evidences, evidenceId);
 
-        let scaleProportion : Proportion.Proportion = switch (scale) {
-            case (null) Proportion.make(1, 1);
-            case (?scale) {
-                if (scale < 0 or scale > 100) E.f(#NOT_VALID("Vote"), "Vote scale must be between 0 and 100");
-                Proportion.make(scale, 100)
-            }
-        };
-
         let Escrow : EscrowInterface.Escrow = await Indicator.Escrow();
         let value : Nat = await Escrow.getVotingPower(caller);
-        let scaledValue : Nat = value * scaleProportion.part / scaleProportion.whole;
-        let vote : BinaryVotes.Vote = { choice; value = scaledValue };
+        let customValue : Nat = switch (custom) {
+            case (null) value;
+            case (? #Value(x)) {
+                if (x < 0 or x > value) E.f(#NOT_VALID("Vote"), "Custom value must be between 0 and " # debug_show value # ", current value is " # debug_show x);
+                switch (x < 1) {
+                    case (true) 1;
+                    case (false) x
+                }
+            };
+            case (? #Scale(x)) {
+                if (x < 0 or x > 100) E.f(#NOT_VALID("Vote"), "Vote scale must be between 0 and 100, current scale is " # debug_show x);
+                let newValue : Nat = value * x / 100;
+                switch (newValue < 1) {
+                    case (true) 1;
+                    case (false) newValue
+                }
+            }
+        };
+        let vote : BinaryVotes.Vote = { choice; value = customValue };
         switch (User.getEvidenceVote(user, evidenceId)) {
             case (null) Evidence.addVote(evidence, caller, vote);
             case (?existedVote) Evidence.updateVote(evidence, caller, existedVote, vote)

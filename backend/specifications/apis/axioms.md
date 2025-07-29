@@ -3,7 +3,7 @@
 ## Dependencies
 
 
-- Attributes: `Age`, `Ages`, `Evidence`, `Evidences`, `Field`, `Fields`, `Hypothesis`, `Hypotheses`, `Payout`, `Payouts`, `Ranks`, `User`, `Users`, `Flag`, `Flags`, `Notification`, `Packages`
+- Attributes: `Age`, `Ages`, `Evidence`, `Evidences`, `Field`, `Fields`, `Hypothesis`, `Hypotheses`, `Payout`, `Payouts`, `Ranks`, `User`, `Users`, `Flag`, `Flags`, `UserConfigs`, `Notification`, `Packages`
 - Interfaces: `EscrowInterface`, `TreasuryInterface`, `FacadeInterface`, `IndicatorInterface`
 - Commons: `C`, `E`
 - Libraries: `Array`, `Base`, `Configs`, `ClusterTree`, `Count`, `Date`, `DoubleClusterTree`, `DoubleRankTree`, `E8S`, `Earning`, `Format`, `Iter`, `List`, `Map`, `Pagination`, `Proportion`, `Set`, `Vector`, `BinaryVotes`, `TernaryVotes`
@@ -159,20 +159,20 @@
 {"header": {"id": "Nat", "category": "#HYPOTHESIS | #EVIDENCE"}, "reason": "Text"}
 ```
 
-### 13. `voteHypothesis(hypothesisId, choice, scale)` returns `()`
+### 13. `voteHypothesis(hypothesisId, choice, custom)` returns `()`
 
 #### Arguments:
 
 ```json
-{"hypothesisId": "Nat", "choice": "#POSITIVE | #NEUTRAL | #NEGATIVE", "scale": "Nat"}
+{"hypothesisId": "Nat", "choice": "#POSITIVE | #NEUTRAL | #NEGATIVE", "custom": {"#VALUE": "Nat", "#SCALE": "Nat"}}
 ```
 
-### 14. `voteEvidence(evidenceId, choice, scale)` returns `()`
+### 14. `voteEvidence(evidenceId, choice, custom)` returns `()`
 
 #### Arguments:
 
 ```json
-{"evidenceId": "Nat", "choice": "#POSITIVE | #NEGATIVE", "scale": "Nat"}
+{"evidenceId": "Nat", "choice": "#POSITIVE | #NEGATIVE", "custom": {"#VALUE": "Nat", "#SCALE": "Nat"}}
 ```
 
 ### 15. `voteFlag(header, choice)` returns `()`

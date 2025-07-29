@@ -499,10 +499,11 @@
           "isOptional": false,
           "isAsync": false
         },
-        "scale": {
-          "origin": "?Nat",
+        "custom": {
+          "origin": "?TernaryVotes.CustomValue",
           "singular": {
-            "name": "Nat"
+            "name": "CustomValue",
+            "parent": "TernaryVotes"
           },
           "entries": [],
           "isArray": false,
@@ -549,10 +550,11 @@
           "isOptional": false,
           "isAsync": false
         },
-        "scale": {
-          "origin": "?Nat",
+        "custom": {
+          "origin": "?TernaryVotes.CustomValue",
           "singular": {
-            "name": "Nat"
+            "name": "CustomValue",
+            "parent": "TernaryVotes"
           },
           "entries": [],
           "isArray": false,
@@ -2104,6 +2106,13 @@
       "relativePath": "flags/Flags",
       "depth": 2
     },
+    "UserConfigs": {
+      "origin": "import UserConfigs \"user_configs/UserConfigs\";",
+      "name": "UserConfigs",
+      "category": "attribute",
+      "relativePath": "user_configs/UserConfigs",
+      "depth": 2
+    },
     "Notification": {
       "origin": "import Notification \"../../periphery/facade/notifications/Notification\";",
       "name": "Notification",
@@ -2373,6 +2382,7 @@
     "Users",
     "Flag",
     "Flags",
+    "UserConfigs",
     "Notification",
     "Packages",
     "EscrowInterface",
@@ -2944,6 +2954,43 @@
       ],
       "isArray": false,
       "isOptional": false,
+      "isAsync": false
+    },
+    "?TernaryVotes.CustomValue": {
+      "origin": "?TernaryVotes.CustomValue",
+      "singular": {
+        "name": "()"
+      },
+      "entries": [
+        [
+          "#Value",
+          {
+            "origin": "Nat",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "#Scale",
+          {
+            "origin": "Nat",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ]
+      ],
+      "isArray": false,
+      "isOptional": true,
       "isAsync": false
     },
     "Configs.Key": {

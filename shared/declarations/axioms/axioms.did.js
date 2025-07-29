@@ -104,8 +104,10 @@ export const idlFactory = ({ IDL }) => {
     'voter' : IDL.Opt(IDL.Principal),
     'publisher' : IDL.Opt(IDL.Principal),
     'side' : IDL.Opt(BinaryChoice),
+    'agoEnd' : IDL.Opt(IDL.Nat),
     'hypothesis' : IDL.Opt(IDL.Nat),
     'repliedTo' : IDL.Opt(IDL.Nat),
+    'agoStart' : IDL.Opt(IDL.Nat),
   });
   const Sort__4 = IDL.Variant({
     'positivity' : IDL.Null,
@@ -238,9 +240,11 @@ export const idlFactory = ({ IDL }) => {
     'axiomsFrom' : IDL.Opt(IDL.Principal),
     'voter' : IDL.Opt(IDL.Principal),
     'publisher' : IDL.Opt(IDL.Principal),
+    'agoEnd' : IDL.Opt(IDL.Nat),
     'userFollowedPublishers' : IDL.Opt(IDL.Principal),
     'bookmarksFrom' : IDL.Opt(IDL.Principal),
     'userJoinedFields' : IDL.Opt(IDL.Principal),
+    'agoStart' : IDL.Opt(IDL.Nat),
   });
   const Sort__1 = IDL.Variant({
     'positivity' : IDL.Null,
@@ -306,6 +310,11 @@ export const idlFactory = ({ IDL }) => {
     'result' : TopResult,
     'callerRank' : IDL.Opt(IDL.Nat),
   });
+  const SharableConfig = IDL.Variant({
+    'ExcludedPublishers' : IDL.Vec(IDL.Principal),
+    'ExcludedFields' : IDL.Vec(IDL.Text),
+  });
+  const SharableUserConfigs = IDL.Vec(SharableConfig);
   const SharableEarning = IDL.Record({
     'lastWithdrawAt' : Time,
     'revenue' : SharableE8S__1,
@@ -314,6 +323,7 @@ export const idlFactory = ({ IDL }) => {
   const TernaryVote = IDL.Record({ 'value' : IDL.Nat, 'choice' : Choice });
   const BinaryVote = IDL.Record({ 'value' : IDL.Nat, 'choice' : Choice__1 });
   const Sharable = IDL.Record({
+    'configs' : SharableUserConfigs,
     'evidences' : IDL.Vec(IDL.Nat),
     'principal' : IDL.Principal,
     'earning' : SharableEarning,
@@ -328,6 +338,7 @@ export const idlFactory = ({ IDL }) => {
     'followings' : IDL.Vec(IDL.Principal),
     'callerFollower' : IDL.Opt(IDL.Bool),
   });
+  const CustomValue = IDL.Variant({ 'Scale' : IDL.Nat, 'Value' : IDL.Nat });
   const Axioms = IDL.Service({
     'addToAxioms' : IDL.Func([IDL.Nat], [], []),
     'addToBookmarks' : IDL.Func([IDL.Nat], [], []),
@@ -421,9 +432,17 @@ export const idlFactory = ({ IDL }) => {
     'setConfigs' : IDL.Func([IDL.Vec(IDL.Tuple(Key, SharableValue))], [], []),
     'shiftToMidnight' : IDL.Func([IDL.Nat], [], []),
     'unfollow' : IDL.Func([IDL.Principal], [], []),
-    'voteEvidence' : IDL.Func([IDL.Nat, Choice__1], [], []),
+    'voteEvidence' : IDL.Func(
+        [IDL.Nat, Choice__1, IDL.Opt(CustomValue)],
+        [],
+        [],
+      ),
     'voteFlag' : IDL.Func([Header, Choice__1], [], []),
-    'voteHypothesis' : IDL.Func([IDL.Nat, Choice], [], []),
+    'voteHypothesis' : IDL.Func(
+        [IDL.Nat, Choice, IDL.Opt(CustomValue)],
+        [],
+        [],
+      ),
     'withdrawAll' : IDL.Func([], [], []),
   });
   return Axioms;

@@ -201,6 +201,7 @@ type SharableValue =
    RangeNat: SharableRange_2;
    Text: text;
  };
+type SharableUserConfigs = vec SharableConfig;
 type SharableTernaryVotes = 
  record {
    powered: OneSideSharable;
@@ -297,6 +298,11 @@ type SharableE8S__1 = nat;
 type SharableE8S = nat;
 type SharableDate = nat;
 type SharableCount = nat;
+type SharableConfig = 
+ variant {
+   ExcludedFields: vec text;
+   ExcludedPublishers: vec principal;
+ };
 type SharableBinaryVotes__1 = 
  record {
    powered: OneSideSharable__1;
@@ -313,6 +319,7 @@ type Sharable =
    bookmarks: vec nat;
    callerFollower: opt bool;
    callerFollowing: opt bool;
+   configs: SharableUserConfigs;
    earning: SharableEarning;
    evidences: vec nat;
    followers: vec principal;
@@ -400,6 +407,8 @@ type Format =
 type Form = vec Format;
 type Filter__3 = 
  record {
+   agoEnd: opt nat;
+   agoStart: opt nat;
    hypothesis: opt nat;
    publisher: opt principal;
    q: opt text;
@@ -422,6 +431,8 @@ type Filter__1 =
 type Filter = 
  record {
    age: opt nat;
+   agoEnd: opt nat;
+   agoStart: opt nat;
    axiomsFrom: opt principal;
    bookmarksFrom: opt principal;
    field: opt text;
@@ -435,6 +446,11 @@ type Entry =
  record {
    rank: int;
    score: int;
+ };
+type CustomValue = 
+ variant {
+   Scale: nat;
+   Value: nat;
  };
 type Choice__1 = 
  variant {
@@ -555,9 +571,9 @@ type Axioms =
                     }) -> ();
    shiftToMidnight: (nat) -> ();
    unfollow: (principal) -> ();
-   voteEvidence: (nat, Choice__1) -> ();
+   voteEvidence: (nat, Choice__1, opt CustomValue) -> ();
    voteFlag: (Header, Choice__1) -> ();
-   voteHypothesis: (nat, Choice) -> ();
+   voteHypothesis: (nat, Choice, opt CustomValue) -> ();
    withdrawAll: () -> ();
  };
 service : () -> Axioms

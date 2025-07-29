@@ -23,6 +23,7 @@ module {
     public type Choice = { #Positive; #Negative };
     public type Vote = { choice : Choice; value : Nat };
     public type OneSideSharable = (Nat, Nat);
+    public type CustomValue = { #Value : Nat; #Scale : Nat };
 
     /// LIBRARY ////// VOTES ////////////
 

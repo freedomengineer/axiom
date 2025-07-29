@@ -84,9 +84,15 @@ export interface Axioms {
   'setConfigs' : ActorMethod<[Array<[Key, SharableValue]>], undefined>,
   'shiftToMidnight' : ActorMethod<[bigint], undefined>,
   'unfollow' : ActorMethod<[Principal], undefined>,
-  'voteEvidence' : ActorMethod<[bigint, Choice__1], undefined>,
+  'voteEvidence' : ActorMethod<
+    [bigint, Choice__1, [] | [CustomValue]],
+    undefined
+  >,
   'voteFlag' : ActorMethod<[Header, Choice__1], undefined>,
-  'voteHypothesis' : ActorMethod<[bigint, Choice], undefined>,
+  'voteHypothesis' : ActorMethod<
+    [bigint, Choice, [] | [CustomValue]],
+    undefined
+  >,
   'withdrawAll' : ActorMethod<[], undefined>,
 }
 export type BinaryChoice = { 'Negative' : null } |
@@ -105,6 +111,8 @@ export type Choice = { 'Negative' : null } |
   { 'Neutral' : null };
 export type Choice__1 = { 'Negative' : null } |
   { 'Positive' : null };
+export type CustomValue = { 'Scale' : bigint } |
+  { 'Value' : bigint };
 export interface Entry { 'rank' : bigint, 'score' : bigint }
 export interface Filter {
   'q' : [] | [string],
@@ -113,9 +121,11 @@ export interface Filter {
   'axiomsFrom' : [] | [Principal],
   'voter' : [] | [Principal],
   'publisher' : [] | [Principal],
+  'agoEnd' : [] | [bigint],
   'userFollowedPublishers' : [] | [Principal],
   'bookmarksFrom' : [] | [Principal],
   'userJoinedFields' : [] | [Principal],
+  'agoStart' : [] | [bigint],
 }
 export interface Filter__1 {
   'status' : [] | [Status],
@@ -129,8 +139,10 @@ export interface Filter__3 {
   'voter' : [] | [Principal],
   'publisher' : [] | [Principal],
   'side' : [] | [BinaryChoice],
+  'agoEnd' : [] | [bigint],
   'hypothesis' : [] | [bigint],
   'repliedTo' : [] | [bigint],
+  'agoStart' : [] | [bigint],
 }
 export type Form = Array<Format>;
 export type Format = { 'Note' : Note } |
@@ -168,6 +180,7 @@ export interface Picture { 'blob' : Uint8Array | number[] }
 export type Role = { 'Guest' : null } |
   { 'Member' : null };
 export interface Sharable {
+  'configs' : SharableUserConfigs,
   'evidences' : Array<bigint>,
   'principal' : Principal,
   'earning' : SharableEarning,
@@ -190,6 +203,8 @@ export interface SharableBinaryVotes__1 {
   'powered' : OneSideSharable__1,
   'regular' : OneSideSharable__1,
 }
+export type SharableConfig = { 'ExcludedPublishers' : Array<Principal> } |
+  { 'ExcludedFields' : Array<string> };
 export type SharableCount = bigint;
 export type SharableDate = bigint;
 export type SharableE8S = bigint;
@@ -262,6 +277,7 @@ export interface SharableTernaryVotes {
   'powered' : OneSideSharable,
   'regular' : OneSideSharable,
 }
+export type SharableUserConfigs = Array<SharableConfig>;
 export type SharableValue = { 'E8S' : SharableE8S } |
   { 'Nat' : bigint } |
   { 'Bool' : boolean } |
