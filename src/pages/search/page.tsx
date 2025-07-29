@@ -122,7 +122,7 @@ const SearchPage = () => {
     }
 
     return (
-        <>
+        <div className="p-semilarge">
             <PageMetadata {...pageMetadata} />
             {results.hypotheses?.result.length === 0 &&
             results.evidences?.result.length === 0 &&
@@ -142,7 +142,7 @@ const SearchPage = () => {
                     <Layout Component={UserCard} name="users" />
                 </>
             )}
-        </>
+        </div>
     )
 }
 

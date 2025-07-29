@@ -100,8 +100,7 @@ module {
         votedHypotheses : [(Nat, TernaryVote)];
         votedEvidences : [(Nat, BinaryVote)];
         callerFollowing : ?Bool;
-        callerFollower : ?Bool;
-        configs : SharableUserConfigs
+        callerFollower : ?Bool
     };
 
     public func init(getNow : () -> Int) : Self = {
@@ -280,7 +279,6 @@ module {
         evidences = List.toArray(__.evidences);
         votedHypotheses = Map.getEntries(__.votedHypotheses);
         votedEvidences = Map.getEntries(__.votedEvidences);
-        configs = UserConfigs.toSharable(__.configs);
         callerFollowing = getCallerFollowing(principal);
         callerFollower = getCallerFollower(principal)
     };

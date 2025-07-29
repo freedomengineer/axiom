@@ -46,7 +46,13 @@ enum EPopup {
     EditHypothesis,
 }
 
-const HypothesisDetail = ({ item }: { item: DAxioms.SharableHypothesis }) => {
+const HypothesisDetail = ({
+    item,
+    hideEvidences,
+}: {
+    item: DAxioms.SharableHypothesis
+    hideEvidences?: boolean
+}) => {
     const { agent, principal } = useAuth()
     const positiveEvidencesRef = useRef<InfiniteScrollWrapperHandle>(null)
     const negativeEvidencesRef = useRef<InfiniteScrollWrapperHandle>(null)
@@ -193,7 +199,7 @@ const HypothesisDetail = ({ item }: { item: DAxioms.SharableHypothesis }) => {
                     }}
                 />
             </Popup>
-            <div className="gap-medium relative flex h-full w-full flex-col rounded-lg border border-cold-600 border-opacity-50 hover:border-opacity-100">
+            <div className="gap-medium relative flex h-full w-full flex-col rounded-lg hover:border-opacity-100 md:border md:border-cold-600 md:border-opacity-50">
                 <div className="max-h-auto flex min-h-60 flex-col place-items-center items-center bg-hypothesis">
                     <p className="text-medium p-normal my-auto flex h-full items-center whitespace-pre-line break-words text-center font-semibold text-primary-900/80 hover:text-primary-800">
                         {localItem?.content.trim()}
@@ -212,21 +218,21 @@ const HypothesisDetail = ({ item }: { item: DAxioms.SharableHypothesis }) => {
                             choice={EVote.Positive}
                             vote={vote}
                             className="rounded-lg"
-                            handleVote={() => handleVote(EVote.Positive)}
+                            handleVote={(custom) => handleVote(EVote.Positive, custom)}
                             loading={votesLoading[EVote.Positive]}
                         />
                         <HypothesisVote
                             choice={EVote.Neutral}
                             vote={vote}
                             className="rounded-lg"
-                            handleVote={() => handleVote(EVote.Neutral)}
+                            handleVote={(custom) => handleVote(EVote.Neutral, custom)}
                             loading={votesLoading[EVote.Neutral]}
                         />
                         <HypothesisVote
                             choice={EVote.Negative}
                             vote={vote}
                             className="rounded-lg"
-                            handleVote={() => handleVote(EVote.Negative)}
+                            handleVote={(custom) => handleVote(EVote.Negative, custom)}
                             loading={votesLoading[EVote.Negative]}
                         />
                     </div>
@@ -334,7 +340,7 @@ const HypothesisDetail = ({ item }: { item: DAxioms.SharableHypothesis }) => {
                         className="gap-small order-1 flex items-center hover:opacity-75"
                         href={build(['feed', 'fields', localItem.fieldId])}
                     >
-                        <FieldIcon className="h-5 w-5 stroke-[1.5px]" />
+                        <FieldIcon className="h-4 w-4 stroke-[1.5px] md:h-5 md:w-5" />
                         <span className="text-small md:mr-medium text-nowrap font-light text-white">
                             {localItem.fieldId}
                         </span>
@@ -345,14 +351,14 @@ const HypothesisDetail = ({ item }: { item: DAxioms.SharableHypothesis }) => {
                     >
                         <Symbol
                             capitalRaised={publisher.capitalRaised.toString()}
-                            className="mr-0 h-5 w-5"
+                            className="mr-0 h-4 w-4 md:h-5 md:w-5"
                         />
                         <span className="text-small md:mr-medium text-nowrap font-light text-white">
                             {publisher.username}
                         </span>
                     </Link>
                     <div className="gap-small order-2 ml-auto flex items-center md:order-3 md:ml-0">
-                        <DateTimeIcon className="h-5 w-5 stroke-[1.5px]" />
+                        <DateTimeIcon className="h-4 w-4 stroke-[1.5px] md:h-5 md:w-5" />
                         <span className="text-small md:mr-medium text-nowrap font-light text-white">
                             {formatDate({ nano: localItem.publishDate })}
                         </span>
@@ -369,12 +375,12 @@ const HypothesisDetail = ({ item }: { item: DAxioms.SharableHypothesis }) => {
                         <div className="w-8 md:w-10">
                             {axiomLoading ? (
                                 <Spinner
-                                    className="mx-auto h-5 w-5 stroke-[1.5px] text-white/50"
+                                    className="mx-auto h-4 w-4 stroke-[1.5px] text-white/50 md:h-5 md:w-5"
                                     color="white"
                                 />
                             ) : (
                                 <AdoptIcon
-                                    className="mx-auto h-5 w-5 cursor-pointer stroke-[1.5px] hover:h-6 hover:w-6 hover:fill-white hover:text-cold-900 aria-selected:h-6 aria-selected:w-6 aria-selected:fill-white aria-selected:text-cold-900 aria-selected:hover:h-5 aria-selected:hover:w-5 aria-selected:hover:fill-none aria-selected:hover:text-white"
+                                    className="mx-auto h-4 w-4 cursor-pointer stroke-[1.5px] hover:h-5 hover:w-5 hover:fill-white hover:text-cold-900 aria-selected:h-5 aria-selected:w-5 aria-selected:fill-white aria-selected:text-cold-900 aria-selected:hover:h-5 aria-selected:hover:w-5 aria-selected:hover:fill-none aria-selected:hover:text-white md:h-5 md:w-5 md:hover:h-6 md:hover:w-6 md:aria-selected:h-6 md:aria-selected:w-6"
                                     onClick={handleAxiom}
                                     aria-selected={!!axiom}
                                 />
@@ -383,12 +389,12 @@ const HypothesisDetail = ({ item }: { item: DAxioms.SharableHypothesis }) => {
                         <div className="w-8 md:w-10">
                             {bookmarkLoading ? (
                                 <Spinner
-                                    className="mx-auto h-5 w-5 stroke-[1.5px] text-white/50"
+                                    className="mx-auto h-4 w-4 stroke-[1.5px] text-white/50 md:h-5 md:w-5"
                                     color="white"
                                 />
                             ) : (
                                 <BookmarkIcon
-                                    className="mx-auto h-5 w-5 cursor-pointer stroke-[1.5px] hover:h-6 hover:w-6 hover:fill-white hover:text-cold-900 aria-selected:h-6 aria-selected:w-6 aria-selected:fill-white aria-selected:text-cold-900 aria-selected:hover:h-5 aria-selected:hover:w-5 aria-selected:hover:fill-none aria-selected:hover:text-white"
+                                    className="mx-auto h-4 w-4 cursor-pointer stroke-[1.5px] hover:h-5 hover:w-5 hover:fill-white hover:text-cold-900 aria-selected:h-5 aria-selected:w-5 aria-selected:fill-white aria-selected:text-cold-900 aria-selected:hover:h-5 aria-selected:hover:w-5 aria-selected:hover:fill-none aria-selected:hover:text-white md:h-5 md:w-5 md:hover:h-6 md:hover:w-6 md:aria-selected:h-6 md:aria-selected:w-6"
                                     onClick={handleBookmark}
                                     aria-selected={!!bookmark}
                                 />
@@ -396,9 +402,9 @@ const HypothesisDetail = ({ item }: { item: DAxioms.SharableHypothesis }) => {
                         </div>
                         <button
                             className="w-8 hover:opacity-75 md:w-10"
-                            onClick={() => setFlagOpen(true)}
+                            onClick={() => setOpen(EPopup.RequestFlag)}
                         >
-                            <FlagIcon className="mx-auto h-5 w-5 stroke-[1.5px]" />
+                            <FlagIcon className="mx-auto h-4 w-4 stroke-[1.5px] md:h-5 md:w-5" />
                         </button>
                         <button
                             className="w-8 hover:opacity-75 disabled:pointer-events-none md:w-10"
@@ -406,9 +412,9 @@ const HypothesisDetail = ({ item }: { item: DAxioms.SharableHypothesis }) => {
                             disabled={copied}
                         >
                             {copied ? (
-                                <DoneIcon className="mx-auto h-5 w-5 stroke-[1.5px]" />
+                                <DoneIcon className="mx-auto h-4 w-4 stroke-[1.5px] md:h-5 md:w-5" />
                             ) : (
-                                <ShareIcon className="mx-auto h-5 w-5 stroke-[1.5px]" />
+                                <ShareIcon className="mx-auto h-4 w-4 stroke-[1.5px] md:h-5 md:w-5" />
                             )}
                         </button>
                         {principal?.compareTo(localItem.publisher) === 'eq' && (
@@ -416,140 +422,55 @@ const HypothesisDetail = ({ item }: { item: DAxioms.SharableHypothesis }) => {
                                 className="w-8 hover:opacity-75 disabled:pointer-events-none md:w-10"
                                 onClick={() => setOpen(EPopup.EditHypothesis)}
                             >
-                                <LoginStep1Icon className="mx-auto h-5 w-5 stroke-[1.5px]" />
+                                <LoginStep1Icon className="mx-auto h-4 w-4 stroke-[1.5px] md:h-5 md:w-5" />
                             </button>
                         )}
                     </div>
                 </div>
-                <div className="gap-medium flex h-full w-full flex-col items-center">
-                    <div className="text-tiny gap-normal px-medium grid w-full grid-cols-7 items-center font-normal text-white md:w-2/3">
-                        {Object.entries(VOTES).map(
-                            ([name, { bgColor, borderColor, textColor, Icon }], index) =>
-                                index === 1 ? (
-                                    <div
-                                        key={index}
-                                        className={cn(
-                                            'py-normal text-tiny gap-small col-span-3 flex w-full items-center justify-center rounded-lg border',
-                                            borderColor,
-                                            textColor
-                                        )}
-                                    >
-                                        <EvidenceIcon className="h-5 stroke-[1.5px] md:h-6" />
-                                        <span>THE EVIDENCE ({localItem.evidenceIds.length})</span>
-                                    </div>
-                                ) : (
-                                    <button
-                                        key={index}
-                                        className={cn(
-                                            'py-normal text-tiny gap-small col-span-2 flex w-full items-center justify-center rounded-lg border transition-all duration-300 ease-in-out hover:bg-opacity-80',
-                                            bgColor
-                                        )}
-                                        onClick={() => setPostEvidenceOpen(name as EEvidenceVote)}
-                                    >
-                                        <div className="gap-small flex items-center">
-                                            <Icon className="h-5 stroke-[1.5px] md:h-6" />
-                                            <span>{VOTES[voteKeys[index]].name}</span>
-                                        </div>
-                                    </button>
-                                )
-                        )}
-                    </div>
-
-                    <div className="px-normal mb-normal gap-normal w-full">
-                        {!isMobile && (
-                            <div className="px-normal mb-normal gap-normal flex w-full items-stretch justify-between">
-                                <div className="gap-normal flex w-1/2 flex-col items-center">
-                                    <InfiniteScrollWrapper
-                                        ref={positiveEvidencesRef}
-                                        query={Axioms.call(agent, true).getEvidencesPagination}
-                                        name="evidence"
-                                        hardFilter={positiveFilter}
-                                        hardSort={commonSort}
-                                        size={2n}
-                                        LayoutComponent={({ items }) => (
-                                            <EvidencesLayout
-                                                items={items}
-                                                onReply={setPostEvidenceOpen}
-                                            />
-                                        )}
-                                        className="h-full w-full"
-                                    />
-                                </div>
-                                <Divider
-                                    direction="vertical"
-                                    bgColor="bg-cold-800"
-                                    borderColor="border-cold-800"
-                                />
-                                <div className="gap-normal flex w-1/2 flex-col items-center">
-                                    <InfiniteScrollWrapper
-                                        ref={negativeEvidencesRef}
-                                        query={Axioms.call(agent, true).getEvidencesPagination}
-                                        name="evidence"
-                                        hardFilter={negativeFilter}
-                                        hardSort={commonSort}
-                                        size={2n}
-                                        LayoutComponent={({ items }) => (
-                                            <EvidencesLayout
-                                                items={items}
-                                                onReply={setPostEvidenceOpen}
-                                            />
-                                        )}
-                                        className="h-full w-full"
-                                    />
-                                </div>
+                {!hideEvidences && (
+                    <>
+                        <div className="gap-medium flex h-full w-full flex-col items-center">
+                            <div className="text-tiny gap-normal px-medium grid w-full grid-cols-7 items-center font-normal text-white md:w-2/3">
+                                {Object.entries(VOTES).map(
+                                    ([name, { bgColor, borderColor, textColor, Icon }], index) =>
+                                        index === 1 ? (
+                                            <div
+                                                key={index}
+                                                className={cn(
+                                                    'py-normal text-tiny gap-small col-span-3 flex w-full items-center justify-center rounded-lg border',
+                                                    borderColor,
+                                                    textColor
+                                                )}
+                                            >
+                                                <EvidenceIcon className="h-5 stroke-[1.5px] md:h-6" />
+                                                <span>
+                                                    THE EVIDENCE ({localItem.evidenceIds.length})
+                                                </span>
+                                            </div>
+                                        ) : (
+                                            <button
+                                                key={index}
+                                                className={cn(
+                                                    'py-normal text-tiny gap-small col-span-2 flex w-full items-center justify-center rounded-lg border transition-all duration-300 ease-in-out hover:bg-opacity-80',
+                                                    bgColor
+                                                )}
+                                                onClick={() =>
+                                                    setPostEvidenceOpen(name as EEvidenceVote)
+                                                }
+                                            >
+                                                <div className="gap-small flex items-center">
+                                                    <Icon className="h-5 stroke-[1.5px] md:h-6" />
+                                                    <span>{VOTES[voteKeys[index]].name}</span>
+                                                </div>
+                                            </button>
+                                        )
+                                )}
                             </div>
-                        )}
-                        {isMobile && (
-                            <div className="h-full w-full">
-                                <div className="text-small py-normal sticky top-0 z-10 w-full bg-white">
-                                    <div
-                                        className={cn(
-                                            'flex w-[200%] transition-transform duration-300 ease-in-out',
-                                            activeSide === EEvidenceVote.Positive
-                                                ? 'translate-x-0'
-                                                : '-translate-x-1/2'
-                                        )}
-                                    >
-                                        <p className="w-1/2 pr-5 text-right">
-                                            swipe right to see{' '}
-                                            <span
-                                                className={cn(
-                                                    'font-semibold',
-                                                    VOTES[EEvidenceVote.Negative].textColor
-                                                )}
-                                            >
-                                                negative side
-                                            </span>{' '}
-                                            →
-                                        </p>
-                                        <p className="w-1/2 pl-5 text-left">
-                                            ← swipe left to see{' '}
-                                            <span
-                                                className={cn(
-                                                    'font-semibold',
-                                                    VOTES[EEvidenceVote.Positive].textColor
-                                                )}
-                                            >
-                                                positive side
-                                            </span>
-                                        </p>
-                                    </div>
-                                </div>
-                                <div
-                                    ref={evidenceContainerRef}
-                                    className="w-full overflow-x-hidden"
-                                    onTouchStart={handleTouchStart}
-                                    onTouchEnd={handleTouchEnd}
-                                >
-                                    <div
-                                        className={cn(
-                                            'flex w-[200%] transition-transform duration-300 ease-in-out',
-                                            activeSide === EEvidenceVote.Positive
-                                                ? 'translate-x-0'
-                                                : '-translate-x-1/2'
-                                        )}
-                                    >
-                                        <div className="w-1/2 flex-shrink-0 px-1">
+
+                            <div className="px-normal mb-normal gap-normal w-full">
+                                {!isMobile && (
+                                    <div className="px-normal mb-normal gap-normal flex w-full items-stretch justify-between">
+                                        <div className="gap-normal flex w-1/2 flex-col items-center">
                                             <InfiniteScrollWrapper
                                                 ref={positiveEvidencesRef}
                                                 query={
@@ -568,7 +489,12 @@ const HypothesisDetail = ({ item }: { item: DAxioms.SharableHypothesis }) => {
                                                 className="h-full w-full"
                                             />
                                         </div>
-                                        <div className="w-1/2 flex-shrink-0 px-1">
+                                        <Divider
+                                            direction="vertical"
+                                            bgColor="bg-cold-800"
+                                            borderColor="border-cold-800"
+                                        />
+                                        <div className="gap-normal flex w-1/2 flex-col items-center">
                                             <InfiniteScrollWrapper
                                                 ref={negativeEvidencesRef}
                                                 query={
@@ -588,11 +514,105 @@ const HypothesisDetail = ({ item }: { item: DAxioms.SharableHypothesis }) => {
                                             />
                                         </div>
                                     </div>
-                                </div>
+                                )}
+                                {isMobile && (
+                                    <div className="h-full w-full">
+                                        <div className="text-small py-normal sticky top-0 z-10 w-full bg-white">
+                                            <div
+                                                className={cn(
+                                                    'flex w-[200%] transition-transform duration-300 ease-in-out',
+                                                    activeSide === EEvidenceVote.Positive
+                                                        ? 'translate-x-0'
+                                                        : '-translate-x-1/2'
+                                                )}
+                                            >
+                                                <p className="w-1/2 pr-5 text-right">
+                                                    swipe right to see{' '}
+                                                    <span
+                                                        className={cn(
+                                                            'font-semibold',
+                                                            VOTES[EEvidenceVote.Negative].textColor
+                                                        )}
+                                                    >
+                                                        negative side
+                                                    </span>{' '}
+                                                    →
+                                                </p>
+                                                <p className="w-1/2 pl-5 text-left">
+                                                    ← swipe left to see{' '}
+                                                    <span
+                                                        className={cn(
+                                                            'font-semibold',
+                                                            VOTES[EEvidenceVote.Positive].textColor
+                                                        )}
+                                                    >
+                                                        positive side
+                                                    </span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div
+                                            ref={evidenceContainerRef}
+                                            className="w-full overflow-x-hidden"
+                                            onTouchStart={handleTouchStart}
+                                            onTouchEnd={handleTouchEnd}
+                                        >
+                                            <div
+                                                className={cn(
+                                                    'flex w-[200%] transition-transform duration-300 ease-in-out',
+                                                    activeSide === EEvidenceVote.Positive
+                                                        ? 'translate-x-0'
+                                                        : '-translate-x-1/2'
+                                                )}
+                                            >
+                                                <div className="w-1/2 flex-shrink-0 px-1">
+                                                    <InfiniteScrollWrapper
+                                                        ref={positiveEvidencesRef}
+                                                        query={
+                                                            Axioms.call(agent, true)
+                                                                .getEvidencesPagination
+                                                        }
+                                                        name="evidence"
+                                                        hardFilter={positiveFilter}
+                                                        hardSort={commonSort}
+                                                        size={2n}
+                                                        LayoutComponent={({ items }) => (
+                                                            <EvidencesLayout
+                                                                items={items}
+                                                                onReply={setPostEvidenceOpen}
+                                                            />
+                                                        )}
+                                                        className="h-full w-full"
+                                                    />
+                                                </div>
+                                                <div className="w-1/2 flex-shrink-0 px-1">
+                                                    <InfiniteScrollWrapper
+                                                        ref={negativeEvidencesRef}
+                                                        query={
+                                                            Axioms.call(agent, true)
+                                                                .getEvidencesPagination
+                                                        }
+                                                        name="evidence"
+                                                        hardFilter={negativeFilter}
+                                                        hardSort={commonSort}
+                                                        size={2n}
+                                                        LayoutComponent={({ items }) => (
+                                                            <EvidencesLayout
+                                                                items={items}
+                                                                onReply={setPostEvidenceOpen}
+                                                            />
+                                                        )}
+                                                        className="h-full w-full"
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
-                        )}
-                    </div>
-                </div>
+                        </div>
+                    </>
+                )}
             </div>
         </>
     )

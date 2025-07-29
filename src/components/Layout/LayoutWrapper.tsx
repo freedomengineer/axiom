@@ -55,7 +55,7 @@ const LayoutWrapper = ({
                 <Sidebar open={open} onClose={() => setOpen(false)} />
                 {showAlert && <AlphaStage onConfirm={() => setShowAlert(false)} />}
                 <main className="scroll-container min-w-0 flex-1 overflow-y-auto overflow-x-hidden scroll-smooth">
-                    <div className="p-semilarge w-full">
+                    <div className="w-full">
                         {!noMiddleWare ? <Middleware>{children}</Middleware> : children}
                     </div>
                 </main>

@@ -255,7 +255,7 @@ const Header = ({
                         </PopoverHandler>
                         <PopoverContent
                             onMouseEnter={() => setOpenMenu({ Notification: 'Notification' })}
-                            className="relative w-full border-none bg-transparent p-0 shadow-none outline-none md:max-w-[40rem]"
+                            className="relative z-[9990] w-full border-none bg-transparent p-0 shadow-none outline-none md:max-w-[40rem]"
                         >
                             <div className="p-medium mx-auto w-[90%] max-w-[40rem] rounded-lg border border-cold-200 bg-white shadow-lg outline-none duration-100 ease-in-out">
                                 <Notifications />
@@ -309,7 +309,7 @@ const Header = ({
                             </PopoverHandler>
                             <PopoverContent
                                 onMouseEnter={() => setOpenMenu({ User: 'User' })}
-                                className="relative w-full border-none bg-transparent p-0 shadow-none outline-none md:max-w-[20rem]"
+                                className="relative z-[9990] w-full border-none bg-transparent p-0 shadow-none outline-none md:max-w-[20rem]"
                             >
                                 <div className="p-medium ml-auto mr-4 flex w-[90%] max-w-[20rem] flex-col rounded-lg border border-cold-200 bg-white shadow-lg outline-none md:mr-8">
                                     <TimeDisplay />

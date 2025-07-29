@@ -16,7 +16,7 @@ const Membership = ({
                 alt={item.symbol}
                 className="w-full rounded-lg object-cover"
             />
-            <div className="gap-medium text-tiny flex justify-center text-nowrap font-medium text-white">
+            <div className="gap-medium text-extratiny md:text-tiny flex justify-center text-nowrap font-medium text-white">
                 <p className="px-medium py-small rounded-full bg-cold-700">
                     ${e8s.toString(item.adjustedPrice[0])}
                 </p>

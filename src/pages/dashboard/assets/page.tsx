@@ -49,7 +49,7 @@ const AssetsPage = () => {
     }
 
     return (
-        <>
+        <div className="p-semilarge">
             <PageMetadata {...pageMetadata} />
             <div className="!text-small gap-medium relative flex flex-col items-center justify-center lg:flex-col xl:flex-row">
                 <div className="relative w-[300px]">
@@ -221,7 +221,7 @@ const AssetsPage = () => {
                     })}
                 </div>
             </div>
-        </>
+        </div>
     )
 }
 

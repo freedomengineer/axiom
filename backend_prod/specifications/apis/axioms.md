@@ -3,7 +3,7 @@
 ## Dependencies
 
 
-- Attributes: `Age`, `Ages`, `Evidence`, `Evidences`, `Field`, `Fields`, `Hypothesis`, `Hypotheses`, `Payout`, `Payouts`, `Ranks`, `User`, `Users`, `Flag`, `Flags`, `UserConfigs`, `Notification`, `Packages`
+- Attributes: `Age`, `Ages`, `Evidence`, `Evidences`, `Field`, `Fields`, `Hypothesis`, `Hypotheses`, `Payout`, `Payouts`, `Ranks`, `User`, `Users`, `Flag`, `Flags`, `UserConfig`, `UserConfigs`, `Notification`, `Packages`
 - Interfaces: `EscrowInterface`, `TreasuryInterface`, `FacadeInterface`, `IndicatorInterface`
 - Commons: `C`, `E`
 - Libraries: `Array`, `Base`, `Configs`, `ClusterTree`, `Count`, `Date`, `DoubleClusterTree`, `DoubleRankTree`, `E8S`, `Earning`, `Format`, `Iter`, `List`, `Map`, `Pagination`, `Proportion`, `Set`, `Vector`, `BinaryVotes`, `TernaryVotes`
@@ -247,7 +247,41 @@
 {"principal": "Principal"}
 ```
 
-### 24. `withdrawAll()` returns `()`
+### 24. `setUserConfig(config)` returns `()`
+
+#### Arguments:
+
+```json
+{"config": {"#EXCLUDEDPUBLISHERS": ["Principal"], "#EXCLUDEDFIELDS": ["Text"]}}
+```
+
+### 25. `setBatchUserConfigs(configs)` returns `()`
+
+#### Arguments:
+
+```json
+{"configs": [{"#EXCLUDEDPUBLISHERS": ["Principal"], "#EXCLUDEDFIELDS": ["Text"]}]}
+```
+
+### 26. `setAllUserConfigs(configs)` returns `()`
+
+#### Arguments:
+
+```json
+{"configs": [{"#EXCLUDEDPUBLISHERS": ["Principal"], "#EXCLUDEDFIELDS": ["Text"]}]}
+```
+
+### 27. `restoreUserConfig(variant)` returns `()`
+
+#### Arguments:
+
+```json
+{"variant": "#EXCLUDEDPUBLISHERS | #EXCLUDEDFIELDS"}
+```
+
+### 28. `restoreAllUserConfigs()` returns `()`
+
+### 29. `withdrawAll()` returns `()`
 
 ## Accessors
 
@@ -852,8 +886,7 @@
   "votedHypotheses": [["Nat", {"choice": "#POSITIVE | #NEUTRAL | #NEGATIVE", "value": "Nat"}]],
   "votedEvidences": [["Nat", {"choice": "#POSITIVE | #NEGATIVE", "value": "Nat"}]],
   "callerFollowing": "Bool",
-  "callerFollower": "Bool",
-  "configs": [{"#EXCLUDEDPUBLISHERS": ["Principal"], "#EXCLUDEDFIELDS": ["Text"]}]
+  "callerFollower": "Bool"
 }
 ```
 
@@ -870,7 +903,14 @@
 {"revenue": "Nat", "balance": "Nat", "lastWithdrawAt": "Time"}
 ```
 
-### 23. `expectUserNotFound(principal)` returns `()`
+### 23. `getUserConfigs()` returns `UserConfigs.Sharable`
+
+#### Returns:
+```json
+[{"#EXCLUDEDPUBLISHERS": ["Principal"], "#EXCLUDEDFIELDS": ["Text"]}]
+```
+
+### 24. `expectUserNotFound(principal)` returns `()`
 
 #### Arguments:
 

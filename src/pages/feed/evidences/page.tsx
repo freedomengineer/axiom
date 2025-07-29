@@ -22,7 +22,7 @@ const EvidencesPage = () => {
     const filterSortData = useFilterSort('evidence')
 
     return (
-        <>
+        <div className="p-semilarge">
             <PageMetadata {...pageMetadata} />
             <div className="gap-medium flex flex-col items-center justify-center">
                 <FilterSort {...filterSortData} />
@@ -47,7 +47,7 @@ const EvidencesPage = () => {
                     size={6n}
                 />
             </div>
-        </>
+        </div>
     )
 }
 

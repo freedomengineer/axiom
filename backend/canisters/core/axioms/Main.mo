@@ -13,6 +13,7 @@ import User "users/User";
 import Users "users/Users";
 import Flag "flags/Flag";
 import Flags "flags/Flags";
+import UserConfig "user_configs/UserConfig";
 import UserConfigs "user_configs/UserConfigs";
 
 import Notification "../../periphery/facade/notifications/Notification";
@@ -890,6 +891,27 @@ import Debug "mo:base/Debug";
         User.removeFollower(following, caller)
     };
 
+    public shared ({ caller }) func setUserConfig(config : UserConfig.Sharable) : async () {
+        let user : User.User = Users.user(users, caller);
+        UserConfigs.set(user.configs, config)
+    };
+    public shared ({ caller }) func setBatchUserConfigs(configs : [UserConfig.Sharable]) : async () {
+        let user : User.User = Users.user(users, caller);
+        UserConfigs.setBatch(user.configs, configs)
+    };
+    public shared ({ caller }) func setAllUserConfigs(configs : [UserConfig.Sharable]) : async () {
+        let user : User.User = Users.user(users, caller);
+        UserConfigs.setAll(user.configs, configs)
+    };
+    public shared ({ caller }) func restoreUserConfig(variant : UserConfig.Variant) : async () {
+        let user : User.User = Users.user(users, caller);
+        UserConfigs.restore(user.configs, variant)
+    };
+    public shared ({ caller }) func restoreAllUserConfigs() : async () {
+        let user : User.User = Users.user(users, caller);
+        UserConfigs.restoreAll(user.configs)
+    };
+
     public shared ({ caller }) func withdrawAll() : async () {
         let user : User.User = Users.user(users, caller);
         let transferBalance : E8S.E8S = Earning.balance(user.transferEarning);
@@ -1026,6 +1048,10 @@ import Debug "mo:base/Debug";
     public query func getEarning(principal : Principal) : async Earning.Sharable {
         let user : User.User = Users.user(users, principal);
         User.getEarning(user)
+    };
+    public query ({ caller }) func getUserConfigs() : async UserConfigs.Sharable {
+        let user : User.User = Users.user(users, caller);
+        UserConfigs.toSharable(user.configs)
     };
 
     /// PUBLIC ////// ASSERTERS ////////////

@@ -2,6 +2,7 @@ import Config "UserConfig";
 
 import E "../../../common/Errors";
 
+import Array "../../../library/Array";
 import List "../../../library/List";
 import Map "../../../library/Map";
 import Set "../../../library/Set";
@@ -17,6 +18,7 @@ module {
     private type Config = Config.Config;
     private type SharableConfig = Config.Sharable;
 
+    private let { PrincipalVal; TextVal } = Set;
     private let { VariantKey } = Config;
 
     private func _default() : Map<Variant, SharableConfig> = Map.fromEntries<Variant, SharableConfig>([
@@ -26,6 +28,10 @@ module {
     private func _isDefault(config : Config) : Bool = switch (config) {
         case (#ExcludedPublishers(value)) value.size() == 0;
         case (#ExcludedFields(value)) value.size() == 0
+    };
+    private func _fromSharable(config : SharableConfig) : Config = switch (config) {
+        case (#ExcludedPublishers(value)) #ExcludedPublishers(Set.fromArray(Array.map(value, PrincipalVal)));
+        case (#ExcludedFields(value)) #ExcludedFields(Set.fromArray(Array.map(value, TextVal)))
     };
 
     /// AXIOMS ////// USER CONFIGS ////////////
@@ -43,8 +49,8 @@ module {
 
     /// PRIVATE ////// MODIFIERS ////////////
 
-    private func _delete(__ : Self, config : Config) {
-        __.configs := List.deleteFirst<Config>(__.configs, config, func(x) = Config.equal(x, config))
+    private func _delete(__ : Self, variant : Variant) {
+        __.configs := List.deleteFirst<Config>(__.configs, func(x) = Config.is(x, variant))
     };
     private func _update(__ : Self, config : Config) {
         __.configs := List.smartPush<Config>(__.configs, config, func(x) = Config.equal(x, config), 100).0
@@ -52,22 +58,23 @@ module {
 
     /// PUBLIC ////// MODIFIERS ////////////
 
-    public func set(__ : Self, config : Config) {
-        switch (_isDefault(config)) {
-            case (true) _delete(__, config);
-            case (false) _update(__, config)
+    public func set(__ : Self, config : SharableConfig) {
+        let c : Config = _fromSharable(config);
+        switch (_isDefault(c)) {
+            case (true) _delete(__, Config.variant(c));
+            case (false) _update(__, c)
         }
     };
-    public func setBatch(__ : Self, configs : [Config]) {
+    public func setBatch(__ : Self, configs : [SharableConfig]) {
         for (config in configs.vals()) set(__, config)
     };
-    public func setAll(__ : Self, configs : [Config]) {
+    public func setAll(__ : Self, configs : [SharableConfig]) {
         __.configs := List.nil();
         for (config in configs.vals()) set(__, config)
     };
 
-    public func restore(__ : Self, config : Config) {
-        _delete(__, config)
+    public func restore(__ : Self, variant : Variant) {
+        _delete(__, variant)
     };
     public func restoreAll(__ : Self) {
         __.configs := List.nil()

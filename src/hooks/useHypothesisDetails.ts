@@ -36,7 +36,7 @@ const useHypothesisDetails = (item: DAxioms.SharableHypothesis) => {
 
     const handleVote = async (choice: EVote, custom?: DAxioms.CustomValue) => {
         setVotesLoading((prev) => ({ ...prev, [choice]: true }))
-        if (UnwrapVariant(vote?.choice) === choice) {
+        if (UnwrapVariant(vote?.choice) === choice && !custom) {
             await promise(
                 Axioms.call(agent).removeHypothesisVote(localItem.id),
                 'Removing vote',

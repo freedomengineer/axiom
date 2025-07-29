@@ -8,6 +8,8 @@ import Hypotheses "hypotheses/Hypotheses";
 import Hypothesis "hypotheses/Hypothesis";
 import Payout "payouts/Payout";
 import Payouts "payouts/Payouts";
+import UserConfig "user_configs/UserConfig";
+import UserConfigs "user_configs/UserConfigs";
 import User "users/User";
 import Base "../../library/Base";
 import Configs "../../library/Configs";
@@ -41,6 +43,11 @@ module {
         removeFromBookmarks : shared (Nat) -> async ();
         follow : shared (Principal) -> async ();
         unfollow : shared (Principal) -> async ();
+        setUserConfig : shared (UserConfig.Sharable) -> async ();
+        setBatchUserConfigs : shared ([UserConfig.Sharable]) -> async ();
+        setAllUserConfigs : shared ([UserConfig.Sharable]) -> async ();
+        restoreUserConfig : shared (UserConfig.Variant) -> async ();
+        restoreAllUserConfigs : shared () -> async ();
         withdrawAll : shared () -> async ();
         getConfig : query (Configs.Key) -> async Configs.SharableValue;
         getConfigs : query () -> async Configs.Sharable;
@@ -64,6 +71,7 @@ module {
         getAgesPayouts : query () -> async [Payouts.Sharable];
         getUser : query (Principal) -> async User.Sharable;
         getEarning : query (Principal) -> async Earning.Sharable;
+        getUserConfigs : query () -> async UserConfigs.Sharable;
         expectUserNotFound : query (Principal) -> async ();
     };
 };

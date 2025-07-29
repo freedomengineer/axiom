@@ -15,16 +15,6 @@ html {
     scroll-behavior: smooth;
 }
 
-main,
-.overflow-y-auto {
-    -webkit-overflow-scrolling: touch;
-    overflow-scrolling: touch;
-}
-.scroll-container {
-    will-change: transform;
-    pointer-events: auto !important;
-}
-
 .Toastify__toast-container {
     z-index: 10000;
 }

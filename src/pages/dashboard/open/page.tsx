@@ -37,7 +37,7 @@ const OpenProposalPage = () => {
     }
 
     return (
-        <>
+        <div className="p-semilarge">
             <PageMetadata {...pageMetadata} />
             <div className="gap-medium mb-medium relative flex flex-col">
                 <Link
@@ -51,7 +51,7 @@ const OpenProposalPage = () => {
                 <Heading text="Open Proposal" />
             </div>
             <OpenProposal id={proposalStr ? BigInt(proposalStr!) : undefined} category={category} />
-        </>
+        </div>
     )
 }
 

@@ -20,7 +20,7 @@ const PostHypothesisPage = () => {
     }
 
     return (
-        <>
+        <div className="p-semilarge">
             <PageMetadata {...pageMetadata} />
             <div className="gap-medium mb-medium relative flex flex-col">
                 <Link
@@ -34,7 +34,7 @@ const PostHypothesisPage = () => {
                 <Heading text="Post Hypothesis" />
             </div>
             <PostHypothesis id={field} />
-        </>
+        </div>
     )
 }
 

@@ -20,7 +20,7 @@ const FlagsPage = () => {
     const filterSortData = useFilterSort('flag')
 
     return (
-        <>
+        <div className="p-semilarge">
             <PageMetadata {...pageMetadata} />
             <div className="gap-medium flex flex-col items-center justify-center">
                 <FilterSort {...filterSortData} />
@@ -40,7 +40,7 @@ const FlagsPage = () => {
                     size={12n}
                 />
             </div>
-        </>
+        </div>
     )
 }
 

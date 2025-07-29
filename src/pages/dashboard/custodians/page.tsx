@@ -63,7 +63,7 @@ const CustodiansPage = () => {
     }
 
     return (
-        <>
+        <div className="p-semilarge">
             <PageMetadata {...pageMetadata} />
             <div className="gap-medium flex w-full flex-col items-center">
                 <div className="gap-normal flex w-full flex-col md:flex-row">
@@ -110,7 +110,7 @@ const CustodiansPage = () => {
                 />
                 <NomineesTable />
             </div>
-        </>
+        </div>
     )
 }
 

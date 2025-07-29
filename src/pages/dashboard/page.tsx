@@ -46,7 +46,7 @@ const DashboardPage = () => {
     }, [actorParam])
 
     return (
-        <>
+        <div className="p-semilarge">
             <PageMetadata {...pageMetadata} />
             <Tabs value={actorParam}>
                 <TabsHeader
@@ -97,7 +97,7 @@ const DashboardPage = () => {
                     </TabPanel>
                 </TabsBody>
             </Tabs>
-        </>
+        </div>
     )
 }
 

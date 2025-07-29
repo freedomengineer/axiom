@@ -6,7 +6,7 @@ import { promise } from '@libs/toastify'
 import { EVote } from '@utils/feed/evidence'
 import { DAxioms } from 'shared/types/services'
 import { Axioms } from 'shared/utils/services'
-import { Unwrap, UnwrapVariant, Variant } from 'shared/utils/typings'
+import { Unwrap, UnwrapVariant, Variant, Wrap } from 'shared/utils/typings'
 
 import useAuth from './useAuth'
 import useUsername from './useUsername'
@@ -27,7 +27,7 @@ const useEvidenceDetail = (item: DAxioms.SharableEvidence) => {
         await Axioms.call(agent).getEvidence(localItem!.id).then(setLocalItem)
     }
 
-    const handleVote = async (choice: EVote) => {
+    const handleVote = async (choice: EVote, custom?: DAxioms.CustomValue) => {
         setVotesLoading((prev) => ({ ...prev, [choice]: true }))
         if (UnwrapVariant(vote?.choice) === choice) {
             await promise(
@@ -37,7 +37,7 @@ const useEvidenceDetail = (item: DAxioms.SharableEvidence) => {
             )
         } else {
             await promise(
-                Axioms.call(agent).voteEvidence(localItem!.id, Variant(choice)),
+                Axioms.call(agent).voteEvidence(localItem!.id, Variant(choice), Wrap(custom)),
                 'Casting vote',
                 'Vote casted!'
             )

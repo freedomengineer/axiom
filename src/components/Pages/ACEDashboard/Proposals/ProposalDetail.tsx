@@ -49,7 +49,7 @@ const ProposalDetail = ({
     return (
         <div
             className={cn(
-                'text-small gap-normal relative my-auto flex h-min w-full flex-col rounded-lg border border-cold-600 border-opacity-50 font-normal hover:border-opacity-100',
+                'text-small gap-normal relative my-auto flex h-min w-full flex-col rounded-none border border-none border-opacity-50 font-normal hover:border-opacity-100 md:rounded-lg md:border-cold-600',
                 className
             )}
         >
@@ -193,7 +193,7 @@ const ProposalDetail = ({
                     displayPercentage={votable}
                 />
             </div>
-            <div className="px-medium py-small flex w-full place-items-center items-center justify-between rounded-b-lg bg-cold-900 text-white">
+            <div className="px-medium py-small flex w-full place-items-center items-center justify-between rounded-b-none bg-cold-900 text-white md:rounded-b-lg">
                 <div className="gap-large flex w-full items-center">
                     <Link
                         className="gap-small flex items-center hover:opacity-75"
