@@ -23,7 +23,6 @@ const PublicProfilePage = () => {
             const p = principal ? Principal.fromText(principal) : authPrincipal!
             getUsername(p).then((u) => {
                 setFetched({ principal: p, username: u.username! })
-                navigate(`/profile/${u.username}`, { replace: true })
             })
         } catch {
             try {
@@ -31,6 +30,7 @@ const PublicProfilePage = () => {
                     .getUserIdentifier({ Username: principal! })
                     .then((u) => {
                         setFetched({ principal: u.principal, username: u.username! })
+                        navigate(`/profile/${u.principal.toText()}`, { replace: true })
                     })
             } catch {
                 setPageStatus(PageStatus.NotFound)

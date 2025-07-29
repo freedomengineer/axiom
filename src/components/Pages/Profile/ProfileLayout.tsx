@@ -136,7 +136,10 @@ const ProfileLayout = ({ profilePrincipal }: { profilePrincipal: Principal }) =>
                 .catch(() => undefined),
             Axioms.call(agent)
                 .getUser(profilePrincipal)
-                .catch(() => undefined),
+                .catch((e) => {
+                    console.log(e)
+                    undefined
+                }),
         ]).then(([facade, dao, axioms]) => {
             if (facade) {
                 cacheUsername(profilePrincipal, facade.username, facade.capitalRaised.toString())
