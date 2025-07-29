@@ -42,6 +42,7 @@ export interface Facade {
   'getConfigs' : ActorMethod<[], Sharable__2>,
   'getNotification' : ActorMethod<[], Sharable__1>,
   'getUser' : ActorMethod<[Principal], Sharable>,
+  'getUserCapitalRaised' : ActorMethod<[Principal], bigint>,
   'getUserIdentifier' : ActorMethod<[IdentifierVariant], Identifier>,
   'getUsers' : ActorMethod<[Filter, Sort], Array<Sharable>>,
   'getUsersCount' : ActorMethod<[], bigint>,

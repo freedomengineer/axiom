@@ -530,6 +530,7 @@ type Facade =
    getConfigs: () -> (Sharable__2) query;
    getNotification: () -> (Sharable__1) query;
    getUser: (principal) -> (Sharable) query;
+   getUserCapitalRaised: (principal) -> (nat) query;
    getUserIdentifier: (IdentifierVariant) -> (Identifier) query;
    getUsers: (Filter, Sort) -> (vec Sharable) query;
    getUsersCount: () -> (nat) query;
