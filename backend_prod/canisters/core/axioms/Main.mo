@@ -57,44 +57,7 @@ import Timer "mo:base/Timer";
 import Float "mo:base/Float";
 import Debug "mo:base/Debug";
 
-(
-    with migration = func(
-        old : {
-            var users : Map.Map<Principal, { mintEarning : Earning.Earning; transferEarning : Earning.Earning; followers : Set.Set<Principal>; followings : Set.Set<Principal>; axioms : Set.Set<Nat>; bookmarks : Set.Set<Nat>; joinedFields : Set.Set<Text>; var hypotheses : List.List<Nat>; var evidences : List.List<Nat>; votedHypotheses : Map.Map<Nat, TernaryVotes.Vote>; votedEvidences : Map.Map<Nat, BinaryVotes.Vote>; votedFlags : Map.Map<Flag.Header, BinaryVotes.Vote> }>
-        }
-    ) : {
-        var users : Users.Users
-    } {
-        {
-
-            var users : Users.Users = do {
-                let newUsers : Users.Users = Map.new<Principal, User.User>();
-                for ((principal, user) in Map.entries(old.users)) {
-                    Map.put(
-                        newUsers,
-                        Map.PrincipalKey(principal),
-                        {
-                            mintEarning = user.mintEarning;
-                            transferEarning = user.transferEarning;
-                            followers = user.followers;
-                            followings = user.followings;
-                            axioms = user.axioms;
-                            bookmarks = user.bookmarks;
-                            joinedFields = user.joinedFields;
-                            var hypotheses = user.hypotheses;
-                            var evidences = user.evidences;
-                            votedHypotheses = user.votedHypotheses;
-                            votedEvidences = user.votedEvidences;
-                            votedFlags = user.votedFlags;
-                            configs = UserConfigs.init()
-                        },
-                    )
-                };
-                newUsers
-            }
-        }
-    }
-) shared ({ caller = indicator }) actor class Axioms() = this {
+shared ({ caller = indicator }) actor class Axioms() = this {
         private stable let Indicator : IndicatorInterface.Indicator = actor (Principal.toText(indicator));
 
     private stable let ages : Ages.Ages = Ages.init();

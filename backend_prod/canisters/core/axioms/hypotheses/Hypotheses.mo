@@ -197,8 +197,30 @@ module {
                         case (null) null
                     }
                 }
-            };
+            }
+        };
+        let toFilter : Entry -> ?Entry = switch (callerUser) {
+            case (null) func(i, e) = ?(i, e);
+            case (?(_, user)) {
+                let excludedPublishers : ?Set<Principal> = UserConfigs.ExcludedPublishers(user.configs);
+                let excludedFields : ?Set<Text> = UserConfigs.ExcludedFields(user.configs);
 
+                switch (excludedPublishers, excludedFields) {
+                    case (null, null) func(i, e) = ?(i, e);
+                    case (?excludedPublishers, null) func(i, e) = switch (Set.includes(excludedPublishers, PrincipalVal(e.publisher))) {
+                        case (false) ?(i, e);
+                        case (true) null
+                    };
+                    case (null, ?excludedFields) func(i, e) = switch (Set.includes(excludedFields, TextVal(e.fieldId))) {
+                        case (false) ?(i, e);
+                        case (true) null
+                    };
+                    case (?excludedPublishers, ?excludedFields) func(i, e) = switch (Set.includes(excludedPublishers, PrincipalVal(e.publisher)) or Set.includes(excludedFields, TextVal(e.fieldId))) {
+                        case (false) ?(i, e);
+                        case (true) null
+                    }
+                }
+            }
         };
         let toSharable : Entry -> SharableHypothesis = func(i, e) = Hypothesis.toSharable(e, i, getCallerVote, getCallerAxiom, getCallerBookmark);
 
@@ -294,7 +316,7 @@ module {
                     __,
                     func(i, e) = switch (e) {
                         case (?e) switch (Date.getMidnightsElapsed(now, e.publishDate) <= agoEnd) {
-                            case (true) ?(i, e);
+                            case (true) toFilter(i, e);
                             case (false) null
                         };
                         case (null) null
@@ -310,7 +332,7 @@ module {
                         case (?e) {
                             let elapsed : Nat = Date.getMidnightsElapsed(now, e.publishDate);
                             switch (elapsed >= agoStart and elapsed <= agoEnd) {
-                                case (true) ?(i, e);
+                                case (true) toFilter(i, e);
                                 case (false) null
                             }
                         };
@@ -336,7 +358,7 @@ module {
                     __,
                     func(i, e) = switch (e) {
                         case (?e) switch (Hypothesis.containsPattern(e, patternIns)) {
-                            case (true) ?(i, e);
+                            case (true) toFilter(i, e);
                             case (false) null
                         };
                         case (null) null
@@ -350,7 +372,7 @@ module {
         };
 
         let default : ?[Entry] -> [Entry] = func(unsorted) = switch (unsorted) {
-            case (null) Vector.toEntriesFilterMap<?Hypothesis, Entry>(__, func(i, e) = switch (e) { case (?e) ?(i, e); case (null) null });
+            case (null) Vector.toEntriesFilterMap<?Hypothesis, Entry>(__, func(i, e) = switch (e) { case (?e) toFilter(i, e); case (null) null });
             case (?unsorted) unsorted
         };
 
