@@ -29,7 +29,7 @@ const useEvidenceDetail = (item: DAxioms.SharableEvidence) => {
 
     const handleVote = async (choice: EVote, custom?: DAxioms.CustomValue) => {
         setVotesLoading((prev) => ({ ...prev, [choice]: true }))
-        if (UnwrapVariant(vote?.choice) === choice) {
+        if (UnwrapVariant(vote?.choice) === choice && !custom) {
             await promise(
                 Axioms.call(agent).removeEvidenceVote(localItem!.id),
                 'Removing vote',

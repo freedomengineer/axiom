@@ -145,7 +145,12 @@ const InfiniteScrollWrapperHard = forwardRef(
             const observer = new IntersectionObserver(
                 (entries) => {
                     const entry = entries[0]
-                    if (entry.isIntersecting && hasMore && !isFetching.current) {
+                    if (
+                        entry.isIntersecting &&
+                        hasMore &&
+                        !isFetching.current &&
+                        currentPage > 0n
+                    ) {
                         const pageToLoad = currentPage + 1n
                         loadItems(pageToLoad, true)
                     }

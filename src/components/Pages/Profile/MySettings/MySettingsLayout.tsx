@@ -1,6 +1,7 @@
 import { Principal } from '@dfinity/principal'
 import { useEffect, useState } from 'react'
 
+import DeleteIcon from '@components/Assets/delete.svg'
 import FieldIcon from '@components/Assets/field.svg'
 import RestoreIcon from '@components/Assets/restore.svg'
 import Spinner from '@components/Primitives/Spinner'
@@ -30,11 +31,13 @@ const MySettingsLayout = () => {
     const [inputPrincipal, setInputPrincipal] = useState<Principal>()
     const [inputUsername, setInputUsername] = useState<string>('')
     const [loading, setLoading] = useState<ELoading>()
+    const [fieldDeleteLoading, setFieldDeleteLoading] = useState<string>('')
+    const [publisherDeleteLoading, setPublisherDeleteLoading] = useState<string>('')
 
     useEffect(() => {
-        if (loading) return
+        if (loading || fieldDeleteLoading !== '' || publisherDeleteLoading !== '') return
         Axioms.call(agent).getUserConfigs().then(setSettings)
-    }, [agent, loading])
+    }, [agent, loading, fieldDeleteLoading, publisherDeleteLoading])
 
     useEffect(() => {
         if (inputPublisher) {
@@ -88,6 +91,18 @@ const MySettingsLayout = () => {
             )
         }
     }
+    const deletePublisher = async (principal: Principal) => {
+        setPublisherDeleteLoading(principal.toText())
+        await promise(
+            Axioms.call(agent)
+                .setUserConfig({
+                    ExcludedPublishers: excludedPublishers.filter((p) => p !== principal),
+                })
+                .then(() => setPublisherDeleteLoading('')),
+            'Unblocking Publisher',
+            'Unblocked Publisher successfully!'
+        )
+    }
     const restorePublishers = async () => {
         setLoading(ELoading.RestorePublisher)
         await promise(
@@ -113,6 +128,18 @@ const MySettingsLayout = () => {
                 'Added Field successfully!'
             )
         }
+    }
+    const deleteField = async (field: string) => {
+        setFieldDeleteLoading(field)
+        await promise(
+            Axioms.call(agent)
+                .setUserConfig({
+                    ExcludedFields: excludedFields.filter((f) => f !== field),
+                })
+                .then(() => setFieldDeleteLoading('')),
+            'Unblocking Field',
+            'Unblocked Field successfully!'
+        )
     }
     const restoreFields = async () => {
         setLoading(ELoading.RestoreField)
@@ -157,12 +184,27 @@ const MySettingsLayout = () => {
             </div>
             <div className="gap-semilarge flex w-full flex-col">
                 {excludedPublishers.map((e) => (
-                    <Username
-                        principal={e}
-                        symbol
-                        symbolClassName="stroke-[3px]"
-                        linkClassName="pre-underline group z-10 w-full justify-start text-cold-700 decoration-cold-700/50 hover:decoration-cold-700/100"
-                    />
+                    <div className="flex items-center justify-between">
+                        <Username
+                            principal={e}
+                            symbol
+                            symbolClassName="stroke-[3px]"
+                            linkClassName="pre-underline group z-10 w-full justify-start text-cold-700 decoration-cold-700/50 hover:decoration-cold-700/100"
+                        />
+                        <button
+                            className="text-small px-medium py-small gap-small flex flex-nowrap items-center rounded-lg bg-cold-700 bg-opacity-0 font-medium hover:bg-opacity-25 disabled:pointer-events-none"
+                            onClick={() => deletePublisher(e)}
+                            disabled={
+                                publisherDeleteLoading !== '' || loading === ELoading.Publisher
+                            }
+                        >
+                            {publisherDeleteLoading === e.toText() ? (
+                                <Spinner color="white" className="h-3.5 w-3.5 md:h-4 md:w-4" />
+                            ) : (
+                                <DeleteIcon className="h-3.5 w-3.5 stroke-[2px] text-primary-800 md:h-4 md:w-4" />
+                            )}
+                        </button>
+                    </div>
                 ))}
                 <div className="gap-normal grid w-full grid-cols-3 md:grid-cols-5">
                     <input
@@ -183,7 +225,11 @@ const MySettingsLayout = () => {
                         <button
                             className="button w-auto"
                             onClick={addPublisher}
-                            disabled={!inputPrincipal || loading === ELoading.Publisher}
+                            disabled={
+                                !inputPrincipal ||
+                                loading === ELoading.Publisher ||
+                                publisherDeleteLoading !== ''
+                            }
                         >
                             {loading === ELoading.Publisher ? (
                                 <Spinner color="white" className="h-4 w-4 md:h-5 md:w-5" />
@@ -228,14 +274,27 @@ const MySettingsLayout = () => {
             </div>
             <div className="gap-semilarge flex w-full flex-col">
                 {excludedFields.map((e) => (
-                    <Link
-                        href={`/feed/fields/${e}`}
-                        openInNewTab
-                        className="gap-small pre-underline group z-10 flex w-full items-center justify-start text-cold-700 decoration-cold-700/50 hover:decoration-cold-700/100"
-                    >
-                        <FieldIcon className="mr-1 inline-block h-3.5 w-3.5 shrink-0 stroke-2 text-inherit md:h-4 md:w-4" />
-                        <p className="flex-nowrap place-items-center gap-1 text-nowrap">{e}</p>
-                    </Link>
+                    <div className="flex items-center justify-between">
+                        <Link
+                            href={`/feed/fields/${e}`}
+                            openInNewTab
+                            className="gap-small pre-underline group z-10 flex w-full items-center justify-start text-cold-700 decoration-cold-700/50 hover:decoration-cold-700/100"
+                        >
+                            <FieldIcon className="mr-1 inline-block h-3.5 w-3.5 shrink-0 stroke-2 text-inherit md:h-4 md:w-4" />
+                            <p className="flex-nowrap place-items-center gap-1 text-nowrap">{e}</p>
+                        </Link>
+                        <button
+                            className="text-small px-medium py-small gap-small flex flex-nowrap items-center rounded-lg bg-cold-700 bg-opacity-0 font-medium hover:bg-opacity-25 disabled:pointer-events-none"
+                            onClick={() => deleteField(e)}
+                            disabled={fieldDeleteLoading !== '' || loading === ELoading.Field}
+                        >
+                            {fieldDeleteLoading === e ? (
+                                <Spinner color="white" className="h-3.5 w-3.5 md:h-4 md:w-4" />
+                            ) : (
+                                <DeleteIcon className="h-3.5 w-3.5 stroke-[2px] text-primary-800 md:h-4 md:w-4" />
+                            )}
+                        </button>
+                    </div>
                 ))}
                 <div className="gap-normal grid w-full grid-cols-3 md:grid-cols-5">
                     <input
@@ -256,7 +315,11 @@ const MySettingsLayout = () => {
                         <button
                             className="button w-auto"
                             onClick={addField}
-                            disabled={!inputFieldId || loading === ELoading.Field}
+                            disabled={
+                                !inputFieldId ||
+                                loading === ELoading.Field ||
+                                fieldDeleteLoading !== ''
+                            }
                         >
                             {loading === ELoading.Field ? (
                                 <Spinner color="white" className="h-4 w-4 md:h-5 md:w-5" />

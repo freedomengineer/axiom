@@ -2,7 +2,7 @@
 
 import { Principal } from '@dfinity/principal'
 import { Tab, TabPanel, Tabs, TabsBody, TabsHeader } from '@material-tailwind/react'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
 import ClipboardIcon from '@components/Assets/clipboard.svg'
@@ -164,21 +164,22 @@ const ProfileLayout = ({ profilePrincipal }: { profilePrincipal: Principal }) =>
                 ] as any)
             )
         } catch {}
-    }, [salesConfigs])
+    }, [salesConfigs, agent, profilePrincipal, userPackages])
 
-    if (!profileUser || !profileUser.facade || !profileUser.axioms) return null
-
-    const dataCounts = {
-        [EFullTab.Packages]: userPackages?.length ?? 'N/A',
-        [EFullTab.Axioms]: profileUser.axioms?.axioms.length ?? 0,
-        [EFullTab.Fields]: profileUser.axioms?.joinedFields.length ?? 0,
-        [EFullTab.PublishedHypotheses]: profileUser.axioms?.hypotheses.length ?? 0,
-        [EFullTab.VotedHypotheses]: profileUser.axioms?.votedHypotheses.length ?? 0,
-        [EFullTab.PublishedEvidences]: profileUser.axioms?.evidences.length ?? 0,
-        [EFullTab.VotedEvidences]: profileUser.axioms?.votedEvidences.length ?? 0,
-        [EFullTab.OpenedProposals]: profileUser.dao?.proposals.length ?? 0,
-        [EFullTab.VotedProposals]: profileUser.dao?.proposalVotes.length ?? 0,
-    }
+    const dataCounts = useMemo(
+        () => ({
+            [EFullTab.Packages]: userPackages?.length ?? 'N/A',
+            [EFullTab.Axioms]: profileUser?.axioms?.axioms.length ?? 0,
+            [EFullTab.Fields]: profileUser?.axioms?.joinedFields.length ?? 0,
+            [EFullTab.PublishedHypotheses]: profileUser?.axioms?.hypotheses.length ?? 0,
+            [EFullTab.VotedHypotheses]: profileUser?.axioms?.votedHypotheses.length ?? 0,
+            [EFullTab.PublishedEvidences]: profileUser?.axioms?.evidences.length ?? 0,
+            [EFullTab.VotedEvidences]: profileUser?.axioms?.votedEvidences.length ?? 0,
+            [EFullTab.OpenedProposals]: profileUser?.dao?.proposals.length ?? 0,
+            [EFullTab.VotedProposals]: profileUser?.dao?.proposalVotes.length ?? 0,
+        }),
+        [profileUser, userPackages]
+    )
 
     const handleCopy = (name: string, text: string) => {
         navigator.clipboard.writeText(text)
@@ -212,6 +213,226 @@ const ProfileLayout = ({ profilePrincipal }: { profilePrincipal: Principal }) =>
             }
         )
     }
+
+    const memoizedTabs = useMemo(
+        () =>
+            profileUser && (
+                <Tabs value={tab}>
+                    <TabsHeader
+                        className="overflow-x-auto overflow-y-hidden rounded-none border-b border-primary-50 bg-transparent p-0"
+                        indicatorProps={{
+                            className:
+                                'bg-transparent border-b-2 border-primary-700 shadow-none rounded-none',
+                        }}
+                    >
+                        {Object.keys(ETab).map((currentTab) => {
+                            const [tab1, tab2] = parseFullTabFromTab(currentTab as ETab)
+                            return (
+                                <Tab
+                                    key={currentTab}
+                                    value={currentTab}
+                                    onClick={() => setSearchPrams({ tab: tab1 })}
+                                    className={cn(
+                                        'text-normal font-normal',
+                                        tab === currentTab && 'text-primary-700'
+                                    )}
+                                >
+                                    <span className="text-normal text-nowrap font-normal">
+                                        {currentTab} ({dataCounts[tab1]}
+                                        {tab2 && `, ${dataCounts[tab2]}`})
+                                    </span>
+                                </Tab>
+                            )
+                        })}
+                    </TabsHeader>
+                    <TabsBody>
+                        <TabPanel
+                            key={tab}
+                            value={tab}
+                            className={cn(
+                                'gap-medium flex w-full flex-col items-center px-0 py-2 md:px-4 md:py-4',
+                                ![ETab.Hypotheses, ETab.Evidences, ETab.Proposals].includes(tab) &&
+                                    'mt-medium p-medium'
+                            )}
+                        >
+                            {
+                                {
+                                    [ETab.Packages]: !userPackages ? (
+                                        <Spinner className="mx-auto h-8 w-8 md:h-10 md:w-10" />
+                                    ) : (
+                                        <PackagesTab packages={userPackages} />
+                                    ),
+                                    [ETab.Axioms]: <AxiomsTab principal={profilePrincipal} />,
+                                    [ETab.Fields]: <FieldsTab principal={profilePrincipal} />,
+                                    [ETab.Hypotheses]: (
+                                        <Tabs value={fullTab} className="w-full">
+                                            <TabsHeader
+                                                className="overflow-x-auto overflow-y-hidden rounded-none border-b border-primary-50 bg-transparent p-0"
+                                                indicatorProps={{
+                                                    className:
+                                                        'bg-transparent border-b-2 border-primary-700 shadow-none rounded-none',
+                                                }}
+                                            >
+                                                {['Published', 'Voted'].map((prefix) => {
+                                                    const parsedFullTab =
+                                                        `${prefix}Hypotheses` as EFullTab
+                                                    return (
+                                                        <Tab
+                                                            key={parsedFullTab}
+                                                            value={parsedFullTab}
+                                                            onClick={() =>
+                                                                setSearchPrams({
+                                                                    tab: parsedFullTab,
+                                                                })
+                                                            }
+                                                            className={cn(
+                                                                'text-normal font-normal',
+                                                                fullTab === parsedFullTab &&
+                                                                    'text-primary-700'
+                                                            )}
+                                                        >
+                                                            <span className="text-normal text-nowrap font-normal">
+                                                                {prefix} (
+                                                                {dataCounts[parsedFullTab]})
+                                                            </span>
+                                                        </Tab>
+                                                    )
+                                                })}
+                                            </TabsHeader>
+                                            <TabsBody>
+                                                <TabPanel
+                                                    key={fullTab}
+                                                    value={fullTab}
+                                                    className="gap-medium mt-medium p-medium flex w-full flex-col items-center"
+                                                >
+                                                    <HypothesesTab
+                                                        principal={profilePrincipal}
+                                                        type={
+                                                            fullTab.includes('Published')
+                                                                ? 'Published'
+                                                                : 'Voted'
+                                                        }
+                                                    />
+                                                </TabPanel>
+                                            </TabsBody>
+                                        </Tabs>
+                                    ),
+                                    [ETab.Evidences]: (
+                                        <Tabs value={fullTab} className="w-full">
+                                            <TabsHeader
+                                                className="overflow-x-auto overflow-y-hidden rounded-none border-b border-primary-50 bg-transparent p-0"
+                                                indicatorProps={{
+                                                    className:
+                                                        'bg-transparent border-b-2 border-primary-700 shadow-none rounded-none',
+                                                }}
+                                            >
+                                                {['Published', 'Voted'].map((prefix) => {
+                                                    const parsedFullTab =
+                                                        `${prefix}Evidences` as EFullTab
+                                                    return (
+                                                        <Tab
+                                                            key={parsedFullTab}
+                                                            value={parsedFullTab}
+                                                            onClick={() =>
+                                                                setSearchPrams({
+                                                                    tab: parsedFullTab,
+                                                                })
+                                                            }
+                                                            className={cn(
+                                                                'text-normal font-normal',
+                                                                fullTab === parsedFullTab &&
+                                                                    'text-primary-700'
+                                                            )}
+                                                        >
+                                                            <span className="text-normal text-nowrap font-normal">
+                                                                {prefix} (
+                                                                {dataCounts[parsedFullTab]})
+                                                            </span>
+                                                        </Tab>
+                                                    )
+                                                })}
+                                            </TabsHeader>
+                                            <TabsBody>
+                                                <TabPanel
+                                                    key={fullTab}
+                                                    value={fullTab}
+                                                    className="gap-medium mt-medium p-medium flex w-full flex-col items-center"
+                                                >
+                                                    <EvidencesTab
+                                                        principal={profilePrincipal}
+                                                        type={
+                                                            fullTab.includes('Published')
+                                                                ? 'Published'
+                                                                : 'Voted'
+                                                        }
+                                                    />
+                                                </TabPanel>
+                                            </TabsBody>
+                                        </Tabs>
+                                    ),
+                                    [ETab.Proposals]: (
+                                        <Tabs value={fullTab} className="w-full">
+                                            <TabsHeader
+                                                className="overflow-x-auto overflow-y-hidden rounded-none border-b border-primary-50 bg-transparent p-0"
+                                                indicatorProps={{
+                                                    className:
+                                                        'bg-transparent border-b-2 border-primary-700 shadow-none rounded-none',
+                                                }}
+                                            >
+                                                {['Opened', 'Voted'].map((prefix) => {
+                                                    const parsedFullTab =
+                                                        `${prefix}Proposals` as EFullTab
+                                                    return (
+                                                        <Tab
+                                                            key={parsedFullTab}
+                                                            value={parsedFullTab}
+                                                            onClick={() =>
+                                                                setSearchPrams({
+                                                                    tab: parsedFullTab,
+                                                                })
+                                                            }
+                                                            className={cn(
+                                                                'text-normal font-normal',
+                                                                fullTab === parsedFullTab &&
+                                                                    'text-primary-700'
+                                                            )}
+                                                        >
+                                                            <span className="text-normal text-nowrap font-normal">
+                                                                {prefix} (
+                                                                {dataCounts[parsedFullTab]})
+                                                            </span>
+                                                        </Tab>
+                                                    )
+                                                })}
+                                            </TabsHeader>
+                                            <TabsBody>
+                                                <TabPanel
+                                                    key={fullTab}
+                                                    value={fullTab}
+                                                    className="gap-medium mt-medium p-medium flex w-full flex-col items-center"
+                                                >
+                                                    <ProposalsTab
+                                                        principal={profilePrincipal}
+                                                        type={
+                                                            fullTab.includes('Opened')
+                                                                ? 'Opened'
+                                                                : 'Voted'
+                                                        }
+                                                    />
+                                                </TabPanel>
+                                            </TabsBody>
+                                        </Tabs>
+                                    ),
+                                }[tab]
+                            }
+                        </TabPanel>
+                    </TabsBody>
+                </Tabs>
+            ),
+        [tab, fullTab, dataCounts, profilePrincipal, setSearchPrams, userPackages, profileUser]
+    )
+
+    if (!profileUser || !profileUser.facade || !profileUser.axioms) return null
 
     return (
         <div className="gap-extralarge m-auto flex h-auto w-full flex-col">
@@ -450,208 +671,7 @@ const ProfileLayout = ({ profilePrincipal }: { profilePrincipal: Principal }) =>
                     )}
                 </div>
             </div>
-            <Tabs value={tab}>
-                <TabsHeader
-                    className="overflow-x-auto overflow-y-hidden rounded-none border-b border-primary-50 bg-transparent p-0"
-                    indicatorProps={{
-                        className:
-                            'bg-transparent border-b-2 border-primary-700 shadow-none rounded-none',
-                    }}
-                >
-                    {Object.keys(ETab).map((currentTab) => {
-                        const [tab1, tab2] = parseFullTabFromTab(currentTab as ETab)
-                        return (
-                            <Tab
-                                key={currentTab}
-                                value={currentTab}
-                                onClick={() => setSearchPrams({ tab: tab1 })}
-                                className={cn(
-                                    'text-normal font-normal',
-                                    tab === currentTab && 'text-primary-700'
-                                )}
-                            >
-                                <span className="text-normal text-nowrap font-normal">
-                                    {currentTab} ({dataCounts[tab1]}
-                                    {tab2 && `, ${dataCounts[tab2]}`})
-                                </span>
-                            </Tab>
-                        )
-                    })}
-                </TabsHeader>
-                <TabsBody>
-                    <TabPanel
-                        key={tab}
-                        value={tab}
-                        className={cn(
-                            'gap-medium flex w-full flex-col items-center px-0 py-2 md:px-4 md:py-4',
-                            ![ETab.Hypotheses, ETab.Evidences, ETab.Proposals].includes(tab) &&
-                                'mt-medium p-medium'
-                        )}
-                    >
-                        {
-                            {
-                                [ETab.Packages]: !userPackages ? (
-                                    <Spinner className="mx-auto h-8 w-8 md:h-10 md:w-10" />
-                                ) : (
-                                    <PackagesTab packages={userPackages} />
-                                ),
-                                [ETab.Axioms]: <AxiomsTab principal={profilePrincipal} />,
-                                [ETab.Fields]: <FieldsTab principal={profilePrincipal} />,
-                                [ETab.Hypotheses]: (
-                                    <Tabs value={fullTab} className="w-full">
-                                        <TabsHeader
-                                            className="overflow-x-auto overflow-y-hidden rounded-none border-b border-primary-50 bg-transparent p-0"
-                                            indicatorProps={{
-                                                className:
-                                                    'bg-transparent border-b-2 border-primary-700 shadow-none rounded-none',
-                                            }}
-                                        >
-                                            {['Published', 'Voted'].map((prefix) => {
-                                                const parsedFullTab =
-                                                    `${prefix}Hypotheses` as EFullTab
-                                                return (
-                                                    <Tab
-                                                        key={parsedFullTab}
-                                                        value={parsedFullTab}
-                                                        onClick={() =>
-                                                            setSearchPrams({ tab: parsedFullTab })
-                                                        }
-                                                        className={cn(
-                                                            'text-normal font-normal',
-                                                            fullTab === parsedFullTab &&
-                                                                'text-primary-700'
-                                                        )}
-                                                    >
-                                                        <span className="text-normal text-nowrap font-normal">
-                                                            {prefix} ({dataCounts[parsedFullTab]})
-                                                        </span>
-                                                    </Tab>
-                                                )
-                                            })}
-                                        </TabsHeader>
-                                        <TabsBody>
-                                            <TabPanel
-                                                key={fullTab}
-                                                value={fullTab}
-                                                className="gap-medium mt-medium p-medium flex w-full flex-col items-center"
-                                            >
-                                                <HypothesesTab
-                                                    principal={profilePrincipal}
-                                                    type={
-                                                        fullTab.includes('Published')
-                                                            ? 'Published'
-                                                            : 'Voted'
-                                                    }
-                                                />
-                                            </TabPanel>
-                                        </TabsBody>
-                                    </Tabs>
-                                ),
-                                [ETab.Evidences]: (
-                                    <Tabs value={fullTab} className="w-full">
-                                        <TabsHeader
-                                            className="overflow-x-auto overflow-y-hidden rounded-none border-b border-primary-50 bg-transparent p-0"
-                                            indicatorProps={{
-                                                className:
-                                                    'bg-transparent border-b-2 border-primary-700 shadow-none rounded-none',
-                                            }}
-                                        >
-                                            {['Published', 'Voted'].map((prefix) => {
-                                                const parsedFullTab =
-                                                    `${prefix}Evidences` as EFullTab
-                                                return (
-                                                    <Tab
-                                                        key={parsedFullTab}
-                                                        value={parsedFullTab}
-                                                        onClick={() =>
-                                                            setSearchPrams({ tab: parsedFullTab })
-                                                        }
-                                                        className={cn(
-                                                            'text-normal font-normal',
-                                                            fullTab === parsedFullTab &&
-                                                                'text-primary-700'
-                                                        )}
-                                                    >
-                                                        <span className="text-normal text-nowrap font-normal">
-                                                            {prefix} ({dataCounts[parsedFullTab]})
-                                                        </span>
-                                                    </Tab>
-                                                )
-                                            })}
-                                        </TabsHeader>
-                                        <TabsBody>
-                                            <TabPanel
-                                                key={fullTab}
-                                                value={fullTab}
-                                                className="gap-medium mt-medium p-medium flex w-full flex-col items-center"
-                                            >
-                                                <EvidencesTab
-                                                    principal={profilePrincipal}
-                                                    type={
-                                                        fullTab.includes('Published')
-                                                            ? 'Published'
-                                                            : 'Voted'
-                                                    }
-                                                />
-                                            </TabPanel>
-                                        </TabsBody>
-                                    </Tabs>
-                                ),
-                                [ETab.Proposals]: (
-                                    <Tabs value={fullTab} className="w-full">
-                                        <TabsHeader
-                                            className="overflow-x-auto overflow-y-hidden rounded-none border-b border-primary-50 bg-transparent p-0"
-                                            indicatorProps={{
-                                                className:
-                                                    'bg-transparent border-b-2 border-primary-700 shadow-none rounded-none',
-                                            }}
-                                        >
-                                            {['Opened', 'Voted'].map((prefix) => {
-                                                const parsedFullTab =
-                                                    `${prefix}Proposals` as EFullTab
-                                                return (
-                                                    <Tab
-                                                        key={parsedFullTab}
-                                                        value={parsedFullTab}
-                                                        onClick={() =>
-                                                            setSearchPrams({ tab: parsedFullTab })
-                                                        }
-                                                        className={cn(
-                                                            'text-normal font-normal',
-                                                            fullTab === parsedFullTab &&
-                                                                'text-primary-700'
-                                                        )}
-                                                    >
-                                                        <span className="text-normal text-nowrap font-normal">
-                                                            {prefix} ({dataCounts[parsedFullTab]})
-                                                        </span>
-                                                    </Tab>
-                                                )
-                                            })}
-                                        </TabsHeader>
-                                        <TabsBody>
-                                            <TabPanel
-                                                key={fullTab}
-                                                value={fullTab}
-                                                className="gap-medium mt-medium p-medium flex w-full flex-col items-center"
-                                            >
-                                                <ProposalsTab
-                                                    principal={profilePrincipal}
-                                                    type={
-                                                        fullTab.includes('Opened')
-                                                            ? 'Opened'
-                                                            : 'Voted'
-                                                    }
-                                                />
-                                            </TabPanel>
-                                        </TabsBody>
-                                    </Tabs>
-                                ),
-                            }[tab]
-                        }
-                    </TabPanel>
-                </TabsBody>
-            </Tabs>
+            {memoizedTabs}
         </div>
     )
 }

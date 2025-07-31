@@ -69,6 +69,7 @@ const EvidenceCard = ({
         <div
             className={cn(
                 'text-small relative my-auto flex h-min w-full flex-col rounded-lg border border-cold-600 border-opacity-50 font-normal text-cold-800 hover:border-opacity-100 md:w-[420px]',
+                'touch-pan-y',
                 className
             )}
         >
@@ -143,7 +144,10 @@ const EvidenceCard = ({
             </div>
             <div className="px-medium py-small gap-tiny grid w-full grid-cols-2 grid-rows-2 rounded-b-md bg-cold-900 text-white md:flex">
                 <Link
-                    className="gap-small order-1 flex items-center hover:opacity-75"
+                    className={cn(
+                        'gap-small order-1 flex items-center hover:opacity-75',
+                        'touch-pan-y'
+                    )}
                     href={build(['feed', localItem.hypothesisId])}
                 >
                     <HypothesisIcon className="h-[16px] w-[16px] stroke-[2px] md:h-[18px] md:w-[18px]" />
@@ -152,7 +156,10 @@ const EvidenceCard = ({
                     </span>
                 </Link>
                 <Link
-                    className="gap-small order-3 flex items-center hover:opacity-75 md:order-2"
+                    className={cn(
+                        'gap-small order-3 flex items-center hover:opacity-75 md:order-2',
+                        'touch-pan-y'
+                    )}
                     href={build(['profile', localItem.publisher.toText()])}
                 >
                     <Symbol
@@ -164,7 +171,10 @@ const EvidenceCard = ({
                     </span>
                 </Link>
                 <Link
-                    className="gap-small order-2 ml-auto flex items-center hover:opacity-75 md:order-3 md:ml-0"
+                    className={cn(
+                        'gap-small order-2 ml-auto flex items-center hover:opacity-75 md:order-3 md:ml-0',
+                        'touch-pan-y'
+                    )}
                     href={build(['feed', localItem.hypothesisId, 'evidences', localItem.id])}
                 >
                     <NewTabIcon className="h-3.5 w-3.5 stroke-[2px]" />
@@ -180,11 +190,10 @@ const EvidenceCard = ({
                             vote={vote}
                             handleVote={(custom) => handleVote(EVote.Positive, custom)}
                             loading={votesLoading[EVote.Positive]}
-                            className="flex h-3.5 w-3.5 items-center md:h-4 md:w-4"
+                            className="flex h-3.5 items-center gap-0 md:h-4"
+                            childClassName="text-tiny font-light text-white"
+                            value={localItem.votes.regular[0]}
                         />
-                        <p className="text-tiny font-light text-white">
-                            {localItem.votes.regular[0]}
-                        </p>
                     </div>
                     <div className="gap-small flex items-center">
                         <EvidenceVote
@@ -192,20 +201,20 @@ const EvidenceCard = ({
                             vote={vote}
                             handleVote={(custom) => handleVote(EVote.Negative, custom)}
                             loading={votesLoading[EVote.Negative]}
-                            className="flex h-3.5 w-3.5 items-center md:h-4 md:w-4"
+                            className="flex h-3.5 items-center gap-0 md:h-4"
+                            childClassName="text-tiny font-light text-white"
+                            value={localItem.votes.regular[1]}
                         />
-                        <p className="text-tiny font-light text-white">
-                            {localItem.votes.regular[1]}
-                        </p>
                     </div>
-                    <div className="gap-small flex items-center">
-                        <button className="hover:opacity-75" onClick={() => handleReply()}>
-                            <ReplyIcon className="h-3.5 w-3.5 stroke-[1.5px] md:h-4 md:w-4" />
-                        </button>
+                    <button
+                        className="gap-small flex cursor-pointer items-center hover:opacity-75"
+                        onClick={() => handleReply()}
+                    >
+                        <ReplyIcon className="h-3.5 w-3.5 stroke-[1.5px] md:h-4 md:w-4" />
                         <p className="text-tiny font-light text-white">
                             {localItem.replies.length}
                         </p>
-                    </div>
+                    </button>
                     <button className="hover:opacity-75" onClick={() => setOpen(true)}>
                         <FlagIcon className="h-3.5 w-3.5 stroke-[1.5px] md:h-4 md:w-4" />
                     </button>
