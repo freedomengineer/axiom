@@ -26,7 +26,7 @@ const MembershipsPage = () => {
     const [selectedPackage, setSelectedPackage] = useState<ParsedPackages<EPackages>>()
 
     return (
-        <>
+        <div className="p-semilarge">
             <PageMetadata {...pageMetadata} />
             <Popup
                 open={selectedPackage !== undefined}
@@ -56,7 +56,7 @@ const MembershipsPage = () => {
                     />
                 ))}
             </div>
-        </>
+        </div>
     )
 }
 

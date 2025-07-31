@@ -62,6 +62,10 @@ const defaultOptions: {
             process.env.DFX_NETWORK === 'ic'
                 ? 'https://identity.ic0.app/#authorize'
                 : `http://${process.env.CANISTER_ID_INTERNET_IDENTITY}.localhost:4943/`,
+        derivationOrigin:
+            process.env.DFX_NETWORK === 'ic'
+                ? `https://${process.env.CANISTER_ID_FRONTEND}.icp0.io`
+                : undefined,
     },
 }
 
@@ -218,5 +222,4 @@ export const useAuthClient = () => {
 }
 
 const useAuth = () => useContext(AuthContext)
-
 export default useAuth

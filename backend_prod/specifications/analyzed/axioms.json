@@ -469,6 +469,17 @@
           "isArray": false,
           "isOptional": false,
           "isAsync": false
+        },
+        "custom": {
+          "origin": "?TernaryVotes.CustomValue",
+          "singular": {
+            "name": "CustomValue",
+            "parent": "TernaryVotes"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": true,
+          "isAsync": false
         }
       },
       "returnType": {
@@ -508,6 +519,17 @@
           "entries": [],
           "isArray": false,
           "isOptional": false,
+          "isAsync": false
+        },
+        "custom": {
+          "origin": "?TernaryVotes.CustomValue",
+          "singular": {
+            "name": "CustomValue",
+            "parent": "TernaryVotes"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": true,
           "isAsync": false
         }
       },
@@ -814,6 +836,144 @@
           "isAsync": false
         }
       },
+      "returnType": {
+        "origin": "async ()",
+        "singular": {
+          "name": "()"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
+      "name": "setUserConfig",
+      "flag": {
+        "isQuery": false,
+        "callerRequired": true
+      },
+      "argTypes": {
+        "config": {
+          "origin": "UserConfig.Sharable",
+          "singular": {
+            "name": "Sharable",
+            "parent": "UserConfig"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async ()",
+        "singular": {
+          "name": "()"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
+      "name": "setBatchUserConfigs",
+      "flag": {
+        "isQuery": false,
+        "callerRequired": true
+      },
+      "argTypes": {
+        "configs": {
+          "origin": "[UserConfig.Sharable]",
+          "singular": {
+            "name": "Sharable",
+            "parent": "UserConfig"
+          },
+          "entries": [],
+          "isArray": true,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async ()",
+        "singular": {
+          "name": "()"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
+      "name": "setAllUserConfigs",
+      "flag": {
+        "isQuery": false,
+        "callerRequired": true
+      },
+      "argTypes": {
+        "configs": {
+          "origin": "[UserConfig.Sharable]",
+          "singular": {
+            "name": "Sharable",
+            "parent": "UserConfig"
+          },
+          "entries": [],
+          "isArray": true,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async ()",
+        "singular": {
+          "name": "()"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
+      "name": "restoreUserConfig",
+      "flag": {
+        "isQuery": false,
+        "callerRequired": true
+      },
+      "argTypes": {
+        "variant": {
+          "origin": "UserConfig.Variant",
+          "singular": {
+            "name": "Variant",
+            "parent": "UserConfig"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async ()",
+        "singular": {
+          "name": "()"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
+      "name": "restoreAllUserConfigs",
+      "flag": {
+        "isQuery": false,
+        "callerRequired": true
+      },
+      "argTypes": {},
       "returnType": {
         "origin": "async ()",
         "singular": {
@@ -1920,6 +2080,25 @@
       }
     },
     {
+      "name": "getUserConfigs",
+      "flag": {
+        "isQuery": true,
+        "callerRequired": true
+      },
+      "argTypes": {},
+      "returnType": {
+        "origin": "async UserConfigs.Sharable",
+        "singular": {
+          "name": "Sharable",
+          "parent": "UserConfigs"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
       "name": "expectUserNotFound",
       "flag": {
         "isQuery": true,
@@ -2055,12 +2234,33 @@
       "relativePath": "flags/Flags",
       "depth": 2
     },
+    "UserConfig": {
+      "origin": "import UserConfig \"user_configs/UserConfig\";",
+      "name": "UserConfig",
+      "category": "attribute",
+      "relativePath": "user_configs/UserConfig",
+      "depth": 2
+    },
+    "UserConfigs": {
+      "origin": "import UserConfigs \"user_configs/UserConfigs\";",
+      "name": "UserConfigs",
+      "category": "attribute",
+      "relativePath": "user_configs/UserConfigs",
+      "depth": 2
+    },
     "Notification": {
       "origin": "import Notification \"../../periphery/facade/notifications/Notification\";",
       "name": "Notification",
       "category": "attribute",
       "relativePath": "../../periphery/facade/notifications/Notification",
       "depth": 6
+    },
+    "Packages": {
+      "origin": "import Packages \"../sales/packages/Packages\";",
+      "name": "Packages",
+      "category": "attribute",
+      "relativePath": "../sales/packages/Packages",
+      "depth": 4
     },
     "EscrowInterface": {
       "origin": "import EscrowInterface \"../escrow/Interface\";",
@@ -2317,7 +2517,10 @@
     "Users",
     "Flag",
     "Flags",
+    "UserConfig",
+    "UserConfigs",
     "Notification",
+    "Packages",
     "EscrowInterface",
     "TreasuryInterface",
     "FacadeInterface",
@@ -2359,6 +2562,7 @@
     "BinaryVotes",
     "Flag",
     "TernaryVotes",
+    "UserConfig",
     "Field",
     "Fields",
     "Base",
@@ -2370,7 +2574,8 @@
     "Payout",
     "Payouts",
     "User",
-    "Earning"
+    "Earning",
+    "UserConfigs"
   ],
   "typeDefinitions": {
     "async ()": {
@@ -2882,6 +3087,136 @@
         ],
         [
           "#Negative",
+          null
+        ]
+      ],
+      "isArray": false,
+      "isOptional": false,
+      "isAsync": false
+    },
+    "?TernaryVotes.CustomValue": {
+      "origin": "?TernaryVotes.CustomValue",
+      "singular": {
+        "name": "()"
+      },
+      "entries": [
+        [
+          "#Value",
+          {
+            "origin": "Nat",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "#Scale",
+          {
+            "origin": "Nat",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ]
+      ],
+      "isArray": false,
+      "isOptional": true,
+      "isAsync": false
+    },
+    "UserConfig.Sharable": {
+      "origin": "UserConfig.Sharable",
+      "singular": {
+        "name": "()"
+      },
+      "entries": [
+        [
+          "#ExcludedPublishers",
+          {
+            "origin": "[Principal]",
+            "singular": {
+              "name": "Principal"
+            },
+            "entries": [],
+            "isArray": true,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "#ExcludedFields",
+          {
+            "origin": "[Text]",
+            "singular": {
+              "name": "Text"
+            },
+            "entries": [],
+            "isArray": true,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ]
+      ],
+      "isArray": false,
+      "isOptional": false,
+      "isAsync": false
+    },
+    "[UserConfig.Sharable]": {
+      "origin": "[UserConfig.Sharable]",
+      "singular": {
+        "name": "()"
+      },
+      "entries": [
+        [
+          "#ExcludedPublishers",
+          {
+            "origin": "[Principal]",
+            "singular": {
+              "name": "Principal"
+            },
+            "entries": [],
+            "isArray": true,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "#ExcludedFields",
+          {
+            "origin": "[Text]",
+            "singular": {
+              "name": "Text"
+            },
+            "entries": [],
+            "isArray": true,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ]
+      ],
+      "isArray": true,
+      "isOptional": false,
+      "isAsync": false
+    },
+    "UserConfig.Variant": {
+      "origin": "UserConfig.Variant",
+      "singular": {
+        "name": "()"
+      },
+      "entries": [
+        [
+          "#ExcludedPublishers",
+          null
+        ],
+        [
+          "#ExcludedFields",
           null
         ]
       ],
@@ -4123,6 +4458,32 @@
           }
         ],
         [
+          "agoStart",
+          {
+            "origin": "?Nat",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": true,
+            "isAsync": false
+          }
+        ],
+        [
+          "agoEnd",
+          {
+            "origin": "?Nat",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": true,
+            "isAsync": false
+          }
+        ],
+        [
           "field",
           {
             "origin": "?Text",
@@ -5325,6 +5686,32 @@
         "name": "()"
       },
       "entries": [
+        [
+          "agoStart",
+          {
+            "origin": "?Nat",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": true,
+            "isAsync": false
+          }
+        ],
+        [
+          "agoEnd",
+          {
+            "origin": "?Nat",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": true,
+            "isAsync": false
+          }
+        ],
         [
           "hypothesis",
           {
@@ -8246,6 +8633,43 @@
         ]
       ],
       "isArray": false,
+      "isOptional": false,
+      "isAsync": true
+    },
+    "async UserConfigs.Sharable": {
+      "origin": "async UserConfigs.Sharable",
+      "singular": {
+        "name": "()"
+      },
+      "entries": [
+        [
+          "#ExcludedPublishers",
+          {
+            "origin": "[Principal]",
+            "singular": {
+              "name": "Principal"
+            },
+            "entries": [],
+            "isArray": true,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "#ExcludedFields",
+          {
+            "origin": "[Text]",
+            "singular": {
+              "name": "Text"
+            },
+            "entries": [],
+            "isArray": true,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ]
+      ],
+      "isArray": true,
       "isOptional": false,
       "isAsync": true
     }

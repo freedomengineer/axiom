@@ -3,7 +3,7 @@
 ## Dependencies
 
 
-- Attributes: `Age`, `Ages`, `Evidence`, `Evidences`, `Field`, `Fields`, `Hypothesis`, `Hypotheses`, `Payout`, `Payouts`, `Ranks`, `User`, `Users`, `Flag`, `Flags`, `Notification`
+- Attributes: `Age`, `Ages`, `Evidence`, `Evidences`, `Field`, `Fields`, `Hypothesis`, `Hypotheses`, `Payout`, `Payouts`, `Ranks`, `User`, `Users`, `Flag`, `Flags`, `UserConfig`, `UserConfigs`, `Notification`, `Packages`
 - Interfaces: `EscrowInterface`, `TreasuryInterface`, `FacadeInterface`, `IndicatorInterface`
 - Commons: `C`, `E`
 - Libraries: `Array`, `Base`, `Configs`, `ClusterTree`, `Count`, `Date`, `DoubleClusterTree`, `DoubleRankTree`, `E8S`, `Earning`, `Format`, `Iter`, `List`, `Map`, `Pagination`, `Proportion`, `Set`, `Vector`, `BinaryVotes`, `TernaryVotes`
@@ -151,20 +151,20 @@
 {"header": {"id": "Nat", "category": "#HYPOTHESIS | #EVIDENCE"}, "reason": "Text"}
 ```
 
-### 12. `voteHypothesis(hypothesisId, choice)` returns `()`
+### 12. `voteHypothesis(hypothesisId, choice, custom)` returns `()`
 
 #### Arguments:
 
 ```json
-{"hypothesisId": "Nat", "choice": "#POSITIVE | #NEUTRAL | #NEGATIVE"}
+{"hypothesisId": "Nat", "choice": "#POSITIVE | #NEUTRAL | #NEGATIVE", "custom": {"#VALUE": "Nat", "#SCALE": "Nat"}}
 ```
 
-### 13. `voteEvidence(evidenceId, choice)` returns `()`
+### 13. `voteEvidence(evidenceId, choice, custom)` returns `()`
 
 #### Arguments:
 
 ```json
-{"evidenceId": "Nat", "choice": "#POSITIVE | #NEGATIVE"}
+{"evidenceId": "Nat", "choice": "#POSITIVE | #NEGATIVE", "custom": {"#VALUE": "Nat", "#SCALE": "Nat"}}
 ```
 
 ### 14. `voteFlag(header, choice)` returns `()`
@@ -247,7 +247,41 @@
 {"principal": "Principal"}
 ```
 
-### 24. `withdrawAll()` returns `()`
+### 24. `setUserConfig(config)` returns `()`
+
+#### Arguments:
+
+```json
+{"config": {"#EXCLUDEDPUBLISHERS": ["Principal"], "#EXCLUDEDFIELDS": ["Text"]}}
+```
+
+### 25. `setBatchUserConfigs(configs)` returns `()`
+
+#### Arguments:
+
+```json
+{"configs": [{"#EXCLUDEDPUBLISHERS": ["Principal"], "#EXCLUDEDFIELDS": ["Text"]}]}
+```
+
+### 26. `setAllUserConfigs(configs)` returns `()`
+
+#### Arguments:
+
+```json
+{"configs": [{"#EXCLUDEDPUBLISHERS": ["Principal"], "#EXCLUDEDFIELDS": ["Text"]}]}
+```
+
+### 27. `restoreUserConfig(variant)` returns `()`
+
+#### Arguments:
+
+```json
+{"variant": "#EXCLUDEDPUBLISHERS | #EXCLUDEDFIELDS"}
+```
+
+### 28. `restoreAllUserConfigs()` returns `()`
+
+### 29. `withdrawAll()` returns `()`
 
 ## Accessors
 
@@ -407,6 +441,8 @@
 {
   "filter": {
     "age": "Nat",
+    "agoStart": "Nat",
+    "agoEnd": "Nat",
     "field": "Text",
     "publisher": "Principal",
     "voter": "Principal",
@@ -450,6 +486,8 @@
 {
   "filter": {
     "age": "Nat",
+    "agoStart": "Nat",
+    "agoEnd": "Nat",
     "field": "Text",
     "publisher": "Principal",
     "voter": "Principal",
@@ -526,6 +564,8 @@
 ```json
 {
   "filter": {
+    "agoStart": "Nat",
+    "agoEnd": "Nat",
     "hypothesis": "Nat",
     "publisher": "Principal",
     "voter": "Principal",
@@ -568,6 +608,8 @@
 ```json
 {
   "filter": {
+    "agoStart": "Nat",
+    "agoEnd": "Nat",
     "hypothesis": "Nat",
     "publisher": "Principal",
     "voter": "Principal",
@@ -861,7 +903,14 @@
 {"revenue": "Nat", "balance": "Nat", "lastWithdrawAt": "Time"}
 ```
 
-### 23. `expectUserNotFound(principal)` returns `()`
+### 23. `getUserConfigs()` returns `UserConfigs.Sharable`
+
+#### Returns:
+```json
+[{"#EXCLUDEDPUBLISHERS": ["Principal"], "#EXCLUDEDFIELDS": ["Text"]}]
+```
+
+### 24. `expectUserNotFound(principal)` returns `()`
 
 #### Arguments:
 

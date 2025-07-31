@@ -109,6 +109,10 @@
                 "My Bookmarks": {
                     "url": "/profile/my_bookmarks",
                     "description": "My Bookmarks"
+                },
+                "My Settings": {
+                    "url": "/profile/my_settings",
+                    "description": "My Settings"
                 }
             }
         }

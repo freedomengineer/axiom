@@ -10,6 +10,7 @@ import DoneIcon from '@components/Assets/done.svg'
 import EvidenceIcon from '@components/Assets/evidence.svg'
 import FieldIcon from '@components/Assets/field.svg'
 import FlagIcon from '@components/Assets/flag.svg'
+import HypothesisIcon from '@components/Assets/hypothesis.svg'
 import ShareIcon from '@components/Assets/share.svg'
 import Spinner from '@components/Primitives/Spinner'
 import Link from '@components/Shared/Link'
@@ -25,8 +26,14 @@ import { EVote, VOTES } from '@utils/feed/hypothesis'
 import { DAxioms } from 'shared/types/services'
 import { Variant } from 'shared/utils/typings'
 
+import HypothesisDetail from './HypothesisDetail'
 import HypothesisVote from './HypothesisVote'
 import RequestFlag from '../Flags/RequestFlag'
+
+enum EPopup {
+    RequestFlag,
+    HypothesisDetail,
+}
 
 const HypothesisCard = ({
     item,
@@ -49,7 +56,7 @@ const HypothesisCard = ({
         handleAxiom,
         handleBookmark,
     } = useHypothesisDetails(item)
-    const [open, setOpen] = useState(false)
+    const [open, setOpen] = useState<EPopup>()
     const [copied, setCopied] = useState<boolean>()
 
     const handleCopy = () => {
@@ -77,45 +84,57 @@ const HypothesisCard = ({
             )}
         >
             <Popup
-                open={open}
-                onClose={() => setOpen(false)}
+                open={open === EPopup.RequestFlag}
+                onClose={() => setOpen(EPopup.HypothesisDetail)}
                 title="Request Flag"
                 className="w-full md:w-auto"
                 Icon={<FlagIcon className="h-6 w-6 stroke-[1.5px] md:h-7 md:w-7" />}
             >
                 <RequestFlag
                     header={{ id: localItem.id, category: Variant('Hypothesis') }}
-                    onSubmit={() => setOpen(false)}
+                    onSubmit={() => setOpen(undefined)}
                 />
             </Popup>
 
-            <Link
-                className="gap-medium group relative flex h-[110px] place-items-center items-center bg-hypothesis md:h-[125px] xl:h-[140px]"
+            <Popup
+                open={open === EPopup.HypothesisDetail}
+                onClose={() => setOpen(undefined)}
+                title="Hypothesis Detail"
+                className="w-full md:w-auto"
+                secondaryClassname="p-0 md:py-semilarge md:px-extralarge"
                 href={build(['feed', item.id])}
+                Icon={<HypothesisIcon className="h-6 w-6 stroke-[1.5px] md:h-7 md:w-7" />}
+            >
+                <HypothesisDetail item={item} hideEvidences />
+            </Popup>
+
+            <button
+                className="gap-medium group relative flex h-[110px] place-items-center items-center bg-hypothesis md:h-[125px] xl:h-[140px]"
                 title={localItem.content.trim()}
+                onClick={() => setOpen(EPopup.HypothesisDetail)}
             >
                 <div className="absolute h-full w-full bg-black opacity-0 group-hover:opacity-10" />
                 <p className="text-medium p-truncate-4 p-tiny my-auto h-min max-h-full w-full whitespace-pre-line break-words text-center font-semibold text-primary-900/85">
                     {localItem.content.trim()}
                 </p>
-            </Link>
+            </button>
             <div className="text-tiny grid grid-cols-7 font-normal text-white">
                 <HypothesisVote
                     choice={EVote.Positive}
                     vote={vote}
-                    handleVote={() => handleVote(EVote.Positive)}
+                    handleVote={(custom) => handleVote(EVote.Positive, custom)}
                     loading={votesLoading[EVote.Positive]}
                 />
                 <HypothesisVote
                     choice={EVote.Neutral}
                     vote={vote}
-                    handleVote={() => handleVote(EVote.Neutral)}
+                    handleVote={(custom) => handleVote(EVote.Neutral, custom)}
                     loading={votesLoading[EVote.Neutral]}
                 />
                 <HypothesisVote
                     choice={EVote.Negative}
                     vote={vote}
-                    handleVote={() => handleVote(EVote.Negative)}
+                    handleVote={(custom) => handleVote(EVote.Negative, custom)}
                     loading={votesLoading[EVote.Negative]}
                 />
             </div>
@@ -219,7 +238,7 @@ const HypothesisCard = ({
                         )}
                         <button
                             className="hover:opacity-75 disabled:pointer-events-none"
-                            onClick={() => setOpen(true)}
+                            onClick={() => setOpen(EPopup.RequestFlag)}
                         >
                             <FlagIcon className="h-4 w-4 stroke-[1.5px]" />
                         </button>

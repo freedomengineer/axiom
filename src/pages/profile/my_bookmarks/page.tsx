@@ -12,10 +12,10 @@ const metadataPage: Metadata = {
 
 const MyBookmarksPage = () => {
     return (
-        <>
+        <div className="p-semilarge">
             <PageMetadata {...metadataPage} />
             <MyBookmarksLayout />
-        </>
+        </div>
     )
 }
 

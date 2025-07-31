@@ -20,7 +20,7 @@ const ProposalsPage = () => {
     const filterSortData = useFilterSort('proposal')
 
     return (
-        <>
+        <div className="p-semilarge">
             <PageMetadata {...pageMetadata} />
             <FilterSort {...filterSortData} />
             <InfiniteScrollWrapper
@@ -38,7 +38,7 @@ const ProposalsPage = () => {
                 className="h-full"
                 size={6n}
             />
-        </>
+        </div>
     )
 }
 

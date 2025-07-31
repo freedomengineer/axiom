@@ -1,11 +1,13 @@
 import Evidence "Evidence";
 import Hypothesis "../hypotheses/Hypothesis";
 import User "../users/User";
+import UserConfigs "../user_configs/UserConfigs";
 
 import E "../../../common/Errors";
 
 import Base "../../../library/Base";
 import ClusterTree "../../../library/ClusterTree";
+import Date "../../../library/Date";
 import List "../../../library/List";
 import Map "../../../library/Map";
 import Set "../../../library/Set";
@@ -19,6 +21,7 @@ import Array "mo:base/Array";
 import Nat "mo:base/Nat";
 import Int "mo:base/Int";
 import Text "mo:base/Text";
+import Time "mo:base/Time";
 
 module {
     /// PRIVATE ////// DECLARATIONS ////////////
@@ -44,6 +47,8 @@ module {
     private type Scores = Entry -> (Int, Int);
     private type Ordering = ClusterTree<Float, Ranking<Entry>>;
 
+    private let { PrincipalVal } = Set;
+
     private func _id() : Compare<Entry> = func((i1, _), (i2, _)) = Nat.compare(i1, i2);
     private func _recent(orderBy : Order) : Compare<Entry> = switch (orderBy) {
         case (#ascending) func((_, a), (_, b)) = Int.compare(a.publishDate, b.publishDate);
@@ -59,6 +64,8 @@ module {
     /// PUBLIC ////// DECLARATIONS ////////////
 
     public type Filter = {
+        agoStart : ?Nat;
+        agoEnd : ?Nat;
         hypothesis : ?Nat;
         publisher : ?Principal;
         voter : ?Principal;
@@ -120,13 +127,47 @@ module {
         let getCallerVote : Nat -> ?BinaryVote = User.callerEvidenceVoteCallback(callerUser);
         Evidence.toSharable(evidence(__, id), id, getCallerVote)
     };
-    public func getEvidences(__ : Self, filter : Filter, sort : Sorted<Sort>, callerUser : ?(Principal, User), getUser : Principal -> User, getHypothesis : Nat -> Hypothesis, getEvidence : Nat -> Evidence) : Sharable {
+    public func getEvidences(__ : Self, filter : Filter, sort : Sorted<Sort>, callerUser : ?(Principal, User), getUser : Principal -> User, getHypothesis : Nat -> Hypothesis, getEvidence : Nat -> Evidence, getNow : () -> Int) : Sharable {
         let getCallerVote : Nat -> ?BinaryVote = User.callerEvidenceVoteCallback(callerUser);
 
+        let now : Int = getNow();
+
         var filtered : ?[Entry] = null;
-        let toEntry : Nat -> ?Entry = func(i) = switch (evidenceRemovedOpt(__, i)) {
-            case (?evidence) ?(i, evidence);
-            case (null) null
+        let toEntry : Nat -> ?Entry = switch (callerUser) {
+            case (null) func(i) = switch (evidenceRemovedOpt(__, i)) {
+                case (?evidence) ?(i, evidence);
+                case (null) null
+            };
+            case (?(_, user)) {
+                let excludedPublishers : ?Set<Principal> = UserConfigs.ExcludedPublishers(user.configs);
+
+                switch (excludedPublishers) {
+                    case (null) func(i) = switch (evidenceRemovedOpt(__, i)) {
+                        case (?evidence) ?(i, evidence);
+                        case (null) null
+                    };
+                    case (?excludedPublishers) func(i) = switch (evidenceRemovedOpt(__, i)) {
+                        case (?evidence) switch (Set.includes(excludedPublishers, PrincipalVal(evidence.publisher))) {
+                            case (false) ?(i, evidence);
+                            case (true) null
+                        };
+                        case (null) null
+                    }
+                }
+            }
+        };
+        let toFilter : Entry -> ?Entry = switch (callerUser) {
+            case (null) func(i, e) = ?(i, e);
+            case (?(_, user)) {
+                let excludedPublishers : ?Set<Principal> = UserConfigs.ExcludedPublishers(user.configs);
+                switch (excludedPublishers) {
+                    case (null) func(i, e) = ?(i, e);
+                    case (?excludedPublishers) func(i, e) = switch (Set.includes(excludedPublishers, PrincipalVal(e.publisher))) {
+                        case (false) ?(i, e);
+                        case (true) null
+                    }
+                }
+            }
         };
         let toSharable : Entry -> SharableEvidence = func(id, entry) = Evidence.toSharable(entry, id, getCallerVote);
 
@@ -161,13 +202,64 @@ module {
                 __,
                 func(i, e) = switch (e) {
                     case (?e) switch (e.choice == side) {
-                        case (true) ?(i, e);
+                        case (true) toFilter(i, e);
                         case (false) null
                     };
                     case (null) null
                 },
             );
             case (?side, ?prevResult) filtered := ?Array.filter<Entry>(prevResult, func(_, e) = e.choice == side)
+        };
+        switch (filter.agoStart, filter.agoEnd, filtered) {
+            case (null, null, _) {};
+            case (?agoStart, null, null) filtered := ?Vector.toEntriesFilterMap<?Evidence, Entry>(
+                __,
+                func(i, e) = switch (e) {
+                    case (?e) switch (Date.getMidnightsElapsed(now, e.publishDate) >= agoStart) {
+                        case (true) toFilter(i, e);
+                        case (false) null
+                    };
+                    case (null) null
+                },
+            );
+            case (null, ?agoEnd, null) {
+                filtered := ?Vector.toEntriesFilterMap<?Evidence, Entry>(
+                    __,
+                    func(i, e) = switch (e) {
+                        case (?e) switch (Date.getMidnightsElapsed(now, e.publishDate) <= agoEnd) {
+                            case (true) toFilter(i, e);
+                            case (false) null
+                        };
+                        case (null) null
+                    },
+                )
+            };
+            case (?agoStart, null, ?prev) filtered := ?Array.filter<Entry>(prev, func(_, e) = Date.getMidnightsElapsed(now, e.publishDate) >= agoStart);
+            case (null, ?agoEnd, ?prev) filtered := ?Array.filter<Entry>(prev, func(_, e) = Date.getMidnightsElapsed(now, e.publishDate) <= agoEnd);
+            case (?agoStart, ?agoEnd, null) {
+                filtered := ?Vector.toEntriesFilterMap<?Evidence, Entry>(
+                    __,
+                    func(i, e) = switch (e) {
+                        case (?e) {
+                            let elapsed : Nat = Date.getMidnightsElapsed(now, e.publishDate);
+                            switch (elapsed >= agoStart and elapsed <= agoEnd) {
+                                case (true) toFilter(i, e);
+                                case (false) null
+                            }
+                        };
+                        case (null) null
+                    },
+                )
+            };
+            case (?agoStart, ?agoEnd, ?prev) {
+                filtered := ?Array.filter<Entry>(
+                    prev,
+                    func(_, e) {
+                        let elapsed : Nat = Date.getMidnightsElapsed(now, e.publishDate);
+                        elapsed >= agoStart and elapsed <= agoEnd
+                    },
+                )
+            }
         };
         switch (filter.q, filtered) {
             case (null, _) {};
@@ -177,7 +269,7 @@ module {
                     __,
                     func(i, e) = switch (e) {
                         case (?e) switch (Evidence.containsPattern(e, patternIns)) {
-                            case (true) ?(i, e);
+                            case (true) toFilter(i, e);
                             case (false) null
                         };
                         case (null) null
@@ -191,7 +283,7 @@ module {
         };
 
         let default : ?[Entry] -> [Entry] = func(unsorted) = switch (unsorted) {
-            case (null) Vector.toEntriesFilterMap<?Evidence, Entry>(__, func(i, e) = switch (e) { case (?e) ?(i, e); case (null) null });
+            case (null) Vector.toEntriesFilterMap<?Evidence, Entry>(__, func(i, e) = switch (e) { case (?e) toFilter(i, e); case (null) null });
             case (?unsorted) unsorted
         };
 

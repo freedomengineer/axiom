@@ -20,7 +20,7 @@ const FeedPage = () => {
     const filterSortData = useFilterSort('hypothesis')
 
     return (
-        <>
+        <div className="p-semilarge">
             <PageMetadata {...pageMetadata} />
             <FilterSort {...filterSortData} />
             <InfiniteScrollWrapper
@@ -38,7 +38,7 @@ const FeedPage = () => {
                 className="h-full"
                 size={12n}
             />
-        </>
+        </div>
     )
 }
 

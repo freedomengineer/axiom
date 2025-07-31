@@ -32,6 +32,23 @@ module {
         failed : [(Principal, Text)]
     };
 
+    public func getPackageTier(capitalRaised : Nat) : (Nat, Text) = switch (capitalRaised) {
+        case (000_010_00000000)(1, "Hobo");
+        case (000_020_00000000)(2, "Seeker");
+        case (000_050_00000000)(3, "Scribe");
+        case (000_100_00000000)(4, "Scientist");
+        case (000_500_00000000)(5, "Philosopher");
+        case (001_000_00000000)(6, "Engineer");
+        case (005_000_00000000)(7, "Explorer");
+        case (010_000_00000000)(8, "Liberator");
+
+        case (050_000_00000000)(9, "Illuminator");
+        case (100_000_00000000)(10, "Prometheus");
+        case (500_000_00000000)(11, "Haphestus");
+
+        case (_) E.f(#NOT_EXISTED("Package"), "Cannot find Package with capital raised " # debug_show capitalRaised)
+    };
+
     /// SALES ////// PACKAGES ////////////
 
     private type Self = Packages;

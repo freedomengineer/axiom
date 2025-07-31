@@ -12,10 +12,10 @@ const pageMetadata: Metadata = {
 
 const LoginPage = () => {
     return (
-        <>
+        <div className="p-semilarge">
             <PageMetadata {...pageMetadata} />
             <LoginLayout />
-        </>
+        </div>
     )
 }
 

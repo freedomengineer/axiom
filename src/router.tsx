@@ -28,6 +28,7 @@ import LoginPage from '@pages/login/page'
 import PublicProfilePage from '@pages/profile/[principal]/page'
 import MyAssetsPage from '@pages/profile/my_assets/page'
 import MyBookmarksPage from '@pages/profile/my_bookmarks/page'
+import MySettingsPage from '@pages/profile/my_settings/page'
 import ProfilePage from '@pages/profile/page'
 import SpecificSearchPage from '@pages/search/[type]/page'
 import SearchPage from '@pages/search/page'
@@ -134,6 +135,7 @@ const routes: RouteObject[] = [
                     { path: ':principal', element: <PublicProfilePage /> },
                     { path: 'my_assets', element: <MyAssetsPage /> },
                     { path: 'my_bookmarks', element: <MyBookmarksPage /> },
+                    { path: 'my_settings', element: <MySettingsPage /> },
                 ],
             },
             {

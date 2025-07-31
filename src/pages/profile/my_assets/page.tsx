@@ -12,10 +12,10 @@ const metadataPage: Metadata = {
 
 const MyAssetsPage = () => {
     return (
-        <>
+        <div className="p-semilarge">
             <PageMetadata {...metadataPage} />
             <MyAssetsLayout />
-        </>
+        </div>
     )
 }
 

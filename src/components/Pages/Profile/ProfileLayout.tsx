@@ -105,7 +105,7 @@ const parseFullTabFromTab = (tab: ETab): [EFullTab, EFullTab | null] => {
     }
 }
 
-const ProfileLayout = ({ id }: { id?: string }) => {
+const ProfileLayout = ({ profilePrincipal }: { profilePrincipal: Principal }) => {
     const salesConfigs = useConfigs('Sales')
     const [searchParams, setSearchPrams] = useSearchParams()
 
@@ -119,13 +119,7 @@ const ProfileLayout = ({ id }: { id?: string }) => {
     const [open, setOpen] = useState<EPopup>()
     const [loadingFollow, setLoadingFollow] = useState(false)
     const [copied, setCopied] = useState(false)
-    try {
-        id ? Principal.fromText(id) : principal!
-    } catch (error) {
-        setPageStatus(PageStatus.NotFound)
-    }
 
-    const profilePrincipal: Principal = id ? Principal.fromText(id) : principal!
     const editable = profilePrincipal?.toText() === principal?.toText()
     const fullTab = (searchParams.get('tab') ?? ETab.Packages) as EFullTab
     const tab = parseTabFromFullTab(fullTab)
@@ -142,7 +136,10 @@ const ProfileLayout = ({ id }: { id?: string }) => {
                 .catch(() => undefined),
             Axioms.call(agent)
                 .getUser(profilePrincipal)
-                .catch(() => undefined),
+                .catch((e) => {
+                    console.log(e)
+                    undefined
+                }),
         ]).then(([facade, dao, axioms]) => {
             if (facade) {
                 cacheUsername(profilePrincipal, facade.username, facade.capitalRaised.toString())
@@ -218,7 +215,7 @@ const ProfileLayout = ({ id }: { id?: string }) => {
 
     return (
         <div className="gap-extralarge m-auto flex h-auto w-full flex-col">
-            <div className="gap-small p-medium mx-auto flex h-auto w-full flex-col rounded-lg bg-cold-800 md:w-fit md:flex-row">
+            <div className="gap-small p-medium mx-auto flex h-auto w-full flex-col rounded-none bg-cold-800 md:w-fit md:flex-row md:rounded-lg">
                 <Popup
                     open={open === EPopup.Username}
                     onClose={() => setOpen(undefined)}
@@ -396,10 +393,10 @@ const ProfileLayout = ({ id }: { id?: string }) => {
                                             )}
                                         </>
                                     ) : (
-                                        <p className="text-left">Click to add links</p>
+                                        <p className="ml-normal text-left">click to add links</p>
                                     )
                                 ) : (
-                                    <p className="text-left">No links are set</p>
+                                    <p className="ml-normal text-left">no links are set</p>
                                 )}
                             </div>
                             <div className="flex h-16 w-[calc(100%+20px)] flex-col">
@@ -486,7 +483,7 @@ const ProfileLayout = ({ id }: { id?: string }) => {
                         key={tab}
                         value={tab}
                         className={cn(
-                            'gap-medium flex w-full flex-col items-center',
+                            'gap-medium flex w-full flex-col items-center px-0 py-2 md:px-4 md:py-4',
                             ![ETab.Hypotheses, ETab.Evidences, ETab.Proposals].includes(tab) &&
                                 'mt-medium p-medium'
                         )}

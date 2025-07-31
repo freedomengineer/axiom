@@ -3,12 +3,12 @@ import { useParams } from 'react-router-dom'
 
 import HypothesisCard from '@components/Pages/Feed/Hypotheses/HypothesisCard'
 import Description from '@components/Shared/Description'
+import InfiniteScrollWrapper from '@components/Shared/InfiniteScrollWrapper'
 import PageMetadata from '@components/Shared/PageMetadata'
 import siteMetadata from '@data/siteMetadata.json'
 import useAuth, { PageStatus } from '@hooks/useAuth'
 import cn from '@libs/class'
 import { formatDate } from '@libs/date'
-import { parseFilterFromObj, parseSortFromObj } from 'shared/default/filter_sort'
 import { DAxioms } from 'shared/types/services'
 import { Axioms } from 'shared/utils/services'
 
@@ -19,7 +19,6 @@ const FieldPage = () => {
     const { agent, setPageStatus } = useAuth()
     const { field } = useParams<{ field: string }>()
     const [item, setItem] = useState<DAxioms.SharableField>()
-    const [hypotheses, setHypotheses] = useState<DAxioms.SharableHypothesis[]>()
 
     const pageMetadata: Metadata = {
         url: siteMetadata.siteUrl + metadata.url,
@@ -29,24 +28,14 @@ const FieldPage = () => {
 
     useEffect(() => {
         try {
-            Promise.all([
-                Axioms.call(agent).getField(decodeURIComponent(field!)).then(setItem),
-                Axioms.call(agent)
-                    .getHypothesesPagination(
-                        parseFilterFromObj('hypothesis', { field: decodeURIComponent(field!) }),
-                        parseSortFromObj('hypothesis', { by: 'popularity', order: 'descending' }),
-                        1n,
-                        100n
-                    )
-                    .then(({ result }) => setHypotheses(result)),
-            ])
+            Axioms.call(agent).getField(decodeURIComponent(field!)).then(setItem)
         } catch {
             setPageStatus(PageStatus.NotFound)
         }
     }, [field])
 
     return (
-        <>
+        <div className="p-semilarge">
             <PageMetadata {...pageMetadata} key={field} />
             {item && (
                 <div className="gap-large flex flex-col" key={field}>
@@ -110,11 +99,25 @@ const FieldPage = () => {
                         </table>
                     </div>
                     <div className="gap-medium flex w-full flex-wrap justify-center">
-                        {hypotheses?.map((item, i) => <HypothesisCard key={i} item={item} />)}
+                        <InfiniteScrollWrapper
+                            LayoutComponent={({ items }) => (
+                                <div className="gap-medium mx-auto flex w-full max-w-full flex-wrap justify-center md:max-w-[1500px]">
+                                    {items.map((item, i) => (
+                                        <HypothesisCard key={i} item={item} className="w-full" />
+                                    ))}
+                                </div>
+                            )}
+                            name="hypothesis"
+                            hardFilter={{ field: decodeURIComponent(field!) }}
+                            hardSort={{ by: 'recent', order: 'descending' }}
+                            query={Axioms.call(agent, true).getHypothesesPagination}
+                            className="h-full w-full"
+                            size={6n}
+                        />
                     </div>
                 </div>
             )}
-        </>
+        </div>
     )
 }
 

@@ -59,7 +59,7 @@ const SpecificHistoryPage = () => {
     const revenue = Unwrap(callerRevenue)
 
     return (
-        <>
+        <div className="p-semilarge">
             <PageMetadata {...pageMetadata} />
             <Tabs value={searchParams.get('age') ?? '1'}>
                 <TabsHeader
@@ -221,7 +221,7 @@ const SpecificHistoryPage = () => {
                     ))}
                 </TabsBody>
             </Tabs>
-        </>
+        </div>
     )
 }
 

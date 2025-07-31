@@ -9,37 +9,37 @@ export interface Axioms {
   'editHypothesis' : ActorMethod<[bigint, string], undefined>,
   'expectUserNotFound' : ActorMethod<[Principal], undefined>,
   'follow' : ActorMethod<[Principal], undefined>,
-  'getAgePayout' : ActorMethod<[bigint, bigint], Sharable__12>,
-  'getAgePayouts' : ActorMethod<[bigint], Sharable__11>,
-  'getAgesPayout' : ActorMethod<[bigint], Sharable__11>,
-  'getAgesPayouts' : ActorMethod<[], Array<Sharable__11>>,
+  'getAgePayout' : ActorMethod<[bigint, bigint], Sharable__14>,
+  'getAgePayouts' : ActorMethod<[bigint], Sharable__13>,
+  'getAgesPayout' : ActorMethod<[bigint], Sharable__13>,
+  'getAgesPayouts' : ActorMethod<[], Array<Sharable__13>>,
   'getConfig' : ActorMethod<[Key], SharableValue>,
-  'getConfigs' : ActorMethod<[], Sharable__10>,
-  'getEarning' : ActorMethod<[Principal], Sharable__9>,
-  'getEvidence' : ActorMethod<[bigint], Sharable__7>,
-  'getEvidences' : ActorMethod<[Filter__3, Sort_3], Sharable__8>,
+  'getConfigs' : ActorMethod<[], Sharable__12>,
+  'getEarning' : ActorMethod<[Principal], Sharable__11>,
+  'getEvidence' : ActorMethod<[bigint], Sharable__9>,
+  'getEvidences' : ActorMethod<[Filter__3, Sort_3], Sharable__10>,
   'getEvidencesPagination' : ActorMethod<
     [Filter__3, Sort_3, bigint, bigint],
     Pagination_3
   >,
-  'getField' : ActorMethod<[string], Sharable__5>,
-  'getFields' : ActorMethod<[Filter__2, Sort_2], Sharable__6>,
+  'getField' : ActorMethod<[string], Sharable__7>,
+  'getFields' : ActorMethod<[Filter__2, Sort_2], Sharable__8>,
   'getFieldsPagination' : ActorMethod<
     [Filter__2, Sort_2, bigint, bigint],
     Pagination_2
   >,
-  'getFlag' : ActorMethod<[Header], Sharable__3>,
-  'getFlags' : ActorMethod<[Filter__1, Sort_1], Sharable__4>,
+  'getFlag' : ActorMethod<[Header], Sharable__5>,
+  'getFlags' : ActorMethod<[Filter__1, Sort_1], Sharable__6>,
   'getFlagsPagination' : ActorMethod<
     [Filter__1, Sort_1, bigint, bigint],
     Pagination_1
   >,
-  'getHypotheses' : ActorMethod<[Filter, Sort], Sharable__2>,
+  'getHypotheses' : ActorMethod<[Filter, Sort], Sharable__4>,
   'getHypothesesPagination' : ActorMethod<
     [Filter, Sort, bigint, bigint],
     Pagination
   >,
-  'getHypothesis' : ActorMethod<[bigint], Sharable__1>,
+  'getHypothesis' : ActorMethod<[bigint], Sharable__3>,
   'getTop' : ActorMethod<
     [
       { 'HypothesisPublishers' : null } |
@@ -64,7 +64,8 @@ export interface Axioms {
     ],
     TopPagination
   >,
-  'getUser' : ActorMethod<[Principal], Sharable>,
+  'getUser' : ActorMethod<[Principal], Sharable__2>,
+  'getUserConfigs' : ActorMethod<[], Sharable__1>,
   'initialize' : ActorMethod<[], undefined>,
   'joinField' : ActorMethod<[string], undefined>,
   'leaveField' : ActorMethod<[string], undefined>,
@@ -81,12 +82,23 @@ export interface Axioms {
   'removeFromBookmarks' : ActorMethod<[bigint], undefined>,
   'removeHypothesisVote' : ActorMethod<[bigint], undefined>,
   'requestFlag' : ActorMethod<[Header, string], undefined>,
+  'restoreAllUserConfigs' : ActorMethod<[], undefined>,
+  'restoreUserConfig' : ActorMethod<[Variant], undefined>,
+  'setAllUserConfigs' : ActorMethod<[Array<Sharable>], undefined>,
+  'setBatchUserConfigs' : ActorMethod<[Array<Sharable>], undefined>,
   'setConfigs' : ActorMethod<[Array<[Key, SharableValue]>], undefined>,
+  'setUserConfig' : ActorMethod<[Sharable], undefined>,
   'shiftToMidnight' : ActorMethod<[bigint], undefined>,
   'unfollow' : ActorMethod<[Principal], undefined>,
-  'voteEvidence' : ActorMethod<[bigint, Choice__1], undefined>,
+  'voteEvidence' : ActorMethod<
+    [bigint, Choice__1, [] | [CustomValue]],
+    undefined
+  >,
   'voteFlag' : ActorMethod<[Header, Choice__1], undefined>,
-  'voteHypothesis' : ActorMethod<[bigint, Choice], undefined>,
+  'voteHypothesis' : ActorMethod<
+    [bigint, Choice, [] | [CustomValue]],
+    undefined
+  >,
   'withdrawAll' : ActorMethod<[], undefined>,
 }
 export type BinaryChoice = { 'Negative' : null } |
@@ -105,6 +117,8 @@ export type Choice = { 'Negative' : null } |
   { 'Neutral' : null };
 export type Choice__1 = { 'Negative' : null } |
   { 'Positive' : null };
+export type CustomValue = { 'Scale' : bigint } |
+  { 'Value' : bigint };
 export interface Entry { 'rank' : bigint, 'score' : bigint }
 export interface Filter {
   'q' : [] | [string],
@@ -113,9 +127,11 @@ export interface Filter {
   'axiomsFrom' : [] | [Principal],
   'voter' : [] | [Principal],
   'publisher' : [] | [Principal],
+  'agoEnd' : [] | [bigint],
   'userFollowedPublishers' : [] | [Principal],
   'bookmarksFrom' : [] | [Principal],
   'userJoinedFields' : [] | [Principal],
+  'agoStart' : [] | [bigint],
 }
 export interface Filter__1 {
   'status' : [] | [Status],
@@ -129,8 +145,10 @@ export interface Filter__3 {
   'voter' : [] | [Principal],
   'publisher' : [] | [Principal],
   'side' : [] | [BinaryChoice],
+  'agoEnd' : [] | [bigint],
   'hypothesis' : [] | [bigint],
   'repliedTo' : [] | [bigint],
+  'agoStart' : [] | [bigint],
 }
 export type Form = Array<Format>;
 export type Format = { 'Note' : Note } |
@@ -147,41 +165,28 @@ export type Order = { 'descending' : null } |
 export interface Pagination {
   'is' : bigint,
   'of' : bigint,
-  'result' : Array<Sharable__1>,
+  'result' : Array<Sharable__3>,
 }
 export interface Pagination_1 {
   'is' : bigint,
   'of' : bigint,
-  'result' : Array<Sharable__3>,
+  'result' : Array<Sharable__5>,
 }
 export interface Pagination_2 {
   'is' : bigint,
   'of' : bigint,
-  'result' : Array<Sharable__5>,
+  'result' : Array<Sharable__7>,
 }
 export interface Pagination_3 {
   'is' : bigint,
   'of' : bigint,
-  'result' : Array<Sharable__7>,
+  'result' : Array<Sharable__9>,
 }
 export interface Picture { 'blob' : Uint8Array | number[] }
 export type Role = { 'Guest' : null } |
   { 'Member' : null };
-export interface Sharable {
-  'evidences' : Array<bigint>,
-  'principal' : Principal,
-  'earning' : SharableEarning,
-  'joinedFields' : Array<string>,
-  'axioms' : Array<bigint>,
-  'votedHypotheses' : Array<[bigint, TernaryVote]>,
-  'bookmarks' : Array<bigint>,
-  'hypotheses' : Array<bigint>,
-  'votedEvidences' : Array<[bigint, BinaryVote]>,
-  'callerFollowing' : [] | [boolean],
-  'followers' : Array<Principal>,
-  'followings' : Array<Principal>,
-  'callerFollower' : [] | [boolean],
-}
+export type Sharable = { 'ExcludedPublishers' : Array<Principal> } |
+  { 'ExcludedFields' : Array<string> };
 export interface SharableBinaryVotes {
   'powered' : OneSideSharable__1,
   'regular' : OneSideSharable__1,
@@ -190,6 +195,8 @@ export interface SharableBinaryVotes__1 {
   'powered' : OneSideSharable__1,
   'regular' : OneSideSharable__1,
 }
+export type SharableConfig = { 'ExcludedPublishers' : Array<Principal> } |
+  { 'ExcludedFields' : Array<string> };
 export type SharableCount = bigint;
 export type SharableDate = bigint;
 export type SharableE8S = bigint;
@@ -273,7 +280,35 @@ export type SharableValue = { 'E8S' : SharableE8S } |
   { 'RangeNat' : SharableRange_2 } |
   { 'RangeFloat' : SharableRange } |
   { 'Duration' : bigint };
-export interface Sharable__1 {
+export type Sharable__1 = Array<SharableConfig>;
+export type Sharable__10 = Array<SharableEvidence>;
+export interface Sharable__11 {
+  'lastWithdrawAt' : Time,
+  'revenue' : SharableE8S__1,
+  'balance' : SharableE8S__1,
+}
+export type Sharable__12 = Array<[Key, SharableValue]>;
+export type Sharable__13 = Array<SharablePayout>;
+export interface Sharable__14 {
+  'ranks' : SharableRanks,
+  'callerRevenue' : [] | [SharableE8S__2],
+}
+export interface Sharable__2 {
+  'evidences' : Array<bigint>,
+  'principal' : Principal,
+  'earning' : SharableEarning,
+  'joinedFields' : Array<string>,
+  'axioms' : Array<bigint>,
+  'votedHypotheses' : Array<[bigint, TernaryVote]>,
+  'bookmarks' : Array<bigint>,
+  'hypotheses' : Array<bigint>,
+  'votedEvidences' : Array<[bigint, BinaryVote]>,
+  'callerFollowing' : [] | [boolean],
+  'followers' : Array<Principal>,
+  'followings' : Array<Principal>,
+  'callerFollower' : [] | [boolean],
+}
+export interface Sharable__3 {
   'id' : bigint,
   'content' : string,
   'axioms' : SharableCount,
@@ -286,14 +321,8 @@ export interface Sharable__1 {
   'fieldId' : string,
   'evidenceIds' : Array<bigint>,
 }
-export type Sharable__10 = Array<[Key, SharableValue]>;
-export type Sharable__11 = Array<SharablePayout>;
-export interface Sharable__12 {
-  'ranks' : SharableRanks,
-  'callerRevenue' : [] | [SharableE8S__2],
-}
-export type Sharable__2 = Array<SharableHypothesis>;
-export interface Sharable__3 {
+export type Sharable__4 = Array<SharableHypothesis>;
+export interface Sharable__5 {
   'id' : bigint,
   'status' : Status__1,
   'requester' : Principal,
@@ -303,8 +332,8 @@ export interface Sharable__3 {
   'requestDate' : Time__1,
   'reason' : string,
 }
-export type Sharable__4 = Array<SharableFlag>;
-export interface Sharable__5 {
+export type Sharable__6 = Array<SharableFlag>;
+export interface Sharable__7 {
   'members' : Array<Principal>,
   'hypothesisIds' : Array<bigint>,
   'callerRole' : [] | [Role],
@@ -312,8 +341,8 @@ export interface Sharable__5 {
   'description' : string,
   'creationDate' : Time__2,
 }
-export type Sharable__6 = Array<SharableField>;
-export interface Sharable__7 {
+export type Sharable__8 = Array<SharableField>;
+export interface Sharable__9 {
   'id' : bigint,
   'callerVote' : [] | [BinaryVote__2],
   'votes' : SharableBinaryVotes__1,
@@ -324,12 +353,6 @@ export interface Sharable__7 {
   'replies' : Array<bigint>,
   'choice' : BinaryChoice__1,
   'hypothesisId' : bigint,
-}
-export type Sharable__8 = Array<SharableEvidence>;
-export interface Sharable__9 {
-  'lastWithdrawAt' : Time,
-  'revenue' : SharableE8S__1,
-  'balance' : SharableE8S__1,
 }
 export interface Sort { 'by' : Sort__1, 'order' : Order }
 export interface Sort_1 { 'by' : Sort__2, 'order' : Order }
@@ -386,6 +409,8 @@ export type Value_1 = { 'value' : ValueProp_1 } |
   { 'infinity' : null };
 export type Value_2 = { 'value' : ValueProp_2 } |
   { 'infinity' : null };
+export type Variant = { 'ExcludedPublishers' : null } |
+  { 'ExcludedFields' : null };
 export interface _SERVICE extends Axioms {}
 export declare const idlFactory: IDL.InterfaceFactory;
 export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[];

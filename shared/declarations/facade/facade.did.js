@@ -436,6 +436,7 @@ export const idlFactory = ({ IDL }) => {
     'getConfigs' : IDL.Func([], [Sharable__2], ['query']),
     'getNotification' : IDL.Func([], [Sharable__1], ['query']),
     'getUser' : IDL.Func([IDL.Principal], [Sharable], ['query']),
+    'getUserCapitalRaised' : IDL.Func([IDL.Principal], [IDL.Nat], ['query']),
     'getUserIdentifier' : IDL.Func(
         [IdentifierVariant],
         [Identifier],

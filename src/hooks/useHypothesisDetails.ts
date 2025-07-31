@@ -4,7 +4,7 @@ import { promise } from '@libs/toastify'
 import { EVote } from '@utils/feed/hypothesis'
 import { DAxioms } from 'shared/types/services'
 import { Axioms } from 'shared/utils/services'
-import { Unwrap, UnwrapVariant, Variant } from 'shared/utils/typings'
+import { Unwrap, UnwrapVariant, Variant, Wrap } from 'shared/utils/typings'
 
 import useAuth from './useAuth'
 import useUsername from './useUsername'
@@ -34,9 +34,9 @@ const useHypothesisDetails = (item: DAxioms.SharableHypothesis) => {
     const axiom = Unwrap(localItem.callerAxiom)
     const bookmark = Unwrap(localItem.callerBookmark)
 
-    const handleVote = async (choice: EVote) => {
+    const handleVote = async (choice: EVote, custom?: DAxioms.CustomValue) => {
         setVotesLoading((prev) => ({ ...prev, [choice]: true }))
-        if (UnwrapVariant(vote?.choice) === choice) {
+        if (UnwrapVariant(vote?.choice) === choice && !custom) {
             await promise(
                 Axioms.call(agent).removeHypothesisVote(localItem.id),
                 'Removing vote',
@@ -44,7 +44,7 @@ const useHypothesisDetails = (item: DAxioms.SharableHypothesis) => {
             )
         } else {
             await promise(
-                Axioms.call(agent).voteHypothesis(localItem.id, Variant(choice)),
+                Axioms.call(agent).voteHypothesis(localItem.id, Variant(choice), Wrap(custom)),
                 'Casting vote',
                 'Vote casted!'
             )

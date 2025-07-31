@@ -27,6 +27,15 @@ const LayoutWrapper = ({
     const [version, setVersion] = useLocalStorage('version')
 
     useEffect(() => {
+        const oldDomain = 'zcdoa-uyaaa-aaaap-qpztq-cai.icp0.io'
+        const newDomain = 'axiom.info'
+
+        const currentUrl = new URL(window.location.href)
+        if (process.env.DFX_NETWORK === 'ic' && currentUrl.hostname === oldDomain) {
+            currentUrl.hostname = newDomain
+            window.location.replace(currentUrl.toString())
+        }
+
         if (version !== '0.0.1') {
             deleteAllConfigsCache()
             deleteAllPackagesCache()
@@ -46,7 +55,7 @@ const LayoutWrapper = ({
                 <Sidebar open={open} onClose={() => setOpen(false)} />
                 {showAlert && <AlphaStage onConfirm={() => setShowAlert(false)} />}
                 <main className="scroll-container min-w-0 flex-1 overflow-y-auto overflow-x-hidden scroll-smooth">
-                    <div className="p-semilarge w-full">
+                    <div className="w-full">
                         {!noMiddleWare ? <Middleware>{children}</Middleware> : children}
                     </div>
                 </main>

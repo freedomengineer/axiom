@@ -37,7 +37,7 @@ const OtherEvidencePage = () => {
     }, [evidence])
 
     return (
-        <>
+        <div className="p-semilarge">
             <PageMetadata {...pageMetadata} />
             <Link
                 href={build(['feed', item?.hypothesisId ?? 0n])}
@@ -48,7 +48,7 @@ const OtherEvidencePage = () => {
                 Back to Hypothesis {item?.hypothesisId ?? 0n}
             </Link>
             {item && <EvidenceDetailGroup item={item} className="mx-auto !w-full" key={item.id} />}
-        </>
+        </div>
     )
 }
 

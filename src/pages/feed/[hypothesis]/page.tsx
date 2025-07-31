@@ -34,10 +34,10 @@ const HypothesisPage = () => {
     }, [hypothesis])
 
     return (
-        <>
+        <div className="md:p-semilarge p-0">
             <PageMetadata {...pageMetadata} />
             {item && <HypothesisDetail item={item} key={item.id} />}
-        </>
+        </div>
     )
 }
 

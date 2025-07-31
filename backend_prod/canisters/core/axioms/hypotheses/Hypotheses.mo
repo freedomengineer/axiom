@@ -2,11 +2,13 @@ import Hypothesis "Hypothesis";
 import Age "../ages/Age";
 import Field "../fields/Field";
 import User "../users/User";
+import UserConfigs "../user_configs/UserConfigs";
 
 import E "../../../common/Errors";
 
 import Base "../../../library/Base";
 import ClusterTree "../../../library/ClusterTree";
+import Date "../../../library/Date";
 import Iter "../../../library/Iter";
 import List "../../../library/List";
 import Map "../../../library/Map";
@@ -23,12 +25,14 @@ import Text "mo:base/Text";
 import Array "mo:base/Array";
 import Nat "mo:base/Nat";
 import Int "mo:base/Int";
+import Time "mo:base/Time";
 
 module {
     /// PRIVATE ////// DECLARATIONS ////////////
 
     private type Hash = Hash.Hash;
     private type List<T> = List.List<T>;
+    private type Set<T> = Set.Set<T>;
     private type Vector<T> = Vector.Vector<T>;
 
     private type ClusterTree<K, V> = ClusterTree.ClusterTree<K, V>;
@@ -48,6 +52,9 @@ module {
     private type Entry = (Nat, Hypothesis);
     private type Scores = Entry -> (Nat, Nat);
     private type Ordering = ClusterTree<Float, Ranking<Entry>>;
+
+    private let { PrincipalVal } = Set;
+    private let { TextVal } = Set;
 
     private func _id() : Compare<Entry> = func((i1, _), (i2, _)) = Nat.compare(i1, i2);
     private func _recent(orderBy : Order) : Compare<Entry> = switch (orderBy) {
@@ -70,6 +77,8 @@ module {
 
     public type Filter = {
         age : ?Nat;
+        agoStart : ?Nat;
+        agoEnd : ?Nat;
         field : ?Text;
         publisher : ?Principal;
         voter : ?Principal;
@@ -149,10 +158,69 @@ module {
         let getCallerAxiom : Nat -> ?Bool = User.callerAxiomCallback(callerUser);
         let getCallerBookmark : Nat -> ?Bool = User.callerBookmarkCallback(callerUser);
 
+        let now : Int = Time.now();
+
         var filtered : ?[Entry] = null;
-        let toEntry : Nat -> ?Entry = func(i) = switch (hypothesisRemovedOpt(__, i)) {
-            case (?hypothesis) ?(i, hypothesis);
-            case (null) null
+        let toEntry : Nat -> ?Entry = switch (callerUser) {
+            case (null) func(i) = switch (hypothesisRemovedOpt(__, i)) {
+                case (?hypothesis) ?(i, hypothesis);
+                case (null) null
+            };
+            case (?(_, user)) {
+                let excludedPublishers : ?Set<Principal> = UserConfigs.ExcludedPublishers(user.configs);
+                let excludedFields : ?Set<Text> = UserConfigs.ExcludedFields(user.configs);
+
+                switch (excludedPublishers, excludedFields) {
+                    case (null, null) func(i) = switch (hypothesisRemovedOpt(__, i)) {
+                        case (?hypothesis) ?(i, hypothesis);
+                        case (null) null
+                    };
+                    case (?excludedPublishers, null) func(i) = switch (hypothesisRemovedOpt(__, i)) {
+                        case (?hypothesis) switch (Set.includes(excludedPublishers, PrincipalVal(hypothesis.publisher))) {
+                            case (false) ?(i, hypothesis);
+                            case (true) null
+                        };
+                        case (null) null
+                    };
+                    case (null, ?excludedFields) func(i) = switch (hypothesisRemovedOpt(__, i)) {
+                        case (?hypothesis) switch (Set.includes(excludedFields, TextVal(hypothesis.fieldId))) {
+                            case (false) ?(i, hypothesis);
+                            case (true) null
+                        };
+                        case (null) null
+                    };
+                    case (?excludedPublishers, ?excludedFields) func(i) = switch (hypothesisRemovedOpt(__, i)) {
+                        case (?hypothesis) switch (Set.includes(excludedPublishers, PrincipalVal(hypothesis.publisher)) or Set.includes(excludedFields, TextVal(hypothesis.fieldId))) {
+                            case (false) ?(i, hypothesis);
+                            case (true) null
+                        };
+                        case (null) null
+                    }
+                }
+            }
+        };
+        let toFilter : Entry -> ?Entry = switch (callerUser) {
+            case (null) func(i, e) = ?(i, e);
+            case (?(_, user)) {
+                let excludedPublishers : ?Set<Principal> = UserConfigs.ExcludedPublishers(user.configs);
+                let excludedFields : ?Set<Text> = UserConfigs.ExcludedFields(user.configs);
+
+                switch (excludedPublishers, excludedFields) {
+                    case (null, null) func(i, e) = ?(i, e);
+                    case (?excludedPublishers, null) func(i, e) = switch (Set.includes(excludedPublishers, PrincipalVal(e.publisher))) {
+                        case (false) ?(i, e);
+                        case (true) null
+                    };
+                    case (null, ?excludedFields) func(i, e) = switch (Set.includes(excludedFields, TextVal(e.fieldId))) {
+                        case (false) ?(i, e);
+                        case (true) null
+                    };
+                    case (?excludedPublishers, ?excludedFields) func(i, e) = switch (Set.includes(excludedPublishers, PrincipalVal(e.publisher)) or Set.includes(excludedFields, TextVal(e.fieldId))) {
+                        case (false) ?(i, e);
+                        case (true) null
+                    }
+                }
+            }
         };
         let toSharable : Entry -> SharableHypothesis = func(i, e) = Hypothesis.toSharable(e, i, getCallerVote, getCallerAxiom, getCallerBookmark);
 
@@ -231,6 +299,57 @@ module {
                 }
             }
         };
+        switch (filter.agoStart, filter.agoEnd, filtered) {
+            case (null, null, _) {};
+            case (?agoStart, null, null) filtered := ?Vector.toEntriesFilterMap<?Hypothesis, Entry>(
+                __,
+                func(i, e) = switch (e) {
+                    case (?e) switch (Date.getMidnightsElapsed(now, e.publishDate) >= agoStart) {
+                        case (true) ?(i, e);
+                        case (false) null
+                    };
+                    case (null) null
+                },
+            );
+            case (null, ?agoEnd, null) {
+                filtered := ?Vector.toEntriesFilterMap<?Hypothesis, Entry>(
+                    __,
+                    func(i, e) = switch (e) {
+                        case (?e) switch (Date.getMidnightsElapsed(now, e.publishDate) <= agoEnd) {
+                            case (true) toFilter(i, e);
+                            case (false) null
+                        };
+                        case (null) null
+                    },
+                )
+            };
+            case (?agoStart, null, ?prev) filtered := ?Array.filter<Entry>(prev, func(_, e) = Date.getMidnightsElapsed(now, e.publishDate) >= agoStart);
+            case (null, ?agoEnd, ?prev) filtered := ?Array.filter<Entry>(prev, func(_, e) = Date.getMidnightsElapsed(now, e.publishDate) <= agoEnd);
+            case (?agoStart, ?agoEnd, null) {
+                filtered := ?Vector.toEntriesFilterMap<?Hypothesis, Entry>(
+                    __,
+                    func(i, e) = switch (e) {
+                        case (?e) {
+                            let elapsed : Nat = Date.getMidnightsElapsed(now, e.publishDate);
+                            switch (elapsed >= agoStart and elapsed <= agoEnd) {
+                                case (true) toFilter(i, e);
+                                case (false) null
+                            }
+                        };
+                        case (null) null
+                    },
+                )
+            };
+            case (?agoStart, ?agoEnd, ?prev) {
+                filtered := ?Array.filter<Entry>(
+                    prev,
+                    func(_, e) {
+                        let elapsed : Nat = Date.getMidnightsElapsed(now, e.publishDate);
+                        elapsed >= agoStart and elapsed <= agoEnd
+                    },
+                )
+            }
+        };
         switch (filter.q, filtered) {
             case (null, _) {};
             case (?pattern, null) {
@@ -239,7 +358,7 @@ module {
                     __,
                     func(i, e) = switch (e) {
                         case (?e) switch (Hypothesis.containsPattern(e, patternIns)) {
-                            case (true) ?(i, e);
+                            case (true) toFilter(i, e);
                             case (false) null
                         };
                         case (null) null
@@ -253,7 +372,7 @@ module {
         };
 
         let default : ?[Entry] -> [Entry] = func(unsorted) = switch (unsorted) {
-            case (null) Vector.toEntriesFilterMap<?Hypothesis, Entry>(__, func(i, e) = switch (e) { case (?e) ?(i, e); case (null) null });
+            case (null) Vector.toEntriesFilterMap<?Hypothesis, Entry>(__, func(i, e) = switch (e) { case (?e) toFilter(i, e); case (null) null });
             case (?unsorted) unsorted
         };
 

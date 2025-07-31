@@ -34,7 +34,7 @@ const PostEvidencePage = () => {
     }
 
     return (
-        <>
+        <div className="p-semilarge">
             <PageMetadata {...pageMetadata} />
             <div className="gap-medium mb-medium relative flex flex-col">
                 <Link
@@ -52,7 +52,7 @@ const PostEvidencePage = () => {
                 side={eSide}
                 replyTo={replyTo ? BigInt(replyTo) : undefined}
             />
-        </>
+        </div>
     )
 }
 

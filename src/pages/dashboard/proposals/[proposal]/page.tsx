@@ -34,10 +34,10 @@ const ProposalPage = () => {
     }, [proposal])
 
     return (
-        <>
+        <div className="md:p-semilarge py-semilarge px-0">
             <PageMetadata {...pageMetadata} />
             {item && <ProposalDetail item={item} key={item.id} />}
-        </>
+        </div>
     )
 }
 

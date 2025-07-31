@@ -178,9 +178,9 @@ const EvidenceCard = ({
                         <EvidenceVote
                             choice={EVote.Positive}
                             vote={vote}
-                            handleVote={() => handleVote(EVote.Positive)}
+                            handleVote={(custom) => handleVote(EVote.Positive, custom)}
                             loading={votesLoading[EVote.Positive]}
-                            className="h-3.5 w-3.5 md:h-4 md:w-4"
+                            className="flex h-3.5 w-3.5 items-center md:h-4 md:w-4"
                         />
                         <p className="text-tiny font-light text-white">
                             {localItem.votes.regular[0]}
@@ -190,9 +190,9 @@ const EvidenceCard = ({
                         <EvidenceVote
                             choice={EVote.Negative}
                             vote={vote}
-                            handleVote={() => handleVote(EVote.Negative)}
+                            handleVote={(custom) => handleVote(EVote.Negative, custom)}
                             loading={votesLoading[EVote.Negative]}
-                            className="h-3.5 w-3.5 md:h-4 md:w-4"
+                            className="flex h-3.5 w-3.5 items-center md:h-4 md:w-4"
                         />
                         <p className="text-tiny font-light text-white">
                             {localItem.votes.regular[1]}

@@ -69,7 +69,7 @@ const LeaderboardPage = () => {
     }, [keyParam, agent, principal])
 
     return (
-        <>
+        <div className="p-semilarge">
             <PageMetadata {...pageMetadata} />
             <Tabs value={keyParam}>
                 <TabsHeader
@@ -153,7 +153,7 @@ const LeaderboardPage = () => {
                     </TabPanel>
                 </TabsBody>
             </Tabs>
-        </>
+        </div>
     )
 }
 

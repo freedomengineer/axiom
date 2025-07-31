@@ -13,6 +13,7 @@ const Popup = ({
     href,
     Icon,
     className,
+    secondaryClassname,
     zIndex = 9999,
     children,
 }: {
@@ -22,6 +23,7 @@ const Popup = ({
     href?: string
     Icon?: React.ReactNode
     className?: string
+    secondaryClassname?: string
     zIndex?: number
     children: React.ReactNode
 }) => {
@@ -79,7 +81,12 @@ const Popup = ({
                         )}
                     </div>
                 </div>
-                <div className="py-semilarge px-extralarge mx-auto h-auto max-h-[80dvh] w-full overflow-y-auto">
+                <div
+                    className={cn(
+                        'py-semilarge px-extralarge mx-auto h-auto max-h-[80dvh] w-full overflow-y-auto',
+                        secondaryClassname
+                    )}
+                >
                     {children}
                 </div>
             </div>

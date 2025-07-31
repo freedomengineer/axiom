@@ -436,5 +436,17 @@ module {
             }
         };
         (reverse(listAfterPush), pushType)
+    };
+
+    public func deleteFirst<T>(l : List<T>, f : T -> Bool) : List<T> {
+        switch l {
+            case (null) null;
+            case (?(h, t)) {
+                switch (f(h)) {
+                    case true t;
+                    case false ?(h, deleteFirst<T>(t, f))
+                }
+            }
+        }
     }
 }

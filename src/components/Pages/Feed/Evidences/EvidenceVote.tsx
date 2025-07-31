@@ -1,4 +1,5 @@
 import Spinner from '@components/Primitives/Spinner'
+import CustomVotes from '@components/Shared/CustomVotes'
 import cn from '@libs/class'
 import { EVote, VOTES } from '@utils/feed/evidence'
 import { DAxioms } from 'shared/types/services'
@@ -13,7 +14,7 @@ const EvidenceVote = ({
 }: {
     choice: EVote
     vote: Opt<DAxioms.BinaryVote__1>
-    handleVote: () => void
+    handleVote: (custom?: DAxioms.CustomValue) => void
     loading: boolean
     className?: string
 }) => {
@@ -21,26 +22,32 @@ const EvidenceVote = ({
     const isCurrentVote = UnwrapVariant(vote?.choice) === choice
 
     return (
-        <button
+        <CustomVotes
+            callback={(custom) => handleVote(custom)}
+            onClose={() => {}}
             className={className}
-            onClick={() => handleVote()}
-            disabled={loading}
-            aria-hidden={!!vote && !isCurrentVote}
-            aria-selected={!!vote && isCurrentVote}
         >
-            {loading ? (
-                <Spinner className="h-3.5 w-3.5 text-white/50 md:h-4 md:w-4" color="white" />
-            ) : (
-                <div className="gap-medium flex items-center hover:opacity-75">
-                    <Icon
-                        className={cn(
-                            'h-3.5 w-3.5 stroke-[2px] md:h-4 md:w-4',
-                            isCurrentVote && fillColor
-                        )}
-                    />
-                </div>
-            )}
-        </button>
+            <button
+                className={className}
+                onClick={() => handleVote()}
+                disabled={loading}
+                aria-hidden={!!vote && !isCurrentVote}
+                aria-selected={!!vote && isCurrentVote}
+            >
+                {loading ? (
+                    <Spinner className="h-3.5 w-3.5 text-white/50 md:h-4 md:w-4" color="white" />
+                ) : (
+                    <div className="gap-medium flex items-center hover:opacity-75">
+                        <Icon
+                            className={cn(
+                                'h-3.5 w-3.5 stroke-[2px] md:h-4 md:w-4',
+                                isCurrentVote && fillColor
+                            )}
+                        />
+                    </div>
+                )}
+            </button>
+        </CustomVotes>
     )
 }
 

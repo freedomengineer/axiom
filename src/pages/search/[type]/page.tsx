@@ -36,7 +36,7 @@ const SpecificSearchPage = () => {
     const q = searchParams.get('q')
 
     return (
-        <>
+        <div className="p-semilarge">
             <PageMetadata {...pageMetadata} key={type} />
             <PaginationWrapper
                 key={type}
@@ -63,7 +63,7 @@ const SpecificSearchPage = () => {
                 query={queries[type!]}
                 hardFilter={q ? { q } : {}}
             />
-        </>
+        </div>
     )
 }
 
