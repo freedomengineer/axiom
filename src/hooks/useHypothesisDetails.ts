@@ -26,15 +26,25 @@ const useHypothesisDetails = (item: DAxioms.SharableHypothesis) => {
         setLocalItem(item)
     }, [item])
 
-    const handleRefresh = async () => {
-        await Axioms.call(agent).getHypothesis(localItem.id).then(setLocalItem)
+    const handleRefresh = async (
+        externalSetLocalItem?: (item: DAxioms.SharableHypothesis) => void
+    ) => {
+        await Axioms.call(agent)
+            .getHypothesis(localItem.id)
+            .then((item) => {
+                setLocalItem(item)
+                externalSetLocalItem?.(item)
+            })
     }
-
     const vote = Unwrap(localItem.callerVote)
     const axiom = Unwrap(localItem.callerAxiom)
     const bookmark = Unwrap(localItem.callerBookmark)
 
-    const handleVote = async (choice: EVote, custom?: DAxioms.CustomValue) => {
+    const handleVote = async (
+        choice: EVote,
+        custom?: DAxioms.CustomValue,
+        externalSetLocalItem?: (item: DAxioms.SharableHypothesis) => void
+    ) => {
         setVotesLoading((prev) => ({ ...prev, [choice]: true }))
         if (UnwrapVariant(vote?.choice) === choice && !custom) {
             await promise(
@@ -49,10 +59,12 @@ const useHypothesisDetails = (item: DAxioms.SharableHypothesis) => {
                 'Vote casted!'
             )
         }
-        await handleRefresh()
+        await handleRefresh(externalSetLocalItem)
         setVotesLoading((prev) => ({ ...prev, [choice]: false }))
     }
-    const handleAxiom = async () => {
+    const handleAxiom = async (
+        externalSetLocalItem?: (item: DAxioms.SharableHypothesis) => void
+    ) => {
         setAxiomLoading(true)
         if (axiom) {
             await promise(
@@ -67,10 +79,12 @@ const useHypothesisDetails = (item: DAxioms.SharableHypothesis) => {
                 'Hypothesis adopted as Axiom!'
             )
         }
-        await handleRefresh()
+        await handleRefresh(externalSetLocalItem)
         setAxiomLoading(false)
     }
-    const handleBookmark = async () => {
+    const handleBookmark = async (
+        externalSetLocalItem?: (item: DAxioms.SharableHypothesis) => void
+    ) => {
         setBookmarkLoading(true)
         if (bookmark) {
             await promise(
@@ -85,7 +99,7 @@ const useHypothesisDetails = (item: DAxioms.SharableHypothesis) => {
                 'Hypothesis added to Bookmarks!'
             )
         }
-        await handleRefresh()
+        await handleRefresh(externalSetLocalItem)
         setBookmarkLoading(false)
     }
 
@@ -102,6 +116,7 @@ const useHypothesisDetails = (item: DAxioms.SharableHypothesis) => {
         handleAxiom,
         handleBookmark,
         handleRefresh,
+        setLocalItem,
     }
 }
 

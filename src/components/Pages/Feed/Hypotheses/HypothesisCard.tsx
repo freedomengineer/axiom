@@ -55,6 +55,7 @@ const HypothesisCard = ({
         handleVote,
         handleAxiom,
         handleBookmark,
+        setLocalItem,
     } = useHypothesisDetails(item)
     const [open, setOpen] = useState<EPopup>()
     const [copied, setCopied] = useState<boolean>()
@@ -100,12 +101,12 @@ const HypothesisCard = ({
                 open={open === EPopup.HypothesisDetail}
                 onClose={() => setOpen(undefined)}
                 title="Hypothesis Detail"
-                className="w-full md:w-auto"
+                className="w-full md:w-4/5"
                 secondaryClassname="p-0 md:py-semilarge md:px-extralarge"
                 href={build(['feed', item.id])}
                 Icon={<HypothesisIcon className="h-6 w-6 stroke-[1.5px] md:h-7 md:w-7" />}
             >
-                <HypothesisDetail item={item} hideEvidences />
+                <HypothesisDetail item={localItem} setLocalItem={setLocalItem} hideEvidences />
             </Popup>
 
             <button
@@ -114,7 +115,7 @@ const HypothesisCard = ({
                 onClick={() => setOpen(EPopup.HypothesisDetail)}
             >
                 <div className="absolute h-full w-full bg-black opacity-0 group-hover:opacity-10" />
-                <p className="text-medium p-truncate-4 p-tiny my-auto h-min max-h-full w-full whitespace-pre-line break-words text-center font-semibold text-primary-900/85">
+                <p className="text-medium p-truncate-4 p-tiny my-auto h-min max-h-full w-full -translate-y-1 whitespace-pre-line break-words text-center font-semibold text-primary-900/85 md:translate-y-0">
                     {localItem.content.trim()}
                 </p>
             </button>
@@ -139,7 +140,7 @@ const HypothesisCard = ({
                 />
             </div>
             {someVote && (
-                <div className="gap-medium flex h-[80px] place-items-center items-center justify-between overflow-hidden md:h-[90px]">
+                <div className="gap-medium flex h-[85px] place-items-center items-center justify-between overflow-hidden md:h-[90px]">
                     <PieChart
                         series={[{ data: regularVotes, innerRadius: 34, outerRadius: 40 }]}
                         width={175}

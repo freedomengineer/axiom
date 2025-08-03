@@ -377,8 +377,8 @@ module {
         };
 
         switch (sort.by, sort.order, filtered) {
-            case (#recent, #descending, null) Vector.toEntriesFilterMapRev<?Hypothesis, SharableHypothesis>(__, func(i, e) = switch (e) { case (?e) ?toSharable(i, e); case (null) null });
-            case (#recent, #ascending, null) Vector.toEntriesFilterMap<?Hypothesis, SharableHypothesis>(__, func(i, e) = switch (e) { case (?e) ?toSharable(i, e); case (null) null });
+            case (#recent, #descending, null) Vector.toEntriesFilterMapRev<?Hypothesis, SharableHypothesis>(__, func(i, e) = switch (e) { case (?e) switch (toFilter(i, e)) { case (?(_, hypothesis)) ?toSharable(i, hypothesis); case (null) null }; case (null) null });
+            case (#recent, #ascending, null) Vector.toEntriesFilterMap<?Hypothesis, SharableHypothesis>(__, func(i, e) = switch (e) { case (?e) switch (toFilter(i, e)) { case (?(_, hypothesis)) ?toSharable(i, hypothesis); case (null) null }; case (null) null });
             case (#recent, order, ?unsorted) Array.map<Entry, SharableHypothesis>(Array.sort(unsorted, _recent(order)), toSharable);
             case (#controversy, order, unsorted) Array.map<Entry, SharableHypothesis>(Array.sort(default(unsorted), _controversy(order)), toSharable);
             case (sortedBy, order, unsorted) {

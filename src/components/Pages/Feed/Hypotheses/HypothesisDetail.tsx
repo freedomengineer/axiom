@@ -48,18 +48,22 @@ enum EPopup {
 
 const HypothesisDetail = ({
     item,
+    setLocalItem,
     hideEvidences,
 }: {
     item: DAxioms.SharableHypothesis
     hideEvidences?: boolean
+    setLocalItem: (item: DAxioms.SharableHypothesis) => void
 }) => {
     const { agent, principal } = useAuth()
     const positiveEvidencesRef = useRef<InfiniteScrollWrapperHandle>(null)
     const negativeEvidencesRef = useRef<InfiniteScrollWrapperHandle>(null)
     const evidenceContainerRef = useRef<HTMLDivElement>(null)
+    const headerSliderRef = useRef<HTMLDivElement>(null)
+    const sliderRef = useRef<HTMLDivElement>(null)
     const [activeSide, setActiveSide] = useState<EEvidenceVote>(EEvidenceVote.Positive)
-    const [touchStart, setTouchStart] = useState<number | null>(null)
     const [isMobile, setIsMobile] = useState(false)
+    const touchStartRef = useRef<number | null>(null)
 
     const {
         publisher,
@@ -108,16 +112,49 @@ const HypothesisDetail = ({
     const someVote = localItem.votes.regular.some((vote) => vote !== 0n)
 
     const handleTouchStart = (e: React.TouchEvent) => {
-        setTouchStart(e.touches[0].clientX)
+        touchStartRef.current = e.touches[0].clientX
+        if (sliderRef.current) {
+            sliderRef.current.style.transition = 'none'
+        }
+        if (headerSliderRef.current) {
+            headerSliderRef.current.style.transition = 'none'
+        }
+    }
+
+    const handleTouchMove = (e: React.TouchEvent) => {
+        if (touchStartRef.current === null) return
+        const currentX = e.touches[0].clientX
+        const diff = currentX - touchStartRef.current
+        const width = evidenceContainerRef.current?.clientWidth || window.innerWidth
+        const base = activeSide === EEvidenceVote.Positive ? 0 : -width
+        let translatePx = base + diff
+        translatePx = Math.min(0, Math.max(translatePx, -width))
+        const transformStyle = `translateX(${translatePx}px)`
+        if (sliderRef.current) {
+            sliderRef.current.style.transform = transformStyle
+        }
+        if (headerSliderRef.current) {
+            headerSliderRef.current.style.transform = transformStyle
+        }
     }
 
     const handleTouchEnd = (e: React.TouchEvent) => {
-        if (touchStart === null) return
+        if (touchStartRef.current === null) return
 
         const touchEnd = e.changedTouches[0].clientX
-        const diff = touchStart - touchEnd
+        const diff = touchStartRef.current - touchEnd
+        const width = evidenceContainerRef.current?.clientWidth || window.innerWidth
 
-        if (Math.abs(diff) > 50) {
+        if (sliderRef.current) {
+            sliderRef.current.style.transition = ''
+            sliderRef.current.style.transform = ''
+        }
+        if (headerSliderRef.current) {
+            headerSliderRef.current.style.transition = ''
+            headerSliderRef.current.style.transform = ''
+        }
+
+        if (Math.abs(diff) > width * 0.1) {
             if (diff > 0) {
                 setActiveSide(EEvidenceVote.Negative)
             } else {
@@ -125,7 +162,7 @@ const HypothesisDetail = ({
             }
         }
 
-        setTouchStart(null)
+        touchStartRef.current = null
     }
 
     useEffect(() => {
@@ -218,21 +255,25 @@ const HypothesisDetail = ({
                             choice={EVote.Positive}
                             vote={vote}
                             className="rounded-lg"
-                            handleVote={(custom) => handleVote(EVote.Positive, custom)}
+                            handleVote={(custom) =>
+                                handleVote(EVote.Positive, custom, setLocalItem)
+                            }
                             loading={votesLoading[EVote.Positive]}
                         />
                         <HypothesisVote
                             choice={EVote.Neutral}
                             vote={vote}
                             className="rounded-lg"
-                            handleVote={(custom) => handleVote(EVote.Neutral, custom)}
+                            handleVote={(custom) => handleVote(EVote.Neutral, custom, setLocalItem)}
                             loading={votesLoading[EVote.Neutral]}
                         />
                         <HypothesisVote
                             choice={EVote.Negative}
                             vote={vote}
                             className="rounded-lg"
-                            handleVote={(custom) => handleVote(EVote.Negative, custom)}
+                            handleVote={(custom) =>
+                                handleVote(EVote.Negative, custom, setLocalItem)
+                            }
                             loading={votesLoading[EVote.Negative]}
                         />
                     </div>
@@ -519,6 +560,7 @@ const HypothesisDetail = ({
                                     <div className="h-full w-full">
                                         <div className="text-small py-normal sticky top-0 z-10 w-full bg-white">
                                             <div
+                                                ref={headerSliderRef}
                                                 className={cn(
                                                     'flex w-[200%] transition-transform duration-300 ease-in-out',
                                                     activeSide === EEvidenceVote.Positive
@@ -554,10 +596,12 @@ const HypothesisDetail = ({
                                         <div
                                             ref={evidenceContainerRef}
                                             className="w-full overflow-x-hidden"
-                                            onTouchStart={handleTouchStart}
-                                            onTouchEnd={handleTouchEnd}
+                                            onTouchStartCapture={handleTouchStart}
+                                            onTouchMoveCapture={handleTouchMove}
+                                            onTouchEndCapture={handleTouchEnd}
                                         >
                                             <div
+                                                ref={sliderRef}
                                                 className={cn(
                                                     'flex w-[200%] transition-transform duration-300 ease-in-out',
                                                     activeSide === EEvidenceVote.Positive

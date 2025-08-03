@@ -35,7 +35,7 @@ const HypothesisVote = ({
         >
             <button
                 className={cn(
-                    'py-normal text-tiny gap-small flex w-full transform items-center justify-center text-white transition-all duration-300 ease-in-out hover:bg-opacity-80 disabled:pointer-events-none disabled:bg-opacity-50',
+                    'py-normal text-tiny gap-small flex w-full transform select-none items-center justify-center text-white transition-all duration-300 ease-in-out hover:bg-opacity-80 disabled:pointer-events-none disabled:bg-opacity-50',
                     bgColor,
                     className
                 )}

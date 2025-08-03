@@ -175,11 +175,10 @@ const EvidenceDetail = ({
                             vote={vote}
                             handleVote={(custom) => handleVote(EVote.Positive, custom)}
                             loading={votesLoading[EVote.Positive]}
-                            className="h-3.5 w-3.5 md:h-4 md:w-4"
+                            className="h-3.5 md:h-4"
+                            value={localItem.votes.regular[0]}
+                            childClassName="text-tiny font-light text-white md:block"
                         />
-                        <p className="text-tiny font-light text-white md:block">
-                            {localItem.votes.regular[0]}
-                        </p>
                     </div>
                     <div className="gap-tiny flex items-center">
                         <EvidenceVote
@@ -187,21 +186,20 @@ const EvidenceDetail = ({
                             vote={vote}
                             handleVote={(custom) => handleVote(EVote.Negative, custom)}
                             loading={votesLoading[EVote.Negative]}
-                            className="h-3.5 w-3.5 md:h-4 md:w-4"
+                            className="h-3.5 md:h-4"
+                            value={localItem.votes.regular[1]}
+                            childClassName="text-tiny font-light text-white md:block"
                         />
-                        <p className="text-tiny font-light text-white md:block">
-                            {localItem.votes.regular[1]}
-                        </p>
                     </div>
-                    <div className="gap-tiny flex items-center">
-                        <ReplyIcon
-                            className="h-3.5 w-3.5 cursor-pointer stroke-[1.5px] hover:opacity-75 md:h-4 md:w-4"
-                            onClick={() => handleReply()}
-                        />
+                    <button
+                        className="gap-tiny flex cursor-pointer items-center hover:opacity-75"
+                        onClick={() => handleReply()}
+                    >
+                        <ReplyIcon className="h-3.5 w-3.5 stroke-[1.5px] md:h-4 md:w-4" />
                         <p className="text-tiny font-light text-white md:block">
                             {localItem.replies.length}
                         </p>
-                    </div>
+                    </button>
                     <button className="hover:opacity-75" onClick={() => setOpen(true)}>
                         <FlagIcon className="h-3.5 w-3.5 stroke-[1.5px] md:h-4 md:w-4" />
                     </button>

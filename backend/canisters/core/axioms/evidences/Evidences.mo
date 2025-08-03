@@ -288,8 +288,8 @@ module {
         };
 
         switch (sort.by, sort.order, filtered) {
-            case (#recent, #descending, null) Vector.toEntriesFilterMapRev<?Evidence, SharableEvidence>(__, func(i, e) = switch (e) { case (?e) ?toSharable(i, e); case (null) null });
-            case (#recent, #ascending, null) Vector.toEntriesFilterMap<?Evidence, SharableEvidence>(__, func(i, e) = switch (e) { case (?e) ?toSharable(i, e); case (null) null });
+            case (#recent, #descending, null) Vector.toEntriesFilterMapRev<?Evidence, SharableEvidence>(__, func(i, e) = switch (e) { case (?e) switch (toFilter(i, e)) { case (?(_, evidence)) ?toSharable(i, evidence); case (null) null }; case (null) null });
+            case (#recent, #ascending, null) Vector.toEntriesFilterMap<?Evidence, SharableEvidence>(__, func(i, e) = switch (e) { case (?e) switch (toFilter(i, e)) { case (?(_, evidence)) ?toSharable(i, evidence); case (null) null }; case (null) null });
             case (#recent, order, ?unsorted) Array.map<Entry, SharableEvidence>(Array.sort(unsorted, _recent(order)), toSharable);
             case (sortedBy, order, unsorted) {
                 let ordering : Ordering = DoubleClusterTree.getAverageRankTreeFromArray(default(unsorted), _scores(sortedBy), _id());
