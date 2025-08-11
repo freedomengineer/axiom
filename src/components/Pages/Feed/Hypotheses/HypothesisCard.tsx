@@ -18,6 +18,7 @@ import Popup from '@components/Shared/Popup'
 import { Symbol } from '@components/Shared/Username'
 import useAuth from '@hooks/useAuth'
 import useHypothesisDetails from '@hooks/useHypothesisDetails'
+import useVoteColors from '@hooks/useVoteColors'
 import cn from '@libs/class'
 import { formatDate } from '@libs/date'
 import { success } from '@libs/toastify'
@@ -33,6 +34,7 @@ import RequestFlag from '../Flags/RequestFlag'
 enum EPopup {
     RequestFlag,
     HypothesisDetail,
+    HypothesisEvidence,
 }
 
 const HypothesisCard = ({
@@ -43,6 +45,7 @@ const HypothesisCard = ({
     className?: string
 }) => {
     const { principal } = useAuth()
+    const { colors } = useVoteColors()
     const {
         publisher,
         localItem,
@@ -70,11 +73,24 @@ const HypothesisCard = ({
     }
 
     const voteKeys = Object.keys(VOTES) as EVote[]
-    const regularVotes = localItem.votes.regular.map((vote: bigint, index: number) => ({
-        label: voteKeys[index],
-        value: Number(vote),
-        color: VOTES[voteKeys[index]].hexColor,
-    }))
+    const regularVotes = localItem.votes.regular.map((vote: bigint, index: number) => {
+        const voteKey = voteKeys[index]
+
+        const customColor =
+            voteKey === EVote.Positive
+                ? colors.positive
+                : voteKey === EVote.Neutral
+                  ? colors.neutral
+                  : voteKey === EVote.Negative
+                    ? colors.negative
+                    : VOTES[voteKey].hexColor
+
+        return {
+            label: voteKey,
+            value: Number(vote),
+            color: customColor,
+        }
+    })
     const someVote = localItem.votes.regular.some((vote) => vote !== 0n)
 
     return (
@@ -86,7 +102,7 @@ const HypothesisCard = ({
         >
             <Popup
                 open={open === EPopup.RequestFlag}
-                onClose={() => setOpen(EPopup.HypothesisDetail)}
+                onClose={() => setOpen(EPopup.HypothesisEvidence)}
                 title="Request Flag"
                 className="w-full md:w-auto"
                 Icon={<FlagIcon className="h-6 w-6 stroke-[1.5px] md:h-7 md:w-7" />}
@@ -98,11 +114,23 @@ const HypothesisCard = ({
             </Popup>
 
             <Popup
+                open={open === EPopup.HypothesisEvidence}
+                onClose={() => setOpen(undefined)}
+                title="Hypothesis Detail"
+                className="w-full md:w-4/5"
+                secondaryClassname="p-0"
+                href={build(['feed', item.id])}
+                Icon={<HypothesisIcon className="h-6 w-6 stroke-[1.5px] md:h-7 md:w-7" />}
+            >
+                <HypothesisDetail item={localItem} setLocalItem={setLocalItem} hideHypothesis />
+            </Popup>
+
+            <Popup
                 open={open === EPopup.HypothesisDetail}
                 onClose={() => setOpen(undefined)}
                 title="Hypothesis Detail"
                 className="w-full md:w-4/5"
-                secondaryClassname="p-0 md:py-semilarge md:px-extralarge"
+                secondaryClassname="p-0"
                 href={build(['feed', item.id])}
                 Icon={<HypothesisIcon className="h-6 w-6 stroke-[1.5px] md:h-7 md:w-7" />}
             >
@@ -151,29 +179,44 @@ const HypothesisCard = ({
                     <div className="flex w-1/2 -translate-y-1 flex-col">
                         <p className="text-normal text-cold-800">Members</p>
                         <div className="text-tiny gap-tiny grid grid-rows-3 text-nowrap font-normal">
-                            {Object.entries(VOTES).map(([key, { bgColor, textColor }], index) => (
-                                <div
-                                    key={key}
-                                    className={`${textColor} gap-small flex h-3 items-center justify-start`}
-                                >
+                            {Object.entries(VOTES).map(([key, { bgColor, textColor }], index) => {
+                                const voteType =
+                                    key === 'Positive'
+                                        ? 'positive'
+                                        : key === 'Neutral'
+                                          ? 'neutral'
+                                          : key === 'Negative'
+                                            ? 'negative'
+                                            : 'delegated'
+                                const customColor = colors[voteType as keyof typeof colors]
+
+                                return (
                                     <div
-                                        className={cn(
-                                            `${bgColor} ${textColor} mr-tiny h-2.5 w-5 rounded-full md:h-3`
-                                        )}
-                                    />
-                                    <span>
-                                        {regularVotes[index].value} (
-                                        {parseFloat(
-                                            (
-                                                (regularVotes[index].value /
-                                                    regularVotes.reduce((a, b) => a + b.value, 0)) *
-                                                100
-                                            ).toString()
-                                        ).toFixed(0)}
-                                        %)
-                                    </span>
-                                </div>
-                            ))}
+                                        key={key}
+                                        className="gap-small flex h-3 items-center justify-start"
+                                        style={{ color: customColor }}
+                                    >
+                                        <div
+                                            className="mr-tiny h-2.5 w-5 rounded-full md:h-3"
+                                            style={{ backgroundColor: customColor }}
+                                        />
+                                        <span>
+                                            {regularVotes[index].value} (
+                                            {parseFloat(
+                                                (
+                                                    (regularVotes[index].value /
+                                                        regularVotes.reduce(
+                                                            (a, b) => a + b.value,
+                                                            0
+                                                        )) *
+                                                    100
+                                                ).toString()
+                                            ).toFixed(0)}
+                                            %)
+                                        </span>
+                                    </div>
+                                )
+                            })}
                         </div>
                     </div>
                 </div>
@@ -189,14 +232,13 @@ const HypothesisCard = ({
                             {localItem.fieldId}
                         </span>
                     </Link>
-                    <Link
+                    <button
                         className="!text-extratiny !gap-small col-span-3 row-span-2 flex h-4/5 w-full items-center justify-center rounded-lg bg-white font-normal text-cold-700 hover:bg-cold-100"
-                        href={build(['feed', item.id])}
-                        size="small"
-                        Icon={<EvidenceIcon className="h-4 w-4 stroke-[2px]" />}
+                        onClick={() => setOpen(EPopup.HypothesisEvidence)}
                     >
-                        VIEW {localItem.evidenceIds.length} EVIDENCE
-                    </Link>
+                        <EvidenceIcon className="h-4 w-4 stroke-[2px]" />
+                        VIEW EVIDENCE ({localItem.evidenceIds.length})
+                    </button>
                     <Link
                         className="!gap-small col-span-4 row-start-2 mr-auto flex h-5 items-center text-left hover:opacity-75"
                         href={build(['profile', localItem.publisher.toText()])}

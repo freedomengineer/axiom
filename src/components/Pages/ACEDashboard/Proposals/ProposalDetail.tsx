@@ -9,6 +9,7 @@ import Link from '@components/Shared/Link'
 import Popup from '@components/Shared/Popup'
 import { Symbol } from '@components/Shared/Username'
 import useProposalDetails from '@hooks/useProposalDetails'
+import useVoteColors from '@hooks/useVoteColors'
 import cn from '@libs/class'
 import { getCanisterDateTime, getDateTime } from '@libs/date'
 import { build } from '@libs/url'
@@ -32,6 +33,7 @@ const ProposalDetail = ({
     item: DDAO.SharableProposal
     className?: string
 }) => {
+    const { colors } = useVoteColors()
     const {
         proposer,
         localItem,
@@ -143,6 +145,7 @@ const ProposalDetail = ({
                         className="rounded-lg"
                         handleVote={() => handleVote(EVote.Positive)}
                         loading={votesLoading[EVote.Positive]}
+                        customColor={colors.positive}
                     />
                     <ProposalVote
                         choice={EVote.Negative}
@@ -150,6 +153,7 @@ const ProposalDetail = ({
                         className="rounded-lg"
                         handleVote={() => handleVote(EVote.Negative)}
                         loading={votesLoading[EVote.Negative]}
+                        customColor={colors.negative}
                     />
                     <DelegatedProposalVote
                         vote={[vote, delegatee]}
@@ -157,6 +161,7 @@ const ProposalDetail = ({
                         handleVote={(to: Principal) => handleVote(EVote.Delegated, to)}
                         loading={votesLoading[EVote.Delegated]}
                         voters={voters}
+                        customColor={colors.delegated}
                     />
                 </div>
             )}
@@ -168,6 +173,7 @@ const ProposalDetail = ({
                         voters[0].length + voters[1].length + voters[2].length + voters[3].length
                     }
                     displayPercentage={votable}
+                    customColor={colors.positive}
                 />
                 <ProposalVoters
                     voters={voters[1]}
@@ -176,6 +182,7 @@ const ProposalDetail = ({
                         voters[0].length + voters[1].length + voters[2].length + voters[3].length
                     }
                     displayPercentage={votable}
+                    customColor={colors.negative}
                 />
                 <ProposalVoters
                     voters={voters[2]}
@@ -184,6 +191,7 @@ const ProposalDetail = ({
                         voters[0].length + voters[1].length + voters[2].length + voters[3].length
                     }
                     displayPercentage={votable}
+                    customColor={colors.delegated}
                 />
                 <ProposalVoters
                     voters={voters[3]}

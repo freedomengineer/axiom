@@ -4,15 +4,20 @@ import { useState } from 'react'
 
 import DateTimeIcon from '@components/Assets/date_time.svg'
 import DoneIcon from '@components/Assets/done.svg'
+import EditIcon from '@components/Assets/edit.svg'
 import FlagIcon from '@components/Assets/flag.svg'
 import HypothesisIcon from '@components/Assets/hypothesis.svg'
+import NewTabIcon from '@components/Assets/new_tab.svg'
 import ReplyIcon from '@components/Assets/reply.svg'
 import ShareIcon from '@components/Assets/share.svg'
+import Spinner from '@components/Primitives/Spinner'
+import Divider from '@components/Shared/Divider'
 import Link from '@components/Shared/Link'
 import Popup from '@components/Shared/Popup'
 import { Symbol } from '@components/Shared/Username'
 import useAuth from '@hooks/useAuth'
 import useEvidenceDetails from '@hooks/useEvidenceDetails'
+import useVoteColors from '@hooks/useVoteColors'
 import cn from '@libs/class'
 import { formatDate } from '@libs/date'
 import { success } from '@libs/toastify'
@@ -36,6 +41,7 @@ const EvidenceDetail = ({
     onReply?: (id: bigint) => void
 }) => {
     const { principal } = useAuth()
+    const { colors } = useVoteColors()
     const { publisher, localItem, vote, votesLoading, handleVote, refreshItem } =
         useEvidenceDetails(item)
     const [open, setOpen] = useState(false)
@@ -100,7 +106,15 @@ const EvidenceDetail = ({
                     onSubmit={() => setOpen(false)}
                 />
             </Popup>
-            <div className={cn('absolute right-0 top-0 rounded-md text-white', VOTE.bgColor)}>
+            <div
+                className="absolute right-0 top-0 rounded-md text-white"
+                style={{
+                    backgroundColor:
+                        UnwrapVariant(localItem.choice) === EVote.Positive
+                            ? colors.positive
+                            : colors.negative,
+                }}
+            >
                 <Icon className="p-tiny h-6 w-6 stroke-[1.5px] md:h-7 md:w-7" />
             </div>
             {!isNullish(Unwrap(localItem.repliedTo)) && (

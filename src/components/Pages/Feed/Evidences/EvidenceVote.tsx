@@ -1,7 +1,9 @@
 import Spinner from '@components/Primitives/Spinner'
 import CustomVotes from '@components/Shared/CustomVotes'
+import useVoteColors from '@hooks/useVoteColors'
 import cn from '@libs/class'
 import { EVote, VOTES } from '@utils/feed/evidence'
+import { mapVoteTypeFromString } from '@utils/voteColors'
 import { DAxioms } from 'shared/types/services'
 import { UnwrapVariant } from 'shared/utils/typings'
 
@@ -22,8 +24,13 @@ const EvidenceVote = ({
     className?: string
     childClassName?: string
 }) => {
+    const { colors } = useVoteColors()
     const { Icon, fillColor } = VOTES[choice]
     const isCurrentVote = UnwrapVariant(vote?.choice) === choice
+
+    // Get custom color for this vote type
+    const voteType = mapVoteTypeFromString(choice)
+    const customColor = colors[voteType]
 
     return (
         <CustomVotes
@@ -47,6 +54,7 @@ const EvidenceVote = ({
                                 'h-3.5 w-3.5 stroke-[2px] md:h-4 md:w-4',
                                 isCurrentVote && fillColor
                             )}
+                            style={isCurrentVote ? { fill: customColor } : {}}
                         />
                         <p className={childClassName}>{value}</p>
                     </div>

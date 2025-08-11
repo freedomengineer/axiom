@@ -1,0 +1,122 @@
+/* Custom Vote Colors CSS Variables */
+:root {
+    /* Default vote colors */
+    --vote-positive: #ee8562;
+    --vote-negative: #8f2f0f;
+    --vote-neutral: #dd4917;
+    --vote-delegated: #64748b;
+}
+
+/* Dynamic vote button styles */
+.vote-button-positive {
+    background-color: var(--vote-positive) !important;
+    border-color: var(--vote-positive) !important;
+    color: white !important;
+}
+
+.vote-button-negative {
+    background-color: var(--vote-negative) !important;
+    border-color: var(--vote-negative) !important;
+    color: white !important;
+}
+
+.vote-button-neutral {
+    background-color: var(--vote-neutral) !important;
+    border-color: var(--vote-neutral) !important;
+    color: white !important;
+}
+
+.vote-button-delegated {
+    background-color: var(--vote-delegated) !important;
+    border-color: var(--vote-delegated) !important;
+    color: white !important;
+}
+
+/* Vote text colors */
+.vote-text-positive {
+    color: var(--vote-positive) !important;
+}
+
+.vote-text-negative {
+    color: var(--vote-negative) !important;
+}
+
+.vote-text-neutral {
+    color: var(--vote-neutral) !important;
+}
+
+.vote-text-delegated {
+    color: var(--vote-delegated) !important;
+}
+
+/* Vote border colors */
+.vote-border-positive {
+    border-color: var(--vote-positive) !important;
+}
+
+.vote-border-negative {
+    border-color: var(--vote-negative) !important;
+}
+
+.vote-border-neutral {
+    border-color: var(--vote-neutral) !important;
+}
+
+.vote-border-delegated {
+    border-color: var(--vote-delegated) !important;
+}
+
+/* Vote fill colors for SVGs */
+.vote-fill-positive {
+    fill: var(--vote-positive) !important;
+}
+
+.vote-fill-negative {
+    fill: var(--vote-negative) !important;
+}
+
+.vote-fill-neutral {
+    fill: var(--vote-neutral) !important;
+}
+
+.vote-fill-delegated {
+    fill: var(--vote-delegated) !important;
+}
+
+/* Vote background colors */
+.vote-bg-positive {
+    background-color: var(--vote-positive) !important;
+}
+
+.vote-bg-negative {
+    background-color: var(--vote-negative) !important;
+}
+
+.vote-bg-neutral {
+    background-color: var(--vote-neutral) !important;
+}
+
+.vote-bg-delegated {
+    background-color: var(--vote-delegated) !important;
+}
+
+/* Hover effects */
+.vote-button-positive:hover:not(:disabled) {
+    background-color: var(--vote-positive) !important;
+    opacity: 0.8;
+}
+
+.vote-button-negative:hover:not(:disabled) {
+    background-color: var(--vote-negative) !important;
+    opacity: 0.8;
+}
+
+.vote-button-neutral:hover:not(:disabled) {
+    background-color: var(--vote-neutral) !important;
+    opacity: 0.8;
+}
+
+.vote-button-delegated:hover:not(:disabled) {
+    background-color: var(--vote-delegated) !important;
+    opacity: 0.8;
+}

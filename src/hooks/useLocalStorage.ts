@@ -13,6 +13,12 @@ export type LocalStorageData = StringifiedFilterSort & {
         Scale: number[]
         Custom: number[]
     }
+    voteColors: {
+        positive: string
+        negative: string
+        neutral: string
+        delegated: string
+    }
 }
 
 const _default: LocalStorageData = {
@@ -25,6 +31,12 @@ const _default: LocalStorageData = {
     customVoteValues: {
         Scale: [0, 25, 50, 75, 100],
         Custom: [1000, 5000],
+    },
+    voteColors: {
+        positive: '#EE8562',
+        negative: '#8F2F0F',
+        neutral: '#DD4917',
+        delegated: '#4C6D7B',
     },
     hypothesis: {
         filter: { age: '2' },

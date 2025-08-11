@@ -16,12 +16,14 @@ const DelegatedProposalVote = ({
     loading,
     voters,
     className = '',
+    customColor,
 }: {
     vote: [Opt<DDAO.Delegable__2>, Displayer | null]
     handleVote: (to: Principal) => Promise<void>
     loading: boolean
     voters: [DFacade.Identifier[], DFacade.Identifier[], DFacade.Identifier[], DFacade.Identifier[]]
     className?: string
+    customColor?: string
 }) => {
     const { principal } = useAuth()
     const [openDelegateeDropdown, setOpenDelegateeDropdown] = useState(false)
@@ -43,6 +45,11 @@ const DelegatedProposalVote = ({
                             `${bgColor} bg-opacity-100 text-white hover:border-opacity-0 hover:bg-opacity-80`,
                         className
                     )}
+                    style={{
+                        backgroundColor: isCurrentVote ? customColor || bgColor : 'transparent',
+                        borderColor: customColor || borderColor,
+                        color: isCurrentVote ? 'white' : customColor || textColor,
+                    }}
                     disabled={loading}
                 >
                     {loading ? (

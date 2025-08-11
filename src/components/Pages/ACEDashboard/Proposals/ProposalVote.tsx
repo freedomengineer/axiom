@@ -1,7 +1,9 @@
 import Spinner from '@components/Primitives/Spinner'
 import { Displayer } from '@hooks/useUsername'
+import useVoteColors from '@hooks/useVoteColors'
 import cn from '@libs/class'
 import { EVote, VOTES } from '@utils/dashboard/proposal'
+import { mapVoteTypeFromString } from '@utils/voteColors'
 import { DDAO } from 'shared/types/services'
 import { UnwrapVariant } from 'shared/utils/typings'
 
@@ -11,19 +13,26 @@ const ProposalVote = ({
     handleVote,
     loading,
     className = '',
+    customColor,
 }: {
     choice: EVote
     vote: [Opt<DDAO.Delegable__2>, Displayer | null]
     handleVote: () => void
     loading: boolean
     className?: string
+    customColor?: string
 }) => {
+    const { colors } = useVoteColors()
     const { Icon, bgColor, textColor, borderColor, name } = VOTES[choice]
     const isCurrentVote = !!(
         vote[0] &&
         'Default' in vote[0] &&
         UnwrapVariant(vote[0].Default.choice) === choice
     )
+
+    // Use custom color if provided, otherwise fall back to colors from useVoteColors
+    const voteType = mapVoteTypeFromString(choice)
+    const finalCustomColor = customColor || colors[voteType]
 
     return (
         <button
@@ -36,6 +45,11 @@ const ProposalVote = ({
                     `${bgColor} bg-opacity-100 text-white hover:border-opacity-0 hover:bg-opacity-80`,
                 className
             )}
+            style={{
+                backgroundColor: isCurrentVote ? finalCustomColor : 'transparent',
+                borderColor: finalCustomColor,
+                color: isCurrentVote ? 'white' : finalCustomColor,
+            }}
             onClick={() => handleVote()}
             aria-checked={isCurrentVote}
             disabled={loading}
