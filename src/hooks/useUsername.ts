@@ -120,6 +120,9 @@ export const deleteAllUsernamesCache = async (): Promise<void> => {
         console.log('All usernames cache cleared')
     } catch {}
 }
+export const getNumUsernamesCache = async (): Promise<number> => {
+    return await db.users.count()
+}
 
 const useUsername = (id: Principal | null): Displayer => {
     const [data, setData] = useState<Displayer>({ username: null, capitalRaised: '0' })

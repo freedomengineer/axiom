@@ -8,6 +8,7 @@ import { DFacade } from 'shared/types/services'
 import { createAgent } from 'shared/utils/agent'
 import { Facade } from 'shared/utils/services'
 
+import useLocalStorage from './useLocalStorage'
 import { cacheUsername } from './useUsername'
 
 export enum PageStatus {
@@ -58,6 +59,7 @@ const defaultOptions: {
         },
     },
     loginOptions: {
+        maxTimeToLive: BigInt(30 * 24 * 60 * 60 * 1000 * 1000 * 1000),
         identityProvider:
             process.env.DFX_NETWORK === 'ic'
                 ? 'https://identity.ic0.app/#authorize'
@@ -81,6 +83,7 @@ export const useAuthClient = () => {
     const [referrer, setReferrer] = useState<Principal | null>(null)
     const [pageStatus, setPageStatus] = useState<PageStatus>(PageStatus.Loading)
     const [pemIdentity, setPemIdentity] = useState<Identity | null>(null)
+    const [sessionExpiry, setSessionExpiry] = useLocalStorage('sessionExpiry')
 
     const [isLoading, setIsLoading] = useState<boolean>(false)
 
@@ -151,6 +154,12 @@ export const useAuthClient = () => {
         setPageStatus(PageStatus.Success)
     }, [isAuthenticated, user, pathname])
 
+    window.addEventListener('focus', () => {
+        if (sessionExpiry && Date.now() > Number(sessionExpiry)) {
+            window.location.reload()
+        }
+    })
+
     const login = () => {
         setIsLoading(true)
         authClient?.login({
@@ -180,6 +189,7 @@ export const useAuthClient = () => {
         }
         setAuthClient(client)
         setIsLoading(false)
+        setSessionExpiry(Date.now() + 30 * 24 * 60 * 60 * 1000)
     }
 
     const logout = async () => {
@@ -189,6 +199,7 @@ export const useAuthClient = () => {
         setAgent(null)
         setPrincipal(null)
         setUser(null)
+        setSessionExpiry(0)
         window.location.reload()
     }
 

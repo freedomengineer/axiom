@@ -113,7 +113,7 @@ const ProfileLayout = ({ profilePrincipal }: { profilePrincipal: Principal }) =>
     const [profileUser, setProfileUser] = useState<{
         facade?: DFacade.Sharable
         dao?: DDAO.Sharable__1
-        axioms?: DAxioms.Sharable
+        axioms?: DAxioms.Sharable__2
     }>()
     const [userPackages, setUserPackages] = useState<ParsedPackages<EPackages>>()
     const [open, setOpen] = useState<EPopup>()
@@ -136,10 +136,7 @@ const ProfileLayout = ({ profilePrincipal }: { profilePrincipal: Principal }) =>
                 .catch(() => undefined),
             Axioms.call(agent)
                 .getUser(profilePrincipal)
-                .catch((e) => {
-                    console.log(e)
-                    undefined
-                }),
+                .catch(() => undefined),
         ]).then(([facade, dao, axioms]) => {
             if (facade) {
                 cacheUsername(profilePrincipal, facade.username, facade.capitalRaised.toString())
@@ -190,7 +187,7 @@ const ProfileLayout = ({ profilePrincipal }: { profilePrincipal: Principal }) =>
 
     const handleFollow = async () => {
         setLoadingFollow(true)
-        if (Unwrap(profileUser.axioms.callerFollowing)) {
+        if (Unwrap(profileUser?.axioms?.callerFollowing ?? [])) {
             await Axioms.call(agent, true).unfollow(profilePrincipal)
         } else {
             await Axioms.call(agent, true).follow(profilePrincipal)
@@ -534,7 +531,10 @@ const ProfileLayout = ({ profilePrincipal }: { profilePrincipal: Principal }) =>
                                     onClick={() =>
                                         editable
                                             ? setOpen(EPopup.Username)
-                                            : handleCopy('username', profileUser.facade.username)
+                                            : handleCopy(
+                                                  'username',
+                                                  profileUser?.facade?.username ?? ''
+                                              )
                                     }
                                     disabled={copied}
                                 >
@@ -560,7 +560,10 @@ const ProfileLayout = ({ profilePrincipal }: { profilePrincipal: Principal }) =>
                                     onClick={() =>
                                         editable
                                             ? setOpen(EPopup.Location)
-                                            : handleCopy('location', profileUser.facade.location)
+                                            : handleCopy(
+                                                  'location',
+                                                  profileUser?.facade?.location ?? ''
+                                              )
                                     }
                                     disabled={copied}
                                 >

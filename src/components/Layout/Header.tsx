@@ -12,6 +12,7 @@ import {
 import { useEffect, useState } from 'react'
 
 import AcornIcon from '@components/Assets/acorn.svg'
+import BookmarkIcon from '@components/Assets/bookmark.svg'
 import ClaimIcon from '@components/Assets/claim.svg'
 import CloseIcon from '@components/Assets/close.svg'
 import DefaultAvatarIcon from '@components/Assets/default_avatar.svg'
@@ -26,9 +27,12 @@ import LogoutIcon from '@components/Assets/logout.svg'
 import MenuIcon from '@components/Assets/menu.svg'
 import NotificationIcon from '@components/Assets/notification.svg'
 import SearchIcon from '@components/Assets/search.svg'
+import SettingsIcon from '@components/Assets/settings.svg'
 import PostHypothesis from '@components/Pages/Feed/Hypotheses/PostHypothesis'
 import MyAssetsLayout from '@components/Pages/Profile/MyAssets/MyAssetsLayout'
 import Transfer from '@components/Pages/Profile/MyAssets/Transfer'
+import MyBookmarksLayout from '@components/Pages/Profile/MyBookmarks/MyBookmarksLayout'
+import MySettingsLayout from '@components/Pages/Profile/MySettings/MySettingsLayout'
 import Link from '@components/Shared/Link'
 import Notifications from '@components/Shared/Notifications'
 import Popup from '@components/Shared/Popup'
@@ -41,6 +45,7 @@ import useNotification, {
 } from '@hooks/useNotification'
 import { deleteAllPackagesCache } from '@hooks/usePackages'
 import { deleteAllStatusCache } from '@hooks/useStatus'
+import { deleteAllTopCache } from '@hooks/useTop'
 import useUserData from '@hooks/useUserData'
 import { deleteAllUsernamesCache } from '@hooks/useUsername'
 import cn from '@libs/class'
@@ -75,6 +80,8 @@ enum EPopup {
     Affiliate,
     TransferICP,
     TransferACORN,
+    MyBookmarks,
+    MySettings,
 }
 
 const Header = ({
@@ -291,7 +298,7 @@ const Header = ({
                                                         Unwrap(user.avatar)!.blob as Uint8Array
                                                     )}
                                                     alt="avatar"
-                                                    className="h-5 w-5 rounded-full object-cover ring-2 ring-primary-700/75 ring-offset-0"
+                                                    className="max-h-5 min-h-5 min-w-5 max-w-5 flex-shrink-0 rounded-full object-cover ring-2 ring-primary-700/75 ring-offset-0"
                                                 />
                                             ) : (
                                                 <DefaultAvatarIcon className="h-5 w-5" />
@@ -316,12 +323,6 @@ const Header = ({
                                     <hr className="py-small border-black/10 hover:outline-none" />
                                     <button
                                         className="px-normal py-small rounded-lg text-left hover:bg-cold-500/25 hover:text-cold-950 hover:outline-none"
-                                        onClick={() => setOpen(EPopup.Affiliate)}
-                                    >
-                                        My Referral Link
-                                    </button>
-                                    <button
-                                        className="px-normal py-small rounded-lg text-left hover:bg-cold-500/25 hover:text-cold-950 hover:outline-none"
                                         onClick={() => setOpen(EPopup.TransferACORN)}
                                     >
                                         Transfer ACORN
@@ -334,19 +335,24 @@ const Header = ({
                                     </button>
                                     <hr className="py-small border-black/10 hover:outline-none" />
                                     <button
-                                        className="py-small rounded-lg font-medium text-red-800 hover:bg-red-800 hover:text-white hover:outline-none"
-                                        onClick={() => (
-                                            deleteAllConfigsCache(),
-                                            deleteAllPackagesCache(),
-                                            deleteAllStatusCache(),
-                                            deleteAllUsernamesCache(),
-                                            deleteAllNotificationsCache(),
-                                            localStorage.clear(),
-                                            setOpenMenu({})
-                                        )}
+                                        className="px-normal py-small rounded-lg text-left hover:bg-cold-500/25 hover:text-cold-950 hover:outline-none"
+                                        onClick={() => setOpen(EPopup.Affiliate)}
                                     >
-                                        Clean up all cache
+                                        My Referral Link
                                     </button>
+                                    <button
+                                        className="px-normal py-small rounded-lg text-left hover:bg-cold-500/25 hover:text-cold-950 hover:outline-none"
+                                        onClick={() => setOpen(EPopup.MyBookmarks)}
+                                    >
+                                        My Bookmarks
+                                    </button>
+                                    <button
+                                        className="px-normal py-small rounded-lg text-left hover:bg-cold-500/25 hover:text-cold-950 hover:outline-none"
+                                        onClick={() => setOpen(EPopup.MySettings)}
+                                    >
+                                        My Settings
+                                    </button>
+                                    <hr className="py-small border-black/10 hover:outline-none" />
                                     <button
                                         className="py-small rounded-lg font-medium text-red-800 hover:bg-red-800 hover:text-white hover:outline-none"
                                         onClick={logout}
@@ -370,8 +376,18 @@ const Header = ({
                     <QRCode
                         arr={[
                             {
-                                name: 'Referral Link',
+                                name: 'Homepage',
                                 content: `${window.location.origin}/?ref=${principal?.toText()}`,
+                                image: '/images/logo.png',
+                            },
+                            {
+                                name: 'Current URL',
+                                content: (() => {
+                                    const url = new URL(window.location.href)
+                                    url.searchParams.set('ref', principal?.toText() ?? '')
+                                    return url.toString()
+                                })(),
+                                image: '/images/logo.png',
                             },
                         ]}
                     />
@@ -435,6 +451,30 @@ const Header = ({
                     <Notifications />
                 </Popup>
             )} */}
+            {principal && user && (
+                <Popup
+                    open={open === EPopup.MyBookmarks}
+                    onClose={() => setOpen(null)}
+                    title="My Bookmarks"
+                    Icon={<BookmarkIcon className="h-6 w-6 !stroke-[1.5px] md:h-7 md:w-7" />}
+                    className="w-full md:w-4/5"
+                    href={build(['profile', 'my_bookmarks'])}
+                >
+                    <MyBookmarksLayout />
+                </Popup>
+            )}
+            {principal && user && (
+                <Popup
+                    open={open === EPopup.MySettings}
+                    onClose={() => setOpen(null)}
+                    title="My Settings"
+                    Icon={<SettingsIcon className="h-6 w-6 !stroke-[1.5px] md:h-7 md:w-7" />}
+                    className="w-full md:w-4/5"
+                    href={build(['profile', 'my_settings'])}
+                >
+                    <MySettingsLayout />
+                </Popup>
+            )}
             <Popup
                 open={open === EPopup.Login}
                 onClose={() => {

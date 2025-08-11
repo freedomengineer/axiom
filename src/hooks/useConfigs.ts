@@ -112,6 +112,18 @@ export const getConfigs = async (actor: Actor): Promise<ActorConfigs | null> => 
 }
 export const deleteAllConfigsCache = (): void => {
     memoryCache.clear()
+    for (let i = localStorage.length - 1; i >= 0; i--) {
+        const key = localStorage.key(i)
+        if (key && key.startsWith(STORAGE_PREFIX)) localStorage.removeItem(key)
+    }
+}
+export const getNumConfigsCache = (): number => {
+    let count = 0
+    for (let i = localStorage.length - 1; i >= 0; i--) {
+        const key = localStorage.key(i)
+        if (key && key.startsWith(STORAGE_PREFIX)) count++
+    }
+    return count
 }
 
 const useConfigs = (actor: Actor): ActorConfigs | null => {

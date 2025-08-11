@@ -27,7 +27,7 @@ const QRCode = ({ arr }: { arr: { name: string; content: string; image?: string 
                             imageSettings={
                                 !obj.image
                                     ? undefined
-                                    : { src: obj.image, height: 60, width: 60, excavate: true }
+                                    : { src: obj.image, height: 80, width: 80, excavate: true }
                             }
                         />
                         <div className="text-tiny gap-small mx-auto flex w-full max-w-[80vw] flex-col items-center md:hidden md:flex-row md:justify-center">

@@ -8,6 +8,7 @@ export type LocalStorageData = StringifiedFilterSort & {
     sideBarToggle1: boolean
     sideBarToggle2: boolean
     sideBarToggle3: boolean
+    sessionExpiry: number
     customVoteValues: {
         Scale: number[]
         Custom: number[]
@@ -20,6 +21,7 @@ const _default: LocalStorageData = {
     sideBarToggle1: true,
     sideBarToggle2: true,
     sideBarToggle3: true,
+    sessionExpiry: 0,
     customVoteValues: {
         Scale: [0, 25, 50, 75, 100],
         Custom: [1000, 5000],

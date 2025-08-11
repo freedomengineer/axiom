@@ -332,7 +332,7 @@ export const UserNotificationRenderer = memo(
                                 className="inline-block font-semibold text-primary-700"
                                 principal={item.proposer}
                             />
-                            {`. Vote before it expires at ${formatDate({ nano: expiresAt }, true)}.`}
+                            {`. Vote before it expires ${formatDate({ nano: expiresAt }, true)}.`}
                         </>
                     )
                 }
@@ -417,7 +417,7 @@ export const SystemNotificationRenderer = ({
                 return (
                     <>
                         A flag has been requested by for {category.toLowerCase()} #{data.header.id}.
-                        Vote before it expires at {formatDate({ nano: expiresAt }, true)}.
+                        Vote before it expires {formatDate({ nano: expiresAt }, true)}.
                     </>
                 )
             }
@@ -501,7 +501,7 @@ export const SystemNotificationRenderer = ({
                         )}
                         {hasRemoved && (
                             <>
-                                {' '}
+                                {' And '}
                                 <Usernames
                                     symbol
                                     className="inline-block font-semibold text-primary-700"

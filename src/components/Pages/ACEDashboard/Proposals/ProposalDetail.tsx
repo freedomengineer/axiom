@@ -49,7 +49,7 @@ const ProposalDetail = ({
     return (
         <div
             className={cn(
-                'text-small gap-normal relative my-auto flex h-min w-full flex-col rounded-none border border-none border-opacity-50 font-normal hover:border-opacity-100 md:rounded-lg md:border-cold-600',
+                'text-small gap-normal relative my-auto flex h-min w-full flex-col rounded-none font-normal hover:border-opacity-100 md:rounded-lg md:border md:border-cold-600 md:border-opacity-50',
                 className
             )}
         >
@@ -201,7 +201,7 @@ const ProposalDetail = ({
                     >
                         <Symbol
                             capitalRaised={proposer.capitalRaised.toString()}
-                            className="mr-0 h-5 w-5"
+                            className="mr-0 h-4 w-4 md:h-5 md:w-5"
                         />
                         <span className="text-tiny font-light text-white">{proposer.username}</span>
                     </Link>

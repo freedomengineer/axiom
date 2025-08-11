@@ -47,6 +47,9 @@ declare global {
               : [K, U]
           : never
 
+    type EntryOfKey<T, K extends keyof any> = Extract<T, Record<K, any>>
+    type ValueOfKey<T, K extends keyof any> = EntryOfKey<T, K>[K]
+
     type Commitment = {
         chunks: { blob: Uint8Array; checksum: string }[]
         moduleHash: string

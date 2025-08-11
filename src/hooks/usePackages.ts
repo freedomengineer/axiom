@@ -249,6 +249,18 @@ export const getPackagesAndCache = async <E extends EPackages>(
 }
 export const deleteAllPackagesCache = (): void => {
     memoryCache.clear()
+    for (let i = localStorage.length - 1; i >= 0; i--) {
+        const key = localStorage.key(i)
+        if (key && key.startsWith(STORAGE_PREFIX)) localStorage.removeItem(key)
+    }
+}
+export const getNumPackagesCache = (): number => {
+    let count = 0
+    for (let i = localStorage.length - 1; i >= 0; i--) {
+        const key = localStorage.key(i)
+        if (key && key.startsWith(STORAGE_PREFIX)) count++
+    }
+    return count
 }
 
 const usePackages = <E extends EPackages>(e: E, configs: any): ParsedPackages<E> | null => {

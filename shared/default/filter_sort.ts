@@ -17,13 +17,13 @@ export type ExtractFilterSort<T> =
     T extends ActorMethod<infer A, any> ? { filter: A[0]; sort: A[1] } : never
 
 export type QueryMap = {
-    hypothesis: DAxioms.Axioms['getHypotheses']
-    field: DAxioms.Axioms['getFields']
-    evidence: DAxioms.Axioms['getEvidences']
+    hypothesis: DAxioms._SERVICE['getHypotheses']
+    field: DAxioms._SERVICE['getFields']
+    evidence: DAxioms._SERVICE['getEvidences']
     user: DFacade.Facade['getUsers']
     nominee: DDAO.DAO['getNominees']
     proposal: DDAO.DAO['getProposals']
-    flag: DAxioms.Axioms['getFlags']
+    flag: DAxioms._SERVICE['getFlags']
 }
 export type QueryName = keyof QueryMap
 

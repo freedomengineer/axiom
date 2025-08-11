@@ -168,14 +168,14 @@ const EvidenceDetail = ({
                     </span>
                 </Link>
                 <div className="hidden w-full md:order-4 md:block" />
-                <div className="order-4 ml-auto flex w-full max-w-40 flex-shrink-0 place-items-center items-center justify-between md:order-5 md:ml-0">
+                <div className="order-4 ml-auto flex w-full max-w-44 flex-shrink-0 place-items-center items-center justify-between md:order-5 md:ml-0">
                     <div className="gap-tiny flex items-center">
                         <EvidenceVote
                             choice={EVote.Positive}
                             vote={vote}
                             handleVote={(custom) => handleVote(EVote.Positive, custom)}
                             loading={votesLoading[EVote.Positive]}
-                            className="h-3.5 md:h-4"
+                            className="flex h-3.5 items-center gap-0 md:h-4"
                             value={localItem.votes.regular[0]}
                             childClassName="text-tiny font-light text-white md:block"
                         />
@@ -186,13 +186,13 @@ const EvidenceDetail = ({
                             vote={vote}
                             handleVote={(custom) => handleVote(EVote.Negative, custom)}
                             loading={votesLoading[EVote.Negative]}
-                            className="h-3.5 md:h-4"
+                            className="flex h-3.5 items-center gap-0 md:h-4"
                             value={localItem.votes.regular[1]}
                             childClassName="text-tiny font-light text-white md:block"
                         />
                     </div>
                     <button
-                        className="gap-tiny flex cursor-pointer items-center hover:opacity-75"
+                        className="gap-small flex cursor-pointer items-center hover:opacity-75"
                         onClick={() => handleReply()}
                     >
                         <ReplyIcon className="h-3.5 w-3.5 stroke-[1.5px] md:h-4 md:w-4" />
