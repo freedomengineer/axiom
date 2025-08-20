@@ -352,6 +352,18 @@ export const UserNotificationRenderer = memo(
                         </>
                     )
                 }
+                case 'CouponRedeemed': {
+                    return (
+                        <>
+                            Your coupon #{item.key.slice(0, 4)} has been redeemed by{' '}
+                            <Username
+                                symbol
+                                className="inline-block font-semibold text-primary-700"
+                                principal={item.user}
+                            />
+                        </>
+                    )
+                }
                 default:
                     return <>Unsupported User Notification</>
             }
@@ -572,6 +584,8 @@ const getNotificationLink = (notification: StoredNotification): string | undefin
                     return `/dashboard/proposals/${item.proposalId}`
                 case 'ProposalResult':
                     return `/dashboard/proposals/${item.proposalId}`
+                case 'CouponRedeemed':
+                    return `/profile/${Principal.fromUint8Array(item.user._arr).toText()}`
                 default:
                     return undefined
             }

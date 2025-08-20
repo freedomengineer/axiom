@@ -187,9 +187,9 @@
         }
       },
       "returnType": {
-        "origin": "async ()",
+        "origin": "async Nat",
         "singular": {
-          "name": "()"
+          "name": "Nat"
         },
         "entries": [],
         "isArray": false,
@@ -881,6 +881,16 @@
       "isArray": false,
       "isOptional": false,
       "isAsync": false
+    },
+    "async Nat": {
+      "origin": "async Nat",
+      "singular": {
+        "name": "Nat"
+      },
+      "entries": [],
+      "isArray": false,
+      "isOptional": false,
+      "isAsync": true
     },
     "Actor.Variant": {
       "origin": "Actor.Variant",

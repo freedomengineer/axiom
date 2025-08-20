@@ -1196,6 +1196,13 @@
       "category": "base",
       "relativePath": "mo:base/Random",
       "depth": 2
+    },
+    "Debug": {
+      "origin": "import Debug \"mo:base/Debug\";",
+      "name": "Debug",
+      "category": "base",
+      "relativePath": "mo:base/Debug",
+      "depth": 2
     }
   },
   "actorDependencies": [
@@ -1232,7 +1239,8 @@
     "Int",
     "Time",
     "Timer",
-    "Random"
+    "Random",
+    "Debug"
   ],
   "interfaceDependencies": [
     "Configs",
@@ -2024,12 +2032,12 @@
         [
           "code",
           {
-            "origin": "Text",
+            "origin": "[Nat8]",
             "singular": {
-              "name": "Text"
+              "name": "Nat8"
             },
             "entries": [],
-            "isArray": false,
+            "isArray": true,
             "isOptional": false,
             "isAsync": false
           }
@@ -3499,12 +3507,12 @@
         [
           "code",
           {
-            "origin": "Text",
+            "origin": "[Nat8]",
             "singular": {
-              "name": "Text"
+              "name": "Nat8"
             },
             "entries": [],
-            "isArray": false,
+            "isArray": true,
             "isOptional": false,
             "isAsync": false
           }
@@ -3756,12 +3764,12 @@
               [
                 "code",
                 {
-                  "origin": "Text",
+                  "origin": "[Nat8]",
                   "singular": {
-                    "name": "Text"
+                    "name": "Nat8"
                   },
                   "entries": [],
-                  "isArray": false,
+                  "isArray": true,
                   "isOptional": false,
                   "isAsync": false
                 }

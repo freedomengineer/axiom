@@ -6,6 +6,11 @@ export type BinaryChoice = { 'Negative' : null } |
   { 'Positive' : null };
 export type Category = { 'Hypothesis' : null } |
   { 'Evidence' : null };
+export interface CouponRedeemedData {
+  'key' : string,
+  'user' : Principal,
+  'timestamp' : Time,
+}
 export interface CustodianElectionResultData {
   'result' : ElectionResult,
   'claimable' : bigint,
@@ -77,6 +82,10 @@ export interface Facade {
   'postUsersNotifications' : ActorMethod<[UsersNotificationsBatch], undefined>,
   'putConfigs' : ActorMethod<[Array<[Key, SharableValue]>], undefined>,
   'register' : ActorMethod<[string, bigint, [] | [Principal]], undefined>,
+  'registerWithCoupon' : ActorMethod<
+    [string, Uint8Array | number[]],
+    undefined
+  >,
   'setConfigs' : ActorMethod<[Array<[Key, SharableValue]>], undefined>,
   'shiftToMidnight' : ActorMethod<[bigint], undefined>,
   'updateCapitalRaised' : ActorMethod<[Principal, bigint], undefined>,
@@ -266,6 +275,7 @@ export type SharableUserVariant = {
       'capacity' : Array<NewHypothesesFromFollowingsData>,
     }
   } |
+  { 'CouponRedeemed' : CouponRedeemedData } |
   {
     'NewVotesToProposal' : {
       'id' : bigint,
@@ -403,6 +413,7 @@ export type UserVariantParam = {
     'NewVotesToEvidence' : { 'id' : bigint, 'data' : NewVotesToEvidenceData }
   } |
   { 'NewHypothesesFromFollowings' : NewHypothesesFromFollowingsData } |
+  { 'CouponRedeemed' : CouponRedeemedData } |
   {
     'NewVotesToProposal' : { 'id' : bigint, 'data' : NewVotesToProposalData }
   } |
@@ -446,6 +457,7 @@ export type UserVariantParam__1 = {
     'NewVotesToEvidence' : { 'id' : bigint, 'data' : NewVotesToEvidenceData }
   } |
   { 'NewHypothesesFromFollowings' : NewHypothesesFromFollowingsData } |
+  { 'CouponRedeemed' : CouponRedeemedData } |
   {
     'NewVotesToProposal' : { 'id' : bigint, 'data' : NewVotesToProposalData }
   } |

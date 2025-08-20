@@ -324,7 +324,7 @@ const ProfileLayout = ({ profilePrincipal }: { profilePrincipal: Principal }) =>
                         <TabPanel key={ETab.Proposals} value={ETab.Proposals}>
                             <Tabs value={fullTab}>
                                 <TabsHeader>
-                                    {['Published', 'Voted'].map((prefix) => {
+                                    {['Opened', 'Voted'].map((prefix) => {
                                         const tab = `${prefix}Proposals` as EFullTab
                                         return (
                                             <Tab

@@ -203,9 +203,9 @@ import Debug "mo:base/Debug";
 
         let adjustedUsdRequired : Nat = await Sales.expectPackageFound(capitalRaised);
         let icpRequired : Nat = await ICPUSD.exchange(false, adjustedUsdRequired);
-        await Split.affiliateDeposit(caller, icpRequired);
+        let icpPaid : Nat = await Split.affiliateDeposit(caller, icpRequired);
 
-        let coupon : Coupon.Coupon = Coupons.create(coupons, pair.0, caller, capitalRaised, icpRequired, pair.1, getNow);
+        let coupon : Coupon.Coupon = Coupons.create(coupons, pair.0, caller, capitalRaised, icpPaid, pair.1, getNow);
         User.couponCreated(user, pair.0);
         Coupon.toPrivateSharable(coupon, pair.0)
     };

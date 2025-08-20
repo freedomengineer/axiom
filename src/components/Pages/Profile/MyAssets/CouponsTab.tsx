@@ -1,16 +1,14 @@
-import { useState, valueOf } from 'react'
+import { useState } from 'react'
 
 import TicketIcon from '@components/Assets/ticket.svg'
-import FilterSort from '@components/Shared/FilterSort'
 import InfiniteScrollWrapper from '@components/Shared/InfiniteScrollWrapper'
 import Popup from '@components/Shared/Popup'
 import useAuth from '@hooks/useAuth'
-import useFilterSort from '@hooks/useFilterSort'
 import { DAffiliate } from 'shared/types/services'
 import { Affiliate } from 'shared/utils/services'
 
 import CreateCoupon from './CreateCoupon'
-import PrivateCouponCard from './PrivateCouponCard'
+import PrivateCouponCard from '../../ACEDashboard/Coupons/PrivateCouponCard'
 
 const CouponsTab = ({
     balance,
@@ -20,7 +18,6 @@ const CouponsTab = ({
     refreshBalances: () => Promise<void>
 }) => {
     const { agent } = useAuth()
-    const filterSortData = useFilterSort('privateCoupons')
 
     const [createdCoupon, setCreatedCoupon] = useState<DAffiliate.PrivateSharable>()
     const [open, setOpen] = useState<boolean>(false)
@@ -62,18 +59,17 @@ const CouponsTab = ({
                     Create coupon
                 </button>
             </div>
-            <FilterSort {...filterSortData} />
             <InfiniteScrollWrapper
                 LayoutComponent={({ items }) => (
-                    <div className="gap-medium mx-auto flex w-full max-w-full flex-wrap justify-center md:max-w-[1500px]">
+                    <div className="gap-medium mx-auto grid w-full max-w-full grid-cols-1 md:max-w-[1500px] md:grid-cols-2">
                         {items.map((item, i) => (
                             <PrivateCouponCard key={i} item={item} />
                         ))}
                     </div>
                 )}
-                name="privateCoupons"
-                hardFilter={filterSortData.filter}
-                hardSort={filterSortData.sort}
+                name="privateCoupon"
+                hardFilter={{}}
+                hardSort={{ by: 'recent', order: 'descending' }}
                 query={Affiliate.call(agent, true).getPrivateCouponsPagination}
                 className="h-full"
                 size={12n}

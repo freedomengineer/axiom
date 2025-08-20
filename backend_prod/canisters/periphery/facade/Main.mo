@@ -163,8 +163,6 @@ shared ({ caller = indicator }) persistent actor class Facade() = this {
         let adjustedUsdPaid : Nat = await Sales.expectPackageFound(capitalRaised);
         let icpPaid : Nat = await ICPUSD.exchange(false, adjustedUsdPaid);
 
-        Users.register(users, caller, lowercasedUsername, capitalRaised);
-
         await Split.deposit(caller, icpPaid);
         await Affiliate.fillReferrals(caller, icpPaid, referrer);
 
@@ -174,6 +172,7 @@ shared ({ caller = indicator }) persistent actor class Facade() = this {
         await DAO.register(caller);
         await Axioms.register(caller);
 
+        Users.register(users, caller, lowercasedUsername, capitalRaised)
     };
     public shared ({ caller }) func registerWithCoupon(username : Text, coupon : [Nat8]) : async () {
         let lowercasedUsername : Text = Text.toLowercase(username);
@@ -196,7 +195,6 @@ shared ({ caller = indicator }) persistent actor class Facade() = this {
         let { capitalRaised } : Coupon.Sharable = await Affiliate.lockCoupon(coupon, caller);
 
         try {
-            Users.register(users, caller, lowercasedUsername, capitalRaised);
 
             let buriedAmount : Nat = await Sales.mintPackage(caller, capitalRaised);
             await Escrow.register(caller, buriedAmount);
@@ -208,6 +206,7 @@ shared ({ caller = indicator }) persistent actor class Facade() = this {
             await Affiliate.redeemCouponFailed(coupon, caller, Error.message(e))
         };
 
+        Users.register(users, caller, lowercasedUsername, capitalRaised)
     };
 
     public shared ({ caller }) func editUsername(username : Text) : async () {

@@ -16,7 +16,7 @@ import { Choices, ESteps } from '@utils/login/step'
 import { ICP_FEE, N_DECIMALS } from 'shared/constants'
 import e8s from 'shared/utils/e8s'
 import proportion, { Proportion } from 'shared/utils/proportion'
-import { amountOf, getCurrentPrice } from 'shared/utils/tokens'
+import { getCurrentPrice } from 'shared/utils/tokens'
 
 enum EPopup {
     Deposit = 'Deposit',
@@ -74,9 +74,7 @@ const SelectPackage = ({
     const buildChoice = (p: ParsedMembershipPackage): Choices[ESteps.Package] => {
         if (!configs || !splitConfigs || !isPriceReady) return null
 
-        const usdPrice = e8s.toNumber(p.originalPrice)
-        const adjustedUsdPrice =
-            usdPrice * proportion.toFloat(configs['PRICE_ADJUSTMENT_PROPORTION'][1] as Proportion)
+        const adjustedUsdPrice = e8s.toNumber(p.adjustedPrice[0])
 
         const icpPrice =
             (adjustedUsdPrice / e8s.toNumber(currentPrice)) *
@@ -87,16 +85,10 @@ const SelectPackage = ({
         const slippageTolerance = icpPrice * (slippage / 100)
         const icpToPay = icpPrice + icpFee + slippageTolerance
 
-        const liquidProportion = proportion.toFloat(
-            configs['ACORN_LIQUID_MINT_PROPORTION'][1] as Proportion
-        )
-
-        const acornRewarded = usdPrice * liquidProportion
-
         return {
             package: p,
-            icpToPay: amountOf(icpToPay),
-            acornToReceive: amountOf(acornRewarded),
+            icpToPay: e8s.fromNumber(icpToPay),
+            acornToReceive: p.acornLiquid[0],
         }
     }
 
@@ -176,10 +168,15 @@ const SelectPackage = ({
             <div
                 className={cn(
                     'gap-extratiny mb-normal flex h-max flex-col',
-                    !setCoupon && (coupon || coupon === undefined) && 'backdrop-blur-lg'
+                    setCoupon && coupon === undefined && 'blur-lg'
                 )}
             >
-                <div className="px-medium py-normal flex flex-col gap-0.5 rounded-lg border border-cold-200 bg-cold-800 text-white/80">
+                <div
+                    className={cn(
+                        'px-medium py-normal flex flex-col gap-0.5 rounded-lg border border-cold-200 bg-cold-800 text-white/80',
+                        setCoupon && coupon === undefined && 'pointer-events-none'
+                    )}
+                >
                     <div className="text-small gap-small flex items-center justify-between font-normal">
                         <p className="p-truncate-1">
                             Principal:{' '}
@@ -336,7 +333,9 @@ const SelectPackage = ({
                                     'group h-max rounded-lg border px-4',
                                     isSelected
                                         ? 'border-primary-600'
-                                        : 'border-cold-200 hover:border-cold-500'
+                                        : 'border-cold-200 hover:border-cold-500',
+                                    ((setCoupon && coupon === undefined) || !!coupon) &&
+                                        'pointer-events-none'
                                 )}
                             >
                                 <AccordionHeader
@@ -365,13 +364,13 @@ const SelectPackage = ({
                                         <span>You will be rewarded with:</span>
                                         <li>
                                             <span className="font-bold text-primary-600">
-                                                {p.acornLiquid} ACORN
+                                                {e8s.toString(p.acornLiquid[0])} ACORN
                                             </span>{' '}
                                             in liquid wallet
                                         </li>
                                         <li>
                                             <span className="font-bold text-primary-600">
-                                                {p.acornBuried} ACORN
+                                                {e8s.toString(p.acornBuried[0])} ACORN
                                             </span>{' '}
                                             buried in{' '}
                                             <span className="font-bold text-primary-600">89</span>{' '}
@@ -379,7 +378,7 @@ const SelectPackage = ({
                                         </li>
                                         <li>
                                             <span className="font-bold text-primary-600">
-                                                {p.acornLiquid} voting power
+                                                {e8s.toString(p.acornLiquid[0])} voting power
                                             </span>{' '}
                                             across the platform in{' '}
                                             <span className="font-bold text-primary-600">89</span>{' '}
@@ -522,6 +521,26 @@ const SelectPackage = ({
                         )
                     })}
             </div>
+            {setCoupon && coupon === undefined && (
+                <div className="gap-medium absolute left-0 top-0 z-10 flex h-full w-full flex-col items-center justify-center">
+                    <p className="text-medium font-light text-cold-800 ">
+                        Do you have a coupon? Input it here to register for free
+                    </p>
+                    <input
+                        type="text"
+                        placeholder="Input your coupon"
+                        value={coupon}
+                        className="input"
+                        onChange={(e) => setCoupon(e.target.value)}
+                    />
+                    <button
+                        className="button w-auto min-w-36 bg-cold-800 md:min-w-48"
+                        onClick={() => setCoupon(null)}
+                    >
+                        I don't have a coupon
+                    </button>
+                </div>
+            )}
         </>
     )
 }

@@ -4,16 +4,15 @@ import { useEffect, useState } from 'react'
 import SelectPackage from '@components/Shared/SelectPackgage'
 import useAuth from '@hooks/useAuth'
 import useConfigs from '@hooks/useConfigs'
+import usePackages, { EPackages, ParsedMembershipPackage } from '@hooks/usePackages'
 import { sha256 } from '@libs/crypto'
 import { formatDate } from '@libs/date'
 import { error } from '@libs/toastify'
 import { Choices, ESteps, StepProps } from '@utils/login/step'
+import { DSales } from 'shared/types/services'
 import proportion, { Proportion } from 'shared/utils/proportion'
 import { Affiliate, ICP } from 'shared/utils/services'
 import { UnwrapVariant } from 'shared/utils/typings'
-import { EPackages, ParsedMembershipPackage } from '@hooks/usePackages'
-import usePackages from '@hooks/usePackages'
-import { DSales } from 'shared/types/services'
 
 const PurchasePackage = ({ choices, setChoice, handlePrev, handleNext }: StepProps) => {
     const { principal } = useAuth()
@@ -38,6 +37,12 @@ const PurchasePackage = ({ choices, setChoice, handlePrev, handleNext }: StepPro
                 .then(setBalance)
                 .catch(() => {})
         }
+        if (coupon) {
+            updateCoupon(coupon, () => {
+                localStorage.removeItem('code')
+                setCoupon(null)
+            })
+        }
     }, [principal])
 
     const refreshBalance = async () => {
@@ -48,15 +53,27 @@ const PurchasePackage = ({ choices, setChoice, handlePrev, handleNext }: StepPro
             .catch(() => {})
     }
 
-    const updateCoupon = async (code: string | null) => {
-        if (!code) setCoupon(null)
+    const updateCoupon = async (code: string | null, onRedeemed?: () => void) => {
+        if (code === null) {
+            setCoupon(null)
+            return
+        }
+        if (code === '') return
         else {
-            const hex32 = /^[0-9a-fA-F]{32}$/
-            const hexGroups = /^([0-9a-fA-F]{4}-){7}[0-9a-fA-F]{4}$/
-            const isValid = hex32.test(code) || hexGroups.test(code)
-            if (isValid) {
-                const hash = sha256(code)
-                const res = await Affiliate.call(undefined, true).getCoupon(hash)
+            if (
+                /^[0-9a-fA-F]{32}$/.test(code) ||
+                /^([0-9a-fA-F]{4}-){7}[0-9a-fA-F]{4}$/.test(code)
+            ) {
+                const hash = sha256(code.replace(/-/g, ''))
+
+                let res
+                try {
+                    res = await Affiliate.call(undefined, true).getCoupon(hash)
+                } catch (e) {
+                    onRedeemed?.()
+                    return null
+                }
+
                 const status = UnwrapVariant(res.status)
 
                 if (status[0] === 'Redeemed' || status[0] === 'Locked') {
@@ -64,16 +81,17 @@ const PurchasePackage = ({ choices, setChoice, handlePrev, handleNext }: StepPro
                         `Coupon already redeemed by ${(status[1] as any).by.toText()} ${(formatDate({ nano: (status[1] as any).timestamp }), true)}`
                     )
                 } else if (
-                    status[0] === 'Available' ||
+                    status === 'Available' ||
                     (status[0] === 'Failed' && principal?.compareTo((status[1] as any).by) === 'eq')
                 ) {
                     setCoupon(code)
-                    setChoice({
-                        package: DSales.SharablePackage
-                        icpToPay: bigint
-                        acornToReceive: bigint
+                    const p = packages.find((p) => p.originalPrice === res.capitalRaised)!
+                    localStorage.setItem('ref', res.creator.toText())
+                    setSelectedPackage({
+                        package: p,
+                        icpToPay: 0n,
+                        acornToReceive: p.acornLiquid[0],
                         coupon: code,
-                        
                     })
                 }
             }
@@ -115,11 +133,11 @@ const PurchasePackage = ({ choices, setChoice, handlePrev, handleNext }: StepPro
                 <SelectPackage
                     balance={balance}
                     choice={selectedPackage}
-                    setChoice={setSelectedPackage}
+                    setChoice={coupon ? () => {} : setSelectedPackage}
                     setIsPriceReady={setIsPriceReady}
                     refreshBalance={refreshBalance}
                     coupon={coupon}
-                    setCoupon={setCoupon}
+                    setCoupon={(coupon) => updateCoupon(coupon)}
                     packages={packages}
                 />
             </div>
@@ -139,7 +157,7 @@ const PurchasePackage = ({ choices, setChoice, handlePrev, handleNext }: StepPro
                     disabled={
                         !selectedPackage ||
                         !isPriceReady ||
-                        balance < selectedPackage.icpToPay ||
+                        (!coupon && balance < selectedPackage.icpToPay) ||
                         choices[ESteps.Checkout]
                     }
                 >
@@ -147,9 +165,9 @@ const PurchasePackage = ({ choices, setChoice, handlePrev, handleNext }: StepPro
                         ? 'Choose a package'
                         : !isPriceReady
                           ? 'Loading price...'
-                          : balance < selectedPackage.icpToPay
+                          : !coupon && balance < selectedPackage.icpToPay
                             ? 'Insufficient balance'
-                            : 'Continue with ' + selectedPackage.package.metadata.name}
+                            : 'Continue with ' + selectedPackage.package.name}
                 </button>
             </div>
         </>

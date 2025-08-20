@@ -4,6 +4,7 @@ import Error from '@components/Layout/Error'
 import LayoutWrapper from '@components/Layout/LayoutWrapper'
 import Layout from '@layout'
 import AssetsPage from '@pages/dashboard/assets/page'
+import CouponsPage from '@pages/dashboard/coupons/page'
 import CustodiansPage from '@pages/dashboard/custodians/page'
 import LeaderboardPage from '@pages/dashboard/leaderboard/page'
 import MembershipsPage from '@pages/dashboard/memberships/page'
@@ -125,6 +126,7 @@ const routes: RouteObject[] = [
                     { path: 'assets', element: <AssetsPage /> },
                     { path: 'memberships', element: <MembershipsPage /> },
                     { path: 'leaderboard', element: <LeaderboardPage /> },
+                    { path: 'coupons', element: <CouponsPage /> },
                 ],
             },
             {

@@ -32,11 +32,6 @@ module {
         #Failed
     };
 
-    public func getIcpPaid(splitAmounts : [(ActorVariant, Nat)]) : Nat = switch (Array.find<(ActorVariant, Nat)>(splitAmounts, func(x) = x.0 == #Affiliate)) {
-        case (?(_, icpPaid)) icpPaid;
-        case (null) E.f(#NOT_VALID("Coupon"), "Attempted to get the ICP paid for a coupon that does not have an affiliate split")
-    };
-
     /// SALES ////// COUPON ////////////
 
     private type Self = Coupon;

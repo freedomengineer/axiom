@@ -70,7 +70,7 @@ shared ({ caller = indicator }) persistent actor class Split() = this {
         let depositAmount : E8S.E8S = E8S.make(amount);
         Distributions.deposit(distributions, depositAmount, configs)
     };
-    public shared ({ caller }) func affiliateDeposit(sender : Principal, amount : Nat) : async () {
+    public shared ({ caller }) func affiliateDeposit(sender : Principal, amount : Nat) : async Nat {
         await Indicator.expectAuthorized(caller, [#Affiliate]);
 
         let affiliateAmount : E8S.E8S = Distributions.affiliateDepositAmount(distributions, E8S.make(amount), configs);
@@ -90,7 +90,7 @@ shared ({ caller = indicator }) persistent actor class Split() = this {
         };
 
         let depositAmount : E8S.E8S = E8S.make(amount);
-        Distributions.affiliateDeposit(distributions, depositAmount, configs)
+        Distributions.affiliateDeposit(distributions, depositAmount, configs).val
     };
 
     /// PUBLIC ////// MODIFIERS ////////////

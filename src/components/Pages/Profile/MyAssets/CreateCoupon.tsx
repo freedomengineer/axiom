@@ -47,7 +47,7 @@ const CreateCoupon = ({
             return
         }
         const res = await promise(
-            Affiliate.call(agent).createCoupon(choice.package.capitalRaised),
+            Affiliate.call(agent).createCoupon(choice.package.originalPrice),
             'Creating coupon',
             'Coupon created successfully!'
         )
@@ -67,7 +67,6 @@ const CreateCoupon = ({
                 setChoice={setChoice}
                 setIsPriceReady={setIsPriceReady}
                 refreshBalance={refreshBalance}
-                isCoupon={true}
             />
             <BalanceChanges
                 token="ICP"
@@ -91,7 +90,7 @@ const CreateCoupon = ({
                               ? 'Loading price...'
                               : balance < choice.icpToPay
                                 ? 'Insufficient balance'
-                                : 'Create ' + choice.package.metadata.name + ' coupon'}
+                                : 'Create ' + choice.package.name + ' coupon'}
                     </>
                 )}
             </button>

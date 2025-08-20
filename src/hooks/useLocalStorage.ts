@@ -66,11 +66,11 @@ const _default: LocalStorageData = {
         filter: {},
         sort: { by: 'recent', order: 'descending' },
     },
-    coupons: {
+    coupon: {
         filter: {},
         sort: { by: 'recent', order: 'descending' },
     },
-    privateCoupons: {
+    privateCoupon: {
         filter: {},
         sort: { by: 'recent', order: 'descending' },
     },

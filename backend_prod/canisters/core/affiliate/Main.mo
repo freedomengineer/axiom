@@ -37,6 +37,7 @@ import Int "mo:base/Int";
 import Time "mo:base/Time";
 import Timer "mo:base/Timer";
 import Random "mo:base/Random";
+import Debug "mo:base/Debug";
 
 (
     with migration = func(
@@ -183,15 +184,18 @@ import Random "mo:base/Random";
         if (Coupons.found(coupons, pair.0)) pair := get(Array.take(random, -16));
         if (Coupons.found(coupons, pair.0)) E.f(#NOT_VALID("Random code"), "The randomized coupon code was duplicated, please try again with new one.");
 
+        Debug.print(debug_show (pair.1));
+        Debug.print(debug_show (pair.1.size()));
+
         let Sales : SalesInterface.Sales = await Indicator.Sales();
         let Split : SplitInterface.Split = await Indicator.Split();
         let ICPUSD : ICPUSDInterface.ICPUSD = await Indicator.ICPUSD();
 
         let adjustedUsdRequired : Nat = await Sales.expectPackageFound(capitalRaised);
         let icpRequired : Nat = await ICPUSD.exchange(false, adjustedUsdRequired);
-        await Split.affiliateDeposit(caller, icpRequired);
+        let icpPaid : Nat = await Split.affiliateDeposit(caller, icpRequired);
 
-        let coupon : Coupon.Coupon = Coupons.create(coupons, pair.0, caller, capitalRaised, icpRequired, pair.1);
+        let coupon : Coupon.Coupon = Coupons.create(coupons, pair.0, caller, capitalRaised, icpPaid, pair.1);
         User.couponCreated(user, pair.0);
         Coupon.toPrivateSharable(coupon, pair.0)
     };

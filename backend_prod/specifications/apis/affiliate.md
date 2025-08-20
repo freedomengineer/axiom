@@ -7,7 +7,7 @@
 - Interfaces: `IndicatorInterface`, `FacadeInterface`, `ICPUSDInterface`, `SalesInterface`, `SplitInterface`
 - Commons: `C`, `E`
 - Libraries: `Array`, `Base`, `Configs`, `Count`, `E8S`, `Earning`, `Hexadecimal`, `Iter`, `List`, `Map`, `Pagination`, `Proportion`, `SHA256`
-- Bases: `Blob`, `Principal`, `Nat`, `Int`, `Time`, `Timer`, `Random`
+- Bases: `Blob`, `Principal`, `Nat`, `Int`, `Time`, `Timer`, `Random`, `Debug`
 ## Modifiers
 
 ### 1. `initialize()` returns `()`
@@ -137,7 +137,7 @@
     "#REDEEMED": {"by": "Principal", "timestamp": "Time"},
     "#FAILED": {"by": "Principal", "reason": "Text", "timestamp": "Time"}
   },
-  "code": "Text"
+  "code": ["Nat8"]
 }
 ```
 
@@ -305,7 +305,7 @@
     "#REDEEMED": {"by": "Principal", "timestamp": "Time"},
     "#FAILED": {"by": "Principal", "reason": "Text", "timestamp": "Time"}
   },
-  "code": "Text"
+  "code": ["Nat8"]
 }
 ```
 
@@ -335,7 +335,7 @@
       "#REDEEMED": {"by": "Principal", "timestamp": "Time"},
       "#FAILED": {"by": "Principal", "reason": "Text", "timestamp": "Time"}
     },
-    "code": "Text"
+    "code": ["Nat8"]
   }
 ]
 ```
@@ -368,7 +368,7 @@
       "#REDEEMED": {"by": "Principal", "timestamp": "Time"},
       "#FAILED": {"by": "Principal", "reason": "Text", "timestamp": "Time"}
     },
-    "code": "Text"
+    "code": ["Nat8"]
   },
   "is": "Nat",
   "of": "Nat"

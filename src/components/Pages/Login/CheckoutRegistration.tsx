@@ -7,6 +7,7 @@ import IcpIcon from '@components/Assets/icp.svg'
 import Spinner from '@components/Primitives/Spinner'
 import BalanceChanges from '@components/Shared/BalanceChanges'
 import useAuth from '@hooks/useAuth'
+import { toBytes } from '@libs/crypto'
 import { promise } from '@libs/toastify'
 import { ESteps, StepProps } from '@utils/login/step'
 import e8s from 'shared/utils/e8s'
@@ -27,37 +28,52 @@ const CheckoutRegistration = ({ choices, setChoice, handlePrev, handleNext }: St
 
     const sendTransaction = async () => {
         setLoading(true)
-        const approve = await promise(
-            ICP.call(agent).icrc2_approve({
-                amount: choices[ESteps.Package]!.icpToPay,
-                spender: { owner: Split.principal, subaccount: [] },
-                fee: [],
-                from_subaccount: [],
-                memo: [],
-                created_at_time: [],
-                expected_allowance: [],
-                expires_at: [],
-            }),
-            'Approving ICP to Axiom Split',
-            'Approved ICP to Axiom Split successfully!'
-        )
-        if (!approve.success) {
-            setLoading(false)
-            return
-        }
-        await promise(
-            Facade.call(agent)
-                .register(
-                    choices[ESteps.Username]!,
-                    choices[ESteps.Package]!.package.capitalRaised,
-                    referrer ? [referrer] : []
-                )
-                .then(() => {
-                    handleNext(), setChoice(true)
+        if (!choices[ESteps.Package]?.coupon) {
+            const approve = await promise(
+                ICP.call(agent).icrc2_approve({
+                    amount: choices[ESteps.Package]!.icpToPay,
+                    spender: { owner: Split.principal, subaccount: [] },
+                    fee: [],
+                    from_subaccount: [],
+                    memo: [],
+                    created_at_time: [],
+                    expected_allowance: [],
+                    expires_at: [],
                 }),
-            'Registering to Axiom',
-            'Registered to Axiom successfully!'
-        )
+                'Approving ICP to Axiom Split',
+                'Approved ICP to Axiom Split successfully!'
+            )
+            if (!approve.success) {
+                setLoading(false)
+                return
+            }
+            await promise(
+                Facade.call(agent)
+                    .register(
+                        choices[ESteps.Username]!,
+                        choices[ESteps.Package]!.package.originalPrice,
+                        referrer ? [referrer] : []
+                    )
+                    .then(() => {
+                        handleNext(), setChoice(true)
+                    }),
+                'Registering to Axiom',
+                'Registered to Axiom successfully!'
+            )
+        } else {
+            await promise(
+                Facade.call(agent)
+                    .registerWithCoupon(
+                        choices[ESteps.Username]!,
+                        toBytes(choices[ESteps.Package].coupon.replace(/-/g, ''))
+                    )
+                    .then(() => {
+                        handleNext(), setChoice(true)
+                    }),
+                'Registering to Axiom',
+                'Registered to Axiom successfully!'
+            )
+        }
         await refreshUser()
         setLoading(false)
     }
@@ -88,7 +104,7 @@ const CheckoutRegistration = ({ choices, setChoice, handlePrev, handleNext }: St
                     <p className="text-small text-cold-700">Package</p>
                     <input
                         type="text"
-                        value={`${choices[ESteps.Package]?.package?.metadata.name} (${choices[ESteps.Package]?.package?.metadata.symbol}) - ${valueOf(choices[ESteps.Package]?.icpToPay ?? 0)} ICP`}
+                        value={`${choices[ESteps.Package]?.package?.name} (${choices[ESteps.Package]?.package?.symbol}) - ${valueOf(choices[ESteps.Package]?.icpToPay ?? 0)} ICP`}
                         disabled={true}
                         className="input"
                     />
@@ -104,12 +120,14 @@ const CheckoutRegistration = ({ choices, setChoice, handlePrev, handleNext }: St
                 </div>
                 <div className="gap-tiny flex flex-col">
                     <p className="text-small text-cold-700">Balance Changes</p>
-                    <BalanceChanges
-                        token="ICP"
-                        amount={choices[ESteps.Package]?.icpToPay ?? 0n}
-                        sign="-"
-                        setIsSufficient={setIsSufficient}
-                    />
+                    {!choices[ESteps.Package]?.coupon && (
+                        <BalanceChanges
+                            token="ICP"
+                            amount={choices[ESteps.Package]?.icpToPay ?? 0n}
+                            sign="-"
+                            setIsSufficient={setIsSufficient}
+                        />
+                    )}
                     <BalanceChanges
                         token="ACORN"
                         amount={choices[ESteps.Package]?.acornToReceive ?? 0n}
@@ -145,8 +163,14 @@ const CheckoutRegistration = ({ choices, setChoice, handlePrev, handleNext }: St
                         <span>Insufficient ICP balance</span>
                     ) : (
                         <>
-                            Pay {e8s.toString(choices[ESteps.Package]?.icpToPay)}{' '}
-                            <IcpIcon className="h-4 w-4 fill-current stroke-0 md:h-5 md:w-5" />
+                            {choices[ESteps.Package]?.coupon ? (
+                                'Register for free'
+                            ) : (
+                                <>
+                                    Pay {e8s.toString(choices[ESteps.Package]?.icpToPay)}{' '}
+                                    <IcpIcon className="h-4 w-4 fill-current stroke-0 md:h-5 md:w-5" />
+                                </>
+                            )}
                         </>
                     )}
                 </button>

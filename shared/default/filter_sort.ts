@@ -24,8 +24,8 @@ export type QueryMap = {
     nominee: DDAO.DAO['getNominees']
     proposal: DDAO.DAO['getProposals']
     flag: DAxioms._SERVICE['getFlags']
-    coupons: DAffiliate._SERVICE['getCoupons']
-    privateCoupons: DAffiliate._SERVICE['getPrivateCoupons']
+    coupon: DAffiliate._SERVICE['getCoupons']
+    privateCoupon: DAffiliate._SERVICE['getPrivateCoupons']
 }
 export type QueryName = keyof QueryMap
 
@@ -137,7 +137,7 @@ export const FILTER_SORT_DECS = {
             order: ['descending', 'ascending'],
         },
     },
-    coupons: {
+    coupon: {
         filter: {
             status: ['Available', 'Failed', 'Redeemed', 'Locked'],
             creator: Primitive.Principal,
@@ -148,7 +148,7 @@ export const FILTER_SORT_DECS = {
             order: ['descending', 'ascending'],
         },
     },
-    privateCoupons: {
+    privateCoupon: {
         filter: {
             status: ['Available', 'Failed', 'Redeemed', 'Locked'],
             capitalRaised: Primitive.Nat,

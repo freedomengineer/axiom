@@ -61,17 +61,20 @@ module {
         }
     };
 
-    public func affiliateDeposit(__ : Self, depositAmount : E8S, configs : Configs) {
+    public func affiliateDeposit(__ : Self, depositAmount : E8S, configs : Configs) : E8S {
+        let total : E8S = E8S.new();
         for ((actorVariant, distribution) in Map.entries(__)) {
             switch (actorVariant) {
                 case (#Affiliate) {};
                 case (_) {
                     let proportion : Proportion = getProportion(actorVariant, configs);
                     let proportionalAmount : E8S = E8S.getScaleBy(depositAmount, proportion);
-                    Distribution.deposit(distribution, proportionalAmount)
+                    Distribution.deposit(distribution, proportionalAmount);
+                    E8S.add(total, proportionalAmount)
                 }
             }
-        }
+        };
+        total
     };
 
     public func affiliateDepositAmount(__ : Self, depositAmount : E8S, configs : Configs) : E8S {
