@@ -24,7 +24,7 @@ const FlagCard = ({ item, className }: { item: DAxioms.SharableFlag; className?:
                 className
             )}
         >
-            <div className="w-full overflow-x-auto rounded-lg border border-cold-300 md:overflow-hidden">
+            <div className="w-full overflow-x-auto rounded-lg border border-cold-200 md:overflow-hidden">
                 <table className="min-w-full border-collapse">
                     <tbody>
                         {[
@@ -53,7 +53,7 @@ const FlagCard = ({ item, className }: { item: DAxioms.SharableFlag; className?:
                                     <td
                                         className={cn(
                                             '!text-tiny py-small px-normal group relative text-nowrap bg-cold-50 text-left font-semibold text-cold-600',
-                                            'border-b border-r border-cold-300',
+                                            'border-b border-r border-cold-200',
                                             isLastRow && 'border-b-0'
                                         )}
                                     >
@@ -62,7 +62,7 @@ const FlagCard = ({ item, className }: { item: DAxioms.SharableFlag; className?:
                                     <td
                                         className={cn(
                                             '!text-tiny py-small px-normal w-full font-semibold text-cold-600',
-                                            'border-b border-cold-300',
+                                            'border-b border-cold-200',
                                             isLastRow && 'border-b-0'
                                         )}
                                     >

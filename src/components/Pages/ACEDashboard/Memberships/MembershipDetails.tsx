@@ -13,7 +13,7 @@ const MembershipDetails = ({ item }: { item: ParsedMembershipPackage }) => {
                     <td
                         className={cn(
                             '!text-tiny py-small px-normal group relative text-nowrap bg-cold-50 text-left font-semibold text-cold-600',
-                            'border-b border-r border-cold-300'
+                            'border-b border-r border-cold-200'
                         )}
                     >
                         Name
@@ -21,7 +21,7 @@ const MembershipDetails = ({ item }: { item: ParsedMembershipPackage }) => {
                     <td
                         className={cn(
                             '!text-tiny py-small px-normal text-nowrap font-semibold text-cold-600',
-                            'border-b border-cold-300'
+                            'border-b border-cold-200'
                         )}
                     >
                         <code>{item.name}</code>
@@ -31,7 +31,7 @@ const MembershipDetails = ({ item }: { item: ParsedMembershipPackage }) => {
                     <td
                         className={cn(
                             '!text-tiny py-small px-normal group relative text-nowrap bg-cold-50 text-left font-semibold text-cold-600',
-                            'border-b border-r border-cold-300'
+                            'border-b border-r border-cold-200'
                         )}
                     >
                         Symbol
@@ -39,7 +39,7 @@ const MembershipDetails = ({ item }: { item: ParsedMembershipPackage }) => {
                     <td
                         className={cn(
                             '!text-tiny py-small px-normal text-nowrap font-semibold text-cold-600',
-                            'border-b border-cold-300'
+                            'border-b border-cold-200'
                         )}
                     >
                         <code>{item.symbol}</code>
@@ -49,7 +49,7 @@ const MembershipDetails = ({ item }: { item: ParsedMembershipPackage }) => {
                     <td
                         className={cn(
                             '!text-tiny py-small px-normal group relative text-nowrap bg-cold-50 text-left font-semibold text-cold-600',
-                            'border-b border-r border-cold-300'
+                            'border-b border-r border-cold-200'
                         )}
                     >
                         Original price
@@ -57,7 +57,7 @@ const MembershipDetails = ({ item }: { item: ParsedMembershipPackage }) => {
                     <td
                         className={cn(
                             '!text-tiny py-small px-normal text-nowrap font-semibold text-cold-600',
-                            'border-b border-cold-300'
+                            'border-b border-cold-200'
                         )}
                     >
                         <code>${e8s.toString(item.originalPrice)}</code>
@@ -67,7 +67,7 @@ const MembershipDetails = ({ item }: { item: ParsedMembershipPackage }) => {
                     <td
                         className={cn(
                             '!text-tiny py-small px-normal group relative text-nowrap bg-cold-50 text-left font-semibold text-cold-600',
-                            'border-b border-r border-cold-300'
+                            'border-b border-r border-cold-200'
                         )}
                     >
                         Adjusted price
@@ -75,7 +75,7 @@ const MembershipDetails = ({ item }: { item: ParsedMembershipPackage }) => {
                     <td
                         className={cn(
                             '!text-tiny py-small px-normal text-nowrap font-semibold text-cold-600',
-                            'border-b border-cold-300'
+                            'border-b border-cold-200'
                         )}
                     >
                         <code>
@@ -88,7 +88,7 @@ const MembershipDetails = ({ item }: { item: ParsedMembershipPackage }) => {
                     <td
                         className={cn(
                             '!text-tiny py-small px-normal group relative text-nowrap bg-cold-50 text-left font-semibold text-cold-600',
-                            'border-b border-r border-cold-300'
+                            'border-b border-r border-cold-200'
                         )}
                     >
                         ACORN buried
@@ -96,7 +96,7 @@ const MembershipDetails = ({ item }: { item: ParsedMembershipPackage }) => {
                     <td
                         className={cn(
                             '!text-tiny py-small px-normal text-nowrap font-semibold text-cold-600',
-                            'border-b border-cold-300'
+                            'border-b border-cold-200'
                         )}
                     >
                         <code>
@@ -109,7 +109,7 @@ const MembershipDetails = ({ item }: { item: ParsedMembershipPackage }) => {
                     <td
                         className={cn(
                             '!text-tiny py-small px-normal group relative text-nowrap bg-cold-50 text-left font-semibold text-cold-600',
-                            'border-b border-r border-cold-300'
+                            'border-b border-r border-cold-200'
                         )}
                     >
                         ACORN liquid
@@ -117,7 +117,7 @@ const MembershipDetails = ({ item }: { item: ParsedMembershipPackage }) => {
                     <td
                         className={cn(
                             '!text-tiny py-small px-normal text-nowrap font-semibold text-cold-600',
-                            'border-b border-cold-300'
+                            'border-b border-cold-200'
                         )}
                     >
                         <code>
@@ -130,7 +130,7 @@ const MembershipDetails = ({ item }: { item: ParsedMembershipPackage }) => {
                     <td
                         className={cn(
                             '!text-tiny py-small px-normal group relative text-nowrap bg-cold-50 text-left font-semibold text-cold-600',
-                            'border-b border-r border-cold-300'
+                            'border-b border-r border-cold-200'
                         )}
                     >
                         Canister URL
@@ -138,7 +138,7 @@ const MembershipDetails = ({ item }: { item: ParsedMembershipPackage }) => {
                     <td
                         className={cn(
                             '!text-tiny py-small px-normal text-nowrap font-semibold text-cold-600',
-                            'border-b border-cold-300'
+                            'border-b border-cold-200'
                         )}
                     >
                         {item.canisterUrl ? (
@@ -161,7 +161,7 @@ const MembershipDetails = ({ item }: { item: ParsedMembershipPackage }) => {
                     <td
                         className={cn(
                             '!text-tiny py-small px-normal group relative text-nowrap bg-cold-50 text-left font-semibold text-cold-600',
-                            'border-r border-cold-300'
+                            'border-r border-cold-200'
                         )}
                     >
                         Thumbnail URL
@@ -169,7 +169,7 @@ const MembershipDetails = ({ item }: { item: ParsedMembershipPackage }) => {
                     <td
                         className={cn(
                             '!text-tiny py-small px-normal text-nowrap font-semibold text-cold-600',
-                            'border-cold-300'
+                            'border-cold-200'
                         )}
                     >
                         <Link

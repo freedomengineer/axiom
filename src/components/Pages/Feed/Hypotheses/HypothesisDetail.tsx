@@ -211,7 +211,7 @@ const HypothesisDetail = ({
                 open={postEvidenceOpen !== null}
                 onClose={() => setPostEvidenceOpen(null)}
                 title={
-                    typeof postEvidenceOpen === 'string'
+                    typeof postEvidenceOpen === 'string' || postEvidenceOpen === undefined
                         ? `Post Evidence`
                         : `Post Reply to Evidence ${postEvidenceOpen?.toString()}`
                 }
@@ -520,7 +520,7 @@ const HypothesisDetail = ({
                                     ) : (
                                         <AdoptIcon
                                             className="mx-auto h-4 w-4 cursor-pointer stroke-[1.5px] hover:h-5 hover:w-5 hover:fill-white hover:text-cold-900 aria-selected:h-5 aria-selected:w-5 aria-selected:fill-white aria-selected:text-cold-900 aria-selected:hover:h-5 aria-selected:hover:w-5 aria-selected:hover:fill-none aria-selected:hover:text-white md:h-5 md:w-5 md:hover:h-6 md:hover:w-6 md:aria-selected:h-6 md:aria-selected:w-6"
-                                            onClick={handleAxiom}
+                                            onClick={() => handleAxiom()}
                                             aria-selected={!!axiom}
                                         />
                                     )}
@@ -534,7 +534,7 @@ const HypothesisDetail = ({
                                     ) : (
                                         <BookmarkIcon
                                             className="mx-auto h-4 w-4 cursor-pointer stroke-[1.5px] hover:h-5 hover:w-5 hover:fill-white hover:text-cold-900 aria-selected:h-5 aria-selected:w-5 aria-selected:fill-white aria-selected:text-cold-900 aria-selected:hover:h-5 aria-selected:hover:w-5 aria-selected:hover:fill-none aria-selected:hover:text-white md:h-5 md:w-5 md:hover:h-6 md:hover:w-6 md:aria-selected:h-6 md:aria-selected:w-6"
-                                            onClick={handleBookmark}
+                                            onClick={() => handleBookmark()}
                                             aria-selected={!!bookmark}
                                         />
                                     )}

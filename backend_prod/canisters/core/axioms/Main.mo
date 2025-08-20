@@ -57,7 +57,7 @@ import Timer "mo:base/Timer";
 import Float "mo:base/Float";
 import Debug "mo:base/Debug";
 
-shared ({ caller = indicator }) actor class Axioms() = this {
+shared ({ caller = indicator }) persistent actor class Axioms() = this {
         private stable let Indicator : IndicatorInterface.Indicator = actor (Principal.toText(indicator));
 
     private stable let ages : Ages.Ages = Ages.init();

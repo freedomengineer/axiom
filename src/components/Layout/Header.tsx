@@ -38,16 +38,8 @@ import Notifications from '@components/Shared/Notifications'
 import Popup from '@components/Shared/Popup'
 import QRCode from '@components/Shared/QRCode'
 import useAuth from '@hooks/useAuth'
-import { deleteAllConfigsCache } from '@hooks/useConfigs'
-import useNotification, {
-    deleteAllNotificationsCache,
-    useNotificationPoller,
-} from '@hooks/useNotification'
-import { deleteAllPackagesCache } from '@hooks/usePackages'
-import { deleteAllStatusCache } from '@hooks/useStatus'
-import { deleteAllTopCache } from '@hooks/useTop'
+import useNotification, { useNotificationPoller } from '@hooks/useNotification'
 import useUserData from '@hooks/useUserData'
-import { deleteAllUsernamesCache } from '@hooks/useUsername'
 import cn from '@libs/class'
 import { formatCanisterDateTime } from '@libs/date'
 import { build, buildBlobImage } from '@libs/url'
@@ -436,7 +428,7 @@ const Header = ({
                     className="w-full md:w-4/5"
                     href={build(['profile', 'my_assets'])}
                 >
-                    <MyAssetsLayout />
+                    <MyAssetsLayout tab={'Rewards'} />
                 </Popup>
             )}
             {/* {principal && user && (

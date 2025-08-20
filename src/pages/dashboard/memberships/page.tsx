@@ -35,7 +35,7 @@ const MembershipsPage = () => {
                 Icon={<PackageIcon className="h-6 w-6 stroke-[1.5px] md:h-7 md:w-7" />}
                 className="w-full md:w-2/3"
             >
-                <div className="w-full overflow-x-auto rounded-lg border border-cold-300 md:overflow-hidden">
+                <div className="w-full overflow-x-auto rounded-lg border border-cold-200 md:overflow-hidden">
                     {selectedPackage &&
                         ('originalPrice' in selectedPackage ? (
                             <MembershipDetails item={selectedPackage} />

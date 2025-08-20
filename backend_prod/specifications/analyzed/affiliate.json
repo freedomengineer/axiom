@@ -187,6 +187,164 @@
       }
     },
     {
+      "name": "lockCoupon",
+      "flag": {
+        "isQuery": false,
+        "callerRequired": true
+      },
+      "argTypes": {
+        "code": {
+          "origin": "[Nat8]",
+          "singular": {
+            "name": "Nat8"
+          },
+          "entries": [],
+          "isArray": true,
+          "isOptional": false,
+          "isAsync": false
+        },
+        "principal": {
+          "origin": "Principal",
+          "singular": {
+            "name": "Principal"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async Coupon.Sharable",
+        "singular": {
+          "name": "Sharable",
+          "parent": "Coupon"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
+      "name": "redeemCouponFailed",
+      "flag": {
+        "isQuery": false,
+        "callerRequired": true
+      },
+      "argTypes": {
+        "code": {
+          "origin": "[Nat8]",
+          "singular": {
+            "name": "Nat8"
+          },
+          "entries": [],
+          "isArray": true,
+          "isOptional": false,
+          "isAsync": false
+        },
+        "principal": {
+          "origin": "Principal",
+          "singular": {
+            "name": "Principal"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        },
+        "reason": {
+          "origin": "Text",
+          "singular": {
+            "name": "Text"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async ()",
+        "singular": {
+          "name": "()"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
+      "name": "redeemCoupon",
+      "flag": {
+        "isQuery": false,
+        "callerRequired": true
+      },
+      "argTypes": {
+        "code": {
+          "origin": "[Nat8]",
+          "singular": {
+            "name": "Nat8"
+          },
+          "entries": [],
+          "isArray": true,
+          "isOptional": false,
+          "isAsync": false
+        },
+        "principal": {
+          "origin": "Principal",
+          "singular": {
+            "name": "Principal"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async ()",
+        "singular": {
+          "name": "()"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
+      "name": "createCoupon",
+      "flag": {
+        "isQuery": false,
+        "callerRequired": true
+      },
+      "argTypes": {
+        "capitalRaised": {
+          "origin": "Nat",
+          "singular": {
+            "name": "Nat"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async Coupon.PrivateSharable",
+        "singular": {
+          "name": "PrivateSharable",
+          "parent": "Coupon"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
       "name": "withdrawAll",
       "flag": {
         "isQuery": false,
@@ -255,6 +413,364 @@
       }
     },
     {
+      "name": "getCoupon",
+      "flag": {
+        "isQuery": true,
+        "callerRequired": true
+      },
+      "argTypes": {
+        "key": {
+          "origin": "Text",
+          "singular": {
+            "name": "Text"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async Coupon.Sharable",
+        "singular": {
+          "name": "Sharable",
+          "parent": "Coupon"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
+      "name": "getCoupons",
+      "flag": {
+        "isQuery": true,
+        "callerRequired": true
+      },
+      "argTypes": {
+        "filter": {
+          "origin": "Coupons.Filter",
+          "singular": {
+            "name": "Filter",
+            "parent": "Coupons"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        },
+        "sort": {
+          "origin": "Base.Sort<Coupons.Sort>",
+          "singular": {
+            "name": "Sort",
+            "parent": "Base"
+          },
+          "entries": [
+            [
+              null,
+              {
+                "origin": "Coupons.Sort",
+                "singular": {
+                  "name": "Sort",
+                  "parent": "Coupons"
+                },
+                "entries": [],
+                "isArray": false,
+                "isOptional": false,
+                "isAsync": false
+              }
+            ]
+          ],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async Coupons.Sharable",
+        "singular": {
+          "name": "Sharable",
+          "parent": "Coupons"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
+      "name": "getCouponsPagination",
+      "flag": {
+        "isQuery": true,
+        "callerRequired": true
+      },
+      "argTypes": {
+        "filter": {
+          "origin": "Coupons.Filter",
+          "singular": {
+            "name": "Filter",
+            "parent": "Coupons"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        },
+        "sort": {
+          "origin": "Base.Sort<Coupons.Sort>",
+          "singular": {
+            "name": "Sort",
+            "parent": "Base"
+          },
+          "entries": [
+            [
+              null,
+              {
+                "origin": "Coupons.Sort",
+                "singular": {
+                  "name": "Sort",
+                  "parent": "Coupons"
+                },
+                "entries": [],
+                "isArray": false,
+                "isOptional": false,
+                "isAsync": false
+              }
+            ]
+          ],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        },
+        "page": {
+          "origin": "Nat",
+          "singular": {
+            "name": "Nat"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        },
+        "limit": {
+          "origin": "Nat",
+          "singular": {
+            "name": "Nat"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async Pagination.Pagination<Coupon.Sharable>",
+        "singular": {
+          "name": "Pagination",
+          "parent": "Pagination"
+        },
+        "entries": [
+          [
+            null,
+            {
+              "origin": "Coupon.Sharable",
+              "singular": {
+                "name": "Sharable",
+                "parent": "Coupon"
+              },
+              "entries": [],
+              "isArray": false,
+              "isOptional": false,
+              "isAsync": false
+            }
+          ]
+        ],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
+      "name": "getPrivateCoupon",
+      "flag": {
+        "isQuery": true,
+        "callerRequired": true
+      },
+      "argTypes": {
+        "key": {
+          "origin": "Text",
+          "singular": {
+            "name": "Text"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async Coupon.PrivateSharable",
+        "singular": {
+          "name": "PrivateSharable",
+          "parent": "Coupon"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
+      "name": "getPrivateCoupons",
+      "flag": {
+        "isQuery": true,
+        "callerRequired": true
+      },
+      "argTypes": {
+        "filter": {
+          "origin": "Coupons.PrivateFilter",
+          "singular": {
+            "name": "PrivateFilter",
+            "parent": "Coupons"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        },
+        "sort": {
+          "origin": "Base.Sort<Coupons.PrivateSort>",
+          "singular": {
+            "name": "Sort",
+            "parent": "Base"
+          },
+          "entries": [
+            [
+              null,
+              {
+                "origin": "Coupons.PrivateSort",
+                "singular": {
+                  "name": "PrivateSort",
+                  "parent": "Coupons"
+                },
+                "entries": [],
+                "isArray": false,
+                "isOptional": false,
+                "isAsync": false
+              }
+            ]
+          ],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async Coupons.PrivateSharable",
+        "singular": {
+          "name": "PrivateSharable",
+          "parent": "Coupons"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
+      "name": "getPrivateCouponsPagination",
+      "flag": {
+        "isQuery": true,
+        "callerRequired": true
+      },
+      "argTypes": {
+        "filter": {
+          "origin": "Coupons.PrivateFilter",
+          "singular": {
+            "name": "PrivateFilter",
+            "parent": "Coupons"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        },
+        "sort": {
+          "origin": "Base.Sort<Coupons.PrivateSort>",
+          "singular": {
+            "name": "Sort",
+            "parent": "Base"
+          },
+          "entries": [
+            [
+              null,
+              {
+                "origin": "Coupons.PrivateSort",
+                "singular": {
+                  "name": "PrivateSort",
+                  "parent": "Coupons"
+                },
+                "entries": [],
+                "isArray": false,
+                "isOptional": false,
+                "isAsync": false
+              }
+            ]
+          ],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        },
+        "page": {
+          "origin": "Nat",
+          "singular": {
+            "name": "Nat"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        },
+        "limit": {
+          "origin": "Nat",
+          "singular": {
+            "name": "Nat"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async Pagination.Pagination<Coupon.PrivateSharable>",
+        "singular": {
+          "name": "Pagination",
+          "parent": "Pagination"
+        },
+        "entries": [
+          [
+            null,
+            {
+              "origin": "Coupon.PrivateSharable",
+              "singular": {
+                "name": "PrivateSharable",
+                "parent": "Coupon"
+              },
+              "entries": [],
+              "isArray": false,
+              "isOptional": false,
+              "isAsync": false
+            }
+          ]
+        ],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
       "name": "getTop",
       "flag": {
         "isQuery": true,
@@ -262,13 +778,17 @@
       },
       "argTypes": {
         "category": {
-          "origin": "{ #Referrers }",
+          "origin": "{ #Referrers; #CouponGenerators }",
           "singular": {
             "name": "()"
           },
           "entries": [
             [
               "#Referrers",
+              null
+            ],
+            [
+              "#CouponGenerators",
               null
             ]
           ],
@@ -297,13 +817,17 @@
       },
       "argTypes": {
         "category": {
-          "origin": "{ #Referrers }",
+          "origin": "{ #Referrers; #CouponGenerators }",
           "singular": {
             "name": "()"
           },
           "entries": [
             [
               "#Referrers",
+              null
+            ],
+            [
+              "#CouponGenerators",
               null
             ]
           ],
@@ -449,6 +973,41 @@
       "relativePath": "users/Users",
       "depth": 2
     },
+    "Coupon": {
+      "origin": "import Coupon \"coupons/Coupon\";",
+      "name": "Coupon",
+      "category": "attribute",
+      "relativePath": "coupons/Coupon",
+      "depth": 2
+    },
+    "Coupons": {
+      "origin": "import Coupons \"coupons/Coupons\";",
+      "name": "Coupons",
+      "category": "attribute",
+      "relativePath": "coupons/Coupons",
+      "depth": 2
+    },
+    "Actor": {
+      "origin": "import Actor \"../../periphery/indicator/actors/Actor\";",
+      "name": "Actor",
+      "category": "attribute",
+      "relativePath": "../../periphery/indicator/actors/Actor",
+      "depth": 6
+    },
+    "Notification": {
+      "origin": "import Notification \"../../periphery/facade/notifications/Notification\";",
+      "name": "Notification",
+      "category": "attribute",
+      "relativePath": "../../periphery/facade/notifications/Notification",
+      "depth": 6
+    },
+    "Distributions": {
+      "origin": "import Distributions \"../split/distributions/Distributions\";",
+      "name": "Distributions",
+      "category": "attribute",
+      "relativePath": "../split/distributions/Distributions",
+      "depth": 4
+    },
     "IndicatorInterface": {
       "origin": "import IndicatorInterface \"../../periphery/indicator/Interface\";",
       "name": "IndicatorInterface",
@@ -462,6 +1021,20 @@
       "category": "interface",
       "relativePath": "../../periphery/facade/Interface",
       "depth": 5
+    },
+    "ICPUSDInterface": {
+      "origin": "import ICPUSDInterface \"../icpusd/Interface\";",
+      "name": "ICPUSDInterface",
+      "category": "interface",
+      "relativePath": "../icpusd/Interface",
+      "depth": 3
+    },
+    "SalesInterface": {
+      "origin": "import SalesInterface \"../sales/Interface\";",
+      "name": "SalesInterface",
+      "category": "interface",
+      "relativePath": "../sales/Interface",
+      "depth": 3
     },
     "SplitInterface": {
       "origin": "import SplitInterface \"../split/Interface\";",
@@ -484,11 +1057,32 @@
       "relativePath": "../../common/Errors",
       "depth": 4
     },
+    "Array": {
+      "origin": "import Array \"../../library/Array\";",
+      "name": "Array",
+      "category": "library",
+      "relativePath": "../../library/Array",
+      "depth": 4
+    },
+    "Base": {
+      "origin": "import Base \"../../library/Base\";",
+      "name": "Base",
+      "category": "library",
+      "relativePath": "../../library/Base",
+      "depth": 4
+    },
     "Configs": {
       "origin": "import Configs \"../../library/Configs\";",
       "name": "Configs",
       "category": "library",
       "relativePath": "../../library/Configs",
+      "depth": 4
+    },
+    "Count": {
+      "origin": "import Count \"../../library/Count\";",
+      "name": "Count",
+      "category": "library",
+      "relativePath": "../../library/Count",
       "depth": 4
     },
     "E8S": {
@@ -505,11 +1099,32 @@
       "relativePath": "../../library/Earning",
       "depth": 4
     },
+    "Hexadecimal": {
+      "origin": "import Hexadecimal \"../../library/Hexadecimal\";",
+      "name": "Hexadecimal",
+      "category": "library",
+      "relativePath": "../../library/Hexadecimal",
+      "depth": 4
+    },
     "Iter": {
       "origin": "import Iter \"../../library/Iter\";",
       "name": "Iter",
       "category": "library",
       "relativePath": "../../library/Iter",
+      "depth": 4
+    },
+    "List": {
+      "origin": "import List \"../../library/List\";",
+      "name": "List",
+      "category": "library",
+      "relativePath": "../../library/List",
+      "depth": 4
+    },
+    "Map": {
+      "origin": "import Map \"../../library/Map\";",
+      "name": "Map",
+      "category": "library",
+      "relativePath": "../../library/Map",
       "depth": 4
     },
     "Pagination": {
@@ -526,6 +1141,20 @@
       "relativePath": "../../library/Proportion",
       "depth": 4
     },
+    "SHA256": {
+      "origin": "import SHA256 \"../../library/SHA256\";",
+      "name": "SHA256",
+      "category": "library",
+      "relativePath": "../../library/SHA256",
+      "depth": 4
+    },
+    "Blob": {
+      "origin": "import Blob \"mo:base/Blob\";",
+      "name": "Blob",
+      "category": "base",
+      "relativePath": "mo:base/Blob",
+      "depth": 2
+    },
     "Principal": {
       "origin": "import Principal \"mo:base/Principal\";",
       "name": "Principal",
@@ -540,34 +1169,76 @@
       "relativePath": "mo:base/Nat",
       "depth": 2
     },
+    "Int": {
+      "origin": "import Int \"mo:base/Int\";",
+      "name": "Int",
+      "category": "base",
+      "relativePath": "mo:base/Int",
+      "depth": 2
+    },
     "Time": {
       "origin": "import Time \"mo:base/Time\";",
       "name": "Time",
       "category": "base",
       "relativePath": "mo:base/Time",
       "depth": 2
+    },
+    "Timer": {
+      "origin": "import Timer \"mo:base/Timer\";",
+      "name": "Timer",
+      "category": "base",
+      "relativePath": "mo:base/Timer",
+      "depth": 2
+    },
+    "Random": {
+      "origin": "import Random \"mo:base/Random\";",
+      "name": "Random",
+      "category": "base",
+      "relativePath": "mo:base/Random",
+      "depth": 2
     }
   },
   "actorDependencies": [
     "User",
     "Users",
+    "Coupon",
+    "Coupons",
+    "Actor",
+    "Notification",
+    "Distributions",
     "IndicatorInterface",
     "FacadeInterface",
+    "ICPUSDInterface",
+    "SalesInterface",
     "SplitInterface",
     "C",
     "E",
+    "Array",
+    "Base",
     "Configs",
+    "Count",
     "E8S",
     "Earning",
+    "Hexadecimal",
     "Iter",
+    "List",
+    "Map",
     "Pagination",
     "Proportion",
+    "SHA256",
+    "Blob",
     "Principal",
     "Nat",
-    "Time"
+    "Int",
+    "Time",
+    "Timer",
+    "Random"
   ],
   "interfaceDependencies": [
     "Configs",
+    "Coupon",
+    "Coupons",
+    "Base",
     "Pagination",
     "User",
     "Earning"
@@ -862,6 +1533,511 @@
       "isArray": false,
       "isOptional": true,
       "isAsync": false
+    },
+    "[Nat8]": {
+      "origin": "[Nat8]",
+      "singular": {
+        "name": "Nat8"
+      },
+      "entries": [],
+      "isArray": true,
+      "isOptional": false,
+      "isAsync": false
+    },
+    "async Coupon.Sharable": {
+      "origin": "async Coupon.Sharable",
+      "singular": {
+        "name": "()"
+      },
+      "entries": [
+        [
+          "key",
+          {
+            "origin": "Text",
+            "singular": {
+              "name": "Text"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "creator",
+          {
+            "origin": "Principal",
+            "singular": {
+              "name": "Principal"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "creationDate",
+          {
+            "origin": "Time",
+            "singular": {
+              "name": "Time"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "capitalRaised",
+          {
+            "origin": "Nat",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "icpPaid",
+          {
+            "origin": "Nat",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "status",
+          {
+            "origin": "Status",
+            "singular": {
+              "name": "()"
+            },
+            "entries": [
+              [
+                "#Available",
+                {
+                  "origin": "()",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#Locked",
+                {
+                  "origin": "{ by : Principal; timestamp : Time }",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      "by",
+                      {
+                        "origin": "Principal",
+                        "singular": {
+                          "name": "Principal"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "timestamp",
+                      {
+                        "origin": "Time",
+                        "singular": {
+                          "name": "Time"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#Redeemed",
+                {
+                  "origin": "{ by : Principal; timestamp : Time }",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      "by",
+                      {
+                        "origin": "Principal",
+                        "singular": {
+                          "name": "Principal"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "timestamp",
+                      {
+                        "origin": "Time",
+                        "singular": {
+                          "name": "Time"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#Failed",
+                {
+                  "origin": "{ by : Principal; reason : Text; timestamp : Time }",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      "by",
+                      {
+                        "origin": "Principal",
+                        "singular": {
+                          "name": "Principal"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "reason",
+                      {
+                        "origin": "Text",
+                        "singular": {
+                          "name": "Text"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "timestamp",
+                      {
+                        "origin": "Time",
+                        "singular": {
+                          "name": "Time"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ]
+            ],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ]
+      ],
+      "isArray": false,
+      "isOptional": false,
+      "isAsync": true
+    },
+    "Text": {
+      "origin": "Text",
+      "singular": {
+        "name": "Text"
+      },
+      "entries": [],
+      "isArray": false,
+      "isOptional": false,
+      "isAsync": false
+    },
+    "async Coupon.PrivateSharable": {
+      "origin": "async Coupon.PrivateSharable",
+      "singular": {
+        "name": "()"
+      },
+      "entries": [
+        [
+          "key",
+          {
+            "origin": "Text",
+            "singular": {
+              "name": "Text"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "creator",
+          {
+            "origin": "Principal",
+            "singular": {
+              "name": "Principal"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "creationDate",
+          {
+            "origin": "Time",
+            "singular": {
+              "name": "Time"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "capitalRaised",
+          {
+            "origin": "Nat",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "icpPaid",
+          {
+            "origin": "Nat",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "status",
+          {
+            "origin": "Status",
+            "singular": {
+              "name": "()"
+            },
+            "entries": [
+              [
+                "#Available",
+                {
+                  "origin": "()",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#Locked",
+                {
+                  "origin": "{ by : Principal; timestamp : Time }",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      "by",
+                      {
+                        "origin": "Principal",
+                        "singular": {
+                          "name": "Principal"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "timestamp",
+                      {
+                        "origin": "Time",
+                        "singular": {
+                          "name": "Time"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#Redeemed",
+                {
+                  "origin": "{ by : Principal; timestamp : Time }",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      "by",
+                      {
+                        "origin": "Principal",
+                        "singular": {
+                          "name": "Principal"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "timestamp",
+                      {
+                        "origin": "Time",
+                        "singular": {
+                          "name": "Time"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#Failed",
+                {
+                  "origin": "{ by : Principal; reason : Text; timestamp : Time }",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      "by",
+                      {
+                        "origin": "Principal",
+                        "singular": {
+                          "name": "Principal"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "reason",
+                      {
+                        "origin": "Text",
+                        "singular": {
+                          "name": "Text"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "timestamp",
+                      {
+                        "origin": "Time",
+                        "singular": {
+                          "name": "Time"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ]
+            ],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "code",
+          {
+            "origin": "Text",
+            "singular": {
+              "name": "Text"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ]
+      ],
+      "isArray": false,
+      "isOptional": false,
+      "isAsync": true
     },
     "Configs.Key": {
       "origin": "Configs.Key",
@@ -1346,14 +2522,1299 @@
       "isOptional": false,
       "isAsync": true
     },
-    "{ #Referrers }": {
-      "origin": "{ #Referrers }",
+    "Coupons.Filter": {
+      "origin": "Coupons.Filter",
+      "singular": {
+        "name": "()"
+      },
+      "entries": [
+        [
+          "creator",
+          {
+            "origin": "?Principal",
+            "singular": {
+              "name": "Principal"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": true,
+            "isAsync": false
+          }
+        ],
+        [
+          "capitalRaised",
+          {
+            "origin": "?Nat",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": true,
+            "isAsync": false
+          }
+        ],
+        [
+          "status",
+          {
+            "origin": "?StatusVariant",
+            "singular": {
+              "name": "()"
+            },
+            "entries": [
+              [
+                "#Available",
+                null
+              ],
+              [
+                "#Locked",
+                null
+              ],
+              [
+                "#Redeemed",
+                null
+              ],
+              [
+                "#Failed",
+                null
+              ]
+            ],
+            "isArray": false,
+            "isOptional": true,
+            "isAsync": false
+          }
+        ]
+      ],
+      "isArray": false,
+      "isOptional": false,
+      "isAsync": false
+    },
+    "Base.Sort<Coupons.Sort>": {
+      "origin": "{ by : T; order : Order }",
+      "singular": {
+        "name": "()"
+      },
+      "entries": [
+        [
+          "by",
+          {
+            "origin": "T",
+            "singular": {
+              "name": "()"
+            },
+            "entries": [
+              [
+                "#recent",
+                null
+              ],
+              [
+                "#icpPaid",
+                null
+              ]
+            ],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "order",
+          {
+            "origin": "Order",
+            "singular": {
+              "name": "()"
+            },
+            "entries": [
+              [
+                "#ascending",
+                null
+              ],
+              [
+                "#descending",
+                null
+              ]
+            ],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ]
+      ],
+      "isArray": false,
+      "isOptional": false,
+      "isAsync": false
+    },
+    "async Coupons.Sharable": {
+      "origin": "async Coupons.Sharable",
+      "singular": {
+        "name": "()"
+      },
+      "entries": [
+        [
+          "key",
+          {
+            "origin": "Text",
+            "singular": {
+              "name": "Text"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "creator",
+          {
+            "origin": "Principal",
+            "singular": {
+              "name": "Principal"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "creationDate",
+          {
+            "origin": "Time",
+            "singular": {
+              "name": "Time"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "capitalRaised",
+          {
+            "origin": "Nat",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "icpPaid",
+          {
+            "origin": "Nat",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "status",
+          {
+            "origin": "Status",
+            "singular": {
+              "name": "()"
+            },
+            "entries": [
+              [
+                "#Available",
+                {
+                  "origin": "()",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#Locked",
+                {
+                  "origin": "{ by : Principal; timestamp : Time }",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      "by",
+                      {
+                        "origin": "Principal",
+                        "singular": {
+                          "name": "Principal"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "timestamp",
+                      {
+                        "origin": "Time",
+                        "singular": {
+                          "name": "Time"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#Redeemed",
+                {
+                  "origin": "{ by : Principal; timestamp : Time }",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      "by",
+                      {
+                        "origin": "Principal",
+                        "singular": {
+                          "name": "Principal"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "timestamp",
+                      {
+                        "origin": "Time",
+                        "singular": {
+                          "name": "Time"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#Failed",
+                {
+                  "origin": "{ by : Principal; reason : Text; timestamp : Time }",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      "by",
+                      {
+                        "origin": "Principal",
+                        "singular": {
+                          "name": "Principal"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "reason",
+                      {
+                        "origin": "Text",
+                        "singular": {
+                          "name": "Text"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "timestamp",
+                      {
+                        "origin": "Time",
+                        "singular": {
+                          "name": "Time"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ]
+            ],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ]
+      ],
+      "isArray": true,
+      "isOptional": false,
+      "isAsync": true
+    },
+    "async Pagination.Pagination<Coupon.Sharable>": {
+      "origin": "{ result : [T]; is : Nat; of : Nat }",
+      "singular": {
+        "name": "()"
+      },
+      "entries": [
+        [
+          "result",
+          {
+            "origin": "[T]",
+            "singular": {
+              "name": "()"
+            },
+            "entries": [
+              [
+                "key",
+                {
+                  "origin": "Text",
+                  "singular": {
+                    "name": "Text"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "creator",
+                {
+                  "origin": "Principal",
+                  "singular": {
+                    "name": "Principal"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "creationDate",
+                {
+                  "origin": "Time",
+                  "singular": {
+                    "name": "Time"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "capitalRaised",
+                {
+                  "origin": "Nat",
+                  "singular": {
+                    "name": "Nat"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "icpPaid",
+                {
+                  "origin": "Nat",
+                  "singular": {
+                    "name": "Nat"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "status",
+                {
+                  "origin": "Status",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      "#Available",
+                      {
+                        "origin": "()",
+                        "singular": {
+                          "name": "()"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "#Locked",
+                      {
+                        "origin": "{ by : Principal; timestamp : Time }",
+                        "singular": {
+                          "name": "()"
+                        },
+                        "entries": [
+                          [
+                            "by",
+                            {
+                              "origin": "Principal",
+                              "singular": {
+                                "name": "Principal"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ],
+                          [
+                            "timestamp",
+                            {
+                              "origin": "Time",
+                              "singular": {
+                                "name": "Time"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ]
+                        ],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "#Redeemed",
+                      {
+                        "origin": "{ by : Principal; timestamp : Time }",
+                        "singular": {
+                          "name": "()"
+                        },
+                        "entries": [
+                          [
+                            "by",
+                            {
+                              "origin": "Principal",
+                              "singular": {
+                                "name": "Principal"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ],
+                          [
+                            "timestamp",
+                            {
+                              "origin": "Time",
+                              "singular": {
+                                "name": "Time"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ]
+                        ],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "#Failed",
+                      {
+                        "origin": "{ by : Principal; reason : Text; timestamp : Time }",
+                        "singular": {
+                          "name": "()"
+                        },
+                        "entries": [
+                          [
+                            "by",
+                            {
+                              "origin": "Principal",
+                              "singular": {
+                                "name": "Principal"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ],
+                          [
+                            "reason",
+                            {
+                              "origin": "Text",
+                              "singular": {
+                                "name": "Text"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ],
+                          [
+                            "timestamp",
+                            {
+                              "origin": "Time",
+                              "singular": {
+                                "name": "Time"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ]
+                        ],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ]
+            ],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "is",
+          {
+            "origin": "Nat",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "of",
+          {
+            "origin": "Nat",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ]
+      ],
+      "isArray": false,
+      "isOptional": false,
+      "isAsync": false
+    },
+    "Coupons.PrivateFilter": {
+      "origin": "Coupons.PrivateFilter",
+      "singular": {
+        "name": "()"
+      },
+      "entries": [
+        [
+          "capitalRaised",
+          {
+            "origin": "?Nat",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": true,
+            "isAsync": false
+          }
+        ],
+        [
+          "status",
+          {
+            "origin": "?StatusVariant",
+            "singular": {
+              "name": "()"
+            },
+            "entries": [
+              [
+                "#Available",
+                null
+              ],
+              [
+                "#Locked",
+                null
+              ],
+              [
+                "#Redeemed",
+                null
+              ],
+              [
+                "#Failed",
+                null
+              ]
+            ],
+            "isArray": false,
+            "isOptional": true,
+            "isAsync": false
+          }
+        ]
+      ],
+      "isArray": false,
+      "isOptional": false,
+      "isAsync": false
+    },
+    "Base.Sort<Coupons.PrivateSort>": {
+      "origin": "{ by : T; order : Order }",
+      "singular": {
+        "name": "()"
+      },
+      "entries": [
+        [
+          "by",
+          {
+            "origin": "T",
+            "singular": {
+              "name": "()"
+            },
+            "entries": [
+              [
+                "#recent",
+                null
+              ],
+              [
+                "#icpPaid",
+                null
+              ]
+            ],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "order",
+          {
+            "origin": "Order",
+            "singular": {
+              "name": "()"
+            },
+            "entries": [
+              [
+                "#ascending",
+                null
+              ],
+              [
+                "#descending",
+                null
+              ]
+            ],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ]
+      ],
+      "isArray": false,
+      "isOptional": false,
+      "isAsync": false
+    },
+    "async Coupons.PrivateSharable": {
+      "origin": "async Coupons.PrivateSharable",
+      "singular": {
+        "name": "()"
+      },
+      "entries": [
+        [
+          "key",
+          {
+            "origin": "Text",
+            "singular": {
+              "name": "Text"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "creator",
+          {
+            "origin": "Principal",
+            "singular": {
+              "name": "Principal"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "creationDate",
+          {
+            "origin": "Time",
+            "singular": {
+              "name": "Time"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "capitalRaised",
+          {
+            "origin": "Nat",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "icpPaid",
+          {
+            "origin": "Nat",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "status",
+          {
+            "origin": "Status",
+            "singular": {
+              "name": "()"
+            },
+            "entries": [
+              [
+                "#Available",
+                {
+                  "origin": "()",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#Locked",
+                {
+                  "origin": "{ by : Principal; timestamp : Time }",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      "by",
+                      {
+                        "origin": "Principal",
+                        "singular": {
+                          "name": "Principal"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "timestamp",
+                      {
+                        "origin": "Time",
+                        "singular": {
+                          "name": "Time"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#Redeemed",
+                {
+                  "origin": "{ by : Principal; timestamp : Time }",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      "by",
+                      {
+                        "origin": "Principal",
+                        "singular": {
+                          "name": "Principal"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "timestamp",
+                      {
+                        "origin": "Time",
+                        "singular": {
+                          "name": "Time"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#Failed",
+                {
+                  "origin": "{ by : Principal; reason : Text; timestamp : Time }",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      "by",
+                      {
+                        "origin": "Principal",
+                        "singular": {
+                          "name": "Principal"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "reason",
+                      {
+                        "origin": "Text",
+                        "singular": {
+                          "name": "Text"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "timestamp",
+                      {
+                        "origin": "Time",
+                        "singular": {
+                          "name": "Time"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ]
+            ],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "code",
+          {
+            "origin": "Text",
+            "singular": {
+              "name": "Text"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ]
+      ],
+      "isArray": true,
+      "isOptional": false,
+      "isAsync": true
+    },
+    "async Pagination.Pagination<Coupon.PrivateSharable>": {
+      "origin": "{ result : [T]; is : Nat; of : Nat }",
+      "singular": {
+        "name": "()"
+      },
+      "entries": [
+        [
+          "result",
+          {
+            "origin": "[T]",
+            "singular": {
+              "name": "()"
+            },
+            "entries": [
+              [
+                "key",
+                {
+                  "origin": "Text",
+                  "singular": {
+                    "name": "Text"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "creator",
+                {
+                  "origin": "Principal",
+                  "singular": {
+                    "name": "Principal"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "creationDate",
+                {
+                  "origin": "Time",
+                  "singular": {
+                    "name": "Time"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "capitalRaised",
+                {
+                  "origin": "Nat",
+                  "singular": {
+                    "name": "Nat"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "icpPaid",
+                {
+                  "origin": "Nat",
+                  "singular": {
+                    "name": "Nat"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "status",
+                {
+                  "origin": "Status",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      "#Available",
+                      {
+                        "origin": "()",
+                        "singular": {
+                          "name": "()"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "#Locked",
+                      {
+                        "origin": "{ by : Principal; timestamp : Time }",
+                        "singular": {
+                          "name": "()"
+                        },
+                        "entries": [
+                          [
+                            "by",
+                            {
+                              "origin": "Principal",
+                              "singular": {
+                                "name": "Principal"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ],
+                          [
+                            "timestamp",
+                            {
+                              "origin": "Time",
+                              "singular": {
+                                "name": "Time"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ]
+                        ],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "#Redeemed",
+                      {
+                        "origin": "{ by : Principal; timestamp : Time }",
+                        "singular": {
+                          "name": "()"
+                        },
+                        "entries": [
+                          [
+                            "by",
+                            {
+                              "origin": "Principal",
+                              "singular": {
+                                "name": "Principal"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ],
+                          [
+                            "timestamp",
+                            {
+                              "origin": "Time",
+                              "singular": {
+                                "name": "Time"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ]
+                        ],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "#Failed",
+                      {
+                        "origin": "{ by : Principal; reason : Text; timestamp : Time }",
+                        "singular": {
+                          "name": "()"
+                        },
+                        "entries": [
+                          [
+                            "by",
+                            {
+                              "origin": "Principal",
+                              "singular": {
+                                "name": "Principal"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ],
+                          [
+                            "reason",
+                            {
+                              "origin": "Text",
+                              "singular": {
+                                "name": "Text"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ],
+                          [
+                            "timestamp",
+                            {
+                              "origin": "Time",
+                              "singular": {
+                                "name": "Time"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ]
+                        ],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "code",
+                {
+                  "origin": "Text",
+                  "singular": {
+                    "name": "Text"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ]
+            ],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "is",
+          {
+            "origin": "Nat",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "of",
+          {
+            "origin": "Nat",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ]
+      ],
+      "isArray": false,
+      "isOptional": false,
+      "isAsync": false
+    },
+    "{ #Referrers; #CouponGenerators }": {
+      "origin": "{ #Referrers; #CouponGenerators }",
       "singular": {
         "name": "()"
       },
       "entries": [
         [
           "#Referrers",
+          null
+        ],
+        [
+          "#CouponGenerators",
           null
         ]
       ],
@@ -1596,6 +4057,19 @@
               ]
             ],
             "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "coupons",
+          {
+            "origin": "[Text]",
+            "singular": {
+              "name": "Text"
+            },
+            "entries": [],
+            "isArray": true,
             "isOptional": false,
             "isAsync": false
           }

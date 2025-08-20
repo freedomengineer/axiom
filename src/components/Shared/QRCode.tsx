@@ -32,7 +32,7 @@ const QRCode = ({ arr }: { arr: { name: string; content: string; image?: string 
                         />
                         <div className="text-tiny gap-small mx-auto flex w-full max-w-[80vw] flex-col items-center md:hidden md:flex-row md:justify-center">
                             <span className="text-nowrap font-semibold">{obj.name}</span>
-                            <div className="gap-medium p-tiny flex w-full max-w-full cursor-pointer items-center justify-between rounded-md border border-cold-300">
+                            <div className="gap-medium p-tiny flex w-full max-w-full cursor-pointer items-center justify-between rounded-md border border-cold-200">
                                 <span className="px-small truncate text-nowrap">{obj.content}</span>
                                 <button
                                     className="p-tiny rounded-md bg-cold-800/5 hover:bg-cold-800/10"
@@ -57,7 +57,7 @@ const QRCode = ({ arr }: { arr: { name: string; content: string; image?: string 
                         className="text-tiny gap-medium md: mx-auto flex w-full flex-col items-center justify-between md:flex-row"
                     >
                         <span className="w-min text-nowrap font-semibold">{name}</span>
-                        <div className="gap-medium p-extratiny flex w-fit max-w-fit cursor-pointer items-center justify-between overflow-hidden rounded-md border border-cold-300">
+                        <div className="gap-medium p-extratiny flex w-fit max-w-fit cursor-pointer items-center justify-between overflow-hidden rounded-md border border-cold-200">
                             <span className="px-small truncate text-nowrap">{content}</span>
                             <button
                                 className="p-tiny rounded-md bg-cold-800/5 hover:bg-cold-800/10"

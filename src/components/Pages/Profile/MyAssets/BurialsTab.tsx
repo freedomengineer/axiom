@@ -17,28 +17,31 @@ import { valueOf } from 'shared/utils/tokens'
 
 import Bury from './Bury'
 
-const BurialsTable = ({
+const BurialsTab = ({
     burials,
-    votingPower,
     buriedAmount,
-    expiredAmount,
     fetchBurials,
     refreshBalances,
 }: {
     burials: DEscrow.SharableBurial[]
-    votingPower: bigint
     buriedAmount: bigint
-    expiredAmount: bigint
     fetchBurials: () => Promise<void>
     refreshBalances: () => Promise<void>
 }) => {
     const { agent, principal } = useAuth()
 
+    const [votingPower, setVotingPower] = useState<bigint>(0n)
+    const [expiredAmount, setExpiredAmount] = useState<bigint>(0n)
+
     const [loading, setLoading] = useState(false)
     const [open, setOpen] = useState(false)
 
     useEffect(() => {
-        fetchBurials()
+        Promise.all([
+            Escrow.call().getVotingPower(principal!).then(setVotingPower),
+            Escrow.call().getExpiredAmount(principal!).then(setExpiredAmount),
+            fetchBurials(),
+        ])
     }, [])
 
     const withdraw = async () => {
@@ -68,7 +71,7 @@ const BurialsTable = ({
                 <Bury onBury={async () => Promise.all([fetchBurials(), refreshBalances()])} />
             </Popup>
             <div className="gap-normal grid w-full grid-cols-2 grid-rows-2 items-center md:grid-cols-4 md:grid-rows-1">
-                <div className="text-small py-small px-medium gap-normal flex w-full items-center justify-between text-nowrap rounded-lg border border-cold-300 bg-cold-50">
+                <div className="text-small py-small px-medium gap-normal flex w-full items-center justify-between text-nowrap rounded-lg border border-cold-200 bg-cold-50">
                     <span className="font-semibold text-cold-700">Voting pwr.</span>
                     <span className="font-semibold text-cold-700">
                         {valueOf(votingPower ?? 0n)}
@@ -77,7 +80,7 @@ const BurialsTable = ({
                 <button className="button h-full bg-cold-800" onClick={() => setOpen(true)}>
                     Bury ACORN
                 </button>
-                <div className="text-small py-small px-medium gap-normal flex w-full items-center justify-between text-nowrap rounded-lg border border-cold-300 bg-cold-50">
+                <div className="text-small py-small px-medium gap-normal flex w-full items-center justify-between text-nowrap rounded-lg border border-cold-200 bg-cold-50">
                     <span className="font-semibold text-cold-700">Buried amt.</span>
                     <span className="font-semibold text-cold-700">
                         {valueOf((buriedAmount ?? 0n) - (expiredAmount ?? 0n))}{' '}
@@ -112,25 +115,25 @@ const BurialsTable = ({
                 </button>
             </div>
             {burials?.length !== 0 && (
-                <div className="w-full overflow-x-auto rounded-lg border border-cold-300 md:overflow-hidden">
+                <div className="w-full overflow-x-auto rounded-lg border border-cold-200 md:overflow-hidden">
                     <table className="min-w-full border-collapse">
                         <thead className="bg-cold-50">
                             <tr>
                                 {[
                                     'No.',
                                     'Type',
-                                    'Amt.',
-                                    'Pwr.',
+                                    'Amount',
+                                    'Power.',
                                     'Issued date',
                                     'Expiry date',
-                                    'Claimable int.',
+                                    'Interest',
                                 ].map((title, i) => (
                                     <th
                                         key={i}
                                         scope="col"
                                         className={cn(
                                             'text-small px-normal py-small select-none text-nowrap bg-cold-100',
-                                            'border-b border-r border-cold-300',
+                                            'border-b border-r border-cold-200',
                                             i === 0 && 'border-l-0',
                                             i === 6 && 'border-r-0'
                                         )}
@@ -151,7 +154,7 @@ const BurialsTable = ({
                                         <td
                                             className={cn(
                                                 '!text-tiny py-small px-normal group relative text-nowrap bg-cold-50 text-left font-semibold text-cold-600',
-                                                'border-b border-r border-cold-300',
+                                                'border-b border-r border-cold-200',
                                                 isLastRow && 'border-b-0'
                                             )}
                                         >
@@ -160,7 +163,7 @@ const BurialsTable = ({
                                         <td
                                             className={cn(
                                                 '!text-tiny py-small px-normal text-nowrap text-cold-600',
-                                                'border-b border-r border-cold-300',
+                                                'border-b border-r border-cold-200',
                                                 isLastRow && 'border-b-0'
                                             )}
                                         >
@@ -170,7 +173,7 @@ const BurialsTable = ({
                                         <td
                                             className={cn(
                                                 '!text-tiny py-small px-normal text-nowrap font-semibold text-cold-600',
-                                                'border-b border-r border-cold-300',
+                                                'border-b border-r border-cold-200',
                                                 isLastRow && 'border-b-0'
                                             )}
                                         >
@@ -179,7 +182,7 @@ const BurialsTable = ({
                                         <td
                                             className={cn(
                                                 '!text-tiny py-small px-normal text-nowrap font-semibold text-cold-600',
-                                                'border-b border-r border-cold-300',
+                                                'border-b border-r border-cold-200',
                                                 isLastRow && 'border-b-0'
                                             )}
                                         >
@@ -188,7 +191,7 @@ const BurialsTable = ({
                                         <td
                                             className={cn(
                                                 '!text-tiny py-small px-normal text-nowrap text-cold-600',
-                                                'border-b border-r border-cold-300',
+                                                'border-b border-r border-cold-200',
                                                 isLastRow && 'border-b-0'
                                             )}
                                         >
@@ -201,7 +204,7 @@ const BurialsTable = ({
                                         <td
                                             className={cn(
                                                 '!text-tiny py-small px-normal text-nowrap text-cold-600',
-                                                'border-b border-r border-cold-300',
+                                                'border-b border-r border-cold-200',
                                                 isLastRow && 'border-b-0'
                                             )}
                                         >
@@ -214,7 +217,7 @@ const BurialsTable = ({
                                         <td
                                             className={cn(
                                                 '!text-tiny py-small px-normal text-nowrap font-semibold text-cold-600',
-                                                'border-b border-cold-300',
+                                                'border-b border-cold-200',
                                                 isLastRow && 'border-b-0'
                                             )}
                                         >
@@ -231,4 +234,4 @@ const BurialsTable = ({
     )
 }
 
-export default BurialsTable
+export default BurialsTab

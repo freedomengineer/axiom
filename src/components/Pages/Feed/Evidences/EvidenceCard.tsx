@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { createPortal } from 'react-dom'
 
 import DoneIcon from '@components/Assets/done.svg'
 import EditIcon from '@components/Assets/edit.svg'
@@ -155,23 +156,30 @@ const EvidenceCard = ({
                     </Link>
                 )}
             </div>
-            {imageOpen && formObject.Picture && (
-                <div
-                    className="fixed inset-0 z-[10000] flex cursor-pointer items-center justify-center bg-black/80 p-4"
-                    onClick={() => setImageOpen(false)}
-                >
-                    <div className="max-h-[90vh] max-w-[95vw]" onClick={(e) => e.stopPropagation()}>
-                        <img
-                            src={buildBlobImage(formObject.Picture.blob as Uint8Array)}
-                            alt="evidence"
-                            className="max-h-[75vh] max-w-[90vw] cursor-default rounded-lg object-contain"
-                        />
-                        <p className="text-tiny mt-3 text-center font-light text-white">
-                            {`from: @${publisher.username} - ${formatDate({ nano: localItem.publishDate })} (${formatDate({ nano: localItem.publishDate }, true)})`}
-                        </p>
-                    </div>
-                </div>
-            )}
+            {imageOpen &&
+                formObject.Picture &&
+                typeof window !== 'undefined' &&
+                createPortal(
+                    <div
+                        className="fixed inset-0 z-[10000] flex cursor-pointer items-center justify-center bg-black/80 p-4"
+                        onClick={() => setImageOpen(false)}
+                    >
+                        <div
+                            className="max-h-[90vh] max-w-[95vw]"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <img
+                                src={buildBlobImage(formObject.Picture.blob as Uint8Array)}
+                                alt="evidence"
+                                className="max-h-[75vh] max-w-[90vw] cursor-default rounded-lg object-contain"
+                            />
+                            <p className="text-tiny mt-3 text-center font-light text-white">
+                                {`from: @${publisher.username} - ${formatDate({ nano: localItem.publishDate })} (${formatDate({ nano: localItem.publishDate }, true)})`}
+                            </p>
+                        </div>
+                    </div>,
+                    document.body
+                )}
             <div className="px-medium py-small gap-tiny grid w-full grid-cols-2 grid-rows-2 rounded-b-md bg-cold-900 text-white md:flex">
                 <Link
                     className={cn(

@@ -17,7 +17,7 @@ import Proportion "../../library/Proportion";
 import Principal "mo:base/Principal";
 import Time "mo:base/Time";
 
-shared ({ caller = indicator }) actor class Escrow() = this {
+shared ({ caller = indicator }) persistent actor class Escrow() = this {
         private stable let Indicator : IndicatorInterface.Indicator = actor (Principal.toText(indicator));
 
     private stable let users : Users.Users = Users.init();

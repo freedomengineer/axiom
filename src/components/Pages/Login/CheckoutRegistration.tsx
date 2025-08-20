@@ -1,5 +1,6 @@
 'use client'
 
+import { Principal } from '@dfinity/principal'
 import { useState } from 'react'
 
 import IcpIcon from '@components/Assets/icp.svg'
@@ -13,10 +14,16 @@ import { Facade, ICP, Split } from 'shared/utils/services'
 import { valueOf } from 'shared/utils/tokens'
 
 const CheckoutRegistration = ({ choices, setChoice, handlePrev, handleNext }: StepProps) => {
-    const { agent, referrer, refreshUser } = useAuth()
+    const { agent, refreshUser } = useAuth()
 
     const [loading, setLoading] = useState<boolean>(false)
     const [isSufficient, setIsSufficient] = useState(true)
+
+    let referrer: Principal | null = null
+
+    try {
+        referrer = Principal.fromText(localStorage.getItem('ref')!)
+    } catch {}
 
     const sendTransaction = async () => {
         setLoading(true)
@@ -90,7 +97,7 @@ const CheckoutRegistration = ({ choices, setChoice, handlePrev, handleNext }: St
                     <p className="text-small text-cold-700">Referrer</p>
                     <input
                         type="text"
-                        value={referrer?.toText() ?? 'No Referrer'}
+                        value={referrer ? referrer.toText() : 'No Referrer'}
                         disabled={true}
                         className="input"
                     />

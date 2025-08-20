@@ -13,7 +13,7 @@ const ReleaseNotes = ({
     return (
         <div
             className={cn(
-                'py-small px-semilarge gap-small col-span-2 flex flex-col rounded-lg border border-cold-300',
+                'py-small px-semilarge gap-small col-span-2 flex flex-col rounded-lg border border-cold-200',
                 className
             )}
         >

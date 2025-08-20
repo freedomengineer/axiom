@@ -23,7 +23,7 @@ const FieldsTab = ({ principal }: { principal: Principal }) => {
             hardSort={{ by: 'recent', order: 'descending' }}
             query={Axioms.call(agent, true).getFieldsPagination}
             className="h-full w-full"
-            size={6n}
+            size={12n}
         />
     )
 }

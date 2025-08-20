@@ -33,7 +33,7 @@ const HypothesesTab = ({
             hardSort={{ by: 'recent', order: 'descending' }}
             query={Axioms.call(agent, true).getHypothesesPagination}
             className="h-full w-full"
-            size={6n}
+            size={12n}
         />
     )
 }

@@ -1,9 +1,9 @@
-import { Tab, TabPanel, Tabs, TabsBody, TabsHeader } from '@material-tailwind/react'
 import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { N } from 'vitest/dist/chunks/reporters.66aFHiyX'
 
 import TopCard from '@components/Pages/ACEDashboard/Leaderboard/TopCard'
+import { Tab, TabPanel, Tabs, TabsBody, TabsHeader } from '@components/Primitives/MemorizedTabs'
 import Spinner from '@components/Primitives/Spinner'
 import PageMetadata from '@components/Shared/PageMetadata'
 import siteMetadata from '@data/siteMetadata.json'
@@ -72,38 +72,20 @@ const LeaderboardPage = () => {
         <div className="p-semilarge">
             <PageMetadata {...pageMetadata} />
             <Tabs value={keyParam}>
-                <TabsHeader
-                    className="overflow-x-auto rounded-none border-b border-primary-50 bg-transparent p-0"
-                    indicatorProps={{
-                        className:
-                            'bg-transparent border-b-2 border-primary-700 shadow-none rounded-none',
-                    }}
-                >
+                <TabsHeader>
                     {LEADERBOARD.map(({ key, label }) => (
-                        <Tab
-                            key={key}
-                            value={key}
-                            onClick={() => setSearchPrams({ key })}
-                            className={cn(
-                                'text-normal font-normal',
-                                keyParam === key ? 'text-primary-700' : ''
-                            )}
-                        >
+                        <Tab key={key} value={key} onClick={() => setSearchPrams({ key })}>
                             <span className="text-normal text-nowrap font-normal">{label}</span>
                         </Tab>
                     ))}
                 </TabsHeader>
-                <TabsBody>
-                    <TabPanel
-                        key={keyParam}
-                        value={keyParam}
-                        className="gap-medium mt-medium flex w-full flex-col flex-wrap items-center"
-                    >
+                <TabsBody className=" mt-medium">
+                    <TabPanel key={keyParam} value={keyParam} className="gap-medium">
                         <p className="text-small gap-medium px-medium mx-auto flex w-full max-w-3xl justify-center text-center font-normal text-cold-700">
                             {LEADERBOARD.find(({ key }) => key === keyParam)?.description}
                         </p>
                         {isInitialLoading && !firstPage ? (
-                            <Spinner className="mx-auto mt-10 h-10 w-10" />
+                            <Spinner className="mx-auto h-7 w-7 md:h-9 md:w-9" />
                         ) : firstPage ? (
                             <div className="gap-normal flex w-full flex-col">
                                 <p className="text-small gap-medium px-medium mx-auto flex w-full max-w-3xl justify-end font-medium text-cold-800">

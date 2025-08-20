@@ -1,10 +1,10 @@
 import User "User";
 
 import E "../../../common/Errors";
-
 import Earning "../../../library/Earning";
 import E8S "../../../library/E8S";
 import Iter "../../../library/Iter";
+import List "../../../library/List";
 import Map "../../../library/Map";
 import Principal "mo:base/Principal";
 
@@ -56,9 +56,10 @@ module {
         User.toSharable(user(__, principal))
     };
 
-    public func getTop(__ : Self, category : { #Referrers }) : [(Principal, Nat)] {
+    public func getTop(__ : Self, category : { #Referrers; #CouponGenerators }) : [(Principal, Nat)] {
         let map : ((Principal, User)) -> ((Principal, Nat)) = switch (category) {
-            case (#Referrers) func(i, e) = (i, e.referrals.val)
+            case (#Referrers) func(i, e) = (i, e.referrals.val);
+            case (#CouponGenerators) func(i, e) = (i, List.size(e.coupons))
         };
         Map.getEntriesMap<Principal, User, (Principal, Nat)>(__, map)
     };

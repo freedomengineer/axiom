@@ -72,6 +72,7 @@ const _fetchTop = async (
             case 'PoweredVoters':
                 top = await Escrow.call(agent).getTopPagination(Variant(key), page, PAGE_SIZE)
                 break
+            case 'CouponGenerators':
             case 'Referrers':
                 top = await Affiliate.call(agent).getTopPagination(Variant(key), page, PAGE_SIZE)
                 break

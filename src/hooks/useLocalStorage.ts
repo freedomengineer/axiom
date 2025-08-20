@@ -66,6 +66,14 @@ const _default: LocalStorageData = {
         filter: {},
         sort: { by: 'recent', order: 'descending' },
     },
+    coupons: {
+        filter: {},
+        sort: { by: 'recent', order: 'descending' },
+    },
+    privateCoupons: {
+        filter: {},
+        sort: { by: 'recent', order: 'descending' },
+    },
 }
 
 export const getLocalConfig = <T extends keyof LocalStorageData>(key: T): LocalStorageData[T] => {

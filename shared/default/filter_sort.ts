@@ -1,6 +1,6 @@
 import { ActorMethod } from '@dfinity/agent'
 
-import { DAxioms, DDAO, DFacade } from 'shared/types/services'
+import { DAffiliate, DAxioms, DDAO, DFacade } from 'shared/types/services'
 import { DefaultVariant, Primitive, isNullish, parsePrimitive } from 'shared/utils/typings'
 
 export type PartialFilterInput<T> = {
@@ -24,6 +24,8 @@ export type QueryMap = {
     nominee: DDAO.DAO['getNominees']
     proposal: DDAO.DAO['getProposals']
     flag: DAxioms._SERVICE['getFlags']
+    coupons: DAffiliate._SERVICE['getCoupons']
+    privateCoupons: DAffiliate._SERVICE['getPrivateCoupons']
 }
 export type QueryName = keyof QueryMap
 
@@ -132,6 +134,27 @@ export const FILTER_SORT_DECS = {
         },
         sort: {
             by: ['recent', 'difference'],
+            order: ['descending', 'ascending'],
+        },
+    },
+    coupons: {
+        filter: {
+            status: ['Available', 'Failed', 'Redeemed', 'Locked'],
+            creator: Primitive.Principal,
+            capitalRaised: Primitive.Nat,
+        },
+        sort: {
+            by: ['recent', 'icpPaid'],
+            order: ['descending', 'ascending'],
+        },
+    },
+    privateCoupons: {
+        filter: {
+            status: ['Available', 'Failed', 'Redeemed', 'Locked'],
+            capitalRaised: Primitive.Nat,
+        },
+        sort: {
+            by: ['recent', 'icpPaid'],
             order: ['descending', 'ascending'],
         },
     },

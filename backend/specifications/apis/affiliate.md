@@ -3,11 +3,11 @@
 ## Dependencies
 
 
-- Attributes: `User`, `Users`
-- Interfaces: `IndicatorInterface`, `FacadeInterface`, `SplitInterface`
+- Attributes: `User`, `Users`, `Coupon`, `Coupons`, `Actor`, `Notification`, `Distributions`
+- Interfaces: `IndicatorInterface`, `FacadeInterface`, `ICPUSDInterface`, `SalesInterface`, `SplitInterface`
 - Commons: `C`, `E`
-- Libraries: `Configs`, `E8S`, `Earning`, `Iter`, `Pagination`, `Proportion`
-- Bases: `Principal`, `Nat`, `Time`
+- Libraries: `Array`, `Base`, `Configs`, `Count`, `E8S`, `Earning`, `Hexadecimal`, `Iter`, `List`, `Map`, `Pagination`, `Proportion`, `SHA256`
+- Bases: `Blob`, `Principal`, `Nat`, `Int`, `Time`, `Timer`, `Random`
 ## Modifiers
 
 ### 1. `shiftToMidnight(days)` returns `()`
@@ -82,7 +82,74 @@
 {"principal": "Principal", "icpPaid": "Nat", "referrer": "Principal"}
 ```
 
-### 6. `withdrawAll()` returns `()`
+### 6. `lockCoupon(code, principal)` returns `Coupon.Sharable`
+
+#### Arguments:
+
+```json
+{"code": ["Nat8"], "principal": "Principal"}
+```
+
+#### Returns:
+```json
+{
+  "key": "Text",
+  "creator": "Principal",
+  "creationDate": "Time",
+  "capitalRaised": "Nat",
+  "icpPaid": "Nat",
+  "status": {
+    "#AVAILABLE": null,
+    "#LOCKED": {"by": "Principal", "timestamp": "Time"},
+    "#REDEEMED": {"by": "Principal", "timestamp": "Time"},
+    "#FAILED": {"by": "Principal", "reason": "Text", "timestamp": "Time"}
+  }
+}
+```
+
+### 7. `redeemCouponFailed(code, principal, reason)` returns `()`
+
+#### Arguments:
+
+```json
+{"code": ["Nat8"], "principal": "Principal", "reason": "Text"}
+```
+
+### 8. `redeemCoupon(code, principal)` returns `()`
+
+#### Arguments:
+
+```json
+{"code": ["Nat8"], "principal": "Principal"}
+```
+
+### 9. `createCoupon(capitalRaised)` returns `Coupon.PrivateSharable`
+
+#### Arguments:
+
+```json
+{"capitalRaised": "Nat"}
+```
+
+#### Returns:
+```json
+{
+  "key": "Text",
+  "creator": "Principal",
+  "creationDate": "Time",
+  "capitalRaised": "Nat",
+  "icpPaid": "Nat",
+  "status": {
+    "#AVAILABLE": null,
+    "#LOCKED": {"by": "Principal", "timestamp": "Time"},
+    "#REDEEMED": {"by": "Principal", "timestamp": "Time"},
+    "#FAILED": {"by": "Principal", "reason": "Text", "timestamp": "Time"}
+  },
+  "code": "Text"
+}
+```
+
+### 10. `withdrawAll()` returns `()`
 
 ## Accessors
 
@@ -135,12 +202,193 @@
 ]
 ```
 
-### 3. `getTop(category)` returns `Pagination.TopNonPagination`
+### 3. `getCoupon(key)` returns `Coupon.Sharable`
 
 #### Arguments:
 
 ```json
-{"category": "#REFERRERS"}
+{"key": "Text"}
+```
+
+#### Returns:
+```json
+{
+  "key": "Text",
+  "creator": "Principal",
+  "creationDate": "Time",
+  "capitalRaised": "Nat",
+  "icpPaid": "Nat",
+  "status": {
+    "#AVAILABLE": null,
+    "#LOCKED": {"by": "Principal", "timestamp": "Time"},
+    "#REDEEMED": {"by": "Principal", "timestamp": "Time"},
+    "#FAILED": {"by": "Principal", "reason": "Text", "timestamp": "Time"}
+  }
+}
+```
+
+### 4. `getCoupons(filter, sort)` returns `Coupons.Sharable`
+
+#### Arguments:
+
+```json
+{
+  "filter": {"creator": "Principal", "capitalRaised": "Nat", "status": "#AVAILABLE | #LOCKED | #REDEEMED | #FAILED"},
+  "sort": {"by": "#RECENT | #ICPPAID", "order": "#ASCENDING | #DESCENDING"}
+}
+```
+
+#### Returns:
+```json
+[
+  {
+    "key": "Text",
+    "creator": "Principal",
+    "creationDate": "Time",
+    "capitalRaised": "Nat",
+    "icpPaid": "Nat",
+    "status": {
+      "#AVAILABLE": null,
+      "#LOCKED": {"by": "Principal", "timestamp": "Time"},
+      "#REDEEMED": {"by": "Principal", "timestamp": "Time"},
+      "#FAILED": {"by": "Principal", "reason": "Text", "timestamp": "Time"}
+    }
+  }
+]
+```
+
+### 5. `getCouponsPagination(filter, sort, page, limit)` returns `Pagination.Pagination<Coupon.Sharable>`
+
+#### Arguments:
+
+```json
+{
+  "filter": {"creator": "Principal", "capitalRaised": "Nat", "status": "#AVAILABLE | #LOCKED | #REDEEMED | #FAILED"},
+  "sort": {"by": "#RECENT | #ICPPAID", "order": "#ASCENDING | #DESCENDING"},
+  "page": "Nat",
+  "limit": "Nat"
+}
+```
+
+#### Returns:
+```json
+{
+  "result": {
+    "key": "Text",
+    "creator": "Principal",
+    "creationDate": "Time",
+    "capitalRaised": "Nat",
+    "icpPaid": "Nat",
+    "status": {
+      "#AVAILABLE": null,
+      "#LOCKED": {"by": "Principal", "timestamp": "Time"},
+      "#REDEEMED": {"by": "Principal", "timestamp": "Time"},
+      "#FAILED": {"by": "Principal", "reason": "Text", "timestamp": "Time"}
+    }
+  },
+  "is": "Nat",
+  "of": "Nat"
+}
+```
+
+### 6. `getPrivateCoupon(key)` returns `Coupon.PrivateSharable`
+
+#### Arguments:
+
+```json
+{"key": "Text"}
+```
+
+#### Returns:
+```json
+{
+  "key": "Text",
+  "creator": "Principal",
+  "creationDate": "Time",
+  "capitalRaised": "Nat",
+  "icpPaid": "Nat",
+  "status": {
+    "#AVAILABLE": null,
+    "#LOCKED": {"by": "Principal", "timestamp": "Time"},
+    "#REDEEMED": {"by": "Principal", "timestamp": "Time"},
+    "#FAILED": {"by": "Principal", "reason": "Text", "timestamp": "Time"}
+  },
+  "code": "Text"
+}
+```
+
+### 7. `getPrivateCoupons(filter, sort)` returns `Coupons.PrivateSharable`
+
+#### Arguments:
+
+```json
+{
+  "filter": {"capitalRaised": "Nat", "status": "#AVAILABLE | #LOCKED | #REDEEMED | #FAILED"},
+  "sort": {"by": "#RECENT | #ICPPAID", "order": "#ASCENDING | #DESCENDING"}
+}
+```
+
+#### Returns:
+```json
+[
+  {
+    "key": "Text",
+    "creator": "Principal",
+    "creationDate": "Time",
+    "capitalRaised": "Nat",
+    "icpPaid": "Nat",
+    "status": {
+      "#AVAILABLE": null,
+      "#LOCKED": {"by": "Principal", "timestamp": "Time"},
+      "#REDEEMED": {"by": "Principal", "timestamp": "Time"},
+      "#FAILED": {"by": "Principal", "reason": "Text", "timestamp": "Time"}
+    },
+    "code": "Text"
+  }
+]
+```
+
+### 8. `getPrivateCouponsPagination(filter, sort, page, limit)` returns `Pagination.Pagination<Coupon.PrivateSharable>`
+
+#### Arguments:
+
+```json
+{
+  "filter": {"capitalRaised": "Nat", "status": "#AVAILABLE | #LOCKED | #REDEEMED | #FAILED"},
+  "sort": {"by": "#RECENT | #ICPPAID", "order": "#ASCENDING | #DESCENDING"},
+  "page": "Nat",
+  "limit": "Nat"
+}
+```
+
+#### Returns:
+```json
+{
+  "result": {
+    "key": "Text",
+    "creator": "Principal",
+    "creationDate": "Time",
+    "capitalRaised": "Nat",
+    "icpPaid": "Nat",
+    "status": {
+      "#AVAILABLE": null,
+      "#LOCKED": {"by": "Principal", "timestamp": "Time"},
+      "#REDEEMED": {"by": "Principal", "timestamp": "Time"},
+      "#FAILED": {"by": "Principal", "reason": "Text", "timestamp": "Time"}
+    },
+    "code": "Text"
+  },
+  "is": "Nat",
+  "of": "Nat"
+}
+```
+
+### 9. `getTop(category)` returns `Pagination.TopNonPagination`
+
+#### Arguments:
+
+```json
+{"category": "#REFERRERS | #COUPONGENERATORS"}
 ```
 
 #### Returns:
@@ -148,12 +396,12 @@
 {"result": [["Principal", "Nat"]], "callerRank": "Nat"}
 ```
 
-### 4. `getTopPagination(category, page, limit)` returns `Pagination.TopPagination`
+### 10. `getTopPagination(category, page, limit)` returns `Pagination.TopPagination`
 
 #### Arguments:
 
 ```json
-{"category": "#REFERRERS", "page": "Nat", "limit": "Nat"}
+{"category": "#REFERRERS | #COUPONGENERATORS", "page": "Nat", "limit": "Nat"}
 ```
 
 #### Returns:
@@ -161,7 +409,7 @@
 {"result": [["Principal", "Nat"]], "callerRank": "Nat", "is": "Nat", "of": "Nat"}
 ```
 
-### 5. `getUser(principal)` returns `User.Sharable`
+### 11. `getUser(principal)` returns `User.Sharable`
 
 #### Arguments:
 
@@ -171,10 +419,15 @@
 
 #### Returns:
 ```json
-{"referrer": "Principal", "referrals": "Nat", "earning": {"revenue": "Nat", "balance": "Nat", "lastWithdrawAt": "Time"}}
+{
+  "referrer": "Principal",
+  "referrals": "Nat",
+  "earning": {"revenue": "Nat", "balance": "Nat", "lastWithdrawAt": "Time"},
+  "coupons": ["Text"]
+}
 ```
 
-### 6. `getEarning(principal)` returns `Earning.Sharable`
+### 12. `getEarning(principal)` returns `Earning.Sharable`
 
 #### Arguments:
 
@@ -187,7 +440,7 @@
 {"revenue": "Nat", "balance": "Nat", "lastWithdrawAt": "Time"}
 ```
 
-### 7. `expectUserNotFound(principal)` returns `()`
+### 13. `expectUserNotFound(principal)` returns `()`
 
 #### Arguments:
 

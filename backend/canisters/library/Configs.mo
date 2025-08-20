@@ -65,6 +65,11 @@ module {
         for ((key, value) in entries.vals()) Map.put(__, TextKey(key), value);
         __
     };
+    public func fromSharable(entries : Sharable) : Self {
+        let __ = Map.new<Key, Value>();
+        for ((key, value) in entries.vals()) Map.put(__, TextKey(key), _valueFromSharable(value));
+        __
+    };
 
     /// PUBLIC ////// MODIFIERS ////////////
 

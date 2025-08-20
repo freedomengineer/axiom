@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { createPortal } from 'react-dom'
 
 import DateTimeIcon from '@components/Assets/date_time.svg'
 import DoneIcon from '@components/Assets/done.svg'
@@ -49,6 +50,7 @@ const EvidenceDetail = ({
     const [openReply, setOpenReply] = useState<boolean | undefined>(
         onReply === undefined ? undefined : false
     )
+    const [imageOpen, setImageOpen] = useState<boolean>(false)
 
     const handleCopy = () => {
         navigator.clipboard.writeText(
@@ -127,7 +129,8 @@ const EvidenceDetail = ({
                     <img
                         src={buildBlobImage(formObject.Picture.blob)}
                         alt="evidence"
-                        className="h-28 rounded-lg object-cover md:h-32"
+                        className="h-28 cursor-zoom-in rounded-lg object-cover hover:opacity-75 md:h-32"
+                        onClick={() => setImageOpen(true)}
                     />
                 )}
                 {formObject.Note && (
@@ -150,6 +153,30 @@ const EvidenceDetail = ({
                     </Link>
                 )}
             </div>
+            {imageOpen &&
+                formObject.Picture &&
+                typeof window !== 'undefined' &&
+                createPortal(
+                    <div
+                        className="fixed inset-0 z-[10000] flex cursor-pointer items-center justify-center bg-black/80 p-4"
+                        onClick={() => setImageOpen(false)}
+                    >
+                        <div
+                            className="max-h-[90vh] max-w-[95vw]"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <img
+                                src={buildBlobImage(formObject.Picture.blob)}
+                                alt="evidence"
+                                className="max-h-[75vh] max-w-[90vw] cursor-default rounded-lg object-contain"
+                            />
+                            <p className="text-tiny mt-3 text-center font-light text-white">
+                                {`from: @${publisher.username} - ${formatDate({ nano: localItem.publishDate })} (${formatDate({ nano: localItem.publishDate }, true)})`}
+                            </p>
+                        </div>
+                    </div>,
+                    document.body
+                )}
             <div className="px-medium py-small gap-tiny grid w-full grid-cols-2 grid-rows-2 rounded-b-md bg-cold-900 text-white md:flex">
                 <Link
                     className="gap-small order-1 flex items-center hover:opacity-75"

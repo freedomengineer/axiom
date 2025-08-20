@@ -795,10 +795,10 @@ const Notifications = () => {
                 ) : (
                     <div className="p-large flex flex-col items-center justify-center text-center">
                         <EmptyNotificationIcon className="mb-medium h-12 w-12 text-cold-300 md:h-16 md:w-16" />
-                        <p className="text-normal font-medium text-cold-700">
+                        <p className="text-normal text-center font-medium text-cold-700">
                             You're all caught up!
                         </p>
-                        <p className="text-tiny font-normal text-cold-700">
+                        <p className="text-tiny text-center font-normal text-cold-700">
                             There are no new notifications in this tab
                         </p>
                     </div>

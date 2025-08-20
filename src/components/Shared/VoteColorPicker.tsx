@@ -63,18 +63,18 @@ const VoteColorPicker = ({
 
             <div className="gap-small flex items-center">
                 <div
-                    className="h-8 w-8 flex-shrink-0 cursor-pointer rounded-lg transition-colors"
+                    className="relative h-8 w-8 flex-shrink-0 rounded-lg transition-colors"
                     style={{ backgroundColor: inputValue }}
-                    onClick={handleColorPreviewClick}
-                />
-
-                <input
-                    ref={colorInputRef}
-                    type="color"
-                    value={inputValue}
-                    onChange={(e) => handleColorChange(e.target.value)}
-                    className="sr-only"
-                />
+                >
+                    <input
+                        ref={colorInputRef}
+                        type="color"
+                        value={inputValue}
+                        onChange={(e) => handleColorChange(e.target.value)}
+                        className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                        aria-label={`${label} color`}
+                    />
+                </div>
 
                 <input
                     type="text"

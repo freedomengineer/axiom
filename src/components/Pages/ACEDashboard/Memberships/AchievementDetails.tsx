@@ -17,7 +17,7 @@ const AchievementDetails = ({
                     <td
                         className={cn(
                             '!text-tiny py-small px-normal group relative text-nowrap bg-cold-50 text-left font-semibold text-cold-600',
-                            'border-b border-r border-cold-300'
+                            'border-b border-r border-cold-200'
                         )}
                     >
                         Name
@@ -25,7 +25,7 @@ const AchievementDetails = ({
                     <td
                         className={cn(
                             '!text-tiny py-small px-normal text-nowrap font-semibold text-cold-600',
-                            'border-b border-cold-300'
+                            'border-b border-cold-200'
                         )}
                     >
                         <code>{item.name}</code>
@@ -35,7 +35,7 @@ const AchievementDetails = ({
                     <td
                         className={cn(
                             '!text-tiny py-small px-normal group relative text-nowrap bg-cold-50 text-left font-semibold text-cold-600',
-                            'border-b border-r border-cold-300'
+                            'border-b border-r border-cold-200'
                         )}
                     >
                         Symbol
@@ -43,7 +43,7 @@ const AchievementDetails = ({
                     <td
                         className={cn(
                             '!text-tiny py-small px-normal text-nowrap font-semibold text-cold-600',
-                            'border-b border-cold-300'
+                            'border-b border-cold-200'
                         )}
                     >
                         <code>{item.symbol}</code>
@@ -53,7 +53,7 @@ const AchievementDetails = ({
                     <td
                         className={cn(
                             '!text-tiny py-small px-normal group relative text-nowrap bg-cold-50 text-left font-semibold text-cold-600',
-                            'border-b border-r border-cold-300'
+                            'border-b border-r border-cold-200'
                         )}
                     >
                         Achievement type
@@ -61,7 +61,7 @@ const AchievementDetails = ({
                     <td
                         className={cn(
                             '!text-tiny py-small px-normal text-nowrap font-semibold text-cold-600',
-                            'border-b border-cold-300'
+                            'border-b border-cold-200'
                         )}
                     >
                         <code>{item.achievementType}</code>
@@ -71,7 +71,7 @@ const AchievementDetails = ({
                     <td
                         className={cn(
                             '!text-tiny py-small px-normal group relative text-nowrap bg-cold-50 text-left font-semibold text-cold-600',
-                            'border-b border-r border-cold-300'
+                            'border-b border-r border-cold-200'
                         )}
                     >
                         Qualifying threshold
@@ -79,7 +79,7 @@ const AchievementDetails = ({
                     <td
                         className={cn(
                             '!text-tiny py-small px-normal text-nowrap font-semibold text-cold-600',
-                            'border-b border-cold-300'
+                            'border-b border-cold-200'
                         )}
                     >
                         <code>
@@ -101,7 +101,7 @@ const AchievementDetails = ({
                     <td
                         className={cn(
                             '!text-tiny py-small px-normal group relative text-nowrap bg-cold-50 text-left font-semibold text-cold-600',
-                            'border-b border-r border-cold-300'
+                            'border-b border-r border-cold-200'
                         )}
                     >
                         Canister URL
@@ -109,7 +109,7 @@ const AchievementDetails = ({
                     <td
                         className={cn(
                             '!text-tiny py-small px-normal text-nowrap font-semibold text-cold-600',
-                            'border-b border-cold-300'
+                            'border-b border-cold-200'
                         )}
                     >
                         {item.canisterUrl ? (
@@ -132,7 +132,7 @@ const AchievementDetails = ({
                     <td
                         className={cn(
                             '!text-tiny py-small px-normal group relative text-nowrap bg-cold-50 text-left font-semibold text-cold-600',
-                            'border-r border-cold-300'
+                            'border-r border-cold-200'
                         )}
                     >
                         Thumbnail URL
@@ -140,7 +140,7 @@ const AchievementDetails = ({
                     <td
                         className={cn(
                             '!text-tiny py-small px-normal text-nowrap font-semibold text-cold-600',
-                            'border-cold-300'
+                            'border-cold-200'
                         )}
                     >
                         <Link

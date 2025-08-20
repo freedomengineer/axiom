@@ -43,7 +43,7 @@ import Int "mo:base/Int";
 import Debug "mo:base/Debug";
 import Timer "mo:base/Timer";
 
-shared ({ caller = indicator }) actor class DAO() = this {
+shared ({ caller = indicator }) persistent actor class DAO() = this {
     ////// TEMPORARY IMPLEMENTATION ////////////
     private stable var shiftedTime : Int = 0;
     private func getNow() : Int = shiftedTime + Time.now();

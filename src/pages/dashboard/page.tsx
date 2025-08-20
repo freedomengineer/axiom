@@ -1,19 +1,17 @@
-import { Tab, TabPanel, Tabs, TabsBody, TabsHeader } from '@material-tailwind/react'
 import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
 import SimpleConfigsDetachment from '@components/Pages/ACEDashboard/Proposals/ProposalDetachments/SimpleConfigsDetachment'
 import SimpleStatusDetachment from '@components/Pages/ACEDashboard/Proposals/ProposalDetachments/SimpleStatusDetachment'
+import { Tab, TabPanel, Tabs, TabsBody, TabsHeader } from '@components/Primitives/MemorizedTabs'
 import Spinner from '@components/Primitives/Spinner'
 import Divider from '@components/Shared/Divider'
 import PageMetadata from '@components/Shared/PageMetadata'
 import siteMetadata from '@data/siteMetadata.json'
 import { getConfigs } from '@hooks/useConfigs'
 import { Actor, ActorStatus, getStatus } from '@hooks/useStatus'
-import cn from '@libs/class'
 import { DEPLOYABLE_ACTORS } from 'shared/constants'
 import { DIndicator } from 'shared/types/services'
-import * as SERVICES from 'shared/utils/services'
 
 const title = 'ACE Dashboard'
 const metadata = siteMetadata.routes[title]
@@ -49,35 +47,17 @@ const DashboardPage = () => {
         <div className="p-semilarge">
             <PageMetadata {...pageMetadata} />
             <Tabs value={actorParam}>
-                <TabsHeader
-                    className="overflow-x-auto rounded-none border-b border-primary-50 bg-transparent p-0"
-                    indicatorProps={{
-                        className:
-                            'bg-transparent border-b-2 border-primary-700 shadow-none rounded-none',
-                    }}
-                >
+                <TabsHeader>
                     {DEPLOYABLE_ACTORS.map((actor) => (
-                        <Tab
-                            key={actor}
-                            value={actor}
-                            onClick={() => setSearchPrams({ actor })}
-                            className={cn(
-                                'text-normal font-normal',
-                                actorParam === actor ? 'text-primary-700' : ''
-                            )}
-                        >
+                        <Tab key={actor} value={actor} onClick={() => setSearchPrams({ actor })}>
                             <span className="text-normal font-normal">{actor}</span>
                         </Tab>
                     ))}
                 </TabsHeader>
-                <TabsBody>
-                    <TabPanel
-                        key={actorParam}
-                        value={actorParam}
-                        className="gap-medium mt-medium flex w-full flex-col flex-wrap items-center"
-                    >
+                <TabsBody className="gap-medium mt-medium">
+                    <TabPanel key={actorParam} value={actorParam}>
                         {!status ? (
-                            <Spinner className="mx-auto mt-10 h-10 w-10" />
+                            <Spinner className="mx-auto h-7 w-7 md:h-9 md:w-9" />
                         ) : (
                             <SimpleStatusDetachment actorStatus={status} />
                         )}
@@ -85,12 +65,12 @@ const DashboardPage = () => {
                             direction="horizontal"
                             bgColor="bg-cold-800"
                             borderColor="border-cold-800"
-                            className="my-medium w-4/5"
+                            className="my-medium mx-auto w-4/5"
                         />
                         {configs && Object.keys(configs).length > 0 ? (
                             <SimpleConfigsDetachment actorConfigs={configs} />
                         ) : (
-                            <p className="text-medium mt-10 text-center font-light text-cold-600">
+                            <p className="text-normal text-center font-light text-cold-600">
                                 No configuration variables set for this actor
                             </p>
                         )}

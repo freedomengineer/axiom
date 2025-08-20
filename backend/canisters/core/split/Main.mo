@@ -18,7 +18,7 @@ import Proportion "../../library/Proportion";
 import Principal "mo:base/Principal";
 import Time "mo:base/Time";
 
-shared ({ caller = indicator }) actor class Split() = this {
+shared ({ caller = indicator }) persistent actor class Split() = this {
     ////// TEMPORARY IMPLEMENTATION ////////////
     private stable var shiftedTime : Int = 0;
     private func getNow() : Int = shiftedTime + Time.now();
@@ -54,7 +54,7 @@ shared ({ caller = indicator }) actor class Split() = this {
         await Indicator.expectAuthorized(caller, [#Facade]);
 
         let transferResult : ICP.TransferFromResult = await ICP.icrc2_transfer_from({
-            amount;
+            amount = amount - C.ICP_FEE;
             from = { owner = sender; subaccount = null };
             to = { owner = Principal.fromActor(this); subaccount = null };
             created_at_time = null;
@@ -69,6 +69,28 @@ shared ({ caller = indicator }) actor class Split() = this {
 
         let depositAmount : E8S.E8S = E8S.make(amount);
         Distributions.deposit(distributions, depositAmount, configs)
+    };
+    public shared ({ caller }) func affiliateDeposit(sender : Principal, amount : Nat) : async () {
+        await Indicator.expectAuthorized(caller, [#Affiliate]);
+
+        let affiliateAmount : E8S.E8S = Distributions.affiliateDepositAmount(distributions, E8S.make(amount), configs);
+
+        let transferResult : ICP.TransferFromResult = await ICP.icrc2_transfer_from({
+            amount = affiliateAmount.val;
+            from = { owner = sender; subaccount = null };
+            to = { owner = Principal.fromActor(this); subaccount = null };
+            created_at_time = null;
+            fee = null;
+            memo = null;
+            spender_subaccount = null
+        });
+        switch (transferResult) {
+            case (#Err(e)) E.f(#EXTERNAL_FAILURE("ICP Transfer"), debug_show e);
+            case (#Ok(_)) {}
+        };
+
+        let depositAmount : E8S.E8S = E8S.make(amount);
+        Distributions.affiliateDeposit(distributions, depositAmount, configs)
     };
 
     /// PUBLIC ////// MODIFIERS ////////////

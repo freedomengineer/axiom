@@ -3,6 +3,7 @@ import Users "users/Users";
 
 import Notification "notifications/Notification";
 import Notifications "notifications/Notifications";
+import Coupon "../../core/affiliate/coupons/Coupon";
 
 import DIP721 "../../core/dip721/Main";
 import DIP721Interface "../../core/dip721/Interface";
@@ -32,8 +33,9 @@ import Principal "mo:base/Principal";
 import Nat "mo:base/Nat";
 import Time "mo:base/Time";
 import Text "mo:base/Text";
+import Error "mo:base/Error";
 
-shared ({ caller = indicator }) actor class Facade() = this {
+shared ({ caller = indicator }) persistent actor class Facade() = this {
         private stable let Indicator : IndicatorInterface.Indicator = actor (Principal.toText(indicator));
 
     private stable let users : Users.Users = Users.init();
@@ -160,15 +162,52 @@ shared ({ caller = indicator }) actor class Facade() = this {
 
         let adjustedUsdPaid : Nat = await Sales.expectPackageFound(capitalRaised);
         let icpPaid : Nat = await ICPUSD.exchange(false, adjustedUsdPaid);
+
+        Users.register(users, caller, lowercasedUsername, capitalRaised);
+
         await Split.deposit(caller, icpPaid);
         await Affiliate.fillReferrals(caller, icpPaid, referrer);
 
         let buriedAmount : Nat = await Sales.mintPackage(caller, capitalRaised);
+
         await Escrow.register(caller, buriedAmount);
         await DAO.register(caller);
         await Axioms.register(caller);
 
-        Users.register(users, caller, lowercasedUsername, adjustedUsdPaid)
+    };
+    public shared ({ caller }) func registerWithCoupon(username : Text, coupon : [Nat8]) : async () {
+        let lowercasedUsername : Text = Text.toLowercase(username);
+
+        Users.expectNotFound(users, caller);
+        Users.expectUsernameNotTaken(users, lowercasedUsername);
+        Users.expectUsernameValid(lowercasedUsername, configs);
+
+        let Sales : SalesInterface.Sales = await Indicator.Sales();
+        let Escrow : EscrowInterface.Escrow = await Indicator.Escrow();
+        let Affiliate : AffiliateInterface.Affiliate = await Indicator.Affiliate();
+        let Axioms : AxiomsInterface.Axioms = await Indicator.Axioms();
+        let DAO : DAOInterface.DAO = await Indicator.DAO();
+
+        await Escrow.expectUserNotFound(caller);
+        await Affiliate.expectUserNotFound(caller);
+        await DAO.expectUserNotFound(caller);
+        await Axioms.expectUserNotFound(caller);
+
+        let { capitalRaised } : Coupon.Sharable = await Affiliate.lockCoupon(coupon, caller);
+
+        try {
+            Users.register(users, caller, lowercasedUsername, capitalRaised);
+
+            let buriedAmount : Nat = await Sales.mintPackage(caller, capitalRaised);
+            await Escrow.register(caller, buriedAmount);
+            await DAO.register(caller);
+            await Axioms.register(caller);
+
+            await Affiliate.redeemCoupon(coupon, caller)
+        } catch (e) {
+            await Affiliate.redeemCouponFailed(coupon, caller, Error.message(e))
+        };
+
     };
 
     public shared ({ caller }) func editUsername(username : Text) : async () {

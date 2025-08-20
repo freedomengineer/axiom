@@ -197,7 +197,7 @@ const UpdateLinks = ({ onSubmit, links }: { onSubmit: () => void; links: DAxioms
                 ))}
                 {Number(configs?.['MAX_HYPERLINKS'][1] as bigint) > newHyperlinks.length && (
                     <button
-                        className="p-small text-small mx-auto flex w-full items-center justify-center rounded-md border-2 border-dashed border-cold-300 hover:border-cold-600 md:w-1/3"
+                        className="p-small text-small mx-auto flex w-full items-center justify-center rounded-md border-2 border-dashed border-cold-200 hover:border-cold-600 md:w-1/3"
                         onClick={handleAddLink}
                     >
                         Add Link ({newHyperlinks.length}/

@@ -14,7 +14,7 @@ import E8S "../../library/E8S";
 
 import Principal "mo:base/Principal";
 
-shared ({ caller = indicator }) actor class Treasury() = this {
+shared ({ caller = indicator }) persistent actor class Treasury() = this {
     private stable let Indicator : IndicatorInterface.Indicator = actor (Principal.toText(indicator));
 
     private stable let totalSupply : E8S.E8S = E8S.fromFloat(20_090_000_000.0);

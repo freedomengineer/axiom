@@ -263,7 +263,7 @@ const HypothesisCard = ({
                         ) : (
                             <AdoptIcon
                                 className="h-4 w-4 cursor-pointer stroke-[1.5px] hover:h-5 hover:w-5 hover:fill-white hover:text-cold-900 aria-selected:h-5 aria-selected:w-5 aria-selected:fill-white aria-selected:text-cold-900 aria-selected:hover:h-4 aria-selected:hover:w-4 aria-selected:hover:fill-none aria-selected:hover:text-white"
-                                onClick={handleAxiom}
+                                onClick={() => handleAxiom()}
                                 aria-selected={!!axiom}
                             />
                         )}
@@ -275,7 +275,7 @@ const HypothesisCard = ({
                         ) : (
                             <BookmarkIcon
                                 className="h-4 w-4 cursor-pointer stroke-[1.5px] hover:h-5 hover:w-5 hover:fill-white hover:text-cold-900 aria-selected:h-5 aria-selected:w-5 aria-selected:fill-white aria-selected:text-cold-900 aria-selected:hover:h-4 aria-selected:hover:w-4 aria-selected:hover:fill-none aria-selected:hover:text-white"
-                                onClick={handleBookmark}
+                                onClick={() => handleBookmark()}
                                 aria-selected={!!bookmark}
                             />
                         )}

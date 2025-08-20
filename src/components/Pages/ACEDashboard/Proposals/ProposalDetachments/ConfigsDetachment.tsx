@@ -46,7 +46,7 @@ const ConfigsDetachment = ({
     if (Object.keys(detachment.actorsConfigs).length === 0) return null
 
     return (
-        <div className="overflow-x-auto rounded-lg border border-cold-300 md:overflow-hidden">
+        <div className="overflow-x-auto rounded-lg border border-cold-200 md:overflow-hidden">
             <table className="min-w-full border-collapse">
                 <thead className="bg-cold-50">
                     <tr>
@@ -59,7 +59,7 @@ const ConfigsDetachment = ({
                                 scope="col"
                                 className={cn(
                                     'text-small px-normal py-small select-none text-nowrap bg-cold-100',
-                                    'border-b border-r border-cold-300',
+                                    'border-b border-r border-cold-200',
                                     i === 0 && 'border-l-0',
                                     (showOldValue ? i === 3 : i === 2) && 'border-r-0'
                                 )}
@@ -92,7 +92,7 @@ const ConfigsDetachment = ({
                                                 rowSpan={Object.keys(configs).length}
                                                 className={cn(
                                                     '!text-tiny py-small px-normal group relative text-nowrap bg-cold-50 text-left font-semibold text-cold-600',
-                                                    'border-b border-r border-cold-300',
+                                                    'border-b border-r border-cold-200',
                                                     i === detachment.actorsConfigs.length - 1 &&
                                                         'border-b-0'
                                                 )}
@@ -112,7 +112,7 @@ const ConfigsDetachment = ({
                                         <td
                                             className={cn(
                                                 '!text-tiny py-small px-normal text-nowrap text-cold-600',
-                                                'border-b border-r border-cold-300',
+                                                'border-b border-r border-cold-200',
                                                 isLastRow && 'border-b-0'
                                             )}
                                         >
@@ -122,7 +122,7 @@ const ConfigsDetachment = ({
                                             <td
                                                 className={cn(
                                                     '!text-tiny py-small px-normal text-nowrap font-semibold text-red-600',
-                                                    'border-b border-r border-cold-300',
+                                                    'border-b border-r border-cold-200',
                                                     isLastRow && 'border-b-0'
                                                 )}
                                             >
@@ -134,7 +134,7 @@ const ConfigsDetachment = ({
                                         <td
                                             className={cn(
                                                 '!text-tiny py-small px-normal text-nowrap font-semibold',
-                                                'border-b border-cold-300',
+                                                'border-b border-cold-200',
                                                 showOldValue ? 'text-green-600' : 'text-cold-600',
                                                 isLastRow && 'border-b-0'
                                             )}

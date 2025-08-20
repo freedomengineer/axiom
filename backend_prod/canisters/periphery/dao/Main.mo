@@ -43,7 +43,7 @@ import Int "mo:base/Int";
 import Debug "mo:base/Debug";
 import Timer "mo:base/Timer";
 
-shared ({ caller = indicator }) actor class DAO() = this {
+shared ({ caller = indicator }) persistent actor class DAO() = this {
         private stable let Indicator : IndicatorInterface.Indicator = actor (Principal.toText(indicator));
 
     private stable let proposals : Proposals.Proposals = Proposals.init();

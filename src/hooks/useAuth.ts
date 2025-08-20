@@ -29,7 +29,6 @@ type AuthContext = {
     setPemIdentity: (identity: Identity) => void
     login: () => void
     logout: () => void
-    referrer: Principal | null
     pageStatus: PageStatus
     setPageStatus: (status: PageStatus) => void
 }
@@ -44,7 +43,6 @@ export const AuthContext = createContext<AuthContext>({
     setPemIdentity: () => {},
     login: () => {},
     logout: () => {},
-    referrer: null,
     pageStatus: PageStatus.Loading,
     setPageStatus: () => {},
 })
@@ -64,10 +62,10 @@ const defaultOptions: {
             process.env.DFX_NETWORK === 'ic'
                 ? 'https://identity.ic0.app/#authorize'
                 : `http://${process.env.CANISTER_ID_INTERNET_IDENTITY}.localhost:4943/`,
-        derivationOrigin:
-            process.env.DFX_NETWORK === 'ic'
-                ? `https://${process.env.CANISTER_ID_FRONTEND}.icp0.io`
-                : undefined,
+        // derivationOrigin:
+        //     process.env.DFX_NETWORK === 'ic'
+        //         ? `https://${process.env.CANISTER_ID_FRONTEND}.icp0.io`
+        //         : undefined,
     },
 }
 
@@ -80,7 +78,6 @@ export const useAuthClient = () => {
     const [agent, setAgent] = useState<Agent | null>()
     const [principal, setPrincipal] = useState<Principal | null>()
     const [user, setUser] = useState<DFacade.Sharable | null>()
-    const [referrer, setReferrer] = useState<Principal | null>(null)
     const [pageStatus, setPageStatus] = useState<PageStatus>(PageStatus.Loading)
     const [pemIdentity, setPemIdentity] = useState<Identity | null>(null)
     const [sessionExpiry, setSessionExpiry] = useLocalStorage('sessionExpiry')
@@ -106,16 +103,14 @@ export const useAuthClient = () => {
         if (navigation?.type === 'navigate') {
             try {
                 const urlParams = new URLSearchParams(location.search)
-                const ref: string = urlParams.get('ref')!
-                setReferrer(Principal.fromText(ref))
-                localStorage.setItem('ref', ref)
+                const ref = urlParams.get('ref')
+                const code = urlParams.get('code')
+
+                if (ref) localStorage.setItem('ref', ref)
+                if (code) localStorage.setItem('code', code)
                 return
             } catch {}
         }
-        try {
-            const ref = localStorage.getItem('ref')!
-            setReferrer(Principal.fromText(ref))
-        } catch {}
     }, [pemIdentity])
 
     useEffect(() => {
@@ -226,7 +221,6 @@ export const useAuthClient = () => {
         setPemIdentity,
         login,
         logout,
-        referrer,
         pageStatus,
         setPageStatus,
     }

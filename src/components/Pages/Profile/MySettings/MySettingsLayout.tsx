@@ -224,8 +224,9 @@ const MySettingsLayout = () => {
                 </button>
             </div>
             <p className="text-tiny text-center italic text-cold-700">
-                Customize the colors for vote buttons and charts. Changes apply to all vote displays
-                including <b>proposals</b>, <b>hypotheses</b>, and <b>evidences</b>
+                Customize the colors for vote buttons and charts (click/tap on the color to open the
+                color picker). Changes apply to all vote displays including <b>proposals</b>,{' '}
+                <b>hypotheses</b>, and <b>evidences</b>
             </p>
 
             <div
