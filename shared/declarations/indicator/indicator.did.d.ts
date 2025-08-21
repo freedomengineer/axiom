@@ -53,6 +53,7 @@ export type ActorsConfigs__1 = Array<
   [ConfigurableActorVariant, SharableConfigs]
 >;
 export interface Affiliate {
+  'createCoupon' : ActorMethod<[bigint], PrivateSharable>,
   'expectUserNotFound' : ActorMethod<[Principal], undefined>,
   'fillReferrals' : ActorMethod<
     [Principal, bigint, [] | [Principal]],
@@ -60,15 +61,39 @@ export interface Affiliate {
   >,
   'getConfig' : ActorMethod<[Key], SharableValue>,
   'getConfigs' : ActorMethod<[], Sharable__3>,
+  'getCoupon' : ActorMethod<[string], Sharable__35>,
+  'getCoupons' : ActorMethod<[Filter__7, Sort_8], Sharable__37>,
+  'getCouponsPagination' : ActorMethod<
+    [Filter__7, Sort_8, bigint, bigint],
+    Pagination_8
+  >,
   'getEarning' : ActorMethod<[Principal], Sharable__7>,
-  'getTop' : ActorMethod<[{ 'Referrers' : null }], TopNonPagination>,
+  'getPrivateCoupon' : ActorMethod<[string], PrivateSharable>,
+  'getPrivateCoupons' : ActorMethod<
+    [PrivateFilter, Sort_7],
+    PrivateSharable__1
+  >,
+  'getPrivateCouponsPagination' : ActorMethod<
+    [PrivateFilter, Sort_7, bigint, bigint],
+    Pagination_7
+  >,
+  'getTop' : ActorMethod<
+    [{ 'Referrers' : null } | { 'CouponGenerators' : null }],
+    TopNonPagination
+  >,
   'getTopPagination' : ActorMethod<
-    [{ 'Referrers' : null }, bigint, bigint],
+    [{ 'Referrers' : null } | { 'CouponGenerators' : null }, bigint, bigint],
     TopPagination
   >,
-  'getUser' : ActorMethod<[Principal], Sharable__35>,
+  'getUser' : ActorMethod<[Principal], Sharable__36>,
   'initialize' : ActorMethod<[], undefined>,
+  'lockCoupon' : ActorMethod<[Uint8Array | number[], Principal], Sharable__35>,
   'putConfigs' : ActorMethod<[Array<[Key, SharableValue]>], undefined>,
+  'redeemCoupon' : ActorMethod<[Uint8Array | number[], Principal], undefined>,
+  'redeemCouponFailed' : ActorMethod<
+    [Uint8Array | number[], Principal, string],
+    undefined
+  >,
   'setConfigs' : ActorMethod<[Array<[Key, SharableValue]>], undefined>,
   'shiftToMidnight' : ActorMethod<[bigint], undefined>,
   'withdrawAll' : ActorMethod<[], undefined>,
@@ -234,6 +259,11 @@ export type ConfigurableActorVariant = { 'DAO' : null } |
   { 'Axioms' : null } |
   { 'Affiliate' : null } |
   { 'Treasury' : null };
+export interface CouponRedeemedData {
+  'key' : string,
+  'user' : Principal,
+  'timestamp' : Time__1,
+}
 export interface CustodianElectionResultData {
   'result' : ElectionResult,
   'claimable' : bigint,
@@ -432,6 +462,10 @@ export interface Facade {
   'postUsersNotifications' : ActorMethod<[UsersNotificationsBatch], undefined>,
   'putConfigs' : ActorMethod<[Array<[Key, SharableValue]>], undefined>,
   'register' : ActorMethod<[string, bigint, [] | [Principal]], undefined>,
+  'registerWithCoupon' : ActorMethod<
+    [string, Uint8Array | number[]],
+    undefined
+  >,
   'setConfigs' : ActorMethod<[Array<[Key, SharableValue]>], undefined>,
   'shiftToMidnight' : ActorMethod<[bigint], undefined>,
   'updateCapitalRaised' : ActorMethod<[Principal, bigint], undefined>,
@@ -477,6 +511,11 @@ export interface Filter__6 {
   'repliedTo' : [] | [bigint],
   'agoStart' : [] | [bigint],
 }
+export interface Filter__7 {
+  'status' : [] | [StatusVariant__1],
+  'creator' : [] | [Principal],
+  'capitalRaised' : [] | [bigint],
+}
 export interface FlagHeader { 'id' : bigint, 'category' : Category }
 export interface ForceUpdateCapitalRaisedResult {
   'success' : Array<Principal>,
@@ -509,6 +548,7 @@ export interface Indicator {
   'Sales' : ActorMethod<[], Principal>,
   'Split' : ActorMethod<[], Principal>,
   'Treasury' : ActorMethod<[], Principal>,
+  'addController' : ActorMethod<[], undefined>,
   'checkInstallationSettled' : ActorMethod<[Principal], boolean>,
   'clearCommitment' : ActorMethod<[DeployableVariant], undefined>,
   'deleteSession' : ActorMethod<[Principal], undefined>,
@@ -669,7 +709,42 @@ export interface Pagination_6 {
   'of' : bigint,
   'result' : Array<Sharable__31>,
 }
+export interface Pagination_7 {
+  'is' : bigint,
+  'of' : bigint,
+  'result' : Array<PrivateSharable>,
+}
+export interface Pagination_8 {
+  'is' : bigint,
+  'of' : bigint,
+  'result' : Array<Sharable__35>,
+}
 export interface Picture { 'blob' : Uint8Array | number[] }
+export interface PrivateFilter {
+  'status' : [] | [StatusVariant__1],
+  'capitalRaised' : [] | [bigint],
+}
+export interface PrivateSharable {
+  'key' : string,
+  'status' : Status__3,
+  'creator' : Principal,
+  'code' : Uint8Array | number[],
+  'icpPaid' : bigint,
+  'creationDate' : Time__8,
+  'capitalRaised' : bigint,
+}
+export interface PrivateSharableCoupon {
+  'key' : string,
+  'status' : Status__3,
+  'creator' : Principal,
+  'code' : Uint8Array | number[],
+  'icpPaid' : bigint,
+  'creationDate' : Time__8,
+  'capitalRaised' : bigint,
+}
+export type PrivateSharable__1 = Array<PrivateSharableCoupon>;
+export type PrivateSort = { 'icpPaid' : null } |
+  { 'recent' : null };
 export interface ProposalExecutedData {
   'result' : ExecutedResult,
   'claimable' : bigint,
@@ -767,6 +842,14 @@ export type SharableConfigs = Array<[Key, SharableValue]>;
 export interface SharableConfigs__1 { 'actorsConfigs' : ActorsConfigs__1 }
 export type SharableCount = bigint;
 export type SharableCount__1 = bigint;
+export interface SharableCoupon {
+  'key' : string,
+  'status' : Status__3,
+  'creator' : Principal,
+  'icpPaid' : bigint,
+  'creationDate' : Time__8,
+  'capitalRaised' : bigint,
+}
 export type SharableDate = bigint;
 export type SharableDetachment = { 'Code' : SharableCode } |
   { 'Field' : SharableField } |
@@ -984,6 +1067,7 @@ export type SharableUserVariant = {
       'capacity' : Array<NewHypothesesFromFollowingsData>,
     }
   } |
+  { 'CouponRedeemed' : CouponRedeemedData } |
   {
     'NewVotesToProposal' : {
       'id' : bigint,
@@ -1143,10 +1227,20 @@ export interface Sharable__34 {
   'callerRevenue' : [] | [SharableE8S__3],
 }
 export interface Sharable__35 {
+  'key' : string,
+  'status' : Status__3,
+  'creator' : Principal,
+  'icpPaid' : bigint,
+  'creationDate' : Time__8,
+  'capitalRaised' : bigint,
+}
+export interface Sharable__36 {
   'referrer' : [] | [Principal],
   'earning' : SharableEarning__3,
+  'coupons' : Array<string>,
   'referrals' : SharableCount__1,
 }
+export type Sharable__37 = Array<SharableCoupon>;
 export type Sharable__4 = bigint;
 export type Sharable__5 = Array<SharableAllocation>;
 export interface Sharable__6 {
@@ -1172,6 +1266,8 @@ export interface Sort_3 { 'by' : Sort__4, 'order' : Order }
 export interface Sort_4 { 'by' : Sort__5, 'order' : Order }
 export interface Sort_5 { 'by' : Sort__6, 'order' : Order }
 export interface Sort_6 { 'by' : Sort__7, 'order' : Order }
+export interface Sort_7 { 'by' : PrivateSort, 'order' : Order }
+export interface Sort_8 { 'by' : Sort__8, 'order' : Order }
 export type Sort__1 = { 'alphabetical' : null } |
   { 'capitalRaised' : null } |
   { 'recent' : null };
@@ -1196,7 +1292,10 @@ export type Sort__7 = { 'positivity' : null } |
   { 'negativity' : null } |
   { 'popularity' : null } |
   { 'recent' : null };
+export type Sort__8 = { 'icpPaid' : null } |
+  { 'recent' : null };
 export interface Split {
+  'affiliateDeposit' : ActorMethod<[Principal, bigint], bigint>,
   'deposit' : ActorMethod<[Principal, bigint], undefined>,
   'externalTransfer' : ActorMethod<[Principal, bigint], undefined>,
   'getBalance' : ActorMethod<[Variant], Sharable__4>,
@@ -1226,6 +1325,10 @@ export type StatusVariant = { 'Failed' : null } |
   { 'Executed' : null } |
   { 'Retried' : null } |
   { 'Expired' : null };
+export type StatusVariant__1 = { 'Available' : null } |
+  { 'Failed' : null } |
+  { 'Redeemed' : null } |
+  { 'Locked' : null };
 export type Status__1 = { 'Approved' : null } |
   { 'Rejected' : null } |
   { 'Requested' : null } |
@@ -1234,6 +1337,12 @@ export type Status__2 = { 'Approved' : null } |
   { 'Rejected' : null } |
   { 'Requested' : null } |
   { 'Expired' : null };
+export type Status__3 = { 'Available' : null } |
+  {
+    'Failed' : { 'by' : Principal, 'timestamp' : Time__8, 'reason' : string }
+  } |
+  { 'Redeemed' : { 'by' : Principal, 'timestamp' : Time__8 } } |
+  { 'Locked' : { 'by' : Principal, 'timestamp' : Time__8 } };
 export type SystemNotificationsBatch = [] | [[SystemVariantParam, List_3]];
 export type SystemVariantParam = {
     'TallyResult' : {
@@ -1311,6 +1420,7 @@ export type Time__4 = bigint;
 export type Time__5 = bigint;
 export type Time__6 = bigint;
 export type Time__7 = bigint;
+export type Time__8 = bigint;
 export interface TopNonPagination {
   'result' : TopResult,
   'callerRank' : [] | [bigint],
@@ -1428,6 +1538,7 @@ export type UserVariantParam = {
     'NewVotesToEvidence' : { 'id' : bigint, 'data' : NewVotesToEvidenceData }
   } |
   { 'NewHypothesesFromFollowings' : NewHypothesesFromFollowingsData } |
+  { 'CouponRedeemed' : CouponRedeemedData } |
   {
     'NewVotesToProposal' : { 'id' : bigint, 'data' : NewVotesToProposalData }
   } |
@@ -1471,6 +1582,7 @@ export type UserVariantParam__1 = {
     'NewVotesToEvidence' : { 'id' : bigint, 'data' : NewVotesToEvidenceData }
   } |
   { 'NewHypothesesFromFollowings' : NewHypothesesFromFollowingsData } |
+  { 'CouponRedeemed' : CouponRedeemedData } |
   {
     'NewVotesToProposal' : { 'id' : bigint, 'data' : NewVotesToProposalData }
   } |

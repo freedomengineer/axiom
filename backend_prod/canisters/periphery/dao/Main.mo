@@ -555,10 +555,12 @@ shared ({ caller = indicator }) persistent actor class DAO() = this {
                     case (?delegateeVote) {
                         switch (delegateeVote) {
                             case (#Default({ choice })) {
-                                switch (choice) {
-                                    case (#Delegated) {};
-                                    case (#Positive) usersNotifications := List.push((proposal.proposer, #NewVotesToProposal({ id = proposalId; data = { voter = caller; choice = #Positive; timestamp = Time.now() } })), usersNotifications);
-                                    case (#Negative) usersNotifications := List.push((proposal.proposer, #NewVotesToProposal({ id = proposalId; data = { voter = caller; choice = #Negative; timestamp = Time.now() } })), usersNotifications)
+                                if (proposal.proposer != caller) {
+                                    switch (choice) {
+                                        case (#Delegated) {};
+                                        case (#Positive) usersNotifications := List.push((proposal.proposer, #NewVotesToProposal({ id = proposalId; data = { voter = caller; choice = #Positive; timestamp = Time.now() } })), usersNotifications);
+                                        case (#Negative) usersNotifications := List.push((proposal.proposer, #NewVotesToProposal({ id = proposalId; data = { voter = caller; choice = #Negative; timestamp = Time.now() } })), usersNotifications)
+                                    }
                                 }
                             };
                             case (#Delegated(delegatee)) usersNotifications := List.push((delegatee, #CustodianProposalDelegated({ proposalId; delegator = caller; timestamp = Time.now() })), usersNotifications)
@@ -572,10 +574,12 @@ shared ({ caller = indicator }) persistent actor class DAO() = this {
                 }
             };
             case (#Default(choice)) {
-                switch (choice) {
-                    case (#Delegated) {};
-                    case (#Positive) usersNotifications := List.push((proposal.proposer, #NewVotesToProposal({ id = proposalId; data = { voter = caller; choice = #Positive; timestamp = Time.now() } })), usersNotifications);
-                    case (#Negative) usersNotifications := List.push((proposal.proposer, #NewVotesToProposal({ id = proposalId; data = { voter = caller; choice = #Negative; timestamp = Time.now() } })), usersNotifications)
+                if (proposal.proposer != caller) {
+                    switch (choice) {
+                        case (#Delegated) {};
+                        case (#Positive) usersNotifications := List.push((proposal.proposer, #NewVotesToProposal({ id = proposalId; data = { voter = caller; choice = #Positive; timestamp = Time.now() } })), usersNotifications);
+                        case (#Negative) usersNotifications := List.push((proposal.proposer, #NewVotesToProposal({ id = proposalId; data = { voter = caller; choice = #Negative; timestamp = Time.now() } })), usersNotifications)
+                    }
                 };
                 #Default({ choice })
             }
@@ -759,7 +763,7 @@ shared ({ caller = indicator }) persistent actor class DAO() = this {
         ignore (
             func() : async () {
                 let Facade : FacadeInterface.Facade = await Indicator.Facade();
-                ignore Facade.postUsersNotification(List.fromArray(principals), #NewBallots({ voter = caller; timestamp = Time.now() }))
+                ignore Facade.postUsersNotification(List.filter(List.fromArray(principals), func(principal) = principal != caller), #NewBallots({ voter = caller; timestamp = Time.now() }))
             }
         )()
     };

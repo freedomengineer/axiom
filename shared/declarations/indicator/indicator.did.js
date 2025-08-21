@@ -109,6 +109,26 @@ export const idlFactory = ({ IDL }) => {
         [],
       ),
   });
+  const Time__8 = IDL.Int;
+  const Status__3 = IDL.Variant({
+    'Available' : IDL.Null,
+    'Failed' : IDL.Record({
+      'by' : IDL.Principal,
+      'timestamp' : Time__8,
+      'reason' : IDL.Text,
+    }),
+    'Redeemed' : IDL.Record({ 'by' : IDL.Principal, 'timestamp' : Time__8 }),
+    'Locked' : IDL.Record({ 'by' : IDL.Principal, 'timestamp' : Time__8 }),
+  });
+  const PrivateSharable = IDL.Record({
+    'key' : IDL.Text,
+    'status' : Status__3,
+    'creator' : IDL.Principal,
+    'code' : IDL.Vec(IDL.Nat8),
+    'icpPaid' : IDL.Nat,
+    'creationDate' : Time__8,
+    'capitalRaised' : IDL.Nat,
+  });
   const Key = IDL.Text;
   const SharableE8S = IDL.Nat;
   const SharableDate = IDL.Nat;
@@ -145,12 +165,75 @@ export const idlFactory = ({ IDL }) => {
     'Duration' : IDL.Nat,
   });
   const Sharable__3 = IDL.Vec(IDL.Tuple(Key, SharableValue));
+  const Sharable__35 = IDL.Record({
+    'key' : IDL.Text,
+    'status' : Status__3,
+    'creator' : IDL.Principal,
+    'icpPaid' : IDL.Nat,
+    'creationDate' : Time__8,
+    'capitalRaised' : IDL.Nat,
+  });
+  const StatusVariant__1 = IDL.Variant({
+    'Available' : IDL.Null,
+    'Failed' : IDL.Null,
+    'Redeemed' : IDL.Null,
+    'Locked' : IDL.Null,
+  });
+  const Filter__7 = IDL.Record({
+    'status' : IDL.Opt(StatusVariant__1),
+    'creator' : IDL.Opt(IDL.Principal),
+    'capitalRaised' : IDL.Opt(IDL.Nat),
+  });
+  const Sort__8 = IDL.Variant({ 'icpPaid' : IDL.Null, 'recent' : IDL.Null });
+  const Order = IDL.Variant({
+    'descending' : IDL.Null,
+    'ascending' : IDL.Null,
+  });
+  const Sort_8 = IDL.Record({ 'by' : Sort__8, 'order' : Order });
+  const SharableCoupon = IDL.Record({
+    'key' : IDL.Text,
+    'status' : Status__3,
+    'creator' : IDL.Principal,
+    'icpPaid' : IDL.Nat,
+    'creationDate' : Time__8,
+    'capitalRaised' : IDL.Nat,
+  });
+  const Sharable__37 = IDL.Vec(SharableCoupon);
+  const Pagination_8 = IDL.Record({
+    'is' : IDL.Nat,
+    'of' : IDL.Nat,
+    'result' : IDL.Vec(Sharable__35),
+  });
   const Time = IDL.Int;
   const SharableE8S__1 = IDL.Nat;
   const Sharable__7 = IDL.Record({
     'lastWithdrawAt' : Time,
     'revenue' : SharableE8S__1,
     'balance' : SharableE8S__1,
+  });
+  const PrivateFilter = IDL.Record({
+    'status' : IDL.Opt(StatusVariant__1),
+    'capitalRaised' : IDL.Opt(IDL.Nat),
+  });
+  const PrivateSort = IDL.Variant({
+    'icpPaid' : IDL.Null,
+    'recent' : IDL.Null,
+  });
+  const Sort_7 = IDL.Record({ 'by' : PrivateSort, 'order' : Order });
+  const PrivateSharableCoupon = IDL.Record({
+    'key' : IDL.Text,
+    'status' : Status__3,
+    'creator' : IDL.Principal,
+    'code' : IDL.Vec(IDL.Nat8),
+    'icpPaid' : IDL.Nat,
+    'creationDate' : Time__8,
+    'capitalRaised' : IDL.Nat,
+  });
+  const PrivateSharable__1 = IDL.Vec(PrivateSharableCoupon);
+  const Pagination_7 = IDL.Record({
+    'is' : IDL.Nat,
+    'of' : IDL.Nat,
+    'result' : IDL.Vec(PrivateSharable),
   });
   const TopResult = IDL.Vec(IDL.Tuple(IDL.Principal, IDL.Nat));
   const TopNonPagination = IDL.Record({
@@ -169,12 +252,14 @@ export const idlFactory = ({ IDL }) => {
     'balance' : SharableE8S__1,
   });
   const SharableCount__1 = IDL.Nat;
-  const Sharable__35 = IDL.Record({
+  const Sharable__36 = IDL.Record({
     'referrer' : IDL.Opt(IDL.Principal),
     'earning' : SharableEarning__3,
+    'coupons' : IDL.Vec(IDL.Text),
     'referrals' : SharableCount__1,
   });
   const Affiliate = IDL.Service({
+    'createCoupon' : IDL.Func([IDL.Nat], [PrivateSharable], []),
     'expectUserNotFound' : IDL.Func([IDL.Principal], [], ['query']),
     'fillReferrals' : IDL.Func(
         [IDL.Principal, IDL.Nat, IDL.Opt(IDL.Principal)],
@@ -183,20 +268,61 @@ export const idlFactory = ({ IDL }) => {
       ),
     'getConfig' : IDL.Func([Key], [SharableValue], ['query']),
     'getConfigs' : IDL.Func([], [Sharable__3], ['query']),
+    'getCoupon' : IDL.Func([IDL.Text], [Sharable__35], ['query']),
+    'getCoupons' : IDL.Func([Filter__7, Sort_8], [Sharable__37], ['query']),
+    'getCouponsPagination' : IDL.Func(
+        [Filter__7, Sort_8, IDL.Nat, IDL.Nat],
+        [Pagination_8],
+        ['query'],
+      ),
     'getEarning' : IDL.Func([IDL.Principal], [Sharable__7], ['query']),
+    'getPrivateCoupon' : IDL.Func([IDL.Text], [PrivateSharable], ['query']),
+    'getPrivateCoupons' : IDL.Func(
+        [PrivateFilter, Sort_7],
+        [PrivateSharable__1],
+        ['query'],
+      ),
+    'getPrivateCouponsPagination' : IDL.Func(
+        [PrivateFilter, Sort_7, IDL.Nat, IDL.Nat],
+        [Pagination_7],
+        ['query'],
+      ),
     'getTop' : IDL.Func(
-        [IDL.Variant({ 'Referrers' : IDL.Null })],
+        [
+          IDL.Variant({
+            'Referrers' : IDL.Null,
+            'CouponGenerators' : IDL.Null,
+          }),
+        ],
         [TopNonPagination],
         ['query'],
       ),
     'getTopPagination' : IDL.Func(
-        [IDL.Variant({ 'Referrers' : IDL.Null }), IDL.Nat, IDL.Nat],
+        [
+          IDL.Variant({
+            'Referrers' : IDL.Null,
+            'CouponGenerators' : IDL.Null,
+          }),
+          IDL.Nat,
+          IDL.Nat,
+        ],
         [TopPagination],
         ['query'],
       ),
-    'getUser' : IDL.Func([IDL.Principal], [Sharable__35], ['query']),
+    'getUser' : IDL.Func([IDL.Principal], [Sharable__36], ['query']),
     'initialize' : IDL.Func([], [], []),
+    'lockCoupon' : IDL.Func(
+        [IDL.Vec(IDL.Nat8), IDL.Principal],
+        [Sharable__35],
+        [],
+      ),
     'putConfigs' : IDL.Func([IDL.Vec(IDL.Tuple(Key, SharableValue))], [], []),
+    'redeemCoupon' : IDL.Func([IDL.Vec(IDL.Nat8), IDL.Principal], [], []),
+    'redeemCouponFailed' : IDL.Func(
+        [IDL.Vec(IDL.Nat8), IDL.Principal, IDL.Text],
+        [],
+        [],
+      ),
     'setConfigs' : IDL.Func([IDL.Vec(IDL.Tuple(Key, SharableValue))], [], []),
     'shiftToMidnight' : IDL.Func([IDL.Nat], [], []),
     'withdrawAll' : IDL.Func([], [], []),
@@ -276,10 +402,6 @@ export const idlFactory = ({ IDL }) => {
     'negativity' : IDL.Null,
     'popularity' : IDL.Null,
     'recent' : IDL.Null,
-  });
-  const Order = IDL.Variant({
-    'descending' : IDL.Null,
-    'ascending' : IDL.Null,
   });
   const Sort_6 = IDL.Record({ 'by' : Sort__7, 'order' : Order });
   const SharableEvidence = IDL.Record({
@@ -1077,6 +1199,11 @@ export const idlFactory = ({ IDL }) => {
     'timestamp' : Time__1,
     'hypothesisId' : IDL.Nat,
   });
+  const CouponRedeemedData = IDL.Record({
+    'key' : IDL.Text,
+    'user' : IDL.Principal,
+    'timestamp' : Time__1,
+  });
   const NewVotesToProposalData = IDL.Record({
     'voter' : IDL.Principal,
     'timestamp' : Time__1,
@@ -1134,6 +1261,7 @@ export const idlFactory = ({ IDL }) => {
       'total' : IDL.Nat,
       'capacity' : IDL.Vec(NewHypothesesFromFollowingsData),
     }),
+    'CouponRedeemed' : CouponRedeemedData,
     'NewVotesToProposal' : IDL.Record({
       'id' : IDL.Nat,
       'total' : IDL.Nat,
@@ -1305,6 +1433,7 @@ export const idlFactory = ({ IDL }) => {
       'data' : NewVotesToEvidenceData,
     }),
     'NewHypothesesFromFollowings' : NewHypothesesFromFollowingsData,
+    'CouponRedeemed' : CouponRedeemedData,
     'NewVotesToProposal' : IDL.Record({
       'id' : IDL.Nat,
       'data' : NewVotesToProposalData,
@@ -1342,6 +1471,7 @@ export const idlFactory = ({ IDL }) => {
       'data' : NewVotesToEvidenceData,
     }),
     'NewHypothesesFromFollowings' : NewHypothesesFromFollowingsData,
+    'CouponRedeemed' : CouponRedeemedData,
     'NewVotesToProposal' : IDL.Record({
       'id' : IDL.Nat,
       'data' : NewVotesToProposalData,
@@ -1411,6 +1541,7 @@ export const idlFactory = ({ IDL }) => {
     'postUsersNotifications' : IDL.Func([UsersNotificationsBatch], [], []),
     'putConfigs' : IDL.Func([IDL.Vec(IDL.Tuple(Key, SharableValue))], [], []),
     'register' : IDL.Func([IDL.Text, IDL.Nat, IDL.Opt(IDL.Principal)], [], []),
+    'registerWithCoupon' : IDL.Func([IDL.Text, IDL.Vec(IDL.Nat8)], [], []),
     'setConfigs' : IDL.Func([IDL.Vec(IDL.Tuple(Key, SharableValue))], [], []),
     'shiftToMidnight' : IDL.Func([IDL.Nat], [], []),
     'updateCapitalRaised' : IDL.Func([IDL.Principal, IDL.Nat], [], []),
@@ -1539,6 +1670,7 @@ export const idlFactory = ({ IDL }) => {
   });
   const Sharable__8 = IDL.Vec(SharableDistribution);
   const Split = IDL.Service({
+    'affiliateDeposit' : IDL.Func([IDL.Principal, IDL.Nat], [IDL.Nat], []),
     'deposit' : IDL.Func([IDL.Principal, IDL.Nat], [], []),
     'externalTransfer' : IDL.Func([IDL.Principal, IDL.Nat], [], []),
     'getBalance' : IDL.Func([Variant], [Sharable__4], ['query']),
@@ -1648,6 +1780,7 @@ export const idlFactory = ({ IDL }) => {
     'Sales' : IDL.Func([], [Sales], ['query']),
     'Split' : IDL.Func([], [Split], ['query']),
     'Treasury' : IDL.Func([], [Treasury], ['query']),
+    'addController' : IDL.Func([], [], []),
     'checkInstallationSettled' : IDL.Func(
         [IDL.Principal],
         [IDL.Bool],

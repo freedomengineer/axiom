@@ -59,6 +59,7 @@ export interface Sharable__3 {
 }
 export type Sharable__4 = Array<[Key, SharableValue]>;
 export interface Split {
+  'affiliateDeposit' : ActorMethod<[Principal, bigint], bigint>,
   'deposit' : ActorMethod<[Principal, bigint], undefined>,
   'externalTransfer' : ActorMethod<[Principal, bigint], undefined>,
   'getBalance' : ActorMethod<[Variant], Sharable>,

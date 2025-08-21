@@ -2,6 +2,105 @@ import type { Principal } from '@dfinity/principal';
 import type { ActorMethod } from '@dfinity/agent';
 import type { IDL } from '@dfinity/candid';
 
+export interface Axioms {
+  'addToAxioms' : ActorMethod<[bigint], undefined>,
+  'addToBookmarks' : ActorMethod<[bigint], undefined>,
+  'createField' : ActorMethod<[string, string], undefined>,
+  'editHypothesis' : ActorMethod<[bigint, string], undefined>,
+  'expectUserNotFound' : ActorMethod<[Principal], undefined>,
+  'follow' : ActorMethod<[Principal], undefined>,
+  'getAgePayout' : ActorMethod<[bigint, bigint], Sharable__14>,
+  'getAgePayouts' : ActorMethod<[bigint], Sharable__13>,
+  'getAgesPayout' : ActorMethod<[bigint], Sharable__13>,
+  'getAgesPayouts' : ActorMethod<[], Array<Sharable__13>>,
+  'getConfig' : ActorMethod<[Key], SharableValue>,
+  'getConfigs' : ActorMethod<[], Sharable__12>,
+  'getEarning' : ActorMethod<[Principal], Sharable__11>,
+  'getEvidence' : ActorMethod<[bigint], Sharable__9>,
+  'getEvidences' : ActorMethod<[Filter__3, Sort_3], Sharable__10>,
+  'getEvidencesPagination' : ActorMethod<
+    [Filter__3, Sort_3, bigint, bigint],
+    Pagination_3
+  >,
+  'getField' : ActorMethod<[string], Sharable__7>,
+  'getFields' : ActorMethod<[Filter__2, Sort_2], Sharable__8>,
+  'getFieldsPagination' : ActorMethod<
+    [Filter__2, Sort_2, bigint, bigint],
+    Pagination_2
+  >,
+  'getFlag' : ActorMethod<[Header], Sharable__5>,
+  'getFlags' : ActorMethod<[Filter__1, Sort_1], Sharable__6>,
+  'getFlagsPagination' : ActorMethod<
+    [Filter__1, Sort_1, bigint, bigint],
+    Pagination_1
+  >,
+  'getHypotheses' : ActorMethod<[Filter, Sort], Sharable__4>,
+  'getHypothesesPagination' : ActorMethod<
+    [Filter, Sort, bigint, bigint],
+    Pagination
+  >,
+  'getHypothesis' : ActorMethod<[bigint], Sharable__3>,
+  'getTop' : ActorMethod<
+    [
+      { 'HypothesisPublishers' : null } |
+        { 'AcornEarners' : null } |
+        { 'HypothesisVoters' : null } |
+        { 'Influencers' : null } |
+        { 'EvidenceVoters' : null } |
+        { 'EvidencePublishers' : null },
+    ],
+    TopNonPagination
+  >,
+  'getTopPagination' : ActorMethod<
+    [
+      { 'HypothesisPublishers' : null } |
+        { 'AcornEarners' : null } |
+        { 'HypothesisVoters' : null } |
+        { 'Influencers' : null } |
+        { 'EvidenceVoters' : null } |
+        { 'EvidencePublishers' : null },
+      bigint,
+      bigint,
+    ],
+    TopPagination
+  >,
+  'getUser' : ActorMethod<[Principal], Sharable__2>,
+  'getUserConfigs' : ActorMethod<[], Sharable__1>,
+  'initialize' : ActorMethod<[], undefined>,
+  'joinField' : ActorMethod<[string], undefined>,
+  'leaveField' : ActorMethod<[string], undefined>,
+  'publishEvidence' : ActorMethod<
+    [bigint, Form, Choice__1, [] | [bigint]],
+    bigint
+  >,
+  'publishHypothesis' : ActorMethod<[string, string], bigint>,
+  'putConfigs' : ActorMethod<[Array<[Key, SharableValue]>], undefined>,
+  'register' : ActorMethod<[Principal], undefined>,
+  'removeEvidenceVote' : ActorMethod<[bigint], undefined>,
+  'removeFlagVote' : ActorMethod<[Header], undefined>,
+  'removeFromAxioms' : ActorMethod<[bigint], undefined>,
+  'removeFromBookmarks' : ActorMethod<[bigint], undefined>,
+  'removeHypothesisVote' : ActorMethod<[bigint], undefined>,
+  'requestFlag' : ActorMethod<[Header, string], undefined>,
+  'restoreAllUserConfigs' : ActorMethod<[], undefined>,
+  'restoreUserConfig' : ActorMethod<[Variant], undefined>,
+  'setAllUserConfigs' : ActorMethod<[Array<Sharable>], undefined>,
+  'setBatchUserConfigs' : ActorMethod<[Array<Sharable>], undefined>,
+  'setConfigs' : ActorMethod<[Array<[Key, SharableValue]>], undefined>,
+  'setUserConfig' : ActorMethod<[Sharable], undefined>,
+  'shiftToMidnight' : ActorMethod<[bigint], undefined>,
+  'unfollow' : ActorMethod<[Principal], undefined>,
+  'voteEvidence' : ActorMethod<
+    [bigint, Choice__1, [] | [CustomValue]],
+    undefined
+  >,
+  'voteFlag' : ActorMethod<[Header, Choice__1], undefined>,
+  'voteHypothesis' : ActorMethod<
+    [bigint, Choice, [] | [CustomValue]],
+    undefined
+  >,
+  'withdrawAll' : ActorMethod<[], undefined>,
+}
 export type BinaryChoice = { 'Negative' : null } |
   { 'Positive' : null };
 export type BinaryChoice__1 = { 'Negative' : null } |
@@ -312,103 +411,6 @@ export type Value_2 = { 'value' : ValueProp_2 } |
   { 'infinity' : null };
 export type Variant = { 'ExcludedPublishers' : null } |
   { 'ExcludedFields' : null };
-export interface _SERVICE {
-  'addToAxioms' : ActorMethod<[bigint], undefined>,
-  'addToBookmarks' : ActorMethod<[bigint], undefined>,
-  'createField' : ActorMethod<[string, string], undefined>,
-  'editHypothesis' : ActorMethod<[bigint, string], undefined>,
-  'expectUserNotFound' : ActorMethod<[Principal], undefined>,
-  'follow' : ActorMethod<[Principal], undefined>,
-  'getAgePayout' : ActorMethod<[bigint, bigint], Sharable__14>,
-  'getAgePayouts' : ActorMethod<[bigint], Sharable__13>,
-  'getAgesPayout' : ActorMethod<[bigint], Sharable__13>,
-  'getAgesPayouts' : ActorMethod<[], Array<Sharable__13>>,
-  'getConfig' : ActorMethod<[Key], SharableValue>,
-  'getConfigs' : ActorMethod<[], Sharable__12>,
-  'getEarning' : ActorMethod<[Principal], Sharable__11>,
-  'getEvidence' : ActorMethod<[bigint], Sharable__9>,
-  'getEvidences' : ActorMethod<[Filter__3, Sort_3], Sharable__10>,
-  'getEvidencesPagination' : ActorMethod<
-    [Filter__3, Sort_3, bigint, bigint],
-    Pagination_3
-  >,
-  'getField' : ActorMethod<[string], Sharable__7>,
-  'getFields' : ActorMethod<[Filter__2, Sort_2], Sharable__8>,
-  'getFieldsPagination' : ActorMethod<
-    [Filter__2, Sort_2, bigint, bigint],
-    Pagination_2
-  >,
-  'getFlag' : ActorMethod<[Header], Sharable__5>,
-  'getFlags' : ActorMethod<[Filter__1, Sort_1], Sharable__6>,
-  'getFlagsPagination' : ActorMethod<
-    [Filter__1, Sort_1, bigint, bigint],
-    Pagination_1
-  >,
-  'getHypotheses' : ActorMethod<[Filter, Sort], Sharable__4>,
-  'getHypothesesPagination' : ActorMethod<
-    [Filter, Sort, bigint, bigint],
-    Pagination
-  >,
-  'getHypothesis' : ActorMethod<[bigint], Sharable__3>,
-  'getTop' : ActorMethod<
-    [
-      { 'HypothesisPublishers' : null } |
-        { 'AcornEarners' : null } |
-        { 'HypothesisVoters' : null } |
-        { 'Influencers' : null } |
-        { 'EvidenceVoters' : null } |
-        { 'EvidencePublishers' : null },
-    ],
-    TopNonPagination
-  >,
-  'getTopPagination' : ActorMethod<
-    [
-      { 'HypothesisPublishers' : null } |
-        { 'AcornEarners' : null } |
-        { 'HypothesisVoters' : null } |
-        { 'Influencers' : null } |
-        { 'EvidenceVoters' : null } |
-        { 'EvidencePublishers' : null },
-      bigint,
-      bigint,
-    ],
-    TopPagination
-  >,
-  'getUser' : ActorMethod<[Principal], Sharable__2>,
-  'getUserConfigs' : ActorMethod<[], Sharable__1>,
-  'initialize' : ActorMethod<[], undefined>,
-  'joinField' : ActorMethod<[string], undefined>,
-  'leaveField' : ActorMethod<[string], undefined>,
-  'publishEvidence' : ActorMethod<
-    [bigint, Form, Choice__1, [] | [bigint]],
-    bigint
-  >,
-  'publishHypothesis' : ActorMethod<[string, string], bigint>,
-  'putConfigs' : ActorMethod<[Array<[Key, SharableValue]>], undefined>,
-  'register' : ActorMethod<[Principal], undefined>,
-  'removeEvidenceVote' : ActorMethod<[bigint], undefined>,
-  'removeFlagVote' : ActorMethod<[Header], undefined>,
-  'removeFromAxioms' : ActorMethod<[bigint], undefined>,
-  'removeFromBookmarks' : ActorMethod<[bigint], undefined>,
-  'removeHypothesisVote' : ActorMethod<[bigint], undefined>,
-  'requestFlag' : ActorMethod<[Header, string], undefined>,
-  'restoreAllUserConfigs' : ActorMethod<[], undefined>,
-  'restoreUserConfig' : ActorMethod<[Variant], undefined>,
-  'setAllUserConfigs' : ActorMethod<[Array<Sharable>], undefined>,
-  'setBatchUserConfigs' : ActorMethod<[Array<Sharable>], undefined>,
-  'setConfigs' : ActorMethod<[Array<[Key, SharableValue]>], undefined>,
-  'setUserConfig' : ActorMethod<[Sharable], undefined>,
-  'unfollow' : ActorMethod<[Principal], undefined>,
-  'voteEvidence' : ActorMethod<
-    [bigint, Choice__1, [] | [CustomValue]],
-    undefined
-  >,
-  'voteFlag' : ActorMethod<[Header, Choice__1], undefined>,
-  'voteHypothesis' : ActorMethod<
-    [bigint, Choice, [] | [CustomValue]],
-    undefined
-  >,
-  'withdrawAll' : ActorMethod<[], undefined>,
-}
+export interface _SERVICE extends Axioms {}
 export declare const idlFactory: IDL.InterfaceFactory;
 export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[];

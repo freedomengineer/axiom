@@ -591,13 +591,18 @@ shared ({ caller = indicator }) persistent actor class Axioms() = this {
         ignore (
             func() : async () {
                 let Facade : FacadeInterface.Facade = await Indicator.Facade();
-                var usersNotifications : List.List<(Principal, Notification.UserVariantParam)> = List.make((hypothesis.publisher, #NewEvidencesToHypothesis({ id = hypothesisId; data = { evidenceId; side = choice; publisher = caller; timestamp = getNow() } })));
+                var usersNotifications : List.List<(Principal, Notification.UserVariantParam)> = switch (hypothesis.publisher == caller) {
+                    case (false) List.make((hypothesis.publisher, #NewEvidencesToHypothesis({ id = hypothesisId; data = { evidenceId; side = choice; publisher = caller; timestamp = getNow() } })));
+                    case (true) List.nil()
+                };
                 for (follower in Set.vals(user.followers)) {
                     usersNotifications := List.push((follower, #NewEvidencesFromFollowings({ evidenceId; publisher = caller; timestamp = getNow() })), usersNotifications)
                 };
                 switch (repliedTo, repliedEvidence) {
                     case (?id, ?{ publisher }) {
-                        usersNotifications := List.push((publisher, #NewRepliesToEvidence({ id; data = { evidenceId; publisher = caller; timestamp = getNow() } })), usersNotifications)
+                        if (publisher != caller) {
+                            usersNotifications := List.push((publisher, #NewRepliesToEvidence({ id; data = { evidenceId; publisher = caller; timestamp = getNow() } })), usersNotifications)
+                        }
                     };
                     case (_, _) {}
                 };
@@ -689,8 +694,10 @@ shared ({ caller = indicator }) persistent actor class Axioms() = this {
 
         ignore (
             func() : async () {
-                let Facade : FacadeInterface.Facade = await Indicator.Facade();
-                await Facade.postUserNotification((hypothesis.publisher, #NewVotesToHypothesis({ id = hypothesisId; data = { voter = caller; choice; timestamp = getNow() } })))
+                if (hypothesis.publisher != caller) {
+                    let Facade : FacadeInterface.Facade = await Indicator.Facade();
+                    await Facade.postUserNotification((hypothesis.publisher, #NewVotesToHypothesis({ id = hypothesisId; data = { voter = caller; choice; timestamp = getNow() } })))
+                }
             }
         )()
     };
@@ -727,8 +734,10 @@ shared ({ caller = indicator }) persistent actor class Axioms() = this {
 
         ignore (
             func() : async () {
-                let Facade : FacadeInterface.Facade = await Indicator.Facade();
-                await Facade.postUserNotification((evidence.publisher, #NewVotesToEvidence({ id = evidenceId; data = { voter = caller; choice; timestamp = getNow() } })))
+                if (evidence.publisher != caller) {
+                    let Facade : FacadeInterface.Facade = await Indicator.Facade();
+                    await Facade.postUserNotification((evidence.publisher, #NewVotesToEvidence({ id = evidenceId; data = { voter = caller; choice; timestamp = getNow() } })))
+                }
             }
         )()
     };
@@ -804,8 +813,10 @@ shared ({ caller = indicator }) persistent actor class Axioms() = this {
 
         ignore (
             func() : async () {
-                let Facade : FacadeInterface.Facade = await Indicator.Facade();
-                await Facade.postUserNotification((hypothesis.publisher, #NewAxiomsToHypothesis({ id = hypothesisId; data = { user = caller; timestamp = getNow() } })))
+                if (hypothesis.publisher != caller) {
+                    let Facade : FacadeInterface.Facade = await Indicator.Facade();
+                    await Facade.postUserNotification((hypothesis.publisher, #NewAxiomsToHypothesis({ id = hypothesisId; data = { user = caller; timestamp = getNow() } })))
+                }
             }
         )()
     };

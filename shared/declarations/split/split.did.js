@@ -91,6 +91,7 @@ export const idlFactory = ({ IDL }) => {
     'balance' : SharableE8S__1,
   });
   const Split = IDL.Service({
+    'affiliateDeposit' : IDL.Func([IDL.Principal, IDL.Nat], [IDL.Nat], []),
     'deposit' : IDL.Func([IDL.Principal, IDL.Nat], [], []),
     'externalTransfer' : IDL.Func([IDL.Principal, IDL.Nat], [], []),
     'getBalance' : IDL.Func([Variant], [Sharable], ['query']),
