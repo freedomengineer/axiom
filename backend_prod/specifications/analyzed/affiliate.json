@@ -929,6 +929,62 @@
       }
     },
     {
+      "name": "getUserCouponTotal",
+      "flag": {
+        "isQuery": true,
+        "callerRequired": false
+      },
+      "argTypes": {
+        "principal": {
+          "origin": "Principal",
+          "singular": {
+            "name": "Principal"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async (Nat, Nat)",
+        "singular": {
+          "name": "()"
+        },
+        "entries": [
+          [
+            null,
+            {
+              "origin": "Nat",
+              "singular": {
+                "name": "Nat"
+              },
+              "entries": [],
+              "isArray": false,
+              "isOptional": false,
+              "isAsync": false
+            }
+          ],
+          [
+            null,
+            {
+              "origin": "Nat",
+              "singular": {
+                "name": "Nat"
+              },
+              "entries": [],
+              "isArray": false,
+              "isOptional": false,
+              "isAsync": false
+            }
+          ]
+        ],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
       "name": "expectUserNotFound",
       "flag": {
         "isQuery": true,
@@ -4125,6 +4181,43 @@
             "origin": "Time",
             "singular": {
               "name": "Time"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ]
+      ],
+      "isArray": false,
+      "isOptional": false,
+      "isAsync": true
+    },
+    "async (Nat, Nat)": {
+      "origin": "async (Nat, Nat)",
+      "singular": {
+        "name": "()"
+      },
+      "entries": [
+        [
+          null,
+          {
+            "origin": "Nat",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          null,
+          {
+            "origin": "Nat",
+            "singular": {
+              "name": "Nat"
             },
             "entries": [],
             "isArray": false,

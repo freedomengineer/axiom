@@ -168,13 +168,13 @@ const SelectPackage = ({
             <div
                 className={cn(
                     'gap-extratiny mb-normal flex h-max flex-col',
-                    setCoupon && coupon === undefined && 'blur-lg'
+                    !choice && setCoupon && coupon === undefined && 'blur-lg'
                 )}
             >
                 <div
                     className={cn(
                         'px-medium py-normal flex flex-col gap-0.5 rounded-lg border border-cold-200 bg-cold-800 text-white/80',
-                        setCoupon && coupon === undefined && 'pointer-events-none'
+                        !choice && setCoupon && coupon === undefined && 'pointer-events-none'
                     )}
                 >
                     <div className="text-small gap-small flex items-center justify-between font-normal">
@@ -334,7 +334,7 @@ const SelectPackage = ({
                                     isSelected
                                         ? 'border-primary-600'
                                         : 'border-cold-200 hover:border-cold-500',
-                                    ((setCoupon && coupon === undefined) || !!coupon) &&
+                                    ((!choice && setCoupon && coupon === undefined) || !!coupon) &&
                                         'pointer-events-none'
                                 )}
                             >
@@ -521,7 +521,7 @@ const SelectPackage = ({
                         )
                     })}
             </div>
-            {setCoupon && coupon === undefined && (
+            {!choice && setCoupon && coupon === undefined && (
                 <div className="gap-medium absolute left-0 top-0 z-10 flex h-full w-full flex-col items-center justify-center">
                     <p className="text-medium font-light text-cold-800 ">
                         Do you have a coupon? Input it here to register for free

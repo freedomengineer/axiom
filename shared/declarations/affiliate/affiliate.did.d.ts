@@ -33,6 +33,7 @@ export interface Affiliate {
     TopPagination
   >,
   'getUser' : ActorMethod<[Principal], Sharable__1>,
+  'getUserCouponTotal' : ActorMethod<[Principal], [bigint, bigint]>,
   'initialize' : ActorMethod<[], undefined>,
   'lockCoupon' : ActorMethod<[Uint8Array | number[], Principal], Sharable>,
   'putConfigs' : ActorMethod<[Array<[Key, SharableValue]>], undefined>,

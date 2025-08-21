@@ -103,6 +103,14 @@ module {
 
     public func foundByCode(__ : Self, code : [Nat8]) : Bool = Map.includes(__, Key(SHA256.fromBytes(code)));
 
+    public func totalIcpPaid(__ : Self, coupons : List<Text>) : Nat {
+        var total : Nat = 0;
+        for (e in List.toIter(coupons)) {
+            total += coupon(__, e).icpPaid
+        };
+        total
+    };
+
     public func coupon(__ : Self, key : Text) : Coupon = switch (Map.get(__, Key(key))) {
         case (?coupon) coupon;
         case (null) E.f(#NOT_EXISTED("Coupon"), "Attempted to retrieve a non-existent coupon with key " # key)

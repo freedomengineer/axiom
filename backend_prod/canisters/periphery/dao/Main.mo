@@ -763,7 +763,7 @@ shared ({ caller = indicator }) persistent actor class DAO() = this {
         ignore (
             func() : async () {
                 let Facade : FacadeInterface.Facade = await Indicator.Facade();
-                ignore Facade.postUsersNotification(List.filter(List.fromArray(principals), func(principal) = principal != caller), #NewBallots({ voter = caller; timestamp = Time.now() }))
+                ignore Facade.postUsersNotification(List.filter<Principal>(List.fromArray(principals), func(p) = p != caller), #NewBallots({ voter = caller; timestamp = Time.now() }))
             }
         )()
     };

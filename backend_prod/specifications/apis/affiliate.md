@@ -432,7 +432,20 @@
 {"revenue": "Nat", "balance": "Nat", "lastWithdrawAt": "Time"}
 ```
 
-### 13. `expectUserNotFound(principal)` returns `()`
+### 13. `getUserCouponTotal(principal)` returns `(Nat, Nat)`
+
+#### Arguments:
+
+```json
+{"principal": "Principal"}
+```
+
+#### Returns:
+```json
+["Nat", "Nat"]
+```
+
+### 14. `expectUserNotFound(principal)` returns `()`
 
 #### Arguments:
 

@@ -267,6 +267,10 @@ import Debug "mo:base/Debug";
         let user : User.User = Users.user(users, principal);
         User.getEarning(user)
     };
+    public query func getUserCouponTotal(principal : Principal) : async (Nat, Nat) {
+        let user : User.User = Users.user(users, principal);
+        (List.size(user.coupons), Coupons.totalIcpPaid(coupons, user.coupons))
+    };
 
     /// PUBLIC ////// ASSERTERS ////////////
 

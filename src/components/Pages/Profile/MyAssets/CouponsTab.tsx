@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import TicketIcon from '@components/Assets/ticket.svg'
 import InfiniteScrollWrapper from '@components/Shared/InfiniteScrollWrapper'
@@ -17,10 +17,16 @@ const CouponsTab = ({
     balance: bigint
     refreshBalances: () => Promise<void>
 }) => {
-    const { agent } = useAuth()
+    const { principal, agent } = useAuth()
 
     const [createdCoupon, setCreatedCoupon] = useState<DAffiliate.PrivateSharable>()
     const [open, setOpen] = useState<boolean>(false)
+
+    const [total, setTotal] = useState<[bigint, bigint]>([0n, 0n])
+
+    useEffect(() => {
+        Affiliate.call().getUserCouponTotal(principal).then(setTotal)
+    }, [principal])
 
     return (
         <div className="gap-medium flex flex-col">
@@ -50,10 +56,14 @@ const CouponsTab = ({
                     />
                 </Popup>
             )}
-            <div className="gap-normal grid w-full grid-cols-2">
+            <div className="gap-normal grid w-full grid-cols-3">
+                <div className="text-small py-small px-medium gap-normal flex w-full items-center justify-between text-nowrap rounded-lg border border-cold-200 bg-cold-50">
+                    <span className="font-semibold text-cold-700">Total coupons</span>
+                    <span className="font-semibold text-cold-700">{total[0]}</span>
+                </div>
                 <div className="text-small py-small px-medium gap-normal flex w-full items-center justify-between text-nowrap rounded-lg border border-cold-200 bg-cold-50">
                     <span className="font-semibold text-cold-700">ICP paid</span>
-                    <span className="font-semibold text-cold-700">{0n}</span>
+                    <span className="font-semibold text-cold-700">{total[1]}</span>
                 </div>
                 <button className="button h-full bg-cold-800" onClick={() => setOpen(true)}>
                     Create coupon

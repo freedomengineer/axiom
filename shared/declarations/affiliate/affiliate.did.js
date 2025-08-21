@@ -200,6 +200,11 @@ export const idlFactory = ({ IDL }) => {
         ['query'],
       ),
     'getUser' : IDL.Func([IDL.Principal], [Sharable__1], ['query']),
+    'getUserCouponTotal' : IDL.Func(
+        [IDL.Principal],
+        [IDL.Nat, IDL.Nat],
+        ['query'],
+      ),
     'initialize' : IDL.Func([], [], []),
     'lockCoupon' : IDL.Func([IDL.Vec(IDL.Nat8), IDL.Principal], [Sharable], []),
     'putConfigs' : IDL.Func([IDL.Vec(IDL.Tuple(Key, SharableValue))], [], []),

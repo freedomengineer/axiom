@@ -29,6 +29,7 @@ module {
         getTopPagination : query ({ #Referrers; #CouponGenerators }, Nat, Nat) -> async Pagination.TopPagination;
         getUser : query (Principal) -> async User.Sharable;
         getEarning : query (Principal) -> async Earning.Sharable;
+        getUserCouponTotal : query (Principal) -> async (Nat, Nat);
         expectUserNotFound : query (Principal) -> async ();
     };
 };

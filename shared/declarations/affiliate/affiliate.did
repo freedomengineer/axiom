@@ -249,6 +249,7 @@ type Affiliate =
                         Referrers;
                       }, nat, nat) -> (TopPagination) query;
    getUser: (principal) -> (Sharable__1) query;
+   getUserCouponTotal: (principal) -> (nat, nat) query;
    /// PROTECTED ////// MODIFIERS ////////////
    initialize: () -> ();
    lockCoupon: (vec nat8, principal) -> (Sharable);
