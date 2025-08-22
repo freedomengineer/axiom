@@ -9,11 +9,11 @@ import Nat64 "mo:base/Nat64";
 import Nat32 "mo:base/Nat32";
 import Principal "mo:base/Principal";
 
-shared ({ caller = indicator }) actor class ICPUSD() = this {
+shared ({ caller = indicator }) persistent actor class ICPUSD() = this {
     private stable let Indicator : IndicatorInterface.Indicator = actor (Principal.toText(indicator));
 
     public shared ({ caller }) func exchange(icpToUsd : Bool, amount : Nat) : async Nat {
-        await Indicator.expectAuthorized(caller, [#Facade]);
+        await Indicator.expectAuthorized(caller, [#Facade, #Affiliate]);
 
         let request : XRC.GetExchangeRateRequest = {
             base_asset = switch (icpToUsd) {

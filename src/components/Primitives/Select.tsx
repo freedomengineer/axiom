@@ -85,7 +85,7 @@ const Select = ({
                 />
             </button>
             {isOpen && (
-                <div className="mt-extratiny absolute z-10 max-h-96 w-full overflow-y-auto rounded-lg border border-cold-300 bg-white shadow-lg">
+                <div className="mt-extratiny absolute z-10 max-h-96 w-full overflow-y-auto rounded-lg border border-cold-200 bg-white shadow-lg">
                     <p className="px-medium py-small w-full select-none truncate text-left font-medium text-cold-800/50">
                         {placeholder}
                     </p>

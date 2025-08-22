@@ -300,7 +300,7 @@ const SearchableSelect = memo(
             const dropdownContent = (
                 <div
                     ref={dropdownRef}
-                    className="mt-extratiny text-small max-h-96 w-full overflow-y-auto rounded-lg border border-cold-300 bg-white shadow-lg"
+                    className="mt-extratiny text-small max-h-96 w-full overflow-y-auto rounded-lg border border-cold-200 bg-white shadow-lg"
                     role="listbox"
                     style={
                         usePortal

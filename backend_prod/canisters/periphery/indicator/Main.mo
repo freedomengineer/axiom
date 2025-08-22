@@ -41,7 +41,7 @@ import Debug "mo:base/Debug";
 import Timer "mo:base/Timer";
 import Int "mo:base/Int";
 
-shared ({ caller = founder }) actor class Indicator() = this {
+shared ({ caller = founder }) persistent actor class Indicator() = this {
         private stable var version : Version.Version = Version.new();
     private stable let actors : Actors.Actors = Actors.init(founder);
     private stable let installations : Installations.Installations = Installations.init();

@@ -132,6 +132,18 @@ export const getStatusAndCache = async (actor: Actor): Promise<ActorStatus | nul
 }
 export const deleteAllStatusCache = (): void => {
     memoryCache.clear()
+    for (let i = localStorage.length - 1; i >= 0; i--) {
+        const key = localStorage.key(i)
+        if (key && key.startsWith(STORAGE_PREFIX)) localStorage.removeItem(key)
+    }
+}
+export const getNumStatusCache = (): number => {
+    let count = 0
+    for (let i = localStorage.length - 1; i >= 0; i--) {
+        const key = localStorage.key(i)
+        if (key && key.startsWith(STORAGE_PREFIX)) count++
+    }
+    return count
 }
 
 const useStatus = (actor: Actor): ActorStatus | null => {

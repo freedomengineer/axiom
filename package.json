@@ -64,6 +64,7 @@
         "clsx": "^2.1.0",
         "dexie": "^4.0.11",
         "dexie-react-hooks": "^1.1.7",
+        "framer-motion": "^12.23.12",
         "isomorphic-fetch": "^3.0.0",
         "masonry-layout": "^4.2.2",
         "qrcode.react": "^4.2.0",

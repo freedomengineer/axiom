@@ -6,8 +6,10 @@ import Spinner from '@components/Primitives/Spinner'
 import { Symbol } from '@components/Shared/Username'
 import useAuth from '@hooks/useAuth'
 import { Displayer } from '@hooks/useUsername'
+import useVoteColors from '@hooks/useVoteColors'
 import cn from '@libs/class'
 import { EVote, VOTES } from '@utils/dashboard/proposal'
+import { mapVoteTypeFromString } from '@utils/voteColors'
 import { DDAO, DFacade } from 'shared/types/services'
 
 const DelegatedProposalVote = ({
@@ -16,33 +18,40 @@ const DelegatedProposalVote = ({
     loading,
     voters,
     className = '',
+    customColor,
 }: {
     vote: [Opt<DDAO.Delegable__2>, Displayer | null]
     handleVote: (to: Principal) => Promise<void>
     loading: boolean
     voters: [DFacade.Identifier[], DFacade.Identifier[], DFacade.Identifier[], DFacade.Identifier[]]
     className?: string
+    customColor?: string
 }) => {
+    const { colors } = useVoteColors()
     const { principal } = useAuth()
     const [openDelegateeDropdown, setOpenDelegateeDropdown] = useState(false)
 
     const { Icon, bgColor, textColor, borderColor, name } = VOTES[EVote.Delegated]
     const isCurrentVote = vote[0] && 'Delegated' in vote[0]
 
+    const voteType = mapVoteTypeFromString(EVote.Delegated)
+    const finalCustomColor = customColor || colors[voteType]
+
     return (
         <Menu allowHover open={openDelegateeDropdown} handler={(t) => setOpenDelegateeDropdown(t)}>
             <MenuHandler>
                 <button
                     className={cn(
-                        'py-normal !text-tiny gap-small col-span-2 flex transform items-center justify-center border-2 outline-none transition-all duration-200 ease-in-out disabled:pointer-events-none disabled:border-opacity-0 disabled:bg-opacity-50',
-                        borderColor,
-                        bgColor,
+                        'py-normal gap-small !text-tiny disabled:border-[var(--vote-color)]/0 disabled:bg-[var(--vote-color)]/50 col-span-2 flex transform items-center justify-center border-2 border-[var(--vote-color)] outline-none transition-all duration-200 ease-in-out disabled:pointer-events-none aria-checked:pointer-events-none',
                         !isCurrentVote &&
-                            `${textColor} bg-opacity-0 hover:bg-opacity-100 hover:text-white`,
+                            `bg-[var(--vote-color)]/0 text-[var(--vote-color)] hover:bg-[var(--vote-color)] hover:text-white`,
                         isCurrentVote &&
-                            `${bgColor} bg-opacity-100 text-white hover:border-opacity-0 hover:bg-opacity-80`,
+                            `hover:bg-[var(--vote-color)]/75 hover:border-[var(--vote-color)]/0 bg-[var(--vote-color)] text-white`,
                         className
                     )}
+                    style={{
+                        ['--vote-color' as any]: finalCustomColor,
+                    }}
                     disabled={loading}
                 >
                     {loading ? (
@@ -73,7 +82,10 @@ const DelegatedProposalVote = ({
                         principal && voter.principal.compareTo(principal) === 'eq' ? null : (
                             <div key={i} className="gap-tiny flex w-full items-center outline-none">
                                 <div
-                                    className={cn('h-5 w-1 md:h-6', VOTES[EVote.Positive].bgColor)}
+                                    className={cn('h-5 w-1 md:h-6')}
+                                    style={{
+                                        backgroundColor: colors['positive'],
+                                    }}
                                 />
                                 <button
                                     className="px-normal py-small w-full rounded-lg text-left hover:bg-cold-800/15"
@@ -97,7 +109,10 @@ const DelegatedProposalVote = ({
                         principal && voter.principal.compareTo(principal) === 'eq' ? null : (
                             <div key={i} className="gap-tiny flex w-full items-center outline-none">
                                 <div
-                                    className={cn('h-5 w-1 md:h-6', VOTES[EVote.Negative].bgColor)}
+                                    className={cn('h-5 w-1 md:h-6')}
+                                    style={{
+                                        backgroundColor: colors['negative'],
+                                    }}
                                 />
                                 <button
                                     className="px-normal py-small w-full rounded-lg text-left hover:bg-cold-800/15"
@@ -121,7 +136,10 @@ const DelegatedProposalVote = ({
                         principal && voter.principal.compareTo(principal) === 'eq' ? null : (
                             <div key={i} className="gap-tiny flex w-full items-center outline-none">
                                 <div
-                                    className={cn('h-5 w-1 md:h-6', VOTES[EVote.Delegated].bgColor)}
+                                    className={cn('h-5 w-1 md:h-6')}
+                                    style={{
+                                        backgroundColor: colors['delegated'],
+                                    }}
                                 />
                                 <button
                                     className="px-normal py-small w-full rounded-lg text-left hover:bg-cold-800/15"

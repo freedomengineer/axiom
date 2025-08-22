@@ -332,7 +332,7 @@ export const UserNotificationRenderer = memo(
                                 className="inline-block font-semibold text-primary-700"
                                 principal={item.proposer}
                             />
-                            {`. Vote before it expires at ${formatDate({ nano: expiresAt }, true)}.`}
+                            {`. Vote before it expires ${formatDate({ nano: expiresAt }, true)}.`}
                         </>
                     )
                 }
@@ -349,6 +349,18 @@ export const UserNotificationRenderer = memo(
                         <>
                             Your proposal #{item.proposalId} has been{' '}
                             {UnwrapVariant(item.result).toLowerCase()}.
+                        </>
+                    )
+                }
+                case 'CouponRedeemed': {
+                    return (
+                        <>
+                            Your coupon #{item.key.slice(0, 4)} has been redeemed by{' '}
+                            <Username
+                                symbol
+                                className="inline-block font-semibold text-primary-700"
+                                principal={item.user}
+                            />
                         </>
                     )
                 }
@@ -417,7 +429,7 @@ export const SystemNotificationRenderer = ({
                 return (
                     <>
                         A flag has been requested by for {category.toLowerCase()} #{data.header.id}.
-                        Vote before it expires at {formatDate({ nano: expiresAt }, true)}.
+                        Vote before it expires {formatDate({ nano: expiresAt }, true)}.
                     </>
                 )
             }
@@ -501,7 +513,7 @@ export const SystemNotificationRenderer = ({
                         )}
                         {hasRemoved && (
                             <>
-                                {' '}
+                                {' And '}
                                 <Usernames
                                     symbol
                                     className="inline-block font-semibold text-primary-700"
@@ -572,6 +584,8 @@ const getNotificationLink = (notification: StoredNotification): string | undefin
                     return `/dashboard/proposals/${item.proposalId}`
                 case 'ProposalResult':
                     return `/dashboard/proposals/${item.proposalId}`
+                case 'CouponRedeemed':
+                    return `/profile/${Principal.fromUint8Array(item.user._arr).toText()}`
                 default:
                     return undefined
             }
@@ -795,10 +809,10 @@ const Notifications = () => {
                 ) : (
                     <div className="p-large flex flex-col items-center justify-center text-center">
                         <EmptyNotificationIcon className="mb-medium h-12 w-12 text-cold-300 md:h-16 md:w-16" />
-                        <p className="text-normal font-medium text-cold-700">
+                        <p className="text-normal text-center font-medium text-cold-700">
                             You're all caught up!
                         </p>
-                        <p className="text-tiny font-normal text-cold-700">
+                        <p className="text-tiny text-center font-normal text-cold-700">
                             There are no new notifications in this tab
                         </p>
                     </div>

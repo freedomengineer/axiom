@@ -1,11 +1,14 @@
 import Count "../../../library/Count";
 import Earning "../../../library/Earning";
 import E8S "../../../library/E8S";
+import List "../../../library/List";
+
 import Principal "mo:base/Principal";
 
 module {
     /// PRIVATE ////// DECLARATIONS ////////////
 
+    private type List<T> = List.List<T>;
     private type Count = Count.Count;
     private type SharableCount = Count.Sharable;
     private type E8S = E8S.E8S;
@@ -22,18 +25,21 @@ module {
     public type User = {
         referrer : ?Principal;
         referrals : Count;
-        earning : Earning
+        earning : Earning;
+        var coupons : List<Text>
     };
     public type Sharable = {
         referrer : ?Principal;
         referrals : SharableCount;
-        earning : SharableEarning
+        earning : SharableEarning;
+        coupons : [Text]
     };
 
     public func init(referrer : ?Principal) : User = {
         referrer;
         referrals = Count.new();
-        earning = Earning.new()
+        earning = Earning.new();
+        var coupons = List.nil()
     };
 
     /// PUBLIC ////// MODIFIERS ////////////
@@ -48,6 +54,12 @@ module {
     public func referred(__ : Self) : () {
         Count.increment(__.referrals)
     };
+    public func couponCreated(__ : Self, key : Text) {
+        __.coupons := List.push(key, __.coupons)
+    };
+    public func assignCoupon(__ : Self, key : List<Text>) {
+        __.coupons := key
+    };
 
     /// PUBLIC ////// ACCESSORS ////////////
 
@@ -58,11 +70,13 @@ module {
         Earning.expectPositiveBalance(__.earning);
         Earning.balance(__.earning)
     };
+    public func getBalance(__ : Self) : Nat = Earning.getBalance(__.earning);
 
     public func toSharable(__ : Self) : Sharable = {
-        __ with
+        referrer = __.referrer;
         referrals = Count.toSharable(__.referrals);
-        earning = Earning.toSharable(__.earning)
+        earning = Earning.toSharable(__.earning);
+        coupons = List.toArray(__.coupons)
     };
 
     /// PUBLIC ////// ASSERTERS ////////////

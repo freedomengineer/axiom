@@ -11,6 +11,7 @@ module {
         setConfigs : shared ([(Configs.Key, Configs.SharableValue)]) -> async ();
         putConfigs : shared ([(Configs.Key, Configs.SharableValue)]) -> async ();
         deposit : shared (Principal, Nat) -> async ();
+        affiliateDeposit : shared (Principal, Nat) -> async Nat;
         internalTransfer : shared (Actor.Variant, Nat) -> async ();
         externalTransfer : shared (Principal, Nat) -> async ();
         getConfig : query (Configs.Key) -> async Configs.SharableValue;

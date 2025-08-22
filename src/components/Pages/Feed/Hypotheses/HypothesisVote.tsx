@@ -1,8 +1,10 @@
 import AcornIcon from '@components/Assets/acorn.svg'
 import Spinner from '@components/Primitives/Spinner'
 import CustomVotes from '@components/Shared/CustomVotes'
+import useVoteColors from '@hooks/useVoteColors'
 import cn from '@libs/class'
 import { EVote, VOTES } from '@utils/feed/hypothesis'
+import { mapVoteTypeFromString } from '@utils/voteColors'
 import { DAxioms } from 'shared/types/services'
 import { valueOf } from 'shared/utils/tokens'
 import { UnwrapVariant } from 'shared/utils/typings'
@@ -20,8 +22,13 @@ const HypothesisVote = ({
     loading: boolean
     className?: string
 }) => {
+    const { colors } = useVoteColors()
     const { Icon, bgColor, name } = VOTES[choice]
     const isCurrentVote = UnwrapVariant(vote?.choice) === choice
+
+    // Get custom color for this vote type
+    const voteType = mapVoteTypeFromString(choice)
+    const customColor = colors[voteType]
 
     return (
         <CustomVotes
@@ -35,10 +42,14 @@ const HypothesisVote = ({
         >
             <button
                 className={cn(
-                    'py-normal text-tiny gap-small flex w-full transform select-none items-center justify-center text-white transition-all duration-300 ease-in-out hover:bg-opacity-80 disabled:pointer-events-none disabled:bg-opacity-50',
+                    'py-normal text-tiny gap-small flex w-full transform select-none items-center justify-center text-white transition-all duration-300 ease-in-out hover:bg-opacity-80 hover:opacity-75 disabled:pointer-events-none disabled:bg-opacity-50',
                     bgColor,
                     className
                 )}
+                style={{
+                    backgroundColor: customColor,
+                    borderColor: customColor,
+                }}
                 onClick={() => handleVote()}
                 disabled={loading}
             >

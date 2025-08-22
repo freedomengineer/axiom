@@ -144,6 +144,11 @@ export const idlFactory = ({ IDL }) => {
     'timestamp' : Time,
     'hypothesisId' : IDL.Nat,
   });
+  const CouponRedeemedData = IDL.Record({
+    'key' : IDL.Text,
+    'user' : IDL.Principal,
+    'timestamp' : Time,
+  });
   const NewVotesToProposalData = IDL.Record({
     'voter' : IDL.Principal,
     'timestamp' : Time,
@@ -201,6 +206,7 @@ export const idlFactory = ({ IDL }) => {
       'total' : IDL.Nat,
       'capacity' : IDL.Vec(NewHypothesesFromFollowingsData),
     }),
+    'CouponRedeemed' : CouponRedeemedData,
     'NewVotesToProposal' : IDL.Record({
       'id' : IDL.Nat,
       'total' : IDL.Nat,
@@ -371,6 +377,7 @@ export const idlFactory = ({ IDL }) => {
       'data' : NewVotesToEvidenceData,
     }),
     'NewHypothesesFromFollowings' : NewHypothesesFromFollowingsData,
+    'CouponRedeemed' : CouponRedeemedData,
     'NewVotesToProposal' : IDL.Record({
       'id' : IDL.Nat,
       'data' : NewVotesToProposalData,
@@ -408,6 +415,7 @@ export const idlFactory = ({ IDL }) => {
       'data' : NewVotesToEvidenceData,
     }),
     'NewHypothesesFromFollowings' : NewHypothesesFromFollowingsData,
+    'CouponRedeemed' : CouponRedeemedData,
     'NewVotesToProposal' : IDL.Record({
       'id' : IDL.Nat,
       'data' : NewVotesToProposalData,
@@ -477,6 +485,7 @@ export const idlFactory = ({ IDL }) => {
     'postUsersNotifications' : IDL.Func([UsersNotificationsBatch], [], []),
     'putConfigs' : IDL.Func([IDL.Vec(IDL.Tuple(Key, SharableValue))], [], []),
     'register' : IDL.Func([IDL.Text, IDL.Nat, IDL.Opt(IDL.Principal)], [], []),
+    'registerWithCoupon' : IDL.Func([IDL.Text, IDL.Vec(IDL.Nat8)], [], []),
     'setConfigs' : IDL.Func([IDL.Vec(IDL.Tuple(Key, SharableValue))], [], []),
     'shiftToMidnight' : IDL.Func([IDL.Nat], [], []),
     'updateCapitalRaised' : IDL.Func([IDL.Principal, IDL.Nat], [], []),

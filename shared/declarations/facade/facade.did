@@ -43,6 +43,7 @@ type UsersBatch =
      };
 type UserVariantParam__1 = 
  variant {
+   CouponRedeemed: CouponRedeemedData;
    CustodianElectionResult: CustodianElectionResultData;
    CustodianProposalDelegated: CustodianProposalDelegatedData;
    CustodianProposalOpened: CustodianProposalOpenedData;
@@ -82,6 +83,7 @@ type UserVariantParam__1 =
  };
 type UserVariantParam = 
  variant {
+   CouponRedeemed: CouponRedeemedData;
    CustodianElectionResult: CustodianElectionResultData;
    CustodianProposalDelegated: CustodianProposalDelegatedData;
    CustodianProposalOpened: CustodianProposalOpenedData;
@@ -236,6 +238,7 @@ type SharableValue =
  };
 type SharableUserVariant = 
  variant {
+   CouponRedeemed: CouponRedeemedData;
    CustodianElectionResult: CustodianElectionResultData;
    CustodianProposalDelegated: CustodianProposalDelegatedData;
    CustodianProposalOpened: CustodianProposalOpenedData;
@@ -552,6 +555,7 @@ type Facade =
                     }) -> ();
    /// PUBLIC ////// MODIFIERS ////////////
    register: (text, nat, opt principal) -> ();
+   registerWithCoupon: (text, vec nat8) -> ();
    setConfigs: (vec record {
                       Key;
                       SharableValue;
@@ -595,6 +599,12 @@ type CustodianElectionResultData =
    claimable: nat;
    result: ElectionResult;
    timestamp: Time;
+ };
+type CouponRedeemedData = 
+ record {
+   key: text;
+   timestamp: Time;
+   user: principal;
  };
 type Category = 
  variant {

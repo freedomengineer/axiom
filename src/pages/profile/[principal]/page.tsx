@@ -19,6 +19,7 @@ const PublicProfilePage = () => {
     const [fetched, setFetched] = useState<{ principal: Principal; username: string }>()
 
     useEffect(() => {
+        setFetched(undefined)
         try {
             const p = principal ? Principal.fromText(principal) : authPrincipal!
             getUsername(p).then((u) => {
@@ -49,7 +50,7 @@ const PublicProfilePage = () => {
     return (
         <div className="md:p-semilarge p-0">
             <PageMetadata {...pageMetadata} />
-            <ProfileLayout key={principal} profilePrincipal={fetched.principal} />
+            <ProfileLayout key={fetched.principal.toText()} profilePrincipal={fetched.principal} />
         </div>
     )
 }

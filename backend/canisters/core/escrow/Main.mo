@@ -17,7 +17,7 @@ import Proportion "../../library/Proportion";
 import Principal "mo:base/Principal";
 import Time "mo:base/Time";
 
-shared ({ caller = indicator }) actor class Escrow() = this {
+shared ({ caller = indicator }) persistent actor class Escrow() = this {
     ////// TEMPORARY IMPLEMENTATION ////////////
     private stable var shiftedTime : Int = 0;
     private func getNow() : Int = shiftedTime + Time.now();

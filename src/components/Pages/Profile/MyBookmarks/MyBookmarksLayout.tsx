@@ -86,8 +86,10 @@ const MyBookmarksLayout = () => {
     if (hypotheses.length === 0)
         return (
             <div className="flex h-full w-full flex-col items-center justify-center text-center">
-                <p className="text-normal font-medium text-cold-700">No Bookmarks Found</p>
-                <p className="text-tiny font-normal text-cold-700">
+                <p className="text-normal text-center font-medium text-cold-700">
+                    No Bookmarks Found
+                </p>
+                <p className="text-tiny text-center font-normal text-cold-700">
                     You can save a hypothesis here by clicking the bookmark icon on the hypothesis.
                 </p>
             </div>
@@ -95,7 +97,7 @@ const MyBookmarksLayout = () => {
 
     return (
         <div className="">
-            <div className="w-full overflow-x-auto rounded-lg border border-cold-300 md:overflow-hidden">
+            <div className="w-full overflow-x-auto rounded-lg border border-cold-200 md:overflow-hidden">
                 <table className="min-w-full border-collapse">
                     <thead className="bg-cold-50">
                         <tr>
@@ -113,7 +115,7 @@ const MyBookmarksLayout = () => {
                                     scope="col"
                                     className={cn(
                                         'text-small px-normal py-small cursor-pointer select-none text-nowrap bg-cold-100 hover:bg-cold-700/20 aria-disabled:pointer-events-none aria-disabled:cursor-default',
-                                        'border-b border-r border-cold-300',
+                                        'border-b border-r border-cold-200',
                                         i === 0 && 'border-l-0',
                                         i === 6 && 'border-r-0'
                                     )}
@@ -167,7 +169,7 @@ const MyBookmarksLayout = () => {
                                     <td
                                         className={cn(
                                             '!text-tiny py-small px-normal group relative text-nowrap bg-cold-50 text-left font-semibold text-cold-600',
-                                            'border-b border-r border-cold-300',
+                                            'border-b border-r border-cold-200',
                                             isLastRow && 'border-b-0'
                                         )}
                                     >
@@ -185,7 +187,7 @@ const MyBookmarksLayout = () => {
                                     <td
                                         className={cn(
                                             '!text-tiny py-small px-normal text-nowrap font-semibold text-cold-600',
-                                            'border-b border-r border-cold-300',
+                                            'border-b border-r border-cold-200',
                                             isLastRow && 'border-b-0'
                                         )}
                                     >
@@ -203,7 +205,7 @@ const MyBookmarksLayout = () => {
                                     <td
                                         className={cn(
                                             '!text-tiny py-small px-normal text-cold-600',
-                                            'border-b border-r border-cold-300',
+                                            'border-b border-r border-cold-200',
                                             isLastRow && 'border-b-0'
                                         )}
                                     >
@@ -212,7 +214,7 @@ const MyBookmarksLayout = () => {
                                     <td
                                         className={cn(
                                             '!text-tiny py-small px-normal text-nowrap font-semibold text-cold-600',
-                                            'border-b border-r border-cold-300',
+                                            'border-b border-r border-cold-200',
                                             isLastRow && 'border-b-0'
                                         )}
                                     >
@@ -223,7 +225,7 @@ const MyBookmarksLayout = () => {
                                     <td
                                         className={cn(
                                             '!text-tiny py-small px-normal text-nowrap font-semibold text-cold-600',
-                                            'border-b border-r border-cold-300',
+                                            'border-b border-r border-cold-200',
                                             isLastRow && 'border-b-0'
                                         )}
                                     >
@@ -236,7 +238,7 @@ const MyBookmarksLayout = () => {
                                     <td
                                         className={cn(
                                             '!text-tiny py-small px-normal text-nowrap font-semibold text-cold-600',
-                                            'border-b border-r border-cold-300',
+                                            'border-b border-r border-cold-200',
                                             isLastRow && 'border-b-0'
                                         )}
                                     >
@@ -245,7 +247,7 @@ const MyBookmarksLayout = () => {
                                     <td
                                         className={cn(
                                             '!text-tiny py-small px-normal text-nowrap text-cold-600',
-                                            'border-b border-cold-300',
+                                            'border-b border-cold-200',
                                             isLastRow && 'border-b-0'
                                         )}
                                     >

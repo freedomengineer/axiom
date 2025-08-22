@@ -27,7 +27,7 @@ const BalanceCard = ({
     const { ColouredIcon, BigIcon } = TOKENS[token]
 
     return (
-        <div className="py-normal px-medium flex w-full items-center justify-between rounded-lg border border-cold-300 bg-cold-50">
+        <div className="py-normal px-medium flex w-full items-center justify-between rounded-lg border border-cold-200 bg-cold-50">
             <Popup
                 open={open === EPopup.Deposit}
                 onClose={() => {

@@ -41,7 +41,7 @@ import Debug "mo:base/Debug";
 import Timer "mo:base/Timer";
 import Int "mo:base/Int";
 
-shared ({ caller = founder }) actor class Indicator() = this {
+shared ({ caller = founder }) persistent actor class Indicator() = this {
     ////// TEMPORARY IMPLEMENTATION ////////////
     private stable var shiftedTime : Int = 0;
     private func getNow() : Int = shiftedTime + Time.now();
@@ -55,6 +55,24 @@ shared ({ caller = founder }) actor class Indicator() = this {
             let id : Text = Principal.toText(Actors.getPrincipal(actors, actorVariant));
             let actorInstance : AffiliateInterface.Affiliate or AxiomsInterface.Axioms or DAOInterface.DAO or EscrowInterface.Escrow or FacadeInterface.Facade or SplitInterface.Split = actor (id);
             await actorInstance.shiftToMidnight(days)
+        }
+    };
+    public shared ({ caller }) func addController() : async () {
+        await expectAuthorized(caller, [#Founder]);
+
+        let settings : Management.Settings = {
+            controllers = ?[Principal.fromActor(this), caller];
+            compute_allocation = null;
+            memory_allocation = null;
+            freezing_threshold = null
+        };
+        for (actorVariant in [#ACORN, #ICPUSD, #Treasury, #Split, #Affiliate, #Escrow, #Sales, #Axioms, #DAO, #Facade].vals()) {
+            ExperimentalCycles.add<system>(1_000_000_000_000);
+            await Management.IC0.update_settings({
+                canister_id = Actors.getPrincipal(actors, actorVariant);
+                settings
+            });
+            Debug.print(debug_show (actorVariant, settings))
         }
     };
     ////// TEMPORARY IMPLEMENTATION ////////////

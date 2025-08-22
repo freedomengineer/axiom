@@ -1,58 +1,105 @@
-import { Accordion, AccordionBody, AccordionHeader, Tooltip } from '@material-tailwind/react'
+import { Principal } from '@dfinity/principal'
 import { useEffect, useState } from 'react'
 
-import PlusIcon from '@components/Assets/plus.svg'
-import RefreshIcon from '@components/Assets/refresh.svg'
-import Deposit from '@components/Shared/Deposit'
-import Popup from '@components/Shared/Popup'
+import SelectPackage from '@components/Shared/SelectPackgage'
 import useAuth from '@hooks/useAuth'
 import useConfigs from '@hooks/useConfigs'
-import cn from '@libs/class'
+import usePackages, { EPackages, ParsedMembershipPackage } from '@hooks/usePackages'
+import { sha256 } from '@libs/crypto'
+import { formatDate } from '@libs/date'
+import { error } from '@libs/toastify'
 import { Choices, ESteps, StepProps } from '@utils/login/step'
-import { ICP_FEE } from 'shared/constants'
 import { DSales } from 'shared/types/services'
-import e8s from 'shared/utils/e8s'
 import proportion, { Proportion } from 'shared/utils/proportion'
-import { ICP, Sales } from 'shared/utils/services'
-import { amountOf, getCurrentPrice } from 'shared/utils/tokens'
+import { Affiliate, ICP } from 'shared/utils/services'
+import { UnwrapVariant } from 'shared/utils/typings'
 
 const PurchasePackage = ({ choices, setChoice, handlePrev, handleNext }: StepProps) => {
     const { principal } = useAuth()
-    const configs = useConfigs('Sales')
     const splitConfigs = useConfigs('Split')
+    const configs = useConfigs('Sales')
 
-    const [packages, setPackages] = useState<DSales.SharablePackage[]>([])
-    const [currentPrice, setCurrentPrice] = useState<bigint>(0n)
     const [selectedPackage, setSelectedPackage] = useState<Choices[ESteps.Package]>(
         choices[ESteps.Package]
     )
     const [balance, setBalance] = useState<bigint>(0n)
-    const [isOpenDeposit, setIsOpenDeposit] = useState<boolean>(false)
-    const [slippage, setSlippage] = useState<number>(5) // 5%
+    const [isPriceReady, setIsPriceReady] = useState<boolean>(false)
+    const [coupon, setCoupon] = useState<string | null | undefined>(
+        choices[ESteps.Package]?.coupon ?? localStorage.getItem('code') ?? undefined
+    )
+
+    const packages = (usePackages(EPackages.Membership, configs) ?? []) as ParsedMembershipPackage[]
 
     useEffect(() => {
-        Promise.all([
-            getCurrentPrice().then(setCurrentPrice),
-            Sales.call().getPackages().then(setPackages),
-            ICP.call().icrc1_balance_of({ owner: principal!, subaccount: [] }).then(setBalance),
-        ])
-    }, [])
+        if (principal) {
+            ICP.call()
+                .icrc1_balance_of({ owner: principal, subaccount: [] })
+                .then(setBalance)
+                .catch(() => {})
+        }
+        if (coupon) {
+            updateCoupon(coupon, () => {
+                localStorage.removeItem('code')
+                setCoupon(null)
+            })
+        }
+    }, [principal])
 
-    const handleOpen = (choice: Choices[ESteps.Package]) =>
-        setSelectedPackage(
-            selectedPackage?.package.capitalRaised === choice?.package.capitalRaised ? null : choice
-        )
+    const refreshBalance = async () => {
+        if (!principal) return
+        return ICP.call()
+            .icrc1_balance_of({ owner: principal, subaccount: [] })
+            .then(setBalance)
+            .catch(() => {})
+    }
+
+    const updateCoupon = async (code: string | null, onRedeemed?: () => void) => {
+        if (code === null) {
+            setCoupon(null)
+            return
+        }
+        if (code === '') return
+        else {
+            if (
+                /^[0-9a-fA-F]{32}$/.test(code) ||
+                /^([0-9a-fA-F]{4}-){7}[0-9a-fA-F]{4}$/.test(code)
+            ) {
+                const hash = sha256(code.replace(/-/g, ''))
+
+                let res
+                try {
+                    res = await Affiliate.call(undefined, true).getCoupon(hash)
+                } catch (e) {
+                    onRedeemed?.()
+                    return null
+                }
+
+                const status = UnwrapVariant(res.status)
+
+                if (status[0] === 'Redeemed' || status[0] === 'Locked') {
+                    error(
+                        `Coupon already redeemed by ${(status[1] as any).by.toText()} ${(formatDate({ nano: (status[1] as any).timestamp }), true)}`
+                    )
+                } else if (
+                    status === 'Available' ||
+                    (status[0] === 'Failed' && principal?.compareTo((status[1] as any).by) === 'eq')
+                ) {
+                    setCoupon(code)
+                    const p = packages.find((p) => p.originalPrice === res.capitalRaised)!
+                    localStorage.setItem('ref', res.creator.toText())
+                    setSelectedPackage({
+                        package: p,
+                        icpToPay: 0n,
+                        acornToReceive: p.acornLiquid[0],
+                        coupon: code,
+                    })
+                }
+            }
+        }
+    }
 
     return (
         <>
-            <Popup
-                open={isOpenDeposit}
-                onClose={() => setIsOpenDeposit(false)}
-                title={`Deposit ICP`}
-                className="w-auto"
-            >
-                <Deposit token="ICP" />
-            </Popup>
             <div className="gap-small text-small flex flex-col text-cold-700">
                 <span>
                     You are buying a membership in the Axiom free thought platform. ACORNs are for
@@ -82,251 +129,17 @@ const PurchasePackage = ({ choices, setChoice, handlePrev, handleNext }: StepPro
                     membership package now.
                 </span>
             </div>
-            <div className="gap-extratiny mb-normal flex h-max flex-col">
-                <div className="p-small flex flex-col items-start justify-center rounded-lg border border-cold-200 bg-cold-800 text-white/80 md:flex-row md:items-center md:justify-between">
-                    <p className="text-small gap-small flex items-center font-normal">
-                        Your Balance:{' '}
-                        <span className="text-medium font-bold text-white">
-                            {e8s.toNumber(balance)}
-                        </span>{' '}
-                        ICP
-                        <button
-                            className="gap-tiny px-small md:py-extratiny text-tiny flex w-min items-center rounded-lg bg-white/100 py-0 font-normal text-cold-800 hover:bg-white/75"
-                            onClick={() => setIsOpenDeposit(true)}
-                        >
-                            <PlusIcon className="h-3 w-3 stroke-[1.5px] md:h-4 md:w-4" />
-                            Deposit
-                        </button>
-                        <button
-                            className="gap-tiny px-small md:py-extratiny text-tiny flex w-min items-center rounded-lg bg-white/100 py-0 font-normal text-cold-800 hover:bg-white/75"
-                            onClick={() => {
-                                ICP.call()
-                                    .icrc1_balance_of({ owner: principal!, subaccount: [] })
-                                    .then(setBalance)
-                            }}
-                        >
-                            <RefreshIcon className="h-3 w-3 stroke-[2px] md:h-4 md:w-4" />
-                            Refresh
-                        </button>
-                    </p>
-                    <p className="text-small gap-small flex items-center font-normal">
-                        Current Price: 1 ICP ={' '}
-                        <span className="text-medium font-bold text-white">
-                            {e8s.toNumber(currentPrice)}
-                        </span>{' '}
-                        USD
-                    </p>
-                </div>
-                {configs &&
-                    packages.map((p) => {
-                        const usdPrice = e8s.toNumber(p.capitalRaised)
-                        const adjustedUsdPrice =
-                            usdPrice *
-                            proportion.toFloat(
-                                configs['PRICE_ADJUSTMENT_PROPORTION'][1] as Proportion
-                            )
-
-                        const icpPrice = adjustedUsdPrice / e8s.toNumber(currentPrice)
-                        const icpFee = e8s.toNumber(ICP_FEE)
-                        const slippageTolerance = icpPrice * (slippage / 100)
-                        const icpToPay = icpPrice + icpFee + slippageTolerance
-
-                        const liquidProportion = proportion.toFloat(
-                            configs['ACORN_LIQUID_MINT_PROPORTION'][1] as Proportion
-                        )
-                        const buriedProportion = proportion.toFloat(
-                            configs['ACORN_BURIED_MINT_PROPORTION'][1] as Proportion
-                        )
-
-                        const acornRewarded = usdPrice * liquidProportion
-                        const acornBuried = usdPrice * buriedProportion
-                        const isSelected =
-                            selectedPackage?.package.capitalRaised === p.capitalRaised
-
-                        return (
-                            <Accordion
-                                key={p.capitalRaised}
-                                open={isSelected}
-                                // disabled={
-                                //     e8s.toNumber(balance) < icpToPay || choices[ESteps.Checkout]
-                                // }
-                                icon={
-                                    <>
-                                        <p
-                                            className={cn(
-                                                '!text-normal hidden border-b-0 font-medium transition-colors md:block',
-                                                isSelected
-                                                    ? 'text-primary-600 group-hover:pointer-events-none group-hover:text-primary-600'
-                                                    : 'text-cold-700 group-hover:cursor-pointer group-hover:text-cold-800'
-                                            )}
-                                        >
-                                            {/* {usdPrice} * (
-                                            {proportion.toString(
-                                                configs?.[
-                                                    'PRICE_ADJUSTMENT_PROPORTION'
-                                                ][1] as Proportion
-                                            )}
-                                            ) ={' '} */}
-                                            {adjustedUsdPrice} USD
-                                        </p>
-                                        <p
-                                            className={cn(
-                                                '!text-normal block border-b-0 font-medium transition-colors md:hidden',
-                                                isSelected
-                                                    ? 'text-primary-600 group-hover:pointer-events-none group-hover:text-primary-600'
-                                                    : 'text-cold-700 group-hover:cursor-pointer group-hover:text-cold-800'
-                                            )}
-                                        >
-                                            ${adjustedUsdPrice} * (
-                                            {proportion.toString(
-                                                configs?.[
-                                                    'PRICE_ADJUSTMENT_PROPORTION'
-                                                ][1] as Proportion
-                                            )}
-                                            )
-                                        </p>
-                                    </>
-                                }
-                                className={cn(
-                                    'group h-max rounded-lg border px-4',
-                                    isSelected
-                                        ? 'border-primary-600'
-                                        : 'border-cold-200 hover:border-cold-500'
-                                )}
-                            >
-                                <AccordionHeader
-                                    onClick={() =>
-                                        handleOpen({
-                                            package: p,
-                                            icpToPay: amountOf(icpToPay),
-                                            acornToReceive: amountOf(acornRewarded),
-                                        })
-                                    }
-                                    className={cn(
-                                        'border-b-0 font-medium transition-colors',
-                                        isSelected
-                                            ? 'text-primary-600 group-hover:pointer-events-none group-hover:text-primary-600'
-                                            : 'text-cold-700 hover:text-cold-800 group-hover:cursor-pointer'
-                                    )}
-                                >
-                                    <div className="gap-medium text-normal flex items-center">
-                                        <input
-                                            type="radio"
-                                            name={`radio-${p.capitalRaised}`}
-                                            checked={isSelected}
-                                            className="h-4 w-4 rounded-full accent-primary-600 md:h-5 md:w-5"
-                                        />
-                                        <p>
-                                            {p.metadata.name} ({p.metadata.symbol})
-                                        </p>
-                                    </div>
-                                </AccordionHeader>
-                                <AccordionBody className="gap-small flex w-full flex-col place-items-center items-center pt-0 font-normal md:flex-row md:justify-between">
-                                    <div className="mr-auto flex flex-col place-items-center items-start">
-                                        <span>You will be rewarded with:</span>
-                                        <li>
-                                            <span className="font-bold text-primary-600">
-                                                {acornRewarded} ACORN
-                                            </span>{' '}
-                                            in liquid wallet
-                                        </li>
-                                        <li>
-                                            <span className="font-bold text-primary-600">
-                                                {acornBuried} ACORN
-                                            </span>{' '}
-                                            buried in{' '}
-                                            <span className="font-bold text-primary-600">89</span>{' '}
-                                            days
-                                        </li>
-                                        <li>
-                                            <span className="font-bold text-primary-600">
-                                                {acornRewarded} voting power
-                                            </span>{' '}
-                                            across the platform in{' '}
-                                            <span className="font-bold text-primary-600">89</span>{' '}
-                                            days
-                                        </li>
-                                    </div>
-                                    <div className="mt-small flex flex-row flex-wrap justify-end gap-x-2 md:ml-auto md:mt-0 md:flex-col md:items-end md:gap-0">
-                                        <p className="gap-small flex items-center ">
-                                            {icpPrice.toFixed(4)}
-                                            <span className="hidden md:inline"> ICP</span>
-                                            <Tooltip
-                                                content={
-                                                    <p className="">Price of the package in ICP</p>
-                                                }
-                                            >
-                                                <svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    fill="none"
-                                                    viewBox="0 0 24 24"
-                                                    stroke="currentColor"
-                                                    className="h-4 w-4 cursor-pointer stroke-[1.5px] md:h-5 md:w-5"
-                                                >
-                                                    <path
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                        d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
-                                                    />
-                                                </svg>
-                                            </Tooltip>
-                                        </p>
-                                        <p className="gap-small flex items-center ">
-                                            + {icpFee}
-                                            <span className="hidden md:inline"> ICP</span>
-                                            <Tooltip
-                                                content={<p className="">{"ICP's transfer fee"}</p>}
-                                            >
-                                                <svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    fill="none"
-                                                    viewBox="0 0 24 24"
-                                                    stroke="currentColor"
-                                                    className="h-4 w-4 cursor-pointer stroke-[1.5px] md:h-5 md:w-5"
-                                                >
-                                                    <path
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                        d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
-                                                    />
-                                                </svg>
-                                            </Tooltip>
-                                        </p>
-                                        <p className="gap-small flex items-center ">
-                                            + {slippageTolerance.toFixed(4)}
-                                            <span className="hidden md:inline"> ICP</span>
-                                            <Tooltip
-                                                content={
-                                                    <p className="">
-                                                        {
-                                                            "Slippage tolerance to prevent ICP price's fluctuation, you will be refunded the difference"
-                                                        }
-                                                    </p>
-                                                }
-                                            >
-                                                <svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    fill="none"
-                                                    viewBox="0 0 24 24"
-                                                    stroke="currentColor"
-                                                    className="h-4 w-4 cursor-pointer stroke-[1.5px] md:h-5 md:w-5"
-                                                >
-                                                    <path
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                        d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
-                                                    />
-                                                </svg>
-                                            </Tooltip>
-                                        </p>
-                                        <p className="text-normal border-b-0 font-medium text-primary-600 transition-colors group-hover:pointer-events-none group-hover:text-primary-600">
-                                            = {icpToPay.toFixed(4)} ICP
-                                        </p>
-                                    </div>
-                                </AccordionBody>
-                            </Accordion>
-                        )
-                    })}
+            <div className="relative">
+                <SelectPackage
+                    balance={balance}
+                    choice={selectedPackage}
+                    setChoice={coupon ? () => {} : setSelectedPackage}
+                    setIsPriceReady={setIsPriceReady}
+                    refreshBalance={refreshBalance}
+                    coupon={coupon}
+                    setCoupon={(coupon) => updateCoupon(coupon)}
+                    packages={packages}
+                />
             </div>
             <div className="gap-small flex items-center justify-between">
                 <button
@@ -343,15 +156,18 @@ const PurchasePackage = ({ choices, setChoice, handlePrev, handleNext }: StepPro
                     }}
                     disabled={
                         !selectedPackage ||
-                        balance < selectedPackage.icpToPay ||
+                        !isPriceReady ||
+                        (!coupon && balance < selectedPackage.icpToPay) ||
                         choices[ESteps.Checkout]
                     }
                 >
                     {!selectedPackage
                         ? 'Choose a package'
-                        : balance < selectedPackage.icpToPay
-                          ? 'Insufficient balance'
-                          : 'Continue with ' + selectedPackage.package.metadata.name}
+                        : !isPriceReady
+                          ? 'Loading price...'
+                          : !coupon && balance < selectedPackage.icpToPay
+                            ? 'Insufficient balance'
+                            : 'Continue with ' + selectedPackage.package.name}
                 </button>
             </div>
         </>

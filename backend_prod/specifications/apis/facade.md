@@ -3,11 +3,11 @@
 ## Dependencies
 
 
-- Attributes: `User`, `Users`, `Notification`, `Notifications`, `DIP721`
+- Attributes: `User`, `Users`, `Notification`, `Notifications`, `Coupon`, `DIP721`
 - Interfaces: `DIP721Interface`, `ICPUSDInterface`, `SplitInterface`, `TreasuryInterface`, `AffiliateInterface`, `SalesInterface`, `EscrowInterface`, `AxiomsInterface`, `DAOInterface`, `IndicatorInterface`
 - Commons: `C`, `E`
 - Libraries: `Base`, `Configs`, `E8S`, `Format`, `Iter`, `Map`, `Pagination`
-- Bases: `Principal`, `Nat`, `Time`, `Text`
+- Bases: `Principal`, `Nat`, `Time`, `Text`, `Error`
 ## Modifiers
 
 ### 1. `initialize()` returns `()`
@@ -88,6 +88,7 @@
     "#CUSTODIANPROPOSALOPENED": {"proposalId": "Nat", "proposer": "Principal", "retried": "Nat", "timestamp": "Time"},
     "#PROPOSALEXECUTED": {"proposalId": "Nat", "result": "#EXECUTED | #FAILED", "claimable": "Nat", "timestamp": "Time"},
     "#PROPOSALRESULT": {"proposalId": "Nat", "result": "#APPROVED | #REJECTED | #EXPIRED", "timestamp": "Time"},
+    "#COUPONREDEEMED": {"key": "Text", "user": "Principal", "timestamp": "Time"},
     "#NEWHYPOTHESESFROMFOLLOWINGS": {"publisher": "Principal", "hypothesisId": "Nat", "timestamp": "Time"},
     "#NEWEVIDENCESFROMFOLLOWINGS": {"publisher": "Principal", "evidenceId": "Nat", "timestamp": "Time"},
     "#NEWREFERRALS": {"user": "Principal", "claimable": "Nat", "timestamp": "Time"},
@@ -120,6 +121,7 @@
     "#CUSTODIANPROPOSALOPENED": {"proposalId": "Nat", "proposer": "Principal", "retried": "Nat", "timestamp": "Time"},
     "#PROPOSALEXECUTED": {"proposalId": "Nat", "result": "#EXECUTED | #FAILED", "claimable": "Nat", "timestamp": "Time"},
     "#PROPOSALRESULT": {"proposalId": "Nat", "result": "#APPROVED | #REJECTED | #EXPIRED", "timestamp": "Time"},
+    "#COUPONREDEEMED": {"key": "Text", "user": "Principal", "timestamp": "Time"},
     "#NEWHYPOTHESESFROMFOLLOWINGS": {"publisher": "Principal", "hypothesisId": "Nat", "timestamp": "Time"},
     "#NEWEVIDENCESFROMFOLLOWINGS": {"publisher": "Principal", "evidenceId": "Nat", "timestamp": "Time"},
     "#NEWREFERRALS": {"user": "Principal", "claimable": "Nat", "timestamp": "Time"},
@@ -153,6 +155,7 @@
       "#CUSTODIANPROPOSALOPENED": {"proposalId": "Nat", "proposer": "Principal", "retried": "Nat", "timestamp": "Time"},
       "#PROPOSALEXECUTED": {"proposalId": "Nat", "result": "#EXECUTED | #FAILED", "claimable": "Nat", "timestamp": "Time"},
       "#PROPOSALRESULT": {"proposalId": "Nat", "result": "#APPROVED | #REJECTED | #EXPIRED", "timestamp": "Time"},
+      "#COUPONREDEEMED": {"key": "Text", "user": "Principal", "timestamp": "Time"},
       "#NEWHYPOTHESESFROMFOLLOWINGS": {"publisher": "Principal", "hypothesisId": "Nat", "timestamp": "Time"},
       "#NEWEVIDENCESFROMFOLLOWINGS": {"publisher": "Principal", "evidenceId": "Nat", "timestamp": "Time"},
       "#NEWREFERRALS": {"user": "Principal", "claimable": "Nat", "timestamp": "Time"},
@@ -193,6 +196,7 @@
         "#CUSTODIANPROPOSALOPENED": {"proposalId": "Nat", "proposer": "Principal", "retried": "Nat", "timestamp": "Time"},
         "#PROPOSALEXECUTED": {"proposalId": "Nat", "result": "#EXECUTED | #FAILED", "claimable": "Nat", "timestamp": "Time"},
         "#PROPOSALRESULT": {"proposalId": "Nat", "result": "#APPROVED | #REJECTED | #EXPIRED", "timestamp": "Time"},
+        "#COUPONREDEEMED": {"key": "Text", "user": "Principal", "timestamp": "Time"},
         "#NEWHYPOTHESESFROMFOLLOWINGS": {"publisher": "Principal", "hypothesisId": "Nat", "timestamp": "Time"},
         "#NEWEVIDENCESFROMFOLLOWINGS": {"publisher": "Principal", "evidenceId": "Nat", "timestamp": "Time"},
         "#NEWREFERRALS": {"user": "Principal", "claimable": "Nat", "timestamp": "Time"},
@@ -271,7 +275,15 @@
 {"username": "Text", "capitalRaised": "Nat", "referrer": "Principal"}
 ```
 
-### 13. `editUsername(username)` returns `()`
+### 13. `registerWithCoupon(username, coupon)` returns `()`
+
+#### Arguments:
+
+```json
+{"username": "Text", "coupon": ["Nat8"]}
+```
+
+### 14. `editUsername(username)` returns `()`
 
 #### Arguments:
 
@@ -279,7 +291,7 @@
 {"username": "Text"}
 ```
 
-### 14. `editLocation(location)` returns `()`
+### 15. `editLocation(location)` returns `()`
 
 #### Arguments:
 
@@ -287,7 +299,7 @@
 {"location": "Text"}
 ```
 
-### 15. `editAvatar(picture)` returns `()`
+### 16. `editAvatar(picture)` returns `()`
 
 #### Arguments:
 
@@ -295,7 +307,7 @@
 {"picture": {"blob": "Blob"}}
 ```
 
-### 16. `editLinks(links)` returns `()`
+### 17. `editLinks(links)` returns `()`
 
 #### Arguments:
 
@@ -491,6 +503,7 @@
       "#CUSTODIANPROPOSALOPENED": {"proposalId": "Nat", "proposer": "Principal", "retried": "Nat", "timestamp": "Time"},
       "#PROPOSALEXECUTED": {"proposalId": "Nat", "result": "#EXECUTED | #FAILED", "claimable": "Nat", "timestamp": "Time"},
       "#PROPOSALRESULT": {"proposalId": "Nat", "result": "#APPROVED | #REJECTED | #EXPIRED", "timestamp": "Time"},
+      "#COUPONREDEEMED": {"key": "Text", "user": "Principal", "timestamp": "Time"},
       "#NEWHYPOTHESESFROMFOLLOWINGS": {"capacity": [{"publisher": "Principal", "hypothesisId": "Nat", "timestamp": "Time"}], "total": "Nat"},
       "#NEWEVIDENCESFROMFOLLOWINGS": {"capacity": [{"publisher": "Principal", "evidenceId": "Nat", "timestamp": "Time"}], "total": "Nat"},
       "#NEWREFERRALS": {"capacity": [{"user": "Principal", "claimable": "Nat", "timestamp": "Time"}], "total": "Nat"},

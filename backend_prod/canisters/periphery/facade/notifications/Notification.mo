@@ -63,6 +63,11 @@ module {
         result : Result;
         timestamp : Time
     };
+    public type CouponRedeemedData = {
+        key : Text;
+        user : Principal;
+        timestamp : Time
+    };
 
     public type NewEvidencesToHypothesisData = {
         evidenceId : Nat;
@@ -122,6 +127,7 @@ module {
         #CustodianProposalOpened : CustodianProposalOpenedData;
         #ProposalExecuted : ProposalExecutedData;
         #ProposalResult : ProposalResultData;
+        #CouponRedeemed : CouponRedeemedData;
 
         #NewHypothesesFromFollowings : NewHypothesesFromFollowingsData;
         #NewEvidencesFromFollowings : NewEvidencesFromFollowingsData;
@@ -143,6 +149,7 @@ module {
         #CustodianProposalOpened : CustodianProposalOpenedData;
         #ProposalExecuted : ProposalExecutedData;
         #ProposalResult : ProposalResultData;
+        #CouponRedeemed : CouponRedeemedData;
 
         #NewHypothesesFromFollowings : {
             var capacity : List<NewHypothesesFromFollowingsData>;
@@ -203,6 +210,7 @@ module {
         #CustodianProposalOpened : CustodianProposalOpenedData;
         #ProposalExecuted : ProposalExecutedData;
         #ProposalResult : ProposalResultData;
+        #CouponRedeemed : CouponRedeemedData;
 
         #NewHypothesesFromFollowings : {
             capacity : [NewHypothesesFromFollowingsData];
@@ -498,6 +506,7 @@ module {
             case (_, #CustodianProposalOpened(data)) #CustodianProposalOpened(data);
             case (_, #ProposalExecuted(data)) #ProposalExecuted(data);
             case (_, #ProposalResult(data)) #ProposalResult(data);
+            case (_, #CouponRedeemed(data)) #CouponRedeemed(data);
 
             // unreachable
             case (_, _) E.unreachable()
@@ -545,6 +554,7 @@ module {
                 case (#CustodianProposalOpened(data)) #CustodianProposalOpened(data);
                 case (#ProposalExecuted(data)) #ProposalExecuted(data);
                 case (#ProposalResult(data)) #ProposalResult(data);
+                case (#CouponRedeemed(data)) #CouponRedeemed(data);
 
                 // grouped without ids
                 case (#NewHypothesesFromFollowings(group)) #NewHypothesesFromFollowings({

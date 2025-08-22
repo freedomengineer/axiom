@@ -43,7 +43,7 @@ import Int "mo:base/Int";
 import Debug "mo:base/Debug";
 import Timer "mo:base/Timer";
 
-shared ({ caller = indicator }) actor class DAO() = this {
+shared ({ caller = indicator }) persistent actor class DAO() = this {
         private stable let Indicator : IndicatorInterface.Indicator = actor (Principal.toText(indicator));
 
     private stable let proposals : Proposals.Proposals = Proposals.init();
@@ -555,10 +555,12 @@ shared ({ caller = indicator }) actor class DAO() = this {
                     case (?delegateeVote) {
                         switch (delegateeVote) {
                             case (#Default({ choice })) {
-                                switch (choice) {
-                                    case (#Delegated) {};
-                                    case (#Positive) usersNotifications := List.push((proposal.proposer, #NewVotesToProposal({ id = proposalId; data = { voter = caller; choice = #Positive; timestamp = Time.now() } })), usersNotifications);
-                                    case (#Negative) usersNotifications := List.push((proposal.proposer, #NewVotesToProposal({ id = proposalId; data = { voter = caller; choice = #Negative; timestamp = Time.now() } })), usersNotifications)
+                                if (proposal.proposer != caller) {
+                                    switch (choice) {
+                                        case (#Delegated) {};
+                                        case (#Positive) usersNotifications := List.push((proposal.proposer, #NewVotesToProposal({ id = proposalId; data = { voter = caller; choice = #Positive; timestamp = Time.now() } })), usersNotifications);
+                                        case (#Negative) usersNotifications := List.push((proposal.proposer, #NewVotesToProposal({ id = proposalId; data = { voter = caller; choice = #Negative; timestamp = Time.now() } })), usersNotifications)
+                                    }
                                 }
                             };
                             case (#Delegated(delegatee)) usersNotifications := List.push((delegatee, #CustodianProposalDelegated({ proposalId; delegator = caller; timestamp = Time.now() })), usersNotifications)
@@ -572,10 +574,12 @@ shared ({ caller = indicator }) actor class DAO() = this {
                 }
             };
             case (#Default(choice)) {
-                switch (choice) {
-                    case (#Delegated) {};
-                    case (#Positive) usersNotifications := List.push((proposal.proposer, #NewVotesToProposal({ id = proposalId; data = { voter = caller; choice = #Positive; timestamp = Time.now() } })), usersNotifications);
-                    case (#Negative) usersNotifications := List.push((proposal.proposer, #NewVotesToProposal({ id = proposalId; data = { voter = caller; choice = #Negative; timestamp = Time.now() } })), usersNotifications)
+                if (proposal.proposer != caller) {
+                    switch (choice) {
+                        case (#Delegated) {};
+                        case (#Positive) usersNotifications := List.push((proposal.proposer, #NewVotesToProposal({ id = proposalId; data = { voter = caller; choice = #Positive; timestamp = Time.now() } })), usersNotifications);
+                        case (#Negative) usersNotifications := List.push((proposal.proposer, #NewVotesToProposal({ id = proposalId; data = { voter = caller; choice = #Negative; timestamp = Time.now() } })), usersNotifications)
+                    }
                 };
                 #Default({ choice })
             }
@@ -759,7 +763,7 @@ shared ({ caller = indicator }) actor class DAO() = this {
         ignore (
             func() : async () {
                 let Facade : FacadeInterface.Facade = await Indicator.Facade();
-                ignore Facade.postUsersNotification(List.fromArray(principals), #NewBallots({ voter = caller; timestamp = Time.now() }))
+                ignore Facade.postUsersNotification(List.filter<Principal>(List.fromArray(principals), func(p) = p != caller), #NewBallots({ voter = caller; timestamp = Time.now() }))
             }
         )()
     };

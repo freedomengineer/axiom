@@ -21,6 +21,7 @@ module {
         postSystemNotifications : shared (Notifications.SystemNotificationsBatch) -> async ();
         postSystemGenericNotification : shared (Text, ?Format.Hyperlink) -> async ();
         register : shared (Text, Nat, ?Principal) -> async ();
+        registerWithCoupon : shared (Text, [Nat8]) -> async ();
         editUsername : shared (Text) -> async ();
         editLocation : shared (?Text) -> async ();
         editAvatar : shared (?Format.Picture) -> async ();

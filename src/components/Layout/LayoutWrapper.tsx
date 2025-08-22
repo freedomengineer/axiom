@@ -9,6 +9,7 @@ import useLocalStorage from '@hooks/useLocalStorage'
 import { deleteAllNotificationsCache } from '@hooks/useNotification'
 import { deleteAllPackagesCache } from '@hooks/usePackages'
 import { deleteAllStatusCache } from '@hooks/useStatus'
+import { deleteAllTopCache } from '@hooks/useTop'
 import { deleteAllUsernamesCache } from '@hooks/useUsername'
 
 import Header from './Header'
@@ -42,6 +43,7 @@ const LayoutWrapper = ({
             deleteAllStatusCache()
             deleteAllUsernamesCache()
             deleteAllNotificationsCache()
+            deleteAllTopCache()
             localStorage.clear()
             setVersion('0.0.1')
         }

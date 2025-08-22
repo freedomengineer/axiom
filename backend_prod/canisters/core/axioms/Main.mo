@@ -57,7 +57,7 @@ import Timer "mo:base/Timer";
 import Float "mo:base/Float";
 import Debug "mo:base/Debug";
 
-shared ({ caller = indicator }) actor class Axioms() = this {
+shared ({ caller = indicator }) persistent actor class Axioms() = this {
         private stable let Indicator : IndicatorInterface.Indicator = actor (Principal.toText(indicator));
 
     private stable let ages : Ages.Ages = Ages.init();
@@ -580,13 +580,18 @@ shared ({ caller = indicator }) actor class Axioms() = this {
         ignore (
             func() : async () {
                 let Facade : FacadeInterface.Facade = await Indicator.Facade();
-                var usersNotifications : List.List<(Principal, Notification.UserVariantParam)> = List.make((hypothesis.publisher, #NewEvidencesToHypothesis({ id = hypothesisId; data = { evidenceId; side = choice; publisher = caller; timestamp = Time.now() } })));
+                var usersNotifications : List.List<(Principal, Notification.UserVariantParam)> = switch (hypothesis.publisher == caller) {
+                    case (false) List.make((hypothesis.publisher, #NewEvidencesToHypothesis({ id = hypothesisId; data = { evidenceId; side = choice; publisher = caller; timestamp = Time.now() } })));
+                    case (true) List.nil()
+                };
                 for (follower in Set.vals(user.followers)) {
                     usersNotifications := List.push((follower, #NewEvidencesFromFollowings({ evidenceId; publisher = caller; timestamp = Time.now() })), usersNotifications)
                 };
                 switch (repliedTo, repliedEvidence) {
                     case (?id, ?{ publisher }) {
-                        usersNotifications := List.push((publisher, #NewRepliesToEvidence({ id; data = { evidenceId; publisher = caller; timestamp = Time.now() } })), usersNotifications)
+                        if (publisher != caller) {
+                            usersNotifications := List.push((publisher, #NewRepliesToEvidence({ id; data = { evidenceId; publisher = caller; timestamp = Time.now() } })), usersNotifications)
+                        }
                     };
                     case (_, _) {}
                 };
@@ -678,8 +683,10 @@ shared ({ caller = indicator }) actor class Axioms() = this {
 
         ignore (
             func() : async () {
-                let Facade : FacadeInterface.Facade = await Indicator.Facade();
-                await Facade.postUserNotification((hypothesis.publisher, #NewVotesToHypothesis({ id = hypothesisId; data = { voter = caller; choice; timestamp = Time.now() } })))
+                if (hypothesis.publisher != caller) {
+                    let Facade : FacadeInterface.Facade = await Indicator.Facade();
+                    await Facade.postUserNotification((hypothesis.publisher, #NewVotesToHypothesis({ id = hypothesisId; data = { voter = caller; choice; timestamp = Time.now() } })))
+                }
             }
         )()
     };
@@ -716,8 +723,10 @@ shared ({ caller = indicator }) actor class Axioms() = this {
 
         ignore (
             func() : async () {
-                let Facade : FacadeInterface.Facade = await Indicator.Facade();
-                await Facade.postUserNotification((evidence.publisher, #NewVotesToEvidence({ id = evidenceId; data = { voter = caller; choice; timestamp = Time.now() } })))
+                if (evidence.publisher != caller) {
+                    let Facade : FacadeInterface.Facade = await Indicator.Facade();
+                    await Facade.postUserNotification((evidence.publisher, #NewVotesToEvidence({ id = evidenceId; data = { voter = caller; choice; timestamp = Time.now() } })))
+                }
             }
         )()
     };
@@ -793,8 +802,10 @@ shared ({ caller = indicator }) actor class Axioms() = this {
 
         ignore (
             func() : async () {
-                let Facade : FacadeInterface.Facade = await Indicator.Facade();
-                await Facade.postUserNotification((hypothesis.publisher, #NewAxiomsToHypothesis({ id = hypothesisId; data = { user = caller; timestamp = Time.now() } })))
+                if (hypothesis.publisher != caller) {
+                    let Facade : FacadeInterface.Facade = await Indicator.Facade();
+                    await Facade.postUserNotification((hypothesis.publisher, #NewAxiomsToHypothesis({ id = hypothesisId; data = { user = caller; timestamp = Time.now() } })))
+                }
             }
         )()
     };

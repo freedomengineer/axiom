@@ -477,6 +477,45 @@
       }
     },
     {
+      "name": "registerWithCoupon",
+      "flag": {
+        "isQuery": false,
+        "callerRequired": true
+      },
+      "argTypes": {
+        "username": {
+          "origin": "Text",
+          "singular": {
+            "name": "Text"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        },
+        "coupon": {
+          "origin": "[Nat8]",
+          "singular": {
+            "name": "Nat8"
+          },
+          "entries": [],
+          "isArray": true,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async ()",
+        "singular": {
+          "name": "()"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
       "name": "editUsername",
       "flag": {
         "isQuery": false,
@@ -987,6 +1026,13 @@
       "relativePath": "notifications/Notifications",
       "depth": 2
     },
+    "Coupon": {
+      "origin": "import Coupon \"../../core/affiliate/coupons/Coupon\";",
+      "name": "Coupon",
+      "category": "attribute",
+      "relativePath": "../../core/affiliate/coupons/Coupon",
+      "depth": 6
+    },
     "DIP721": {
       "origin": "import DIP721 \"../../core/dip721/Main\";",
       "name": "DIP721",
@@ -1154,6 +1200,13 @@
       "category": "base",
       "relativePath": "mo:base/Text",
       "depth": 2
+    },
+    "Error": {
+      "origin": "import Error \"mo:base/Error\";",
+      "name": "Error",
+      "category": "base",
+      "relativePath": "mo:base/Error",
+      "depth": 2
     }
   },
   "actorDependencies": [
@@ -1161,6 +1214,7 @@
     "Users",
     "Notification",
     "Notifications",
+    "Coupon",
     "DIP721",
     "DIP721Interface",
     "ICPUSDInterface",
@@ -1184,7 +1238,8 @@
     "Principal",
     "Nat",
     "Time",
-    "Text"
+    "Text",
+    "Error"
   ],
   "interfaceDependencies": [
     "Configs",
@@ -1864,6 +1919,59 @@
                       null
                     ]
                   ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "timestamp",
+                {
+                  "origin": "Time",
+                  "singular": {
+                    "name": "Time"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ]
+            ],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          "#CouponRedeemed",
+          {
+            "origin": "CouponRedeemedData",
+            "singular": {
+              "name": "()"
+            },
+            "entries": [
+              [
+                "key",
+                {
+                  "origin": "Text",
+                  "singular": {
+                    "name": "Text"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "user",
+                {
+                  "origin": "Principal",
+                  "singular": {
+                    "name": "Principal"
+                  },
+                  "entries": [],
                   "isArray": false,
                   "isOptional": false,
                   "isAsync": false
@@ -3096,6 +3204,59 @@
                 }
               ],
               [
+                "#CouponRedeemed",
+                {
+                  "origin": "CouponRedeemedData",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      "key",
+                      {
+                        "origin": "Text",
+                        "singular": {
+                          "name": "Text"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "user",
+                      {
+                        "origin": "Principal",
+                        "singular": {
+                          "name": "Principal"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "timestamp",
+                      {
+                        "origin": "Time",
+                        "singular": {
+                          "name": "Time"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
                 "#NewHypothesesFromFollowings",
                 {
                   "origin": "NewHypothesesFromFollowingsData",
@@ -4281,6 +4442,59 @@
                                   null
                                 ]
                               ],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ],
+                          [
+                            "timestamp",
+                            {
+                              "origin": "Time",
+                              "singular": {
+                                "name": "Time"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ]
+                        ],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "#CouponRedeemed",
+                      {
+                        "origin": "CouponRedeemedData",
+                        "singular": {
+                          "name": "()"
+                        },
+                        "entries": [
+                          [
+                            "key",
+                            {
+                              "origin": "Text",
+                              "singular": {
+                                "name": "Text"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ],
+                          [
+                            "user",
+                            {
+                              "origin": "Principal",
+                              "singular": {
+                                "name": "Principal"
+                              },
+                              "entries": [],
                               "isArray": false,
                               "isOptional": false,
                               "isAsync": false
@@ -5972,6 +6186,16 @@
       "isOptional": true,
       "isAsync": false
     },
+    "[Nat8]": {
+      "origin": "[Nat8]",
+      "singular": {
+        "name": "Nat8"
+      },
+      "entries": [],
+      "isArray": true,
+      "isOptional": false,
+      "isAsync": false
+    },
     "?Text": {
       "origin": "?Text",
       "singular": {
@@ -7643,6 +7867,59 @@
                             null
                           ]
                         ],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "timestamp",
+                      {
+                        "origin": "Time",
+                        "singular": {
+                          "name": "Time"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#CouponRedeemed",
+                {
+                  "origin": "CouponRedeemedData",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      "key",
+                      {
+                        "origin": "Text",
+                        "singular": {
+                          "name": "Text"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "user",
+                      {
+                        "origin": "Principal",
+                        "singular": {
+                          "name": "Principal"
+                        },
+                        "entries": [],
                         "isArray": false,
                         "isOptional": false,
                         "isAsync": false

@@ -18,6 +18,12 @@ export const LEADERBOARD = [
             'Top users who refer most users to the platform, they are the commendable ones who directly help the platform grow by expanding its community.',
     },
     {
+        key: 'CouponGenerators',
+        label: 'Coupon Generators',
+        description:
+            'Top users who generate most coupons, they are the commendable ones who directly help the platform grow by expanding its community.',
+    },
+    {
         key: 'Influencers',
         label: 'Influencers',
         description:

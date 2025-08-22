@@ -78,6 +78,10 @@
                     "url": "/dashboard/leaderboard",
                     "description": "Leaderboard of The Axiom"
                 },
+                "Coupons": {
+                    "url": "/dashboard/coupons",
+                    "description": "Coupon Dashboard of The Axiom"
+                },
                 "Token Charts": {
                     "url": "/dashboard/assets",
                     "description": "Token Charts of The Axiom"

@@ -38,14 +38,19 @@ const BalanceChanges = ({
     useEffect(() => {
         if (isOpenDeposit) return
         ;(async () => {
-            const balance: bigint = await (token === 'ICP' ? ICP : ACORN)
-                .call()
-                .icrc1_balance_of({ owner: principal!, subaccount: [] })
-            setLocalBalance(balance)
-            setBalance?.(balance)
-            setIsSufficient?.(sign === '+' ? amount >= balance : amount <= balance)
+            const local: bigint =
+                balance === undefined
+                    ? await (token === 'ICP' ? ICP : ACORN)
+                          .call()
+                          .icrc1_balance_of({ owner: principal!, subaccount: [] })
+                    : balance
+
+            console.log(local)
+            setLocalBalance(local)
+            setBalance?.(local)
+            setIsSufficient?.(sign === '+' ? amount >= local : amount <= local)
         })()
-    }, [isOpenDeposit])
+    }, [isOpenDeposit, balance])
 
     if (localBalance === undefined)
         return (

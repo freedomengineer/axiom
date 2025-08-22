@@ -80,7 +80,20 @@
 {"sender": "Principal", "amount": "Nat"}
 ```
 
-### 5. `internalTransfer(recipientVariant, amount)` returns `()`
+### 5. `affiliateDeposit(sender, amount)` returns `Nat`
+
+#### Arguments:
+
+```json
+{"sender": "Principal", "amount": "Nat"}
+```
+
+#### Returns:
+```json
+"Nat"
+```
+
+### 6. `internalTransfer(recipientVariant, amount)` returns `()`
 
 #### Arguments:
 
@@ -91,7 +104,7 @@
 }
 ```
 
-### 6. `externalTransfer(recipient, amount)` returns `()`
+### 7. `externalTransfer(recipient, amount)` returns `()`
 
 #### Arguments:
 

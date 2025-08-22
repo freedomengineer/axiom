@@ -83,7 +83,7 @@ const Popup = ({
                 </div>
                 <div
                     className={cn(
-                        'py-semilarge px-extralarge mx-auto h-auto max-h-[80dvh] w-full overflow-y-auto',
+                        'py-semilarge px-large mx-auto h-auto max-h-[80dvh] w-full overflow-y-auto',
                         secondaryClassname
                     )}
                 >

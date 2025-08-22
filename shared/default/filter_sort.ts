@@ -1,6 +1,6 @@
 import { ActorMethod } from '@dfinity/agent'
 
-import { DAxioms, DDAO, DFacade } from 'shared/types/services'
+import { DAffiliate, DAxioms, DDAO, DFacade } from 'shared/types/services'
 import { DefaultVariant, Primitive, isNullish, parsePrimitive } from 'shared/utils/typings'
 
 export type PartialFilterInput<T> = {
@@ -17,13 +17,15 @@ export type ExtractFilterSort<T> =
     T extends ActorMethod<infer A, any> ? { filter: A[0]; sort: A[1] } : never
 
 export type QueryMap = {
-    hypothesis: DAxioms.Axioms['getHypotheses']
-    field: DAxioms.Axioms['getFields']
-    evidence: DAxioms.Axioms['getEvidences']
+    hypothesis: DAxioms._SERVICE['getHypotheses']
+    field: DAxioms._SERVICE['getFields']
+    evidence: DAxioms._SERVICE['getEvidences']
     user: DFacade.Facade['getUsers']
     nominee: DDAO.DAO['getNominees']
     proposal: DDAO.DAO['getProposals']
-    flag: DAxioms.Axioms['getFlags']
+    flag: DAxioms._SERVICE['getFlags']
+    coupon: DAffiliate._SERVICE['getCoupons']
+    privateCoupon: DAffiliate._SERVICE['getPrivateCoupons']
 }
 export type QueryName = keyof QueryMap
 
@@ -132,6 +134,27 @@ export const FILTER_SORT_DECS = {
         },
         sort: {
             by: ['recent', 'difference'],
+            order: ['descending', 'ascending'],
+        },
+    },
+    coupon: {
+        filter: {
+            status: ['Available', 'Failed', 'Redeemed', 'Locked'],
+            creator: Primitive.Principal,
+            capitalRaised: Primitive.Nat,
+        },
+        sort: {
+            by: ['recent', 'icpPaid'],
+            order: ['descending', 'ascending'],
+        },
+    },
+    privateCoupon: {
+        filter: {
+            status: ['Available', 'Failed', 'Redeemed', 'Locked'],
+            capitalRaised: Primitive.Nat,
+        },
+        sort: {
+            by: ['recent', 'icpPaid'],
             order: ['descending', 'ascending'],
         },
     },

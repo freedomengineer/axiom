@@ -60,7 +60,7 @@ const NomineesRow = memo(
                 <td
                     className={cn(
                         '!text-tiny py-small px-normal group relative text-nowrap bg-cold-50 text-left font-semibold text-cold-600',
-                        'border-b border-r border-cold-300',
+                        'border-b border-r border-cold-200',
                         isLastRow && 'border-b-0'
                     )}
                 >
@@ -78,7 +78,7 @@ const NomineesRow = memo(
                 <td
                     className={cn(
                         '!text-tiny py-small px-normal text-cold-600',
-                        'border-b border-r border-cold-300',
+                        'border-b border-r border-cold-200',
                         isLastRow && 'border-b-0'
                     )}
                 >
@@ -87,7 +87,7 @@ const NomineesRow = memo(
                 <td
                     className={cn(
                         '!text-tiny py-small px-normal text-nowrap font-semibold text-cold-600',
-                        'border-b border-r border-cold-300',
+                        'border-b border-r border-cold-200',
                         isLastRow && 'border-b-0'
                     )}
                 >
@@ -96,7 +96,7 @@ const NomineesRow = memo(
                 <td
                     className={cn(
                         '!text-tiny py-small px-normal text-nowrap font-semibold text-cold-600',
-                        'border-b border-r border-cold-300',
+                        'border-b border-r border-cold-200',
                         isLastRow && 'border-b-0'
                     )}
                 >
@@ -105,7 +105,7 @@ const NomineesRow = memo(
                 <td
                     className={cn(
                         '!text-tiny py-small px-normal text-nowrap text-cold-600',
-                        'border-b border-cold-300',
+                        'border-b border-cold-200',
                         isLastRow && 'border-b-0'
                     )}
                 >

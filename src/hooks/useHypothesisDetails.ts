@@ -33,7 +33,9 @@ const useHypothesisDetails = (item: DAxioms.SharableHypothesis) => {
             .getHypothesis(localItem.id)
             .then((item) => {
                 setLocalItem(item)
-                externalSetLocalItem?.(item)
+                if (externalSetLocalItem) {
+                    externalSetLocalItem(item)
+                }
             })
     }
     const vote = Unwrap(localItem.callerVote)

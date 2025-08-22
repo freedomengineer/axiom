@@ -30,7 +30,7 @@ import ExperimentalCycles "mo:base/ExperimentalCycles";
 import Debug "mo:base/Debug";
 import Error "mo:base/Error";
 
-shared ({ caller = indicator }) actor class Sales() = this {
+shared ({ caller = indicator }) persistent actor class Sales() = this {
     private stable let Indicator : IndicatorInterface.Indicator = actor (Principal.toText(indicator));
 
     private stable let packages : Packages.Packages = Packages.init();

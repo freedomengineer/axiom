@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { createPortal } from 'react-dom'
 
 import DoneIcon from '@components/Assets/done.svg'
 import EditIcon from '@components/Assets/edit.svg'
@@ -14,7 +15,9 @@ import Popup from '@components/Shared/Popup'
 import { Symbol } from '@components/Shared/Username'
 import useAuth from '@hooks/useAuth'
 import useEvidenceDetails from '@hooks/useEvidenceDetails'
+import useVoteColors from '@hooks/useVoteColors'
 import cn from '@libs/class'
+import { formatDate } from '@libs/date'
 import { success } from '@libs/toastify'
 import { build, buildBlobImage } from '@libs/url'
 import { EVote } from '@utils/feed/evidence'
@@ -36,6 +39,7 @@ const EvidenceCard = ({
     onReply?: (id: bigint) => void
 }) => {
     const { principal } = useAuth()
+    const { colors } = useVoteColors()
     const { publisher, localItem, vote, votesLoading, handleVote, refreshItem } =
         useEvidenceDetails(item)
     const [open, setOpen] = useState(false)
@@ -43,6 +47,7 @@ const EvidenceCard = ({
     const [openReply, setOpenReply] = useState<boolean | undefined>(
         onReply === undefined ? undefined : false
     )
+    const [imageOpen, setImageOpen] = useState<boolean>(false)
 
     const handleCopy = () => {
         navigator.clipboard.writeText(
@@ -106,7 +111,15 @@ const EvidenceCard = ({
                 />
             </Popup>
 
-            <div className={cn('absolute right-0 top-0 rounded-md text-white', VOTE.bgColor)}>
+            <div
+                className="absolute right-0 top-0 rounded-md text-white"
+                style={{
+                    backgroundColor:
+                        UnwrapVariant(localItem.choice) === EVote.Positive
+                            ? colors.positive
+                            : colors.negative,
+                }}
+            >
                 <Icon className="p-tiny h-6 w-6 stroke-[1.5px] md:h-7 md:w-7" />
             </div>
             {!isNullish(Unwrap(localItem.repliedTo)) && (
@@ -119,7 +132,8 @@ const EvidenceCard = ({
                     <img
                         src={buildBlobImage(formObject.Picture.blob as Uint8Array)}
                         alt="evidence"
-                        className="h-28 rounded-lg object-cover md:h-32"
+                        className="h-28 cursor-zoom-in rounded-lg object-cover hover:opacity-75 md:h-32"
+                        onClick={() => setImageOpen(true)}
                     />
                 )}
                 {formObject.Note && (
@@ -142,6 +156,30 @@ const EvidenceCard = ({
                     </Link>
                 )}
             </div>
+            {imageOpen &&
+                formObject.Picture &&
+                typeof window !== 'undefined' &&
+                createPortal(
+                    <div
+                        className="fixed inset-0 z-[10000] flex cursor-pointer items-center justify-center bg-black/80 p-4"
+                        onClick={() => setImageOpen(false)}
+                    >
+                        <div
+                            className="max-h-[90vh] max-w-[95vw]"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <img
+                                src={buildBlobImage(formObject.Picture.blob as Uint8Array)}
+                                alt="evidence"
+                                className="max-h-[75vh] max-w-[90vw] cursor-default rounded-lg object-contain"
+                            />
+                            <p className="text-tiny mt-3 text-center font-light text-white">
+                                {`from: @${publisher.username} - ${formatDate({ nano: localItem.publishDate })} (${formatDate({ nano: localItem.publishDate }, true)})`}
+                            </p>
+                        </div>
+                    </div>,
+                    document.body
+                )}
             <div className="px-medium py-small gap-tiny grid w-full grid-cols-2 grid-rows-2 rounded-b-md bg-cold-900 text-white md:flex">
                 <Link
                     className={cn(

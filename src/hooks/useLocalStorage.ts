@@ -8,9 +8,16 @@ export type LocalStorageData = StringifiedFilterSort & {
     sideBarToggle1: boolean
     sideBarToggle2: boolean
     sideBarToggle3: boolean
+    sessionExpiry: number
     customVoteValues: {
         Scale: number[]
         Custom: number[]
+    }
+    voteColors: {
+        positive: string
+        negative: string
+        neutral: string
+        delegated: string
     }
 }
 
@@ -20,9 +27,16 @@ const _default: LocalStorageData = {
     sideBarToggle1: true,
     sideBarToggle2: true,
     sideBarToggle3: true,
+    sessionExpiry: 0,
     customVoteValues: {
         Scale: [0, 25, 50, 75, 100],
         Custom: [1000, 5000],
+    },
+    voteColors: {
+        positive: '#EE8562',
+        negative: '#8F2F0F',
+        neutral: '#DD4917',
+        delegated: '#4C6D7B',
     },
     hypothesis: {
         filter: { age: '2' },
@@ -49,6 +63,14 @@ const _default: LocalStorageData = {
         sort: { by: 'updated', order: 'descending' },
     },
     flag: {
+        filter: {},
+        sort: { by: 'recent', order: 'descending' },
+    },
+    coupon: {
+        filter: {},
+        sort: { by: 'recent', order: 'descending' },
+    },
+    privateCoupon: {
         filter: {},
         sort: { by: 'recent', order: 'descending' },
     },

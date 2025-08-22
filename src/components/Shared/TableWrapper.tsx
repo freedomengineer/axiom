@@ -104,7 +104,7 @@ const TableWrapper = forwardRef(
         }
 
         return (
-            <div className="w-full overflow-x-auto rounded-lg border border-cold-300 md:overflow-hidden">
+            <div className="w-full overflow-x-auto rounded-lg border border-cold-200 md:overflow-hidden">
                 <table className="min-w-full border-collapse">
                     <thead className="bg-cold-50">
                         <tr>
@@ -114,7 +114,7 @@ const TableWrapper = forwardRef(
                                     scope="col"
                                     className={cn(
                                         'text-small px-normal py-small cursor-pointer select-none text-nowrap bg-cold-100 hover:bg-cold-700/20 aria-disabled:pointer-events-none aria-disabled:cursor-default',
-                                        'border-b border-r border-cold-300',
+                                        'border-b border-r border-cold-200',
                                         i === 0 && 'border-l-0',
                                         i === columns.length - 1 && 'border-r-0',
                                         className

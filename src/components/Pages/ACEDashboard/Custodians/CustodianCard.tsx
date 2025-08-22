@@ -19,7 +19,7 @@ const CustodianCard = ({
 
     return (
         <div className="flex w-full flex-col">
-            <div className="p-medium flex flex-row items-center justify-between rounded-lg border border-cold-300 bg-cold-50 text-cold-800">
+            <div className="p-medium flex flex-row items-center justify-between rounded-lg border border-cold-200 bg-cold-50 text-cold-800">
                 <Link
                     className="text-medium gap-small flex place-items-center items-center text-left font-normal hover:text-primary-800"
                     href={build(['profile', item.principal.toText()])}
@@ -46,7 +46,7 @@ const CustodianCard = ({
                     isExpanded ? 'max-h-max opacity-100' : 'max-h-0 opacity-0'
                 )}
             >
-                <div className="speech-bubble p-medium relative mt-2 w-full rounded-lg border border-cold-300 bg-white">
+                <div className="speech-bubble p-medium relative mt-2 w-full rounded-lg border border-cold-200 bg-white">
                     <div
                         className="absolute -top-[10px] left-[30px] h-0 w-0"
                         style={{

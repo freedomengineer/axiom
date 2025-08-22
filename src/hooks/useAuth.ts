@@ -8,6 +8,7 @@ import { DFacade } from 'shared/types/services'
 import { createAgent } from 'shared/utils/agent'
 import { Facade } from 'shared/utils/services'
 
+import useLocalStorage from './useLocalStorage'
 import { cacheUsername } from './useUsername'
 
 export enum PageStatus {
@@ -28,7 +29,6 @@ type AuthContext = {
     setPemIdentity: (identity: Identity) => void
     login: () => void
     logout: () => void
-    referrer: Principal | null
     pageStatus: PageStatus
     setPageStatus: (status: PageStatus) => void
 }
@@ -43,7 +43,6 @@ export const AuthContext = createContext<AuthContext>({
     setPemIdentity: () => {},
     login: () => {},
     logout: () => {},
-    referrer: null,
     pageStatus: PageStatus.Loading,
     setPageStatus: () => {},
 })
@@ -58,6 +57,7 @@ const defaultOptions: {
         },
     },
     loginOptions: {
+        maxTimeToLive: BigInt(30 * 24 * 60 * 60 * 1000 * 1000 * 1000),
         identityProvider:
             process.env.DFX_NETWORK === 'ic'
                 ? 'https://identity.ic0.app/#authorize'
@@ -78,9 +78,9 @@ export const useAuthClient = () => {
     const [agent, setAgent] = useState<Agent | null>()
     const [principal, setPrincipal] = useState<Principal | null>()
     const [user, setUser] = useState<DFacade.Sharable | null>()
-    const [referrer, setReferrer] = useState<Principal | null>(null)
     const [pageStatus, setPageStatus] = useState<PageStatus>(PageStatus.Loading)
     const [pemIdentity, setPemIdentity] = useState<Identity | null>(null)
+    const [sessionExpiry, setSessionExpiry] = useLocalStorage('sessionExpiry')
 
     const [isLoading, setIsLoading] = useState<boolean>(false)
 
@@ -103,16 +103,14 @@ export const useAuthClient = () => {
         if (navigation?.type === 'navigate') {
             try {
                 const urlParams = new URLSearchParams(location.search)
-                const ref: string = urlParams.get('ref')!
-                setReferrer(Principal.fromText(ref))
-                localStorage.setItem('ref', ref)
+                const ref = urlParams.get('ref')
+                const code = urlParams.get('code')
+
+                if (ref) localStorage.setItem('ref', ref)
+                if (code) localStorage.setItem('code', code)
                 return
             } catch {}
         }
-        try {
-            const ref = localStorage.getItem('ref')!
-            setReferrer(Principal.fromText(ref))
-        } catch {}
     }, [pemIdentity])
 
     useEffect(() => {
@@ -151,6 +149,12 @@ export const useAuthClient = () => {
         setPageStatus(PageStatus.Success)
     }, [isAuthenticated, user, pathname])
 
+    window.addEventListener('focus', () => {
+        if (sessionExpiry && Date.now() > Number(sessionExpiry)) {
+            window.location.reload()
+        }
+    })
+
     const login = () => {
         setIsLoading(true)
         authClient?.login({
@@ -180,6 +184,7 @@ export const useAuthClient = () => {
         }
         setAuthClient(client)
         setIsLoading(false)
+        setSessionExpiry(Date.now() + 30 * 24 * 60 * 60 * 1000)
     }
 
     const logout = async () => {
@@ -189,6 +194,7 @@ export const useAuthClient = () => {
         setAgent(null)
         setPrincipal(null)
         setUser(null)
+        setSessionExpiry(0)
         window.location.reload()
     }
 
@@ -215,7 +221,6 @@ export const useAuthClient = () => {
         setPemIdentity,
         login,
         logout,
-        referrer,
         pageStatus,
         setPageStatus,
     }

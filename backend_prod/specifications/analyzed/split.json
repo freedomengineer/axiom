@@ -159,6 +159,45 @@
       }
     },
     {
+      "name": "affiliateDeposit",
+      "flag": {
+        "isQuery": false,
+        "callerRequired": true
+      },
+      "argTypes": {
+        "sender": {
+          "origin": "Principal",
+          "singular": {
+            "name": "Principal"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        },
+        "amount": {
+          "origin": "Nat",
+          "singular": {
+            "name": "Nat"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async Nat",
+        "singular": {
+          "name": "Nat"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
       "name": "internalTransfer",
       "flag": {
         "isQuery": false,
@@ -842,6 +881,16 @@
       "isArray": false,
       "isOptional": false,
       "isAsync": false
+    },
+    "async Nat": {
+      "origin": "async Nat",
+      "singular": {
+        "name": "Nat"
+      },
+      "entries": [],
+      "isArray": false,
+      "isOptional": false,
+      "isAsync": true
     },
     "Actor.Variant": {
       "origin": "Actor.Variant",

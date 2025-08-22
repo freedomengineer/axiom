@@ -18,6 +18,7 @@ module {
     public type Indicator = actor {
         getCanisterTime : query () -> async Int;
         shiftToMidnight : shared (Nat) -> async ();
+        addController : shared () -> async ();
         initialize : shared () -> async ();
         setConfigs : shared ([(Configs.Key, Configs.SharableValue)]) -> async ();
         putConfigs : shared ([(Configs.Key, Configs.SharableValue)]) -> async ();

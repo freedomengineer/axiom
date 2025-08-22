@@ -1,4 +1,4 @@
-import { DSales } from 'shared/types/services'
+import { ParsedMembershipPackage } from '@hooks/usePackages'
 
 export enum ESteps {
     Username = 0,
@@ -10,9 +10,10 @@ export enum ESteps {
 export type Choices = {
     [ESteps.Username]: string
     [ESteps.Package]: {
-        package: DSales.SharablePackage
+        package: ParsedMembershipPackage
         icpToPay: bigint
         acornToReceive: bigint
+        coupon?: string | null
     } | null
     [ESteps.Checkout]: boolean
     [ESteps.Done]: boolean

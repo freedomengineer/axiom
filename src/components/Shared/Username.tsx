@@ -13,6 +13,17 @@ import cn from '@libs/class'
 
 import Link from './Link'
 
+export const PACKAGES = {
+    '1000000000': 'Hobo',
+    '2000000000': 'Seeker',
+    '5000000000': 'Scribe',
+    '10000000000': 'Scientist',
+    '50000000000': 'Philosopher',
+    '100000000000': 'Engineer',
+    '500000000000': 'Explorer',
+    '1000000000000': 'Liberator',
+}
+
 export const Symbol = ({
     capitalRaised,
     className,

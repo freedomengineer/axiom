@@ -310,6 +310,10 @@ export const deleteAllNotificationsCache = async (): Promise<void> => {
     if (!db) return
     await db.notifications.clear()
 }
+export const getNumNotificationsCache = async (): Promise<number> => {
+    if (!db) return 0
+    return await db.notifications.count()
+}
 
 export const useNotificationPoller = (agent: Agent | null, intervalSeconds = 10) => {
     const agentRef = useRef(agent)

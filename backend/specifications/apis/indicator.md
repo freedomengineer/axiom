@@ -18,36 +18,11 @@
 {"days": "Nat"}
 ```
 
-### 2. `initialize()` returns `()`
+### 2. `addController()` returns `()`
 
-### 3. `setConfigs(entries)` returns `()`
+### 3. `initialize()` returns `()`
 
-#### Arguments:
-
-```json
-{
-  "entries": [
-    [
-      "Text",
-      {
-        "#BOOL": "Bool",
-        "#NAT": "Nat",
-        "#FLOAT": "Float",
-        "#TEXT": "Text",
-        "#E8S": "Nat",
-        "#DURATION": "Nat",
-        "#DATE": "Nat",
-        "#PROPORTION": ["Nat", "Nat"],
-        "#RANGENAT": ["Nat"],
-        "#RANGEINT": ["Int"],
-        "#RANGEFLOAT": ["Float"]
-      }
-    ]
-  ]
-}
-```
-
-### 4. `putConfigs(entries)` returns `()`
+### 4. `setConfigs(entries)` returns `()`
 
 #### Arguments:
 
@@ -74,7 +49,34 @@
 }
 ```
 
-### 5. `setActorsConfigs(actorsConfigs)` returns `()`
+### 5. `putConfigs(entries)` returns `()`
+
+#### Arguments:
+
+```json
+{
+  "entries": [
+    [
+      "Text",
+      {
+        "#BOOL": "Bool",
+        "#NAT": "Nat",
+        "#FLOAT": "Float",
+        "#TEXT": "Text",
+        "#E8S": "Nat",
+        "#DURATION": "Nat",
+        "#DATE": "Nat",
+        "#PROPORTION": ["Nat", "Nat"],
+        "#RANGENAT": ["Nat"],
+        "#RANGEINT": ["Int"],
+        "#RANGEFLOAT": ["Float"]
+      }
+    ]
+  ]
+}
+```
+
+### 6. `setActorsConfigs(actorsConfigs)` returns `()`
 
 #### Arguments:
 
@@ -106,7 +108,7 @@
 }
 ```
 
-### 6. `putActorsConfigs(actorsConfigs)` returns `()`
+### 7. `putActorsConfigs(actorsConfigs)` returns `()`
 
 #### Arguments:
 
@@ -138,7 +140,7 @@
 }
 ```
 
-### 7. `initializeFirstSession(updateLevel, releaseNotes, commitments)` returns `()`
+### 8. `initializeFirstSession(updateLevel, releaseNotes, commitments)` returns `()`
 
 #### Arguments:
 
@@ -156,7 +158,7 @@
 }
 ```
 
-### 8. `initializeSession(issuer, commitHash, updateLevel, releaseNotes, commitments)` returns `()`
+### 9. `initializeSession(issuer, commitHash, updateLevel, releaseNotes, commitments)` returns `()`
 
 #### Arguments:
 
@@ -176,7 +178,7 @@
 }
 ```
 
-### 9. `deleteSession(issuer)` returns `()`
+### 10. `deleteSession(issuer)` returns `()`
 
 #### Arguments:
 
@@ -184,9 +186,9 @@
 {"issuer": "Principal"}
 ```
 
-### 10. `installCanisters()` returns `()`
+### 11. `installCanisters()` returns `()`
 
-### 11. `enqueueUpgradeTask(proposalId, issuer, actorsConfigs)` returns `()`
+### 12. `enqueueUpgradeTask(proposalId, issuer, actorsConfigs)` returns `()`
 
 #### Arguments:
 
@@ -220,7 +222,7 @@
 }
 ```
 
-### 12. `extendInstallationExpiryDate(issuer, duration)` returns `()`
+### 13. `extendInstallationExpiryDate(issuer, duration)` returns `()`
 
 #### Arguments:
 
@@ -228,7 +230,7 @@
 {"issuer": "Principal", "duration": "Nat"}
 ```
 
-### 13. `topUp(actorVariant, amount)` returns `()`
+### 14. `topUp(actorVariant, amount)` returns `()`
 
 #### Arguments:
 
@@ -239,7 +241,7 @@
 }
 ```
 
-### 14. `uploadCommitmentChunk(actorVariant, id, chunk, expectedModuleHash)` returns `()`
+### 15. `uploadCommitmentChunk(actorVariant, id, chunk, expectedModuleHash)` returns `()`
 
 #### Arguments:
 
@@ -252,7 +254,7 @@
 }
 ```
 
-### 15. `settleCommitment(actorVariant)` returns `()`
+### 16. `settleCommitment(actorVariant)` returns `()`
 
 #### Arguments:
 
@@ -262,7 +264,7 @@
 }
 ```
 
-### 16. `clearCommitment(actorVariant)` returns `()`
+### 17. `clearCommitment(actorVariant)` returns `()`
 
 #### Arguments:
 
@@ -272,7 +274,7 @@
 }
 ```
 
-### 17. `getActorInfo(actorVariant)` returns `Actor.Info`
+### 18. `getActorInfo(actorVariant)` returns `Actor.Info`
 
 #### Arguments:
 
@@ -294,7 +296,7 @@
 }
 ```
 
-### 18. `getActorsInfo()` returns `[(Actor.Variant, Actor.Info)]`
+### 19. `getActorsInfo()` returns `[(Actor.Variant, Actor.Info)]`
 
 #### Returns:
 ```json

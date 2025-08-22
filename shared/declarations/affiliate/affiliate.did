@@ -45,17 +45,65 @@ type TopNonPagination =
    callerRank: opt nat;
    result: TopResult;
  };
+type Time__1 = int;
 type Time = int;
-type Sharable__2 = 
+type StatusVariant = 
+ variant {
+   Available;
+   Failed;
+   Locked;
+   Redeemed;
+ };
+type Status = 
+ variant {
+   Available;
+   Failed: record {
+             by: principal;
+             reason: text;
+             timestamp: Time;
+           };
+   Locked: record {
+             by: principal;
+             timestamp: Time;
+           };
+   Redeemed: record {
+               by: principal;
+               timestamp: Time;
+             };
+ };
+type Sort__1 = 
+ variant {
+   icpPaid;
+   recent;
+ };
+type Sort_1 = 
+ record {
+   by: Sort__1;
+   order: Order;
+ };
+type Sort = 
+ record {
+   by: PrivateSort;
+   order: Order;
+ };
+type Sharable__4 = 
  vec record {
        Key;
        SharableValue;
      };
-type Sharable__1 = 
+type Sharable__3 = vec SharableCoupon;
+type Sharable__2 = 
  record {
    balance: SharableE8S__1;
-   lastWithdrawAt: Time;
+   lastWithdrawAt: Time__1;
    revenue: SharableE8S__1;
+ };
+type Sharable__1 = 
+ record {
+   coupons: vec text;
+   earning: SharableEarning;
+   referrals: SharableCount;
+   referrer: opt principal;
  };
 type SharableValue = 
  variant {
@@ -94,45 +142,128 @@ type SharableProportion =
 type SharableEarning = 
  record {
    balance: SharableE8S__1;
-   lastWithdrawAt: Time;
+   lastWithdrawAt: Time__1;
    revenue: SharableE8S__1;
  };
 type SharableE8S__1 = nat;
 type SharableE8S = nat;
 type SharableDate = nat;
+type SharableCoupon = 
+ record {
+   capitalRaised: nat;
+   creationDate: Time;
+   creator: principal;
+   icpPaid: nat;
+   key: text;
+   status: Status;
+ };
 type SharableCount = nat;
 type Sharable = 
  record {
-   earning: SharableEarning;
-   referrals: SharableCount;
-   referrer: opt principal;
+   capitalRaised: nat;
+   creationDate: Time;
+   creator: principal;
+   icpPaid: nat;
+   key: text;
+   status: Status;
+ };
+type PrivateSort = 
+ variant {
+   icpPaid;
+   recent;
+ };
+type PrivateSharable__1 = vec PrivateSharableCoupon;
+type PrivateSharableCoupon = 
+ record {
+   capitalRaised: nat;
+   code: vec nat8;
+   creationDate: Time;
+   creator: principal;
+   icpPaid: nat;
+   key: text;
+   status: Status;
+ };
+type PrivateSharable = 
+ record {
+   capitalRaised: nat;
+   code: vec nat8;
+   creationDate: Time;
+   creator: principal;
+   icpPaid: nat;
+   key: text;
+   status: Status;
+ };
+type PrivateFilter = 
+ record {
+   capitalRaised: opt nat;
+   status: opt StatusVariant;
+ };
+type Pagination_1 = 
+ record {
+   is: nat;
+   of: nat;
+   result: vec Sharable;
+ };
+type Pagination = 
+ record {
+   is: nat;
+   of: nat;
+   result: vec PrivateSharable;
+ };
+type Order = 
+ variant {
+   ascending;
+   descending;
  };
 type Key = text;
+type Filter = 
+ record {
+   capitalRaised: opt nat;
+   creator: opt principal;
+   status: opt StatusVariant;
+ };
 type Affiliate = 
  service {
-   /// PRIVATE ////// ACCESSORS ////////////
+   /// PUBLIC ////// MODIFIERS ////////////
+   createCoupon: (nat) -> (PrivateSharable);
+   /// PUBLIC ////// ASSERTERS ////////////
    expectUserNotFound: (principal) -> () query;
    fillReferrals: (principal, nat, opt principal) -> ();
    /// PUBLIC ////// ACCESSORS ////////////
    getConfig: (Key) -> (SharableValue) query;
-   getConfigs: () -> (Sharable__2) query;
-   getEarning: (principal) -> (Sharable__1) query;
-   getTop: (variant {Referrers;}) -> (TopNonPagination) query;
-   getTopPagination: (variant {Referrers;}, nat, nat) ->
-    (TopPagination) query;
-   getUser: (principal) -> (Sharable) query;
+   getConfigs: () -> (Sharable__4) query;
+   getCoupon: (text) -> (Sharable) query;
+   getCoupons: (Filter, Sort_1) -> (Sharable__3) query;
+   getCouponsPagination: (Filter, Sort_1, nat, nat) -> (Pagination_1) query;
+   getEarning: (principal) -> (Sharable__2) query;
+   getPrivateCoupon: (text) -> (PrivateSharable) query;
+   getPrivateCoupons: (PrivateFilter, Sort) -> (PrivateSharable__1) query;
+   getPrivateCouponsPagination: (PrivateFilter, Sort, nat, nat) ->
+    (Pagination) query;
+   getTop: (variant {
+              CouponGenerators;
+              Referrers;
+            }) -> (TopNonPagination) query;
+   getTopPagination: (variant {
+                        CouponGenerators;
+                        Referrers;
+                      }, nat, nat) -> (TopPagination) query;
+   getUser: (principal) -> (Sharable__1) query;
+   getUserCouponTotal: (principal) -> (nat, nat) query;
    /// PROTECTED ////// MODIFIERS ////////////
    initialize: () -> ();
+   lockCoupon: (vec nat8, principal) -> (Sharable);
    putConfigs: (vec record {
                       Key;
                       SharableValue;
                     }) -> ();
+   redeemCoupon: (vec nat8, principal) -> ();
+   redeemCouponFailed: (vec nat8, principal, text) -> ();
    setConfigs: (vec record {
                       Key;
                       SharableValue;
                     }) -> ();
    shiftToMidnight: (nat) -> ();
-   /// PUBLIC ////// MODIFIERS ////////////
    withdrawAll: () -> ();
  };
 service : () -> Affiliate

@@ -55,6 +55,8 @@ const LoginLayout = () => {
 
     const StepComponent = STEPS[step].Component
 
+    console.log(choices)
+
     return (
         <>
             <Stepper

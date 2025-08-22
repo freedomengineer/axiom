@@ -43,7 +43,7 @@ import Int "mo:base/Int";
 import Debug "mo:base/Debug";
 import Timer "mo:base/Timer";
 
-shared ({ caller = indicator }) actor class DAO() = this {
+shared ({ caller = indicator }) persistent actor class DAO() = this {
     ////// TEMPORARY IMPLEMENTATION ////////////
     private stable var shiftedTime : Int = 0;
     private func getNow() : Int = shiftedTime + Time.now();
@@ -566,10 +566,12 @@ shared ({ caller = indicator }) actor class DAO() = this {
                     case (?delegateeVote) {
                         switch (delegateeVote) {
                             case (#Default({ choice })) {
-                                switch (choice) {
-                                    case (#Delegated) {};
-                                    case (#Positive) usersNotifications := List.push((proposal.proposer, #NewVotesToProposal({ id = proposalId; data = { voter = caller; choice = #Positive; timestamp = getNow() } })), usersNotifications);
-                                    case (#Negative) usersNotifications := List.push((proposal.proposer, #NewVotesToProposal({ id = proposalId; data = { voter = caller; choice = #Negative; timestamp = getNow() } })), usersNotifications)
+                                if (proposal.proposer != caller) {
+                                    switch (choice) {
+                                        case (#Delegated) {};
+                                        case (#Positive) usersNotifications := List.push((proposal.proposer, #NewVotesToProposal({ id = proposalId; data = { voter = caller; choice = #Positive; timestamp = getNow() } })), usersNotifications);
+                                        case (#Negative) usersNotifications := List.push((proposal.proposer, #NewVotesToProposal({ id = proposalId; data = { voter = caller; choice = #Negative; timestamp = getNow() } })), usersNotifications)
+                                    }
                                 }
                             };
                             case (#Delegated(delegatee)) usersNotifications := List.push((delegatee, #CustodianProposalDelegated({ proposalId; delegator = caller; timestamp = getNow() })), usersNotifications)
@@ -583,10 +585,12 @@ shared ({ caller = indicator }) actor class DAO() = this {
                 }
             };
             case (#Default(choice)) {
-                switch (choice) {
-                    case (#Delegated) {};
-                    case (#Positive) usersNotifications := List.push((proposal.proposer, #NewVotesToProposal({ id = proposalId; data = { voter = caller; choice = #Positive; timestamp = getNow() } })), usersNotifications);
-                    case (#Negative) usersNotifications := List.push((proposal.proposer, #NewVotesToProposal({ id = proposalId; data = { voter = caller; choice = #Negative; timestamp = getNow() } })), usersNotifications)
+                if (proposal.proposer != caller) {
+                    switch (choice) {
+                        case (#Delegated) {};
+                        case (#Positive) usersNotifications := List.push((proposal.proposer, #NewVotesToProposal({ id = proposalId; data = { voter = caller; choice = #Positive; timestamp = getNow() } })), usersNotifications);
+                        case (#Negative) usersNotifications := List.push((proposal.proposer, #NewVotesToProposal({ id = proposalId; data = { voter = caller; choice = #Negative; timestamp = getNow() } })), usersNotifications)
+                    }
                 };
                 #Default({ choice })
             }
@@ -770,7 +774,7 @@ shared ({ caller = indicator }) actor class DAO() = this {
         ignore (
             func() : async () {
                 let Facade : FacadeInterface.Facade = await Indicator.Facade();
-                ignore Facade.postUsersNotification(List.fromArray(principals), #NewBallots({ voter = caller; timestamp = getNow() }))
+                ignore Facade.postUsersNotification(List.filter<Principal>(List.fromArray(principals), func(p) = p != caller), #NewBallots({ voter = caller; timestamp = getNow() }))
             }
         )()
     };

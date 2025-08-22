@@ -47,6 +47,7 @@ type Value =
 type Time = int;
 type Split = 
  service {
+   affiliateDeposit: (principal, nat) -> (nat);
    deposit: (principal, nat) -> ();
    externalTransfer: (principal, nat) -> ();
    getBalance: (Variant) -> (Sharable) query;

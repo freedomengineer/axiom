@@ -1,8 +1,8 @@
-import { Tab, TabPanel, Tabs, TabsBody, TabsHeader } from '@material-tailwind/react'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 
 import Spinner from '@components/Primitives/Spinner'
+import { Tab, TabPanel, Tabs, TabsBody, TabsHeader } from '@components/Primitives/MemorizedTabs'
 import Link from '@components/Shared/Link'
 import PageMetadata from '@components/Shared/PageMetadata'
 import Pagination from '@components/Shared/Pagination'
@@ -62,23 +62,9 @@ const SpecificHistoryPage = () => {
         <div className="p-semilarge">
             <PageMetadata {...pageMetadata} />
             <Tabs value={searchParams.get('age') ?? '1'}>
-                <TabsHeader
-                    className="rounded-none border-b border-primary-50 bg-transparent p-0"
-                    indicatorProps={{
-                        className:
-                            'bg-transparent border-b-2 border-primary-700 shadow-none rounded-none',
-                    }}
-                >
+                <TabsHeader>
                     {AGES.map(({ id, label }) => (
-                        <Tab
-                            key={id}
-                            value={id}
-                            onClick={() => onTabChange(id)}
-                            className={cn(
-                                'text-normal font-normal',
-                                searchParams.get('age') === id ? 'text-primary-700' : ''
-                            )}
-                        >
+                        <Tab key={id} value={id} onClick={() => onTabChange(id)}>
                             <span className="text-normal text-nowrap font-normal">
                                 Age {id} ({label})
                             </span>
@@ -93,10 +79,10 @@ const SpecificHistoryPage = () => {
                         <TabPanel key={id} value={id}>
                             {ranks.length === 0 ? (
                                 <div className="flex h-full w-full flex-col items-center justify-center text-center">
-                                    <p className="text-normal font-medium text-cold-700">
+                                    <p className="text-normal text-center font-medium text-cold-700">
                                         No Payouts Found
                                     </p>
-                                    <p className="text-tiny font-normal text-cold-700">
+                                    <p className="text-tiny text-center font-normal text-cold-700">
                                         There was no ACORN distributed for Age {id} in{' '}
                                         {getCanisterDate({
                                             ago: { nano: BigInt(ago!) * NANOS_IN_A_DAY },
@@ -105,7 +91,7 @@ const SpecificHistoryPage = () => {
                                     </p>
                                 </div>
                             ) : (
-                                <div className="overflow-x-auto rounded-lg border border-cold-300 md:overflow-hidden">
+                                <div className="overflow-x-auto rounded-lg border border-cold-200 md:overflow-hidden">
                                     <table className="min-w-full border-collapse">
                                         <thead className="bg-cold-50">
                                             <tr>
@@ -120,7 +106,7 @@ const SpecificHistoryPage = () => {
                                                         scope="col"
                                                         className={cn(
                                                             'text-small px-normal py-small select-none text-nowrap bg-cold-100',
-                                                            'border-b border-r border-cold-300',
+                                                            'border-b border-r border-cold-200',
                                                             i === 0 && 'border-l-0',
                                                             i === 3 && 'border-r-0'
                                                         )}
@@ -152,7 +138,7 @@ const SpecificHistoryPage = () => {
                                                             <td
                                                                 className={cn(
                                                                     '!text-tiny py-small px-normal group relative text-nowrap bg-cold-50 text-left font-semibold text-cold-600',
-                                                                    'border-b border-r border-cold-300',
+                                                                    'border-b border-r border-cold-200',
                                                                     isLastRow && 'border-b-0'
                                                                 )}
                                                             >
@@ -170,7 +156,7 @@ const SpecificHistoryPage = () => {
                                                             <td
                                                                 className={cn(
                                                                     '!text-tiny py-small px-normal text-nowrap font-semibold text-cold-600',
-                                                                    'border-b border-r border-cold-300',
+                                                                    'border-b border-r border-cold-200',
                                                                     isLastRow && 'border-b-0'
                                                                 )}
                                                             >
@@ -179,7 +165,7 @@ const SpecificHistoryPage = () => {
                                                             <td
                                                                 className={cn(
                                                                     '!text-tiny py-small px-normal text-nowrap text-cold-600',
-                                                                    'border-b border-r border-cold-300',
+                                                                    'border-b border-r border-cold-200',
                                                                     isLastRow && 'border-b-0'
                                                                 )}
                                                             >
@@ -192,7 +178,7 @@ const SpecificHistoryPage = () => {
                                                             <td
                                                                 className={cn(
                                                                     '!text-tiny py-small px-normal text-nowrap text-cold-600',
-                                                                    'border-b border-cold-300',
+                                                                    'border-b border-cold-200',
                                                                     isLastRow && 'border-b-0'
                                                                 )}
                                                             >

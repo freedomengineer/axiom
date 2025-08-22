@@ -6,7 +6,7 @@ import { buildIcDashboard } from '@libs/url'
 
 const SimpleStatusDetachment = ({ actorStatus }: { actorStatus: ActorStatus }) => {
     return (
-        <div className="w-full overflow-x-auto rounded-lg border border-cold-300 md:overflow-hidden">
+        <div className="w-full overflow-x-auto rounded-lg border border-cold-200 md:overflow-hidden">
             <table className="min-w-full border-collapse">
                 <thead className="bg-cold-50">
                     <tr>
@@ -16,7 +16,7 @@ const SimpleStatusDetachment = ({ actorStatus }: { actorStatus: ActorStatus }) =
                                 scope="col"
                                 className={cn(
                                     'text-small px-normal py-small select-none text-nowrap bg-cold-100',
-                                    'border-b border-r border-cold-300',
+                                    'border-b border-r border-cold-200',
                                     i === 0 && 'border-l-0',
                                     i === 1 && 'border-r-0'
                                 )}
@@ -37,7 +37,7 @@ const SimpleStatusDetachment = ({ actorStatus }: { actorStatus: ActorStatus }) =
                                 <td
                                     className={cn(
                                         '!text-tiny py-small px-normal group relative text-nowrap bg-cold-50 text-left font-semibold text-cold-600',
-                                        'border-b border-r border-cold-300',
+                                        'border-b border-r border-cold-200',
                                         isLastRow && 'border-b-0'
                                     )}
                                 >
@@ -46,7 +46,7 @@ const SimpleStatusDetachment = ({ actorStatus }: { actorStatus: ActorStatus }) =
                                 <td
                                     className={cn(
                                         '!text-tiny py-small px-normal text-nowrap font-semibold text-cold-600',
-                                        'border-b border-cold-300',
+                                        'border-b border-cold-200',
                                         isLastRow && 'border-b-0'
                                     )}
                                 >

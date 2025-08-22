@@ -50,33 +50,72 @@ const InfiniteScrollWrapper = forwardRef(
         const [hasMore, setHasMore] = useState<boolean>(true)
         const [currentPage, setCurrentPage] = useState<bigint>(0n)
         const [isEmptyResult, setIsEmptyResult] = useState<boolean>(false)
-        const initialLoadDone = useRef<boolean>(false)
-        const observerTarget = useRef<HTMLDivElement>(null)
-        const isFetching = useRef<boolean>(false)
-        const isMounted = useRef<boolean>(false)
 
+        const isMounted = useRef<boolean>(false)
+        const isFetching = useRef<boolean>(false)
+
+        const observerTarget = useRef<HTMLDivElement>(null)
+
+        const [firstPageLoaded, setFirstPageLoaded] = useState<boolean>(false)
         const [justAppended, setJustAppended] = useState<boolean>(false)
 
+        const wasAppending = useRef<boolean>(false)
         const lastScrollY = useRef<number>(0)
         const prevDocScrollHeight = useRef<number>(0)
-        const wasAppending = useRef<boolean>(false)
+
+        const currentRequestId = useRef<number>(0)
+
+        const currentAbort = useRef<AbortController | null>(null)
+
+        const didFirstRealMount = useRef<boolean>(false)
+
+        const filterKey = JSON.stringify(hardFilter)
+        const sortKey = JSON.stringify(hardSort)
+        const lastInitKey = useRef<string | null>(null)
 
         useEffect(() => {
             isMounted.current = true
             return () => {
                 isMounted.current = false
+
+                if (currentAbort.current) {
+                    currentAbort.current.abort()
+                }
             }
         }, [])
 
+        const applyResults = useCallback(
+            (
+                shouldAppend: boolean,
+                results: T[],
+                currentCount: bigint,
+                totalCount: bigint,
+                hasResults: boolean
+            ) => {
+                setItems((prev) => {
+                    const updated = shouldAppend ? [...prev, ...results] : results
+                    setIsEmptyResult(updated.length === 0)
+                    return updated
+                })
+
+                setCurrentPage(currentCount > 0n ? currentCount : 1n)
+                const isLastPageLoaded = currentCount >= totalCount || !hasResults
+                setHasMore(!isLastPageLoaded)
+
+                if (shouldAppend && hasResults) setJustAppended(true)
+            },
+            []
+        )
+
         const loadItems = useCallback(
             async (pageToLoad: bigint, shouldAppend: boolean) => {
-                if (isFetching.current || pageToLoad <= 0n) return
+                if (!isMounted.current) return
+                if (isFetching.current) return
+                if (pageToLoad <= 0n) return
 
                 isFetching.current = true
                 setLoading(true)
-
-                if (isMounted.current) setJustAppended(false)
-                else return
+                setJustAppended(false)
 
                 if (shouldAppend) {
                     wasAppending.current = true
@@ -87,94 +126,115 @@ const InfiniteScrollWrapper = forwardRef(
                     prevDocScrollHeight.current = 0
                 }
 
+                const requestId = ++currentRequestId.current
+
+                if (currentAbort.current) currentAbort.current.abort()
+                const controller = new AbortController()
+                currentAbort.current = controller
+
                 try {
                     const f = parseFilterFromObj(name, hardFilter)
                     const s = parseSortFromObj(name, hardSort)
 
+                    if (!isMounted.current) return
+                    if (requestId !== currentRequestId.current) return
+
                     const newData = await query(f, s, pageToLoad, size)
+                    console.log(f, s, pageToLoad, size, newData)
 
                     const results = newData?.result ?? []
                     const currentCount = BigInt(newData?.is ?? pageToLoad)
                     const totalCount = BigInt(newData?.of ?? 0)
                     const hasResults = results.length > 0
 
-                    setItems((prevItems) => {
-                        const updatedItems = shouldAppend ? [...prevItems, ...results] : results
-                        if (isMounted.current) setIsEmptyResult(updatedItems.length === 0)
-                        return updatedItems
-                    })
+                    applyResults(shouldAppend, results, currentCount, totalCount, hasResults)
 
-                    if (isMounted.current) {
-                        setCurrentPage(currentCount > 0n ? currentCount : pageToLoad)
-                        const isLastPageLoaded = currentCount >= totalCount || !hasResults
-                        setHasMore(!isLastPageLoaded)
-
-                        if (shouldAppend && hasResults) {
-                            setJustAppended(true)
+                    if (!shouldAppend) {
+                        setFirstPageLoaded(true)
+                    }
+                } catch (err: any) {
+                    if (err?.name === 'AbortError') {
+                    } else {
+                        if (isMounted.current) {
+                            console.error('Error loading items:', err)
+                            setHasMore(false)
+                            if (!shouldAppend) {
+                                setItems([])
+                                setIsEmptyResult(true)
+                            }
                         }
                     }
-                } catch (error) {
-                    if (!isMounted.current) return
-                    console.error('Error loading items:', error)
-                    setHasMore(false)
-                    if (!shouldAppend) {
-                        setItems([])
-                        setIsEmptyResult(true)
-                    }
                 } finally {
-                    isFetching.current = false
-                    if (isMounted.current) {
+                    if (isMounted.current && requestId === currentRequestId.current) {
+                        isFetching.current = false
                         setLoading(false)
                     }
                 }
             },
-
-            [query, hardFilter, hardSort, size]
+            [applyResults, hardFilter, hardSort, name, query, size]
         )
 
         const initItems = useCallback(() => {
-            window.scrollTo({ top: 0, behavior: 'auto' })
+            if (!isMounted.current) return
 
             setItems([])
             setCurrentPage(0n)
             setHasMore(true)
             setIsEmptyResult(false)
             setJustAppended(false)
+            setFirstPageLoaded(false)
             isFetching.current = false
-            initialLoadDone.current = true
+
+            currentRequestId.current++
+            if (currentAbort.current) currentAbort.current.abort()
+            currentAbort.current = null
+
             loadItems(1n, false)
         }, [loadItems])
 
         useImperativeHandle(ref, () => ({
-            refresh: initItems,
+            refresh: () => {
+                initItems()
+            },
         }))
 
         useEffect(() => {
-            initItems()
-        }, [hardFilter, hardSort])
+            const key = filterKey + '|' + sortKey
+
+            if (!didFirstRealMount.current) {
+                didFirstRealMount.current = true
+                lastInitKey.current = key
+                initItems()
+                return
+            }
+
+            if (lastInitKey.current !== key) {
+                lastInitKey.current = key
+                initItems()
+            }
+        }, [filterKey, sortKey, initItems])
 
         useEffect(() => {
+            if (!firstPageLoaded) return
+            if (!hasMore) return
             const target = observerTarget.current
             if (!target) return
 
             const observer = new IntersectionObserver(
                 (entries) => {
                     const entry = entries[0]
-                    if (entry.isIntersecting && hasMore && !isFetching.current) {
-                        const pageToLoad = currentPage + 1n
-                        loadItems(pageToLoad, true)
-                    }
+                    if (!entry.isIntersecting) return
+                    if (isFetching.current) return
+
+                    const nextPage = currentPage + 1n
+                    loadItems(nextPage, true)
                 },
                 { threshold: 0.1, rootMargin: '50px' }
             )
 
-            if (hasMore) observer.observe(target)
-
-            return () => {
-                if (target) observer.unobserve(target)
-                observer.disconnect()
-            }
-        }, [hasMore, loadItems, currentPage])
+            observer.observe(target)
+            return () => observer.disconnect()
+        }, [firstPageLoaded, hasMore, currentPage, loadItems])
 
         useLayoutEffect(() => {
             if (wasAppending.current && !loading) {
@@ -183,7 +243,10 @@ const InfiniteScrollWrapper = forwardRef(
                     currentDocScrollHeight > prevDocScrollHeight.current + 10 &&
                     prevDocScrollHeight.current > 0
                 ) {
-                    window.scrollTo({ top: lastScrollY.current, behavior: 'instant' })
+                    window.scrollTo({
+                        top: lastScrollY.current,
+                        behavior: 'instant' as ScrollBehavior,
+                    })
                 }
                 wasAppending.current = false
             }
@@ -207,11 +270,11 @@ const InfiniteScrollWrapper = forwardRef(
                     {loading ? (
                         <Spinner className="h-8 w-8" />
                     ) : isEmptyResult ? (
-                        <span className="text-tiny font-normal text-cold-700">
+                        <span className="text-tiny text-center font-normal text-cold-700">
                             No results found
                         </span>
                     ) : hasMore ? null : (
-                        <span className="text-tiny font-normal text-cold-700">
+                        <span className="text-tiny text-center font-normal text-cold-700">
                             Loaded all results
                         </span>
                     )}
