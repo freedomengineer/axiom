@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import TicketIcon from '@components/Assets/ticket.svg'
-import InfiniteScrollWrapper from '@components/Shared/InfiniteScrollWrapper'
+import InfiniteScrollWrapper, {
+    InfiniteScrollWrapperHandle,
+} from '@components/Shared/InfiniteScrollWrapper'
 import Popup from '@components/Shared/Popup'
 import useAuth from '@hooks/useAuth'
 import { DAffiliate } from 'shared/types/services'
@@ -19,14 +21,16 @@ const CouponsTab = ({
 }) => {
     const { principal, agent } = useAuth()
 
-    const [createdCoupon, setCreatedCoupon] = useState<DAffiliate.PrivateSharable>()
+    const [createdCoupon, setCreatedCoupon] = useState<DAffiliate.PrivateSharable | null>()
     const [open, setOpen] = useState<boolean>(false)
-
     const [total, setTotal] = useState<[bigint, bigint]>([0n, 0n])
 
+    const listRef = useRef<InfiniteScrollWrapperHandle>(null)
+
     useEffect(() => {
+        if (!principal || open) return
         Affiliate.call().getUserCouponTotal(principal).then(setTotal)
-    }, [principal])
+    }, [principal, open])
 
     return (
         <div className="gap-medium flex flex-col">
@@ -36,7 +40,10 @@ const CouponsTab = ({
                     title="Coupon"
                     Icon={<TicketIcon className="h-6 w-6 fill-current stroke-0 md:h-7 md:w-7" />}
                     className="w-full md:w-2/5"
-                    onClose={() => setCreatedCoupon(undefined)}
+                    onClose={() => {
+                        setCreatedCoupon(undefined)
+                        listRef.current?.refresh()
+                    }}
                 >
                     <PrivateCouponCard item={createdCoupon} />
                 </Popup>
@@ -65,11 +72,18 @@ const CouponsTab = ({
                     <span className="font-semibold text-cold-700">ICP paid</span>
                     <span className="font-semibold text-cold-700">{total[1]}</span>
                 </div>
-                <button className="button h-full bg-cold-800" onClick={() => setOpen(true)}>
+                <button
+                    className="button h-full bg-cold-800"
+                    onClick={() => {
+                        setOpen(true)
+                        setCreatedCoupon(null)
+                    }}
+                >
                     Create coupon
                 </button>
             </div>
             <InfiniteScrollWrapper
+                ref={listRef}
                 LayoutComponent={({ items }) => (
                     <div className="gap-medium mx-auto grid w-full max-w-full grid-cols-1 md:max-w-[1500px] md:grid-cols-2">
                         {items.map((item, i) => (

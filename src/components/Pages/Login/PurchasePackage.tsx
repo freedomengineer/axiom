@@ -1,4 +1,3 @@
-import { Principal } from '@dfinity/principal'
 import { useEffect, useState } from 'react'
 
 import SelectPackage from '@components/Shared/SelectPackgage'
@@ -9,7 +8,6 @@ import { sha256 } from '@libs/crypto'
 import { formatDate } from '@libs/date'
 import { error } from '@libs/toastify'
 import { Choices, ESteps, StepProps } from '@utils/login/step'
-import { DSales } from 'shared/types/services'
 import proportion, { Proportion } from 'shared/utils/proportion'
 import { Affiliate, ICP } from 'shared/utils/services'
 import { UnwrapVariant } from 'shared/utils/typings'
