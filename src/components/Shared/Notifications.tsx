@@ -16,10 +16,17 @@ import cn from '@libs/class'
 import { formatDate } from '@libs/date'
 import { NANOS_IN_A_DAY } from 'shared/constants'
 import e8s from 'shared/utils/e8s'
-import { Unwrap, UnwrapVariant } from 'shared/utils/typings'
+import {
+    Unwrap,
+    UnwrapVariant,
+    pseudoPrincipalDisplay,
+    pseudoPrincipalEqual,
+} from 'shared/utils/typings'
 
 import Link from './Link'
 import Username, { Usernames } from './Username'
+
+const MAX_VISIBLE_CAPACITY_ITEMS = 10
 
 const GroupedNotificationRenderer = memo(
     ({
@@ -87,12 +94,12 @@ const GroupedNotificationRenderer = memo(
                 case 'NewFollowers':
                     return [
                         'started following you.',
-                        `/profile/${Principal.fromUint8Array(item.user._arr).toText()}`,
+                        `/profile/${pseudoPrincipalDisplay(item.user)}`,
                     ]
                 case 'NewReferrals':
                     return [
                         `joined Axiom by using your referral link, you can claim ${e8s.toString(item.claimable)} ICP.`,
-                        `/profile/${Principal.fromUint8Array(item.user._arr).toText()}`,
+                        `/profile/${pseudoPrincipalDisplay(item.user)}`,
                     ]
                 case 'NewBallots':
                     return ['voted you in the election.', `/dashboard/custodians`]
@@ -140,6 +147,21 @@ const GroupedNotificationRenderer = memo(
 
         const firstItem = item.capacity[0]
 
+        const uniquePrincipalsToDisplay = item.capacity
+            .reduce((acc: any[], current: any) => {
+                const principal = current?.user ?? current?.voter ?? current?.publisher
+
+                if (
+                    !acc.find((p) =>
+                        pseudoPrincipalEqual(principal, p.user ?? p.voter ?? p.publisher)
+                    )
+                ) {
+                    acc.push(current)
+                }
+                return acc
+            }, [])
+            .slice(0, 3)
+
         return (
             <div className="rounded-lg border border-cold-200 bg-white">
                 <div
@@ -163,17 +185,24 @@ const GroupedNotificationRenderer = memo(
                             </>
                         ) : (
                             <>
-                                {item.capacity.slice(0, 3).map((item: any, index: number) => (
+                                {uniquePrincipalsToDisplay.map((uniqueItem: any, index: number) => (
                                     <Fragment key={index}>
                                         <Username
                                             symbol
                                             className="inline-block font-semibold text-primary-700"
-                                            principal={item.user ?? item.voter ?? item.publisher}
+                                            principal={
+                                                uniqueItem.user ??
+                                                uniqueItem.voter ??
+                                                uniqueItem.publisher
+                                            }
                                         />
-                                        {index < Math.min(2, capacityNum - 1) && ', '}
+                                        {index <
+                                            Math.min(2, uniquePrincipalsToDisplay.length - 1) &&
+                                            ', '}
                                     </Fragment>
                                 ))}
-                                {totalNum > 3 && ` and ${totalNum - 3} other(s)`}
+                                {totalNum > uniquePrincipalsToDisplay.length &&
+                                    ` and ${totalNum - uniquePrincipalsToDisplay.length} other(s)`}
                                 {` ${groupedText}`}
                             </>
                         )}
@@ -203,39 +232,49 @@ const GroupedNotificationRenderer = memo(
                     )}
                 >
                     <div className="text-tiny pb-tiny pt-tiny border-t border-cold-200 pl-4">
-                        {item.capacity.map((e: any, index: number) => {
-                            const isItemRead = notification.capacityItemsRead?.[index] === 1
-                            const [text, link] = renderCapacityItem(e, item.id) ?? []
+                        {item.capacity
+                            .slice(0, MAX_VISIBLE_CAPACITY_ITEMS)
+                            .map((e: any, index: number) => {
+                                const isItemRead = notification.capacityItemsRead?.[index] === 1
+                                const [text, link] = renderCapacityItem(e, item.id) ?? []
 
-                            return (
-                                <Link
-                                    key={index}
-                                    href={link}
-                                    onClick={() => handleCapacityItemClick(index)}
-                                    className={cn(
-                                        'text-tiny px-small py-tiny flex w-full cursor-pointer items-center justify-between rounded-lg hover:bg-primary-50',
-                                        !isItemRead ? 'bg-primary-50' : 'bg-white'
-                                    )}
-                                >
-                                    <p className="flex-1 leading-relaxed">
-                                        <Username
-                                            symbol
-                                            className="inline-block font-semibold text-primary-700"
-                                            principal={e.user ?? e.voter ?? e.publisher}
-                                            linkClassName="text-cold-800"
-                                        />
-                                        {` ${text}`}
-                                    </p>
-                                    <div className="gap-x-small flex flex-shrink-0 items-center">
-                                        <p className="text-extratiny mr-small font-normal text-cold-700">
-                                            <span>
-                                                {formatDate({ nano: BigInt(e.timestamp) }, true)}
-                                            </span>
+                                return (
+                                    <Link
+                                        key={`${pseudoPrincipalDisplay(e.user ?? e.voter ?? e.publisher)}-${index}`}
+                                        href={link}
+                                        onClick={() => handleCapacityItemClick(index)}
+                                        className={cn(
+                                            'text-tiny px-small py-tiny flex w-full cursor-pointer items-center justify-between rounded-lg hover:bg-primary-50',
+                                            !isItemRead ? 'bg-primary-50' : 'bg-white'
+                                        )}
+                                    >
+                                        <p className="flex-1 leading-relaxed">
+                                            <Username
+                                                symbol
+                                                className="inline-block font-semibold text-primary-700"
+                                                principal={e.user ?? e.voter ?? e.publisher}
+                                                linkClassName="text-cold-800"
+                                            />
+                                            {` ${text}`}
                                         </p>
-                                    </div>
-                                </Link>
-                            )
-                        })}
+                                        <div className="gap-x-small flex flex-shrink-0 items-center">
+                                            <p className="text-extratiny mr-small font-normal text-cold-700">
+                                                <span>
+                                                    {formatDate(
+                                                        { nano: BigInt(e.timestamp) },
+                                                        true
+                                                    )}
+                                                </span>
+                                            </p>
+                                        </div>
+                                    </Link>
+                                )
+                            })}
+                        {totalNum > MAX_VISIBLE_CAPACITY_ITEMS && (
+                            <p className="text-tiny px-small py-tiny text-center font-normal text-cold-700">
+                                ... and {totalNum - MAX_VISIBLE_CAPACITY_ITEMS} more
+                            </p>
+                        )}
                     </div>
                 </div>
             </div>
@@ -585,7 +624,7 @@ const getNotificationLink = (notification: StoredNotification): string | undefin
                 case 'ProposalResult':
                     return `/dashboard/proposals/${item.proposalId}`
                 case 'CouponRedeemed':
-                    return `/profile/${Principal.fromUint8Array(item.user._arr).toText()}`
+                    return `/profile/${pseudoPrincipalDisplay(item.user)}`
                 default:
                     return undefined
             }
@@ -711,9 +750,14 @@ const TabButton = ({
     </button>
 )
 
+const INITIAL_NOTIFICATIONS_COUNT = 10
+const NOTIFICATIONS_INCREMENT = 10
+
 const Notifications = () => {
     const [activeTab, setActiveTab] = useState<'user' | 'system'>('user')
     const [accordionStates, setAccordionStates] = useState<Record<string, boolean>>({})
+    const [visibleCount, setVisibleCount] = useState(INITIAL_NOTIFICATIONS_COUNT)
+
     const { notifications, unreadUserCount, unreadSystemCount, actions } = useNotification()
 
     const systemNotifications = notifications.filter((n) => n.source === 'system')
@@ -721,6 +765,10 @@ const Notifications = () => {
 
     const activeNotifications = activeTab === 'user' ? userNotifications : systemNotifications
     const activeUnreadCount = activeTab === 'user' ? unreadUserCount : unreadSystemCount
+
+    useEffect(() => {
+        setVisibleCount(INITIAL_NOTIFICATIONS_COUNT)
+    }, [activeTab])
 
     useEffect(() => {
         const newAccordionStates: Record<string, boolean> = {}
@@ -752,6 +800,10 @@ const Notifications = () => {
             setAccordionStates((prev) => ({ ...prev, ...newAccordionStates }))
         }
     }, [activeNotifications.length, activeTab])
+
+    const handleLoadMore = () => {
+        setVisibleCount((prevCount) => prevCount + NOTIFICATIONS_INCREMENT)
+    }
 
     const toggleAccordion = useCallback((id: string) => {
         setAccordionStates((prev) => ({ ...prev, [id]: !prev[id] }))
@@ -798,14 +850,26 @@ const Notifications = () => {
             </div>
             <div className="gap-y-tiny flex max-h-[60vh] flex-col overflow-y-auto">
                 {activeNotifications.length > 0 ? (
-                    activeNotifications.map((notif) => (
-                        <NotificationItemWrapper
-                            key={notif.id}
-                            notification={notif}
-                            isOpen={accordionStates[notif.id] || false}
-                            onToggle={() => toggleAccordion(notif.id)}
-                        />
-                    ))
+                    <>
+                        {activeNotifications.slice(0, visibleCount).map((notif) => (
+                            <NotificationItemWrapper
+                                key={notif.id}
+                                notification={notif}
+                                isOpen={accordionStates[notif.id] || false}
+                                onToggle={() => toggleAccordion(notif.id)}
+                            />
+                        ))}
+                        {visibleCount < activeNotifications.length && (
+                            <div className="">
+                                <button
+                                    onClick={handleLoadMore}
+                                    className="text-tiny py-normal w-full rounded-lg bg-cold-50 font-medium text-cold-700 transition-colors hover:bg-cold-100"
+                                >
+                                    Load more ({activeNotifications.length - visibleCount})
+                                </button>
+                            </div>
+                        )}
+                    </>
                 ) : (
                     <div className="p-large flex flex-col items-center justify-center text-center">
                         <EmptyNotificationIcon className="mb-medium h-12 w-12 text-cold-300 md:h-16 md:w-16" />

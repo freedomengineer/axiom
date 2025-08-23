@@ -495,7 +495,7 @@ const CustomVotes = ({
                                     </div>
 
                                     <div className="mb-4 grid grid-cols-4 gap-2">
-                                        {customVoteValues.Scale[4] && (
+                                        {customVoteValues.Scale[4] !== undefined && (
                                             <button
                                                 onClick={() =>
                                                     handleScaleVote(customVoteValues.Scale[4])
@@ -666,7 +666,7 @@ const CustomVotes = ({
                                     </div>
 
                                     <div className="mb-4 grid grid-cols-4 gap-2">
-                                        {customVoteValues.Scale[4] && (
+                                        {customVoteValues.Scale[4] !== undefined && (
                                             <button
                                                 onClick={() =>
                                                     handleScaleVote(customVoteValues.Scale[4])

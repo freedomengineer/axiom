@@ -315,7 +315,7 @@ export const getNumNotificationsCache = async (): Promise<number> => {
     return await db.notifications.count()
 }
 
-export const useNotificationPoller = (agent: Agent | null, intervalSeconds = 10) => {
+export const useNotificationPoller = (agent: Agent | null, intervalSeconds = 15) => {
     const agentRef = useRef(agent)
 
     useEffect(() => {

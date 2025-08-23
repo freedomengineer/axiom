@@ -1,14 +1,7 @@
 'use client'
 
 import { Identity } from '@dfinity/agent'
-import {
-    Menu,
-    MenuHandler,
-    MenuList,
-    Popover,
-    PopoverContent,
-    PopoverHandler,
-} from '@material-tailwind/react'
+import { Popover, PopoverContent, PopoverHandler } from '@material-tailwind/react'
 import { useEffect, useState } from 'react'
 
 import AcornIcon from '@components/Assets/acorn.svg'
@@ -83,7 +76,7 @@ const Header = ({
     const { isAuthenticated, principal, agent, user, setPemIdentity, login, logout } = useAuth()
     const { unreadUserCount, unreadSystemCount } = useNotification()
     const userData = useUserData(principal ?? null)
-    useNotificationPoller(agent ?? null, 10)
+    useNotificationPoller(agent ?? null, 15)
 
     const [openMenu, setOpenMenu] = useState<{ [key: string]: string | null }>({})
     const [open, setOpen] = useState<EPopup | null>(null)

@@ -7,6 +7,7 @@ import InfiniteScrollWrapper, {
 import Popup from '@components/Shared/Popup'
 import useAuth from '@hooks/useAuth'
 import { DAffiliate } from 'shared/types/services'
+import e8s from 'shared/utils/e8s'
 import { Affiliate } from 'shared/utils/services'
 
 import CreateCoupon from './CreateCoupon'
@@ -30,6 +31,7 @@ const CouponsTab = ({
     useEffect(() => {
         if (!principal || open) return
         Affiliate.call().getUserCouponTotal(principal).then(setTotal)
+        refreshBalances()
     }, [principal, open])
 
     return (
@@ -38,7 +40,7 @@ const CouponsTab = ({
                 <Popup
                     open={!!createdCoupon}
                     title="Coupon"
-                    Icon={<TicketIcon className="h-6 w-6 fill-current stroke-0 md:h-7 md:w-7" />}
+                    Icon={<TicketIcon className="h-6 w-6 fill-white stroke-0 md:h-7 md:w-7" />}
                     className="w-full md:w-2/5"
                     onClose={() => {
                         setCreatedCoupon(undefined)
@@ -48,11 +50,11 @@ const CouponsTab = ({
                     <PrivateCouponCard item={createdCoupon} />
                 </Popup>
             )}
-            {!createdCoupon && (
+            {createdCoupon === null && (
                 <Popup
                     open={open}
                     title="Create Coupon"
-                    Icon={<TicketIcon className="h-6 w-6 fill-current stroke-0 md:h-7 md:w-7" />}
+                    Icon={<TicketIcon className="h-6 w-6 fill-white stroke-0 md:h-7 md:w-7" />}
                     className="w-full md:w-4/5"
                     onClose={() => setOpen(false)}
                 >
@@ -70,7 +72,7 @@ const CouponsTab = ({
                 </div>
                 <div className="text-small py-small px-medium gap-normal flex w-full items-center justify-between text-nowrap rounded-lg border border-cold-200 bg-cold-50">
                     <span className="font-semibold text-cold-700">ICP paid</span>
-                    <span className="font-semibold text-cold-700">{total[1]}</span>
+                    <span className="font-semibold text-cold-700">{e8s.toString(total[1])}</span>
                 </div>
                 <button
                     className="button h-full bg-cold-800"

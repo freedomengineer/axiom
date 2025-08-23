@@ -10,6 +10,10 @@ const config = withMT({
     darkMode: 'class',
     plugins: [require('tailwindcss/nesting'), require('postcss-nesting')],
     theme: {
+        writingMode: {
+            'vertical-rl': 'vertical-rl',
+            'vertical-lr': 'vertical-lr',
+        },
         extend: {
             fontFamily: {
                 sans: ['Roboto', 'sans-serif'],

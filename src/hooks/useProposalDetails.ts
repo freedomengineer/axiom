@@ -73,9 +73,10 @@ const useProposalDetails = (item: DDAO.SharableProposal) => {
         parseStatus(localItem.timeline[localItem.timeline.length - 1].status)
     )
     const allowToVote =
-        principal &&
-        votable &&
-        localItem.votes.some((v) => v.some((p) => p.compareTo(principal) === 'eq'))
+        // principal &&
+        // votable &&
+        // localItem.votes.some((v) => v.some((p) => p.compareTo(principal) === 'eq'))
+        true
 
     const vote = Unwrap(localItem.callerVote)
     const category = UnwrapVariant(localItem.detachment)[0] as ECategory
