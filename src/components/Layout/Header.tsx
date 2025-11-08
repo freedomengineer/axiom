@@ -471,12 +471,24 @@ const Header = ({
             >
                 <div className="gap-medium flex flex-col">
                     <button
-                        onClick={login}
+                        onClick={() => login('v1')}
                         className={cn(
                             'px-medium !text-normal gap-normal py-normal flex transform items-center justify-center text-nowrap rounded-md bg-gradient-to-r from-blue-900 to-purple-800 font-normal text-white transition-all duration-200 ease-in-out hover:bg-opacity-80 hover:from-blue-800 hover:to-purple-600 disabled:pointer-events-none disabled:opacity-50'
                         )}
                     >
-                        Log in with Internet Identity <IcpColouredIcon className="h-5 md:h-6" />
+                        Log in with Internet Identity V1 <IcpColouredIcon className="h-5 md:h-6" />
+                    </button>
+                    <span className="text-tiny text-center text-black/50">
+                        Or log in with new version of Internet Identity (you can import your V1
+                        Internet Identity)
+                    </span>
+                    <button
+                        onClick={() => login('v2')}
+                        className={cn(
+                            'px-medium !text-normal gap-normal py-normal flex transform items-center justify-center text-nowrap rounded-md bg-gradient-to-r from-gray-900 to-gray-800 font-normal text-white transition-all duration-200 ease-in-out hover:bg-opacity-80 hover:from-gray-800 hover:to-gray-600 disabled:pointer-events-none disabled:opacity-50'
+                        )}
+                    >
+                        Log in with Internet Identity V2 <IcpColouredIcon className="h-5 md:h-6" />
                     </button>
                     <span className="text-tiny text-center text-black/50">
                         Or import your PEM key to log in (not recommended, only for advanced users)

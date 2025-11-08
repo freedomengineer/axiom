@@ -126,15 +126,9 @@ const Username = ({
     if (!principal) return null
     const parsedPrincipal = Principal.fromUint8Array(principal._arr)
     const { username, capitalRaised } = useUsername(parsedPrincipal)
-    if (className && !linkClassName)
+    if (className)
         return (
-            <span
-                className={cn(
-                    'flex-nowrap place-items-center gap-1 text-nowrap',
-                    'flex items-center',
-                    className
-                )}
-            >
+            <span className={cn('flex-nowrap place-items-center gap-1 text-nowrap', className)}>
                 {symbol && <Symbol capitalRaised={capitalRaised} className={symbolClassName} />}
                 {username}
             </span>
@@ -143,11 +137,7 @@ const Username = ({
         return (
             <Link
                 href={`/profile/${parsedPrincipal.toText()}`}
-                className={cn(
-                    'flex-nowrap place-items-center gap-1 text-nowrap',
-                    'flex items-center',
-                    linkClassName
-                )}
+                className={cn('flex-nowrap place-items-center gap-1 text-nowrap', linkClassName)}
                 openInNewTab
             >
                 {symbol && <Symbol capitalRaised={capitalRaised} className={symbolClassName} />}
@@ -156,12 +146,7 @@ const Username = ({
         )
     if (symbol) {
         return (
-            <span
-                className={cn(
-                    'flex-nowrap place-items-center gap-1 text-nowrap',
-                    'flex items-center'
-                )}
-            >
+            <span className={cn('flex-nowrap place-items-center gap-1 text-nowrap')}>
                 <Symbol capitalRaised={capitalRaised} className={symbolClassName} />
                 {username}
             </span>

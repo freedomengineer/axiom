@@ -65,7 +65,7 @@ const HypothesisCard = ({
 
     const handleCopy = () => {
         navigator.clipboard.writeText(
-            build(['feed', localItem.id], { ref: principal?.toText() ?? null }, true)
+            build(['feed', item.id], { ref: principal?.toText() ?? null }, true)
         )
         setCopied(true)
         success('Copied share link to clipboard')
@@ -108,7 +108,7 @@ const HypothesisCard = ({
                 Icon={<FlagIcon className="h-6 w-6 stroke-[1.5px] md:h-7 md:w-7" />}
             >
                 <RequestFlag
-                    header={{ id: localItem.id, category: Variant('Hypothesis') }}
+                    header={{ id: item.id, category: Variant('Hypothesis') }}
                     onSubmit={() => setOpen(undefined)}
                 />
             </Popup>
@@ -116,7 +116,7 @@ const HypothesisCard = ({
             <Popup
                 open={open === EPopup.HypothesisEvidence}
                 onClose={() => setOpen(undefined)}
-                title="Hypothesis Detail"
+                title={`Hypothesis ${item.id}`}
                 className="w-full md:w-4/5"
                 secondaryClassname="p-0"
                 href={build(['feed', item.id])}
@@ -128,7 +128,7 @@ const HypothesisCard = ({
             <Popup
                 open={open === EPopup.HypothesisDetail}
                 onClose={() => setOpen(undefined)}
-                title="Hypothesis Detail"
+                title={`Hypothesis ${item.id}`}
                 className="w-full md:w-4/5"
                 secondaryClassname="p-0"
                 href={build(['feed', item.id])}
@@ -225,11 +225,11 @@ const HypothesisCard = ({
                 <div className="grid grid-cols-7 grid-rows-3 place-items-center items-center text-white">
                     <Link
                         className="!gap-small col-span-4 mr-auto flex h-5 items-center text-left hover:opacity-75"
-                        href={build(['feed', 'fields', localItem.fieldId])}
+                        href={build(['feed', 'fields', item.fieldId])}
                     >
                         <FieldIcon className="h-4 w-4 stroke-[1.5px]" />
                         <span className="text-tiny truncate font-light text-white">
-                            {localItem.fieldId}
+                            {item.fieldId}
                         </span>
                     </Link>
                     <button
@@ -241,7 +241,7 @@ const HypothesisCard = ({
                     </button>
                     <Link
                         className="!gap-small col-span-4 row-start-2 mr-auto flex h-5 items-center text-left hover:opacity-75"
-                        href={build(['profile', localItem.publisher.toText()])}
+                        href={build(['profile', item.publisher.toText()])}
                     >
                         <Symbol
                             capitalRaised={publisher.capitalRaised.toString()}
@@ -254,7 +254,7 @@ const HypothesisCard = ({
                     <div className="!gap-small col-span-4 row-start-3 mr-auto flex h-5 items-center text-left">
                         <DateTimeIcon className="h-4 w-4 stroke-[1.5px]" />
                         <span className="text-tiny truncate font-light text-white">
-                            {formatDate({ nano: localItem.publishDate }, true)}
+                            {formatDate({ nano: item.publishDate }, true)}
                         </span>
                     </div>
                     <div className="col-span-3 row-start-3 grid h-full w-full grid-cols-4 place-items-center items-center">

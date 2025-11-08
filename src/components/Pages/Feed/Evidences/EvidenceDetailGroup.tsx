@@ -68,6 +68,7 @@ const RepliesSection = ({
                                             ? '!w-[calc(100%-2.25rem)] md:!w-[calc(100%-3rem)]'
                                             : '!w-[calc(100%-4rem)] md:!w-[calc(100%-6rem)]'
                                     }
+                                    isMain={false}
                                 />
                             </div>
                             {reply.replies.length > 0 && (
@@ -165,7 +166,7 @@ const EvidenceDetailGroup = ({ item }: { item: DAxioms.SharableEvidence }) => {
     }
 
     return (
-        <div className="flex w-full flex-col gap-[0.75rem]">
+        <div className="flex w-full flex-col gap-[0.75rem] overflow-x-hidden">
             {parentEvidence !== null && (
                 <div className="relative w-full">
                     {parentEvidence === undefined ? (
@@ -178,7 +179,11 @@ const EvidenceDetailGroup = ({ item }: { item: DAxioms.SharableEvidence }) => {
                         </button>
                     ) : (
                         parentEvidence && (
-                            <EvidenceDetail item={parentEvidence} className="!w-full" />
+                            <EvidenceDetail
+                                item={parentEvidence}
+                                className="!w-full"
+                                isMain={false}
+                            />
                         )
                     )}
                 </div>
@@ -203,6 +208,7 @@ const EvidenceDetailGroup = ({ item }: { item: DAxioms.SharableEvidence }) => {
                             ? '!w-[calc(100%-2rem)] md:!w-[calc(100%-3rem)]'
                             : '!w-full'
                     }
+                    isMain={true}
                 />
             </div>
             {item.replies.length > 0 && (

@@ -91,7 +91,7 @@ const CouponCard = ({ item }: { item: DAffiliate.SharableCoupon }) => {
                             symbol
                             symbolClassName="h-[18px] w-[18px] stroke-[3px] md:h-[22px] md:w-[22px]"
                             linkClassName={cn(
-                                '!flex !items-center !gap-1 md:!gap-1.5 pre-underline !text-base md:!text-xl z-10 inline-block decoration-0 font-medium',
+                                '!flex !items-center !gap-1 !z-0 md:!gap-1.5 pre-underline !text-base md:!text-xl z-10 inline-block decoration-0 font-medium',
                                 status === 'Available' && 'hover:decoration-green-800',
                                 (status[0] === 'Redeemed' || status[0] === 'Locked') &&
                                     'hover:decoration-cold-800',
@@ -128,7 +128,7 @@ const CouponCard = ({ item }: { item: DAffiliate.SharableCoupon }) => {
                                         symbol
                                         symbolClassName="h-[18px] w-[18px] stroke-[3px] md:h-[22px] md:w-[22px]"
                                         linkClassName={cn(
-                                            '!flex !items-center !gap-1 md:!gap-1.5 pre-underline !text-base md:!text-xl z-10 inline-block decoration-0 font-medium',
+                                            '!flex !items-center !gap-1 !z-0 md:!gap-1.5 pre-underline !text-base md:!text-xl z-10 inline-block decoration-0 font-medium',
                                             (status[0] === 'Redeemed' || status[0] === 'Locked') &&
                                                 'hover:decoration-cold-800',
                                             status[0] === 'Failed' && 'hover:decoration-red-800'

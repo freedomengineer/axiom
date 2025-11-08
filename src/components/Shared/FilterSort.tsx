@@ -41,7 +41,7 @@ const FilterSort = <T extends QueryName>({
     }
 
     return (
-        <div className="text-tiny z-40 w-full font-light text-cold-800">
+        <div className="text-tiny z-50 w-full font-light text-cold-800">
             <div className="mb-medium gap-small flex flex-col justify-between md:flex-row">
                 <div
                     className="gap-small relative flex flex-wrap aria-disabled:pointer-events-none aria-disabled:opacity-50"

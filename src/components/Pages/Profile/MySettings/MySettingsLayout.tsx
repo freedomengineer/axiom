@@ -47,16 +47,13 @@ const MySettingsLayout = () => {
     const [numCaches, setNumCaches] = useState<number>(0)
     const [trigger, setTrigger] = useState<number>(0)
 
-    // Local preview colors state for settings only
     const [localPreview, setLocalPreview] = useState<VoteColors>(voteColors.colors)
     const voteColorsSectionRef = useRef<HTMLDivElement>(null)
 
-    // Sync local preview when committed colors change externally
     useEffect(() => {
         setLocalPreview(voteColors.colors)
     }, [voteColors.colors])
 
-    // Commit local preview to committed colors on click outside of the vote colors section
     useEffect(() => {
         const isValidHex = (value: string) => /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(value)
 
@@ -211,7 +208,6 @@ const MySettingsLayout = () => {
 
     return (
         <div className="gap-medium flex w-full flex-col text-cold-700">
-            {/* Vote Colors Customization Section */}
             <div className="flex items-center justify-between">
                 <p className="text-normal py-small font-medium text-primary-700">Vote Colors</p>
                 <button

@@ -1,11 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 
 import DateTimeIcon from '@components/Assets/date_time.svg'
 import DoneIcon from '@components/Assets/done.svg'
 import EditIcon from '@components/Assets/edit.svg'
+import EvidenceIcon from '@components/Assets/evidence.svg'
 import FlagIcon from '@components/Assets/flag.svg'
 import HypothesisIcon from '@components/Assets/hypothesis.svg'
 import NewTabIcon from '@components/Assets/new_tab.svg'
@@ -26,26 +27,55 @@ import { build, buildBlobImage } from '@libs/url'
 import { EVote } from '@utils/feed/evidence'
 import { VOTES as HYPOTHESIS_VOTES } from '@utils/feed/hypothesis'
 import { DAxioms } from 'shared/types/services'
+import { Axioms } from 'shared/utils/services'
 import { Unwrap, UnwrapVariant, Variant, isNullish } from 'shared/utils/typings'
 
+import EvidenceDetailGroup from './EvidenceDetailGroup'
 import EvidenceVote from './EvidenceVote'
 import PostEvidence from './PostEvidence'
 import RequestFlag from '../Flags/RequestFlag'
+import HypothesisDetail from '../Hypotheses/HypothesisDetail'
+
+const PreloadHypothesisDetail = ({ id }: { id: bigint }) => {
+    const { agent } = useAuth()
+    const [item, setItem] = useState<DAxioms.SharableHypothesis>()
+
+    useEffect(() => {
+        if (isNullish(id)) return
+        Axioms.call(agent).getHypothesis(id).then(setItem)
+    }, [agent, id])
+
+    if (isNullish(item)) return null
+    return <HypothesisDetail item={item} hideEvidences={true} setLocalItem={() => {}} />
+}
+
+enum EPopup {
+    HypothesisDetail,
+    RequestFlag,
+    EvidenceDetail,
+    // Reply,
+}
 
 const EvidenceDetail = ({
     item,
     className,
     onReply,
+    localHypothesis,
+    setLocalHypothesis,
+    isMain = true,
 }: {
     item: DAxioms.SharableEvidence
     className?: string
     onReply?: (id: bigint) => void
+    localHypothesis?: DAxioms.SharableHypothesis
+    setLocalHypothesis?: (item: DAxioms.SharableHypothesis) => void
+    isMain?: boolean
 }) => {
     const { principal } = useAuth()
     const { colors } = useVoteColors()
     const { publisher, localItem, vote, votesLoading, handleVote, refreshItem } =
         useEvidenceDetails(item)
-    const [open, setOpen] = useState(false)
+    const [open, setOpen] = useState<EPopup>()
     const [copied, setCopied] = useState<boolean>()
     const [openReply, setOpenReply] = useState<boolean | undefined>(
         onReply === undefined ? undefined : false
@@ -55,7 +85,7 @@ const EvidenceDetail = ({
     const handleCopy = () => {
         navigator.clipboard.writeText(
             build(
-                ['feed', localItem.hypothesisId, 'evidences', localItem.id],
+                ['feed', item.hypothesisId, 'evidences', item.id],
                 { ref: principal?.toText() ?? null },
                 true
             )
@@ -66,11 +96,11 @@ const EvidenceDetail = ({
     }
     const handleReply = () => {
         if (onReply === undefined) setOpenReply(true)
-        else onReply(localItem.id)
+        else onReply(item.id)
     }
 
-    const formObject = Object.fromEntries(localItem.form.map((form) => UnwrapVariant(form)))
-    const VOTE = HYPOTHESIS_VOTES[UnwrapVariant(localItem.choice)]
+    const formObject = Object.fromEntries(item.form.map((form) => UnwrapVariant(form)))
+    const VOTE = HYPOTHESIS_VOTES[UnwrapVariant(item.choice)]
     const Icon = VOTE.Icon
 
     return (
@@ -84,11 +114,11 @@ const EvidenceDetail = ({
                 <Popup
                     open={openReply}
                     onClose={() => setOpenReply(false)}
-                    title={`Post Reply to Evidence ${localItem.id}`}
+                    title={`Post Reply to Evidence ${item.id}`}
                 >
                     <PostEvidence
                         id={item.hypothesisId}
-                        replyTo={localItem.id}
+                        replyTo={item.id}
                         onSubmit={() => {
                             setOpenReply(false)
                             refreshItem()
@@ -97,29 +127,58 @@ const EvidenceDetail = ({
                 </Popup>
             )}
             <Popup
-                open={open}
-                onClose={() => setOpen(false)}
+                open={open === EPopup.EvidenceDetail}
+                onClose={() => setOpen(undefined)}
+                title={`Evidence ${item.id}`}
+                className="w-full md:w-4/5"
+                href={build(['feed', item.hypothesisId, 'evidences', item.id])}
+                Icon={<EvidenceIcon className="h-6 w-6 stroke-[1.5px] md:h-7 md:w-7" />}
+            >
+                <EvidenceDetailGroup item={localItem} />
+            </Popup>
+            <Popup
+                open={open === EPopup.HypothesisDetail}
+                onClose={() => setOpen(undefined)}
+                title={`Hypothesis ${item.hypothesisId}`}
+                className="w-full md:w-4/5"
+                secondaryClassname="p-0"
+                href={build(['feed', item.hypothesisId])}
+                Icon={<HypothesisIcon className="h-6 w-6 stroke-[1.5px] md:h-7 md:w-7" />}
+            >
+                {localHypothesis ? (
+                    <HypothesisDetail
+                        item={localHypothesis}
+                        hideEvidences={true}
+                        setLocalItem={setLocalHypothesis}
+                    />
+                ) : (
+                    <PreloadHypothesisDetail id={item.hypothesisId} />
+                )}
+            </Popup>
+            <Popup
+                open={open === EPopup.RequestFlag}
+                onClose={() => setOpen(undefined)}
                 title="Request Flag"
                 className="w-full md:w-auto"
                 Icon={<FlagIcon className="h-6 w-6 stroke-[1.5px] md:h-7 md:w-7" />}
             >
                 <RequestFlag
-                    header={{ id: localItem.id, category: Variant('Evidence') }}
-                    onSubmit={() => setOpen(false)}
+                    header={{ id: item.id, category: Variant('Evidence') }}
+                    onSubmit={() => setOpen(undefined)}
                 />
             </Popup>
             <div
                 className="absolute right-0 top-0 rounded-md text-white"
                 style={{
                     backgroundColor:
-                        UnwrapVariant(localItem.choice) === EVote.Positive
+                        UnwrapVariant(item.choice) === EVote.Positive
                             ? colors.positive
                             : colors.negative,
                 }}
             >
                 <Icon className="p-tiny h-6 w-6 stroke-[1.5px] md:h-7 md:w-7" />
             </div>
-            {!isNullish(Unwrap(localItem.repliedTo)) && (
+            {!isNullish(Unwrap(item.repliedTo)) && (
                 <div className="absolute right-8 top-0 rounded-md bg-cold-700 text-white">
                     <ReplyIcon className="p-small h-6 w-6 stroke-[1.5px] md:h-7 md:w-7" />
                 </div>
@@ -171,25 +230,25 @@ const EvidenceDetail = ({
                                 className="max-h-[75vh] max-w-[90vw] cursor-default rounded-lg object-contain"
                             />
                             <p className="text-tiny mt-3 text-center font-light text-white">
-                                {`from: @${publisher.username} - ${formatDate({ nano: localItem.publishDate })} (${formatDate({ nano: localItem.publishDate }, true)})`}
+                                {`from: @${publisher.username} - ${formatDate({ nano: item.publishDate })} (${formatDate({ nano: item.publishDate }, true)})`}
                             </p>
                         </div>
                     </div>,
                     document.body
                 )}
             <div className="px-medium py-small gap-tiny grid w-full grid-cols-2 grid-rows-2 rounded-b-md bg-cold-900 text-white md:flex">
-                <Link
+                <button
                     className="gap-small order-1 flex items-center hover:opacity-75"
-                    href={build(['feed', localItem.hypothesisId])}
+                    onClick={() => setOpen(EPopup.HypothesisDetail)}
                 >
                     <HypothesisIcon className="h-[16px] w-[16px] stroke-[2px] md:h-[18px] md:w-[18px]" />
                     <span className="text-tiny md:mr-medium text-nowrap font-light text-white">
-                        {localItem.hypothesisId}
+                        {item.hypothesisId}
                     </span>
-                </Link>
+                </button>
                 <Link
                     className="gap-small order-3 flex items-center hover:opacity-75 md:order-2"
-                    href={build(['profile', localItem.publisher.toText()])}
+                    href={build(['profile', item.publisher.toText()])}
                 >
                     <Symbol
                         capitalRaised={publisher.capitalRaised.toString()}
@@ -199,15 +258,15 @@ const EvidenceDetail = ({
                         {publisher.username}
                     </span>
                 </Link>
-                <Link
+                <button
                     className="gap-small order-2 ml-auto flex items-center hover:opacity-75 md:order-3 md:ml-0"
-                    href={build(['feed', localItem.hypothesisId, 'evidences', localItem.id])}
+                    onClick={() => !isMain && setOpen(EPopup.EvidenceDetail)}
                 >
                     <DateTimeIcon className="h-3.5 w-3.5 stroke-[1.5px] md:h-4 md:w-4" />
                     <span className="text-tiny md:mr-medium text-nowrap font-light text-white">
-                        {formatDate({ nano: localItem.publishDate })}
+                        {formatDate({ nano: item.publishDate })}
                     </span>
-                </Link>
+                </button>
                 <div className="hidden w-full md:order-4 md:block" />
                 <div className="order-4 ml-auto flex w-full max-w-44 flex-shrink-0 place-items-center items-center justify-between md:order-5 md:ml-0">
                     <div className="gap-tiny flex items-center">
@@ -241,7 +300,10 @@ const EvidenceDetail = ({
                             {localItem.replies.length}
                         </p>
                     </button>
-                    <button className="hover:opacity-75" onClick={() => setOpen(true)}>
+                    <button
+                        className="hover:opacity-75"
+                        onClick={() => setOpen(EPopup.RequestFlag)}
+                    >
                         <FlagIcon className="h-3.5 w-3.5 stroke-[1.5px] md:h-4 md:w-4" />
                     </button>
                     <button

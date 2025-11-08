@@ -1,13 +1,16 @@
-import { Principal } from '@dfinity/principal'
 import { Fragment, memo, useCallback, useEffect, useState } from 'react'
 
 import CheckIcon from '@components/Assets/check.svg'
+import DeleteIcon from '@components/Assets/delete.svg'
 import DownIcon from '@components/Assets/down.svg'
 import EmptyNotificationIcon from '@components/Assets/empty_notification.svg'
 import NotificationIcon from '@components/Assets/notification.svg'
+import Spinner from '@components/Primitives/Spinner'
 import useConfigs from '@hooks/useConfigs'
 import useNotification, {
     StoredNotification,
+    deleteAllNotificationsCache,
+    getNumNotificationsCache,
     markAllCapacityItemsAsRead,
     markAsRead,
     markCapacityItemAsRead,
@@ -19,6 +22,7 @@ import e8s from 'shared/utils/e8s'
 import {
     Unwrap,
     UnwrapVariant,
+    parsePseudoPrincipal,
     pseudoPrincipalDisplay,
     pseudoPrincipalEqual,
 } from 'shared/utils/typings'
@@ -48,8 +52,8 @@ const GroupedNotificationRenderer = memo(
 
         const handleMarkAllAsRead = useCallback(
             (e: React.MouseEvent) => {
-                e.preventDefault()
-                e.stopPropagation()
+                e?.preventDefault()
+                e?.stopPropagation()
 
                 markAllCapacityItemsAsRead(notification.id)
                 onToggle()
@@ -177,9 +181,9 @@ const GroupedNotificationRenderer = memo(
                                 <Username
                                     symbol
                                     className="inline-block font-semibold text-primary-700"
-                                    principal={
+                                    principal={parsePseudoPrincipal(
                                         firstItem?.user ?? firstItem?.voter ?? firstItem?.publisher
-                                    }
+                                    )}
                                 />
                                 {` ${groupedText}`}
                             </>
@@ -190,11 +194,11 @@ const GroupedNotificationRenderer = memo(
                                         <Username
                                             symbol
                                             className="inline-block font-semibold text-primary-700"
-                                            principal={
+                                            principal={parsePseudoPrincipal(
                                                 uniqueItem.user ??
-                                                uniqueItem.voter ??
-                                                uniqueItem.publisher
-                                            }
+                                                    uniqueItem.voter ??
+                                                    uniqueItem.publisher
+                                            )}
                                         />
                                         {index <
                                             Math.min(2, uniquePrincipalsToDisplay.length - 1) &&
@@ -252,7 +256,9 @@ const GroupedNotificationRenderer = memo(
                                             <Username
                                                 symbol
                                                 className="inline-block font-semibold text-primary-700"
-                                                principal={e.user ?? e.voter ?? e.publisher}
+                                                principal={parsePseudoPrincipal(
+                                                    e.user ?? e.voter ?? e.publisher
+                                                )}
                                                 linkClassName="text-cold-800"
                                             />
                                             {` ${text}`}
@@ -333,7 +339,7 @@ export const UserNotificationRenderer = memo(
                             <Username
                                 symbol
                                 className="inline-block font-semibold text-primary-700"
-                                principal={item.proposer}
+                                principal={parsePseudoPrincipal(item.proposer)}
                             />{' '}
                             has been{' '}
                             {
@@ -352,7 +358,7 @@ export const UserNotificationRenderer = memo(
                             <Username
                                 symbol
                                 className="inline-block font-semibold text-primary-700"
-                                principal={item.delegator}
+                                principal={parsePseudoPrincipal(item.delegator)}
                             />{' '}
                             has delegated their vote to you on proposal #{item.proposalId}.
                         </>
@@ -369,7 +375,7 @@ export const UserNotificationRenderer = memo(
                             <Username
                                 symbol
                                 className="inline-block font-semibold text-primary-700"
-                                principal={item.proposer}
+                                principal={parsePseudoPrincipal(item.proposer)}
                             />
                             {`. Vote before it expires ${formatDate({ nano: expiresAt }, true)}.`}
                         </>
@@ -398,7 +404,7 @@ export const UserNotificationRenderer = memo(
                             <Username
                                 symbol
                                 className="inline-block font-semibold text-primary-700"
-                                principal={item.user}
+                                principal={parsePseudoPrincipal(item.user)}
                             />
                         </>
                     )
@@ -499,7 +505,7 @@ export const SystemNotificationRenderer = ({
                                         <Username
                                             symbol
                                             className="inline-block font-semibold text-primary-700"
-                                            principal={(data as any).proposer}
+                                            principal={parsePseudoPrincipal((data as any).proposer)}
                                         />{' '}
                                         has been successfully executed.
                                     </>
@@ -510,7 +516,7 @@ export const SystemNotificationRenderer = ({
                                         <Username
                                             symbol
                                             className="inline-block font-semibold text-primary-700"
-                                            principal={(data as any).proposer}
+                                            principal={parsePseudoPrincipal((data as any).proposer)}
                                         />{' '}
                                         has failed to execute.
                                     </>
@@ -533,7 +539,7 @@ export const SystemNotificationRenderer = ({
                                 <Usernames
                                     symbol
                                     className="inline-block font-semibold text-primary-700"
-                                    principals={data.unchanged}
+                                    principals={data.unchanged.map(parsePseudoPrincipal)}
                                 />{' '}
                                 will continue to be the custodians.
                             </>
@@ -545,7 +551,7 @@ export const SystemNotificationRenderer = ({
                                 <Usernames
                                     symbol
                                     className="inline-block font-semibold text-primary-700"
-                                    principals={data.new}
+                                    principals={data.new.map(parsePseudoPrincipal)}
                                 />
                                 .
                             </>
@@ -556,7 +562,7 @@ export const SystemNotificationRenderer = ({
                                 <Usernames
                                     symbol
                                     className="inline-block font-semibold text-primary-700"
-                                    principals={data.removed}
+                                    principals={data.removed.map(parsePseudoPrincipal)}
                                 />{' '}
                                 will no longer be the custodians, thank you for your contribution to
                                 the Axiom ACE.
@@ -757,6 +763,7 @@ const Notifications = () => {
     const [activeTab, setActiveTab] = useState<'user' | 'system'>('user')
     const [accordionStates, setAccordionStates] = useState<Record<string, boolean>>({})
     const [visibleCount, setVisibleCount] = useState(INITIAL_NOTIFICATIONS_COUNT)
+    const [numNotifications, setNumNotifications] = useState<number | null>(0)
 
     const { notifications, unreadUserCount, unreadSystemCount, actions } = useNotification()
 
@@ -769,6 +776,10 @@ const Notifications = () => {
     useEffect(() => {
         setVisibleCount(INITIAL_NOTIFICATIONS_COUNT)
     }, [activeTab])
+
+    useEffect(() => {
+        getNumNotificationsCache().then((num) => setNumNotifications(num))
+    }, [notifications])
 
     useEffect(() => {
         const newAccordionStates: Record<string, boolean> = {}
@@ -816,11 +827,33 @@ const Notifications = () => {
         }
     }
 
+    const handleClearCache = () => {
+        setNumNotifications(null)
+        deleteAllNotificationsCache()
+        setNumNotifications(0)
+    }
+
     return (
         <>
-            <div className="p-medium gap-small flex items-center border-b border-cold-200">
-                <NotificationIcon className="h-5 w-5 text-cold-800 lg:h-6  lg:w-6" />
-                <p className="text-normal font-light text-cold-800">Notifications</p>
+            <div className="px-medium py-small gap-small flex items-center justify-between border-b border-cold-200">
+                <div className="gap-small flex items-center">
+                    <NotificationIcon className="h-5 w-5 stroke-[1.5px] text-cold-800 lg:h-6 lg:w-6" />
+                    <p className="text-normal font-normal text-cold-800">Notifications</p>
+                </div>
+                <button
+                    className="gap-small px-medium py-small flex items-center rounded-lg hover:bg-primary-50 disabled:pointer-events-none disabled:opacity-50"
+                    disabled={numNotifications === null || numNotifications === 0}
+                    onClick={handleClearCache}
+                >
+                    <p className="text-small font-normal text-primary-700">
+                        Clear cache ({numNotifications})
+                    </p>
+                    {numNotifications === null ? (
+                        <Spinner className="h-4 w-4 stroke-[1.5px] text-primary-700 lg:h-5 lg:w-5" />
+                    ) : (
+                        <DeleteIcon className="h-4 w-4 stroke-[1.5px] text-primary-700 lg:h-5 lg:w-5" />
+                    )}
+                </button>
             </div>
             <div className="flex w-full justify-between border-b border-cold-200">
                 <TabButton

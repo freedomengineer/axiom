@@ -3,7 +3,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 
 import ClipboardIcon from '@components/Assets/clipboard.svg'
 import DoneIcon from '@components/Assets/done.svg'
-import PlusIcon from '@components/Assets/plus.svg'
+import LoginStep1Icon from '@components/Assets/login_step1.svg'
 import RefreshIcon from '@components/Assets/refresh.svg'
 import Deposit from '@components/Shared/Deposit'
 import Popup from '@components/Shared/Popup'
@@ -52,9 +52,14 @@ const SelectPackage = ({
     const [open, setOpen] = useState<EPopup>()
     const [slippage, setSlippage] = useState<number>(5) // 5%
     const [updatingSlippage, setUpdatingSlippage] = useState<string>('5')
-    const [copied, setCopied] = useState<{ principal: boolean; refresh: boolean }>({
+    const [copied, setCopied] = useState<{
+        principal: boolean
+        refreshBalance: boolean
+        refreshPrice: boolean
+    }>({
         principal: false,
-        refresh: false,
+        refreshBalance: false,
+        refreshPrice: false,
     })
 
     useEffect(() => {
@@ -104,6 +109,15 @@ const SelectPackage = ({
                 }
             )
         })
+    }
+
+    const refreshPrice = async () => {
+        getCurrentPrice()
+            .then((res) => {
+                setCurrentPrice(res)
+                setIsPriceReady?.(res > 0)
+            })
+            .catch(() => {})
     }
 
     useEffect(() => {
@@ -223,21 +237,24 @@ const SelectPackage = ({
                         <button
                             className="gap-tiny px-small text-tiny flex h-6 w-min items-center text-nowrap rounded-lg bg-white/100 font-normal text-cold-800 hover:bg-white/75 disabled:pointer-events-none disabled:bg-white/75"
                             onClick={() => {
-                                setCopied((prev) => ({ ...prev, refresh: true }))
+                                setCopied((prev) => ({ ...prev, refreshBalance: true }))
                                 refreshBalance()
                                     .then(() => success('Refreshed balance'))
                                     .catch(() => {})
                                     .finally(() =>
                                         setTimeout(
                                             () =>
-                                                setCopied((prev) => ({ ...prev, refresh: false })),
+                                                setCopied((prev) => ({
+                                                    ...prev,
+                                                    refreshBalance: false,
+                                                })),
                                             3000
                                         )
                                     )
                             }}
-                            disabled={copied.refresh}
+                            disabled={copied.refreshBalance}
                         >
-                            {copied.refresh ? (
+                            {copied.refreshBalance ? (
                                 <DoneIcon className="h-3 w-3 stroke-[2px] md:h-4 md:w-4" />
                             ) : (
                                 <RefreshIcon className="h-3 w-3 stroke-[2px] md:h-4 md:w-4" />
@@ -253,13 +270,42 @@ const SelectPackage = ({
                             </span>{' '}
                             USD
                         </p>
-                        <button
-                            className="gap-tiny px-small text-tiny flex h-6 w-min items-center text-nowrap rounded-lg bg-white/100 font-normal text-cold-800 hover:bg-white/75 disabled:pointer-events-none disabled:bg-white/75"
-                            onClick={() => setOpen(EPopup.Slippage)}
-                        >
-                            <PlusIcon className="h-3 w-3 stroke-[1.5px] md:h-4 md:w-4" />
-                            Adjust slippage
-                        </button>
+                        <div className="gap-small flex items-center">
+                            <button
+                                className="gap-tiny px-small text-tiny flex h-6 w-min items-center text-nowrap rounded-lg bg-white/100 font-normal text-cold-800 hover:bg-white/75 disabled:pointer-events-none disabled:bg-white/75"
+                                onClick={() => setOpen(EPopup.Slippage)}
+                            >
+                                <LoginStep1Icon className="h-3 w-3 stroke-[1.5px] md:h-4 md:w-4" />
+                                Slippage
+                            </button>
+                            <button
+                                className="gap-tiny px-small text-tiny flex h-6 w-min items-center text-nowrap rounded-lg bg-white/100 font-normal text-cold-800 hover:bg-white/75 disabled:pointer-events-none disabled:bg-white/75"
+                                onClick={() => {
+                                    setCopied((prev) => ({ ...prev, refreshPrice: true }))
+                                    refreshPrice()
+                                        .then(() => success('Refreshed price'))
+                                        .catch(() => {})
+                                        .finally(() =>
+                                            setTimeout(
+                                                () =>
+                                                    setCopied((prev) => ({
+                                                        ...prev,
+                                                        refreshPrice: false,
+                                                    })),
+                                                3000
+                                            )
+                                        )
+                                }}
+                                disabled={copied.refreshPrice}
+                            >
+                                {copied.refreshPrice ? (
+                                    <DoneIcon className="h-3 w-3 stroke-[2px] md:h-4 md:w-4" />
+                                ) : (
+                                    <RefreshIcon className="h-3 w-3 stroke-[2px] md:h-4 md:w-4" />
+                                )}
+                                Refresh
+                            </button>
+                        </div>
                     </div>
                 </div>
                 {configs &&
@@ -359,55 +405,65 @@ const SelectPackage = ({
                                         </p>
                                     </div>
                                 </AccordionHeader>
-                                <AccordionBody className="gap-small flex w-full flex-col place-items-center items-center pt-0 font-normal md:flex-row md:justify-between">
+                                <AccordionBody className="gap-small flex w-full flex-col place-items-center items-center pt-0 font-normal text-cold-800 marker:text-cold-800 md:flex-row md:justify-between">
                                     <div className="mr-auto flex flex-col place-items-center items-start">
                                         <span>You will be rewarded with:</span>
-                                        <li>
-                                            <span className="font-bold text-primary-600">
-                                                {e8s.toString(p.acornLiquid[0])} ACORN
-                                            </span>{' '}
-                                            in liquid wallet
-                                        </li>
-                                        <li>
-                                            <span className="font-bold text-primary-600">
-                                                {e8s.toString(p.acornBuried[0])} ACORN
-                                            </span>{' '}
-                                            buried in{' '}
-                                            <span className="font-bold text-primary-600">89</span>{' '}
-                                            days
-                                        </li>
-                                        <li>
-                                            <span className="font-bold text-primary-600">
-                                                {e8s.toString(p.acornLiquid[0])} voting power
-                                            </span>{' '}
-                                            across the platform in{' '}
-                                            <span className="font-bold text-primary-600">89</span>{' '}
-                                            days
-                                        </li>
-                                        <li>
-                                            <span className="font-bold text-primary-600">
-                                                {maxHypotheses} hypotheses
-                                            </span>{' '}
-                                            publish allowance per{' '}
-                                            <span className="font-bold text-primary-600">1</span>{' '}
-                                            day
-                                        </li>
-                                        <li>
-                                            <span className="font-bold text-primary-600">
-                                                {maxEvidences} evidences
-                                            </span>{' '}
-                                            publish allowance per{' '}
-                                            <span className="font-bold text-primary-600">1</span>{' '}
-                                            day
-                                        </li>
-                                        {isPrivilegedForAceElection && (
+                                        <ul className="pl-semilarge gap-medium list-disc">
                                             <li>
-                                                Privilege to enter the{' '}
                                                 <span className="font-bold text-primary-600">
-                                                    ACE election
-                                                </span>
+                                                    {e8s.toString(p.acornLiquid[0])} ACORN
+                                                </span>{' '}
+                                                in liquid wallet
                                             </li>
-                                        )}
+                                            <li>
+                                                <span className="font-bold text-primary-600">
+                                                    {e8s.toString(p.acornBuried[0])} ACORN
+                                                </span>{' '}
+                                                buried in{' '}
+                                                <span className="font-bold text-primary-600">
+                                                    89
+                                                </span>{' '}
+                                                days
+                                            </li>
+                                            <li>
+                                                <span className="font-bold text-primary-600">
+                                                    {e8s.toString(p.acornLiquid[0])} voting power
+                                                </span>{' '}
+                                                across the platform in{' '}
+                                                <span className="font-bold text-primary-600">
+                                                    89
+                                                </span>{' '}
+                                                days
+                                            </li>
+                                            <li>
+                                                <span className="font-bold text-primary-600">
+                                                    {maxHypotheses} hypotheses
+                                                </span>{' '}
+                                                publish allowance per{' '}
+                                                <span className="font-bold text-primary-600">
+                                                    1
+                                                </span>{' '}
+                                                day
+                                            </li>
+                                            <li>
+                                                <span className="font-bold text-primary-600">
+                                                    {maxEvidences} evidences
+                                                </span>{' '}
+                                                publish allowance per{' '}
+                                                <span className="font-bold text-primary-600">
+                                                    1
+                                                </span>{' '}
+                                                day
+                                            </li>
+                                            {isPrivilegedForAceElection && (
+                                                <li>
+                                                    Privilege to enter the{' '}
+                                                    <span className="font-bold text-primary-600">
+                                                        ACE election
+                                                    </span>
+                                                </li>
+                                            )}
+                                        </ul>
                                     </div>
                                     <div className="mt-small flex flex-row flex-wrap justify-end gap-x-1 md:ml-auto md:mt-0 md:flex-col md:items-end md:gap-0">
                                         <p className="gap-small flex items-center ">
@@ -523,8 +579,10 @@ const SelectPackage = ({
             </div>
             {!choice && setCoupon && coupon === undefined && (
                 <div className="gap-medium absolute left-0 top-0 z-10 flex h-full w-full flex-col items-center justify-center">
-                    <p className="text-medium font-light text-cold-800 ">
-                        Do you have a coupon? Input it here to register for free
+                    <p className="text-medium text-center font-light text-cold-800">
+                        Did you acquire a coupon from a second party Axiom membership sales
+                        representative? <br />
+                        Input that coupon here to create your account for free
                     </p>
                     <input
                         type="text"

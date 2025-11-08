@@ -104,3 +104,7 @@ export const pseudoPrincipalEqual = (a: Principal, b: any) => {
 export const pseudoPrincipalDisplay = (principal: any): string => {
     return Principal.fromUint8Array(principal._arr).toText()
 }
+
+export const parsePseudoPrincipal = (principal: any): Principal => {
+    return Principal.fromUint8Array(principal._arr)
+}

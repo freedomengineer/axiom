@@ -349,8 +349,8 @@ const ProfileLayout = ({ profilePrincipal }: { profilePrincipal: Principal }) =>
                                         />
                                     </TabPanel>
                                     <TabPanel
-                                        key={EFullTab.VotedEvidences}
-                                        value={EFullTab.VotedEvidences}
+                                        key={EFullTab.VotedProposals}
+                                        value={EFullTab.VotedProposals}
                                         className="p-medium"
                                     >
                                         <ProposalsTab principal={profilePrincipal} type={'Voted'} />
