@@ -381,7 +381,10 @@ const SelectPackage = ({
                                         ? 'border-primary-600'
                                         : 'border-cold-200 hover:border-cold-500',
                                     ((!choice && setCoupon && coupon === undefined) || !!coupon) &&
-                                        'pointer-events-none'
+                                        'pointer-events-none',
+                                    ((!choice && setCoupon && coupon === undefined) || !!coupon) &&
+                                        !isSelected &&
+                                        'opacity-50'
                                 )}
                             >
                                 <AccordionHeader

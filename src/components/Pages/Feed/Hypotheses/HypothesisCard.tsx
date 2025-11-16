@@ -102,7 +102,7 @@ const HypothesisCard = ({
         >
             <Popup
                 open={open === EPopup.RequestFlag}
-                onClose={() => setOpen(EPopup.HypothesisEvidence)}
+                onClose={() => setOpen(undefined)}
                 title="Request Flag"
                 className="w-full md:w-auto"
                 Icon={<FlagIcon className="h-6 w-6 stroke-[1.5px] md:h-7 md:w-7" />}
