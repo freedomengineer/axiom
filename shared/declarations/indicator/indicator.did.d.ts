@@ -86,6 +86,7 @@ export interface Affiliate {
     TopPagination
   >,
   'getUser' : ActorMethod<[Principal], Sharable__36>,
+  'getUserCouponTotal' : ActorMethod<[Principal], [bigint, bigint]>,
   'initialize' : ActorMethod<[], undefined>,
   'lockCoupon' : ActorMethod<[Uint8Array | number[], Principal], Sharable__35>,
   'putConfigs' : ActorMethod<[Array<[Key, SharableValue]>], undefined>,
@@ -590,11 +591,12 @@ export interface Indicator {
   'installCanisters' : ActorMethod<[], undefined>,
   'putActorsConfigs' : ActorMethod<[ActorsConfigs], undefined>,
   'putConfigs' : ActorMethod<[Array<[Key, SharableValue]>], undefined>,
+  'rollback' : ActorMethod<[DeployableVariant, string], undefined>,
   'setActorsConfigs' : ActorMethod<[ActorsConfigs], undefined>,
   'setConfigs' : ActorMethod<[Array<[Key, SharableValue]>], undefined>,
   'settleCommitment' : ActorMethod<[DeployableVariant], undefined>,
   'shiftToMidnight' : ActorMethod<[bigint], undefined>,
-  'topUp' : ActorMethod<[Variant, bigint], undefined>,
+  'takeArbitrarySnapshot' : ActorMethod<[DeployableVariant], undefined>,
   'uploadCommitmentChunk' : ActorMethod<
     [DeployableVariant, number, Uint8Array | number[], string],
     undefined
@@ -606,6 +608,7 @@ export interface Info {
     { 'running' : null },
   'moduleHash' : string,
   'args' : Uint8Array | number[],
+  'snapshots' : Array<SnapshotDetail>,
   'cycles' : bigint,
   'commitHash' : string,
   'memorySize' : bigint,
@@ -1259,6 +1262,16 @@ export interface Sharable__9 {
   'proportion' : SharableProportion__1,
   'actorVariant' : ActorVariant__1,
 }
+export interface SnapshotDetail {
+  'id' : string,
+  'moduleHash' : string,
+  'from' : SnapshotFrom,
+  'total_size' : bigint,
+  'taken_at_timestamp' : bigint,
+}
+export type SnapshotFrom = { 'Arbitrary' : null } |
+  { 'BeforeProposal' : bigint } |
+  { 'AfterProposal' : bigint };
 export interface Sort { 'by' : Sort__1, 'order' : Order }
 export interface Sort_1 { 'by' : Sort__2, 'order' : Order }
 export interface Sort_2 { 'by' : Sort__3, 'order' : Order }

@@ -4,6 +4,24 @@
   "category": "periphery",
   "functions": [
     {
+      "name": "createNewCanisters",
+      "flag": {
+        "isQuery": false,
+        "callerRequired": true
+      },
+      "argTypes": {},
+      "returnType": {
+        "origin": "async ()",
+        "singular": {
+          "name": "()"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
       "name": "initialize",
       "flag": {
         "isQuery": false,
@@ -458,30 +476,77 @@
       }
     },
     {
-      "name": "topUp",
+      "name": "takeArbitrarySnapshots",
       "flag": {
         "isQuery": false,
         "callerRequired": true
       },
       "argTypes": {
-        "actorVariant": {
-          "origin": "Actor.Variant",
+        "actorVariants": {
+          "origin": "[Actor.DeployableVariant]",
           "singular": {
-            "name": "Variant",
+            "name": "DeployableVariant",
             "parent": "Actor"
           },
           "entries": [],
-          "isArray": false,
+          "isArray": true,
           "isOptional": false,
           "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async ()",
+        "singular": {
+          "name": "()"
         },
-        "amount": {
-          "origin": "Nat",
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
+      "name": "loadSnapshots",
+      "flag": {
+        "isQuery": false,
+        "callerRequired": true
+      },
+      "argTypes": {
+        "snapshots": {
+          "origin": "[(Actor.DeployableVariant, Text)]",
           "singular": {
-            "name": "Nat"
+            "name": "()"
           },
-          "entries": [],
-          "isArray": false,
+          "entries": [
+            [
+              null,
+              {
+                "origin": "Actor.DeployableVariant",
+                "singular": {
+                  "name": "DeployableVariant",
+                  "parent": "Actor"
+                },
+                "entries": [],
+                "isArray": false,
+                "isOptional": false,
+                "isAsync": false
+              }
+            ],
+            [
+              null,
+              {
+                "origin": "Text",
+                "singular": {
+                  "name": "Text"
+                },
+                "entries": [],
+                "isArray": false,
+                "isOptional": false,
+                "isAsync": false
+              }
+            ]
+          ],
+          "isArray": true,
           "isOptional": false,
           "isAsync": false
         }
@@ -1463,6 +1528,13 @@
       "relativePath": "../../library/BlobCommitment",
       "depth": 4
     },
+    "CircularBuffer": {
+      "origin": "import CircularBuffer \"../../library/CircularBuffer\";",
+      "name": "CircularBuffer",
+      "category": "library",
+      "relativePath": "../../library/CircularBuffer",
+      "depth": 4
+    },
     "Configs": {
       "origin": "import Configs \"../../library/Configs\";",
       "name": "Configs",
@@ -1581,6 +1653,13 @@
       "category": "base",
       "relativePath": "mo:base/Int",
       "depth": 2
+    },
+    "Text": {
+      "origin": "import Text \"mo:base/Text\";",
+      "name": "Text",
+      "category": "base",
+      "relativePath": "mo:base/Text",
+      "depth": 2
     }
   },
   "actorDependencies": [
@@ -1605,6 +1684,7 @@
     "FacadeInterface",
     "Base",
     "BlobCommitment",
+    "CircularBuffer",
     "Configs",
     "Date",
     "Hexadecimal",
@@ -1621,7 +1701,8 @@
     "Error",
     "Debug",
     "Timer",
-    "Int"
+    "Int",
+    "Text"
   ],
   "interfaceDependencies": [
     "Configs",
@@ -1945,6 +2026,14 @@
               ],
               [
                 "#Facade",
+                null
+              ],
+              [
+                "#Messages",
+                null
+              ],
+              [
+                "#Assets",
                 null
               ],
               [
@@ -2361,6 +2450,14 @@
                 null
               ],
               [
+                "#Messages",
+                null
+              ],
+              [
+                "#Assets",
+                null
+              ],
+              [
                 "#Indicator",
                 null
               ],
@@ -2443,8 +2540,8 @@
       "isOptional": false,
       "isAsync": false
     },
-    "Actor.Variant": {
-      "origin": "Actor.Variant",
+    "[Actor.DeployableVariant]": {
+      "origin": "[Actor.DeployableVariant]",
       "singular": {
         "name": "()"
       },
@@ -2482,6 +2579,14 @@
           null
         ],
         [
+          "#Messages",
+          null
+        ],
+        [
+          "#Assets",
+          null
+        ],
+        [
           "#Indicator",
           null
         ],
@@ -2496,13 +2601,103 @@
         [
           "#ACORN",
           null
-        ],
-        [
-          "#Founder",
-          null
         ]
       ],
-      "isArray": false,
+      "isArray": true,
+      "isOptional": false,
+      "isAsync": false
+    },
+    "[(Actor.DeployableVariant, Text)]": {
+      "origin": "[(Actor.DeployableVariant, Text)]",
+      "singular": {
+        "name": "()"
+      },
+      "entries": [
+        [
+          null,
+          {
+            "origin": "Actor.DeployableVariant",
+            "singular": {
+              "name": "()"
+            },
+            "entries": [
+              [
+                "#Treasury",
+                null
+              ],
+              [
+                "#Split",
+                null
+              ],
+              [
+                "#Affiliate",
+                null
+              ],
+              [
+                "#Escrow",
+                null
+              ],
+              [
+                "#Sales",
+                null
+              ],
+              [
+                "#Axioms",
+                null
+              ],
+              [
+                "#DAO",
+                null
+              ],
+              [
+                "#Facade",
+                null
+              ],
+              [
+                "#Messages",
+                null
+              ],
+              [
+                "#Assets",
+                null
+              ],
+              [
+                "#Indicator",
+                null
+              ],
+              [
+                "#ICPUSD",
+                null
+              ],
+              [
+                "#Frontend",
+                null
+              ],
+              [
+                "#ACORN",
+                null
+              ]
+            ],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          null,
+          {
+            "origin": "Text",
+            "singular": {
+              "name": "Text"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ]
+      ],
+      "isArray": true,
       "isOptional": false,
       "isAsync": false
     },
@@ -2545,6 +2740,14 @@
           null
         ],
         [
+          "#Messages",
+          null
+        ],
+        [
+          "#Assets",
+          null
+        ],
+        [
           "#Indicator",
           null
         ],
@@ -2581,6 +2784,77 @@
         "name": "Blob"
       },
       "entries": [],
+      "isArray": false,
+      "isOptional": false,
+      "isAsync": false
+    },
+    "Actor.Variant": {
+      "origin": "Actor.Variant",
+      "singular": {
+        "name": "()"
+      },
+      "entries": [
+        [
+          "#Treasury",
+          null
+        ],
+        [
+          "#Split",
+          null
+        ],
+        [
+          "#Affiliate",
+          null
+        ],
+        [
+          "#Escrow",
+          null
+        ],
+        [
+          "#Sales",
+          null
+        ],
+        [
+          "#Axioms",
+          null
+        ],
+        [
+          "#DAO",
+          null
+        ],
+        [
+          "#Facade",
+          null
+        ],
+        [
+          "#Messages",
+          null
+        ],
+        [
+          "#Assets",
+          null
+        ],
+        [
+          "#Indicator",
+          null
+        ],
+        [
+          "#ICPUSD",
+          null
+        ],
+        [
+          "#Frontend",
+          null
+        ],
+        [
+          "#ACORN",
+          null
+        ],
+        [
+          "#Founder",
+          null
+        ]
+      ],
       "isArray": false,
       "isOptional": false,
       "isAsync": false
@@ -2681,6 +2955,125 @@
             "isOptional": false,
             "isAsync": false
           }
+        ],
+        [
+          "snapshots",
+          {
+            "origin": "[SnapshotDetail]",
+            "singular": {
+              "name": "()"
+            },
+            "entries": [
+              [
+                "id",
+                {
+                  "origin": "Text",
+                  "singular": {
+                    "name": "Text"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "taken_at_timestamp",
+                {
+                  "origin": "Nat64",
+                  "singular": {
+                    "name": "Nat64"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "total_size",
+                {
+                  "origin": "Nat64",
+                  "singular": {
+                    "name": "Nat64"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "from",
+                {
+                  "origin": "SnapshotFrom",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      "#BeforeProposal",
+                      {
+                        "origin": "Nat",
+                        "singular": {
+                          "name": "Nat"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "#AfterProposal",
+                      {
+                        "origin": "Nat",
+                        "singular": {
+                          "name": "Nat"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "#Arbitrary",
+                      {
+                        "origin": "()",
+                        "singular": {
+                          "name": "()"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "moduleHash",
+                {
+                  "origin": "Text",
+                  "singular": {
+                    "name": "Text"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ]
+            ],
+            "isArray": true,
+            "isOptional": false,
+            "isAsync": false
+          }
         ]
       ],
       "isArray": false,
@@ -2731,6 +3124,14 @@
               ],
               [
                 "#Facade",
+                null
+              ],
+              [
+                "#Messages",
+                null
+              ],
+              [
+                "#Assets",
                 null
               ],
               [
@@ -2857,6 +3258,125 @@
                   "isOptional": false,
                   "isAsync": false
                 }
+              ],
+              [
+                "snapshots",
+                {
+                  "origin": "[SnapshotDetail]",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      "id",
+                      {
+                        "origin": "Text",
+                        "singular": {
+                          "name": "Text"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "taken_at_timestamp",
+                      {
+                        "origin": "Nat64",
+                        "singular": {
+                          "name": "Nat64"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "total_size",
+                      {
+                        "origin": "Nat64",
+                        "singular": {
+                          "name": "Nat64"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "from",
+                      {
+                        "origin": "SnapshotFrom",
+                        "singular": {
+                          "name": "()"
+                        },
+                        "entries": [
+                          [
+                            "#BeforeProposal",
+                            {
+                              "origin": "Nat",
+                              "singular": {
+                                "name": "Nat"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ],
+                          [
+                            "#AfterProposal",
+                            {
+                              "origin": "Nat",
+                              "singular": {
+                                "name": "Nat"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ],
+                          [
+                            "#Arbitrary",
+                            {
+                              "origin": "()",
+                              "singular": {
+                                "name": "()"
+                              },
+                              "entries": [],
+                              "isArray": false,
+                              "isOptional": false,
+                              "isAsync": false
+                            }
+                          ]
+                        ],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "moduleHash",
+                      {
+                        "origin": "Text",
+                        "singular": {
+                          "name": "Text"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ]
+                  ],
+                  "isArray": true,
+                  "isOptional": false,
+                  "isAsync": false
+                }
               ]
             ],
             "isArray": false,
@@ -2921,6 +3441,14 @@
                     ],
                     [
                       "#Facade",
+                      null
+                    ],
+                    [
+                      "#Messages",
+                      null
+                    ],
+                    [
+                      "#Assets",
                       null
                     ],
                     [
@@ -3160,6 +3688,14 @@
                           ],
                           [
                             "#Facade",
+                            null
+                          ],
+                          [
+                            "#Messages",
+                            null
+                          ],
+                          [
+                            "#Assets",
                             null
                           ],
                           [
@@ -3437,6 +3973,14 @@
           null
         ],
         [
+          "#Messages",
+          null
+        ],
+        [
+          "#Assets",
+          null
+        ],
+        [
           "#Indicator",
           null
         ],
@@ -3515,6 +4059,14 @@
               ],
               [
                 "#Facade",
+                null
+              ],
+              [
+                "#Messages",
+                null
+              ],
+              [
+                "#Assets",
                 null
               ],
               [
@@ -4080,6 +4632,14 @@
         ],
         [
           "#Facade",
+          null
+        ],
+        [
+          "#Messages",
+          null
+        ],
+        [
+          "#Assets",
           null
         ],
         [

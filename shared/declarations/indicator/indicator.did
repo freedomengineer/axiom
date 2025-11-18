@@ -537,6 +537,20 @@ type Sort =
    by: Sort__1;
    order: Order;
  };
+type SnapshotFrom = 
+ variant {
+   AfterProposal: nat;
+   Arbitrary;
+   BeforeProposal: nat;
+ };
+type SnapshotDetail = 
+ record {
+   from: SnapshotFrom;
+   id: text;
+   moduleHash: text;
+   taken_at_timestamp: nat64;
+   total_size: nat64;
+ };
 type Sharable__9 = 
  record {
    actorVariant: ActorVariant__1;
@@ -1395,6 +1409,7 @@ type Info =
    cycles: nat;
    memorySize: nat;
    moduleHash: text;
+   snapshots: vec SnapshotDetail;
    status: variant {
              running;
              stopped;
@@ -1456,6 +1471,7 @@ type Indicator =
                       Key;
                       SharableValue;
                     }) -> ();
+   rollback: (DeployableVariant, text) -> ();
    setActorsConfigs: (ActorsConfigs) -> ();
    setConfigs: (vec record {
                       Key;
@@ -1463,8 +1479,8 @@ type Indicator =
                     }) -> ();
    settleCommitment: (DeployableVariant) -> ();
    shiftToMidnight: (nat) -> ();
+   takeArbitrarySnapshot: (DeployableVariant) -> ();
    /// PUBLIC ////// MODIFIERS ////////////
-   topUp: (Variant, nat) -> ();
    uploadCommitmentChunk: (DeployableVariant, nat8, blob, text) -> ();
  };
 type IdentifierVariant = 
@@ -2029,6 +2045,7 @@ type Affiliate =
                         Referrers;
                       }, nat, nat) -> (TopPagination) query;
    getUser: (principal) -> (Sharable__36) query;
+   getUserCouponTotal: (principal) -> (nat, nat) query;
    initialize: () -> ();
    lockCoupon: (vec nat8, principal) -> (Sharable__35);
    putConfigs: (vec record {

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
 import SimpleConfigsDetachment from '@components/Pages/ACEDashboard/Proposals/ProposalDetachments/SimpleConfigsDetachment'
+import SimpleSnapshotsDetachment from '@components/Pages/ACEDashboard/Proposals/ProposalDetachments/SimpleSnapshotsDetachment'
 import SimpleStatusDetachment from '@components/Pages/ACEDashboard/Proposals/ProposalDetachments/SimpleStatusDetachment'
 import { Tab, TabPanel, Tabs, TabsBody, TabsHeader } from '@components/Primitives/MemorizedTabs'
 import Spinner from '@components/Primitives/Spinner'
@@ -59,7 +60,22 @@ const DashboardPage = () => {
                         {!status ? (
                             <Spinner className="mx-auto h-7 w-7 md:h-9 md:w-9" />
                         ) : (
-                            <SimpleStatusDetachment actorStatus={status} />
+                            <>
+                                <SimpleStatusDetachment actorStatus={status} />
+                                {status.Snapshots[1].length > 0 && (
+                                    <>
+                                        <Divider
+                                            direction="horizontal"
+                                            bgColor="bg-cold-800"
+                                            borderColor="border-cold-800"
+                                            className="my-medium mx-auto w-4/5"
+                                        />
+                                        <SimpleSnapshotsDetachment
+                                            snapshots={status.Snapshots[1]}
+                                        />
+                                    </>
+                                )}
+                            </>
                         )}
                         <Divider
                             direction="horizontal"

@@ -931,6 +931,14 @@
           null
         ],
         [
+          "#Messages",
+          null
+        ],
+        [
+          "#Assets",
+          null
+        ],
+        [
           "#Indicator",
           null
         ],
@@ -1485,6 +1493,14 @@
                 null
               ],
               [
+                "#Messages",
+                null
+              ],
+              [
+                "#Assets",
+                null
+              ],
+              [
                 "#Indicator",
                 null
               ],
@@ -1652,6 +1668,14 @@
               ],
               [
                 "#Facade",
+                null
+              ],
+              [
+                "#Messages",
+                null
+              ],
+              [
+                "#Assets",
                 null
               ],
               [

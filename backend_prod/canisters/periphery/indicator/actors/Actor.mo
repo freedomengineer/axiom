@@ -1,17 +1,22 @@
+import CircularBuffer "../../../library/CircularBuffer";
+import Hexadecimal "../../../library/Hexadecimal";
 import Management "../../../library/Management";
 import Map "../../../library/Map";
 
 import Hash "mo:base/Hash";
 import Principal "mo:base/Principal";
 import Text "mo:base/Text";
+import Blob "mo:base/Blob";
 
 module {
     /// PRIVATE ////// DECLARATIONS ////////////
 
     private type Hash = Hash.Hash;
     private type Key<K> = Map.Key<K>;
+    private type CircularBuffer<T> = CircularBuffer.CircularBuffer<T>;
 
     private type InstallCodeArgs = Management.InstallCodeArgs;
+    private type Snapshot = Management.Snapshot;
 
     private func _configurableVariantEqual(a : ConfigurableVariant, b : ConfigurableVariant) : Bool = a == b;
     private func _configurableVariantHash(x : ConfigurableVariant) : Hash = Text.hash(debug_show x);
@@ -24,13 +29,26 @@ module {
 
     /// PUBLIC ////// DECLARATIONS ////////////
 
+    public type SnapshotFrom = {
+        #BeforeProposal : Nat;
+        #AfterProposal : Nat;
+        #Arbitrary
+    };
+    public type SnapshotDetail = {
+        id : Text;
+        taken_at_timestamp : Nat64;
+        total_size : Nat64;
+        from : SnapshotFrom;
+        moduleHash : Text
+    };
     public type Info = {
         status : { #stopped; #stopping; #running };
         memorySize : Nat;
         cycles : Nat;
         args : [Nat8];
         moduleHash : Text;
-        commitHash : Text
+        commitHash : Text;
+        snapshots : [SnapshotDetail]
     };
 
     public type ConfigurableVariant = {
@@ -42,6 +60,8 @@ module {
         #Axioms;
         #DAO;
         #Facade;
+        #Messages;
+        #Assets;
         #Indicator
     };
     public type DeployableVariant = {
@@ -53,6 +73,8 @@ module {
         #Axioms;
         #DAO;
         #Facade;
+        #Messages;
+        #Assets;
         #Indicator;
         #ICPUSD;
         #Frontend;
@@ -67,6 +89,8 @@ module {
         #Axioms;
         #DAO;
         #Facade;
+        #Messages;
+        #Assets;
         #Indicator;
         #ICPUSD;
         #Frontend;
@@ -97,12 +121,14 @@ module {
     public type Actor = {
         principal : Principal;
         var args : [Nat8];
-        var commitHash : Text
+        var commitHash : Text;
+        snapshots : CircularBuffer<SnapshotDetail>
     };
     public func init(principal : Principal) : Self = {
         principal;
         var args = [];
-        var commitHash = "593d4687448ceb4282a7493c51494e1fff17b460"
+        var commitHash = "593d4687448ceb4282a7493c51494e1fff17b460";
+        snapshots = CircularBuffer.new(4)
     };
 
     /// PUBLIC ////// MODIFIERS ////////////
@@ -110,6 +136,10 @@ module {
     public func update(__ : Self, args : [Nat8], commitHash : Text) {
         __.args := args;
         __.commitHash := commitHash
+    };
+
+    public func pushSnapshot(__ : Self, snapshot : SnapshotDetail) {
+        CircularBuffer.push(__.snapshots, snapshot)
     };
 
     /// PUBLIC ////// ACCESSORS ////////////
@@ -121,5 +151,14 @@ module {
         wasm_module;
         mode;
         canister_id = __.principal
+    };
+
+    public func replacedSnapshot(__ : Self) : ?Blob = switch (CircularBuffer.getRev(__.snapshots, 3)) {
+        case (null) null;
+        case (?snapshot) ?Blob.fromArray(Hexadecimal.decode(snapshot.id))
+    };
+    public func lastSnapshot(__ : Self) : ?Blob = switch (CircularBuffer.getRev(__.snapshots, 0)) {
+        case (null) null;
+        case (?snapshot) ?Blob.fromArray(Hexadecimal.decode(snapshot.id))
     }
 }

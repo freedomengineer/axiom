@@ -16,6 +16,7 @@ import Version "../../library/Version";
 
 module {
     public type Indicator = actor {
+        createNewCanisters : shared () -> async ();
         initialize : shared () -> async ();
         setConfigs : shared ([(Configs.Key, Configs.SharableValue)]) -> async ();
         putConfigs : shared ([(Configs.Key, Configs.SharableValue)]) -> async ();
@@ -27,7 +28,8 @@ module {
         installCanisters : shared () -> async ();
         enqueueUpgradeTask : shared (Nat, Principal, Installation.ActorsConfigs) -> async ();
         extendInstallationExpiryDate : shared (Principal, Nat) -> async ();
-        topUp : shared (Actor.Variant, Nat) -> async ();
+        takeArbitrarySnapshots : shared ([Actor.DeployableVariant]) -> async ();
+        loadSnapshots : shared ([(Actor.DeployableVariant, Text)]) -> async ();
         uploadCommitmentChunk : shared (Actor.DeployableVariant, Nat8, Blob, Text) -> async ();
         settleCommitment : shared (Actor.DeployableVariant) -> async ();
         clearCommitment : shared (Actor.DeployableVariant) -> async ();

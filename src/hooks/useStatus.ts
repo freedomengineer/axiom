@@ -14,6 +14,16 @@ export type ActorStatus = {
     Cycles: ['Nat', number]
     'Memory size': ['Nat', number]
     Args: ['Text', string]
+    Snapshots: [
+        'Object',
+        {
+            ID: ['Text', string]
+            'Module hash': ['Text', string]
+            From: ['Object', DIndicator.SnapshotFrom]
+            'Taken date': ['Nat', number]
+            'Snapshot size': ['Nat', number]
+        }[],
+    ]
 }
 type MemoryData = { status: ActorStatus; timestamp: number; refreshDate: string }
 
@@ -61,6 +71,16 @@ const _fetchActorStatus = async (actor: Actor): Promise<ActorStatus | null> => {
                 Cycles: ['Nat', Number(res.cycles)],
                 'Memory size': ['Nat', Number(res.memorySize)],
                 Args: ['Text', res.args.toString()],
+                Snapshots: [
+                    'Object',
+                    res.snapshots.map((snapshot) => ({
+                        ID: ['Text', snapshot.id],
+                        'Module hash': ['Text', snapshot.moduleHash],
+                        From: ['Object', snapshot.from],
+                        'Taken date': ['Nat', Number(snapshot.taken_at_timestamp)],
+                        'Snapshot size': ['Nat', Number(snapshot.total_size)],
+                    })),
+                ],
             }))
         if (status) {
             const data = { status, timestamp: Date.now(), refreshDate: _getCurrentUtcDateString() }

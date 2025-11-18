@@ -310,6 +310,11 @@ export const idlFactory = ({ IDL }) => {
         ['query'],
       ),
     'getUser' : IDL.Func([IDL.Principal], [Sharable__36], ['query']),
+    'getUserCouponTotal' : IDL.Func(
+        [IDL.Principal],
+        [IDL.Nat, IDL.Nat],
+        ['query'],
+      ),
     'initialize' : IDL.Func([], [], []),
     'lockCoupon' : IDL.Func(
         [IDL.Vec(IDL.Nat8), IDL.Principal],
@@ -1750,6 +1755,18 @@ export const idlFactory = ({ IDL }) => {
     'Treasury' : IDL.Null,
     'ICPUSD' : IDL.Null,
   });
+  const SnapshotFrom = IDL.Variant({
+    'Arbitrary' : IDL.Null,
+    'BeforeProposal' : IDL.Nat,
+    'AfterProposal' : IDL.Nat,
+  });
+  const SnapshotDetail = IDL.Record({
+    'id' : IDL.Text,
+    'moduleHash' : IDL.Text,
+    'from' : SnapshotFrom,
+    'total_size' : IDL.Nat64,
+    'taken_at_timestamp' : IDL.Nat64,
+  });
   const Info = IDL.Record({
     'status' : IDL.Variant({
       'stopped' : IDL.Null,
@@ -1758,6 +1775,7 @@ export const idlFactory = ({ IDL }) => {
     }),
     'moduleHash' : IDL.Text,
     'args' : IDL.Vec(IDL.Nat8),
+    'snapshots' : IDL.Vec(SnapshotDetail),
     'cycles' : IDL.Nat,
     'commitHash' : IDL.Text,
     'memorySize' : IDL.Nat,
@@ -1843,11 +1861,12 @@ export const idlFactory = ({ IDL }) => {
     'installCanisters' : IDL.Func([], [], []),
     'putActorsConfigs' : IDL.Func([ActorsConfigs], [], []),
     'putConfigs' : IDL.Func([IDL.Vec(IDL.Tuple(Key, SharableValue))], [], []),
+    'rollback' : IDL.Func([DeployableVariant, IDL.Text], [], []),
     'setActorsConfigs' : IDL.Func([ActorsConfigs], [], []),
     'setConfigs' : IDL.Func([IDL.Vec(IDL.Tuple(Key, SharableValue))], [], []),
     'settleCommitment' : IDL.Func([DeployableVariant], [], []),
     'shiftToMidnight' : IDL.Func([IDL.Nat], [], []),
-    'topUp' : IDL.Func([Variant, IDL.Nat], [], []),
+    'takeArbitrarySnapshot' : IDL.Func([DeployableVariant], [], []),
     'uploadCommitmentChunk' : IDL.Func(
         [DeployableVariant, IDL.Nat8, IDL.Vec(IDL.Nat8), IDL.Text],
         [],

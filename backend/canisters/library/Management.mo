@@ -45,12 +45,55 @@ module {
         module_hash : ?[Nat8]
     };
 
+    public type StartCanisterArgs = {
+        canister_id : Principal
+    };
+    public type StopCanisterArgs = {
+        canister_id : Principal
+    };
+
+    public type Snapshot = {
+        id : Blob;
+        taken_at_timestamp : Nat64;
+        total_size : Nat64
+    };
+    public type TakeCanisterSnapshotArgs = {
+        canister_id : Principal;
+        replace_snapshot : ?Blob
+    };
+    public type TakeCanisterSnapshotResult = Snapshot;
+
+    public type LoadCanisterSnapshotArgs = {
+        canister_id : Principal;
+        snapshot_id : Blob;
+        sender_canister_version : ?Nat64
+    };
+
+    public type ListCanisterSnapshotsArgs = {
+        canister_id : Principal
+    };
+
+    public type ListCanisterSnapshotsResult = [Snapshot];
+
+    public type DeleteCanisterSnapshotArgs = {
+        canister_id : Principal;
+        snapshot_id : Blob
+    };
+
     public type ActorManagement = actor {
         create_canister : CreateCanisterArgs -> async CreateCanisterResult;
         install_code : InstallCodeArgs -> async ();
         update_settings : UpdateSettingsArgs -> async ();
         canister_status : CanisterStatusArgs -> async CanisterStatusResult;
-        deposit_cycles : DepositCyclesArgs -> async ()
+        deposit_cycles : DepositCyclesArgs -> async ();
+
+        start_canister : StartCanisterArgs -> async ();
+        stop_canister : StopCanisterArgs -> async ();
+
+        take_canister_snapshot : TakeCanisterSnapshotArgs -> async TakeCanisterSnapshotResult;
+        load_canister_snapshot : (LoadCanisterSnapshotArgs) -> async ();
+        list_canister_snapshots : ListCanisterSnapshotsArgs -> async ListCanisterSnapshotsResult;
+        delete_canister_snapshot : DeleteCanisterSnapshotArgs -> async ()
     };
 
     public let IC0 : ActorManagement = actor ("aaaaa-aa")
