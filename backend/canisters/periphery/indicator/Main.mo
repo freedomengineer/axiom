@@ -43,38 +43,106 @@ import Timer "mo:base/Timer";
 import Int "mo:base/Int";
 import Text "mo:base/Text";
 
-// (
-//     with migration = func(
-//         old : {
-//             var actors : {
-//                 founder : Principal;
-//                 actors : Map.Map<{ #Treasury; #Split; #Affiliate; #Escrow; #Sales; #Axioms; #DAO; #Facade; #Indicator; #ICPUSD; #Frontend; #ACORN; #Founder }, { principal : Principal; var args : [Nat8]; var commitHash : Text }>
-//             }
-//         }
-//     ) : {
-//         var actors : Actors.Actors
-//     } {
-//         {
-//             var actors : Actors.Actors = do {
-//                 let newActors : Map.Map<Actor.Variant, Actor.Actor> = Map.new();
-//                 for ((variant, actorData) in Map.entries(old.actors.actors)) {
-//                     Map.put<Actor.Variant, Actor.Actor>(
-//                         newActors,
-//                         Actor.VariantKey(variant),
-//                         {
-//                             principal = actorData.principal;
-//                             var args = actorData.args;
-//                             var commitHash = actorData.commitHash;
-//                             snapshots = CircularBuffer.new(4)
-//                         },
-//                     )
-//                 };
-//                 { founder = old.actors.founder; actors = newActors }
-//             }
-//         }
-//     }
-// )
-shared ({ caller = founder }) persistent actor class Indicator() = this {
+import Array "mo:base/Array";
+
+(
+    with migration = func(
+        old : {
+            var actors : {
+                founder : Principal;
+                actors : Map.Map<{ #Treasury; #Split; #Affiliate; #Escrow; #Sales; #Axioms; #DAO; #Facade; #Indicator; #ICPUSD; #Frontend; #ACORN; #Founder }, { principal : Principal; var args : [Nat8]; var commitHash : Text }>
+            };
+            var upgradeTasks : Map.Map<Nat, (Principal, [({ #Treasury; #Split; #Affiliate; #Escrow; #Sales; #Axioms; #DAO; #Facade; #Indicator }, Configs.Sharable)])>;
+            var installations : Map.Map<Principal, ({ commitments : Map.Map<{ #Treasury; #Split; #Affiliate; #Escrow; #Sales; #Axioms; #DAO; #Facade; #Indicator; #ICPUSD; #Frontend; #ACORN }, Commitment.Commitment>; commitHash : Text; updateLevel : Version.UpdateLevel; releaseNotes : Installation.ReleaseNotes }, Time.Time)>
+        }
+    ) : {
+        var actors : Actors.Actors;
+        var upgradeTasks : UpgradeTasks.UpgradeTasks;
+        var installations : Installations.Installations
+    } {
+        {
+            var actors : Actors.Actors = do {
+                let newActors : Map.Map<Actor.Variant, Actor.Actor> = Map.new<Actor.Variant, Actor.Actor>();
+                for ((variant, actorData) in Map.entries(old.actors.actors)) {
+                    Map.put<Actor.Variant, Actor.Actor>(
+                        newActors,
+                        Actor.VariantKey(variant),
+                        {
+                            principal = actorData.principal;
+                            var args = actorData.args;
+                            var commitHash = actorData.commitHash;
+                            snapshots = CircularBuffer.new(4)
+                        },
+                    )
+                };
+                { founder = old.actors.founder; actors = newActors }
+            };
+            var upgradeTasks : UpgradeTasks.UpgradeTasks = do {
+                func _parse(a : { #Treasury; #Split; #Affiliate; #Escrow; #Sales; #Axioms; #DAO; #Facade; #Indicator }) : Actor.ConfigurableVariant = switch (a) {
+                    case (#Treasury) #Treasury;
+                    case (#Split) #Split;
+                    case (#Affiliate) #Affiliate;
+                    case (#Escrow) #Escrow;
+                    case (#Sales) #Sales;
+                    case (#Axioms) #Axioms;
+                    case (#DAO) #DAO;
+                    case (#Facade) #Facade;
+                    case (#Indicator) #Indicator
+                };
+
+                let newUpgradeTasks : UpgradeTasks.UpgradeTasks = Map.new<Nat, (Principal, Installation.ActorsConfigs)>();
+                for ((key, (principal, oldConfigs)) in Map.entries(old.upgradeTasks)) {
+                    var newConfigs : [(Actor.ConfigurableVariant, Configs.Sharable)] = [];
+                    for ((actorVariant, configs) in oldConfigs.vals()) {
+                        newConfigs := Array.append(newConfigs, [(_parse(actorVariant), configs)])
+                    };
+                    Map.put(newUpgradeTasks, Map.NatKey(key), (principal, newConfigs))
+                };
+                newUpgradeTasks
+            };
+            var installations : Installations.Installations = do {
+                func _parse(a : { #Treasury; #Split; #Affiliate; #Escrow; #Sales; #Axioms; #DAO; #Facade; #Indicator; #ICPUSD; #Frontend; #ACORN }) : Actor.DeployableVariant = switch (a) {
+                    case (#Treasury) #Treasury;
+                    case (#Split) #Split;
+                    case (#Affiliate) #Affiliate;
+                    case (#Escrow) #Escrow;
+                    case (#Sales) #Sales;
+                    case (#Axioms) #Axioms;
+                    case (#DAO) #DAO;
+                    case (#Facade) #Facade;
+                    case (#Indicator) #Indicator;
+                    case (#ICPUSD) #ICPUSD;
+                    case (#Frontend) #Frontend;
+                    case (#ACORN) #ACORN
+                };
+
+                let newInstallations : Installations.Installations = Map.new();
+                for ((principal, (installation, time)) in Map.entries(old.installations)) {
+                    Map.put<Principal, (Installation.Installation, Time.Time)>(
+                        newInstallations,
+                        Map.PrincipalKey(principal),
+                        (
+                            {
+                                commitments = do {
+                                    let commitments : Commitments.Commitments = Map.new();
+                                    for ((actorVariant, value) in Map.entries(installation.commitments)) {
+                                        Map.put(commitments, Actor.DeployableVariantKey(_parse(actorVariant)), value)
+                                    };
+                                    commitments
+                                };
+                                commitHash = installation.commitHash;
+                                updateLevel = installation.updateLevel;
+                                releaseNotes = installation.releaseNotes
+                            },
+                            time,
+                        ),
+                    )
+                };
+                newInstallations
+            }
+        }
+    }
+) shared ({ caller = founder }) persistent actor class Indicator() = this {
     ////// TEMPORARY IMPLEMENTATION ////////////
     private stable var shiftedTime : Int = 0;
     private func getNow() : Int = shiftedTime + Time.now();

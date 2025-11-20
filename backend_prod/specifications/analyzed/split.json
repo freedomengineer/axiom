@@ -575,6 +575,13 @@
       "category": "base",
       "relativePath": "mo:base/Time",
       "depth": 2
+    },
+    "Map": {
+      "origin": "import Map \"../../library/Map\";",
+      "name": "Map",
+      "category": "library",
+      "relativePath": "../../library/Map",
+      "depth": 4
     }
   },
   "actorDependencies": [
@@ -591,7 +598,8 @@
     "Iter",
     "Proportion",
     "Principal",
-    "Time"
+    "Time",
+    "Map"
   ],
   "interfaceDependencies": [
     "Configs",

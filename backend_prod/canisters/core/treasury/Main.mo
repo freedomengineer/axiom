@@ -14,7 +14,43 @@ import E8S "../../library/E8S";
 
 import Principal "mo:base/Principal";
 
-shared ({ caller = indicator }) persistent actor class Treasury() = this {
+import Map "../../library/Map";
+
+(
+    with migration = func(
+        old : {
+            var allocations : Map.Map<{ #Treasury; #Split; #Affiliate; #Escrow; #Sales; #Axioms; #DAO; #Facade; #Indicator; #ICPUSD; #Frontend; #ACORN; #Founder }, Allocation.Allocation>
+        }
+    ) : {
+        var allocations : Allocations.Allocations
+    } {
+        {
+            var allocations : Allocations.Allocations = do {
+                func _parse(a : { #Treasury; #Split; #Affiliate; #Escrow; #Sales; #Axioms; #DAO; #Facade; #Indicator; #ICPUSD; #Frontend; #ACORN; #Founder }) : Actor.Variant = switch (a) {
+                    case (#Treasury) #Treasury;
+                    case (#Split) #Split;
+                    case (#Affiliate) #Affiliate;
+                    case (#Escrow) #Escrow;
+                    case (#Sales) #Sales;
+                    case (#Axioms) #Axioms;
+                    case (#DAO) #DAO;
+                    case (#Facade) #Facade;
+                    case (#Indicator) #Indicator;
+                    case (#ICPUSD) #ICPUSD;
+                    case (#Frontend) #Frontend;
+                    case (#ACORN) #ACORN;
+                    case (#Founder) #Founder
+                };
+
+                let newAllocations : Allocations.Allocations = Map.new<Actor.Variant, Allocation.Allocation>();
+                for ((variant, oldAllocation) in Map.entries(old.allocations)) {
+                    Map.put<Actor.Variant, Allocation.Allocation>(newAllocations, Actor.VariantKey(_parse(variant)), oldAllocation)
+                };
+                newAllocations
+            }
+        }
+    }
+) shared ({ caller = indicator }) persistent actor class Treasury() = this {
     private stable let Indicator : IndicatorInterface.Indicator = actor (Principal.toText(indicator));
 
     private stable let totalSupply : E8S.E8S = E8S.fromFloat(20_090_000_000.0);

@@ -3,11 +3,11 @@
 ## Dependencies
 
 
-- Attributes: `Proposal`, `Proposals`, `Nominees`, `Nominee`, `Users`, `User`, `Detachment`, `Commitments`, `Installation`, `Notification`
+- Attributes: `Proposal`, `Proposals`, `Nominees`, `Nominee`, `Users`, `User`, `Detachment`, `Commitments`, `Installation`, `Notification`, `Actor`
 - Interfaces: `IndicatorInterface`, `FacadeInterface`, `EscrowInterface`, `SplitInterface`, `TreasuryInterface`, `AxiomsInterface`
 - Commons: `C`, `E`
-- Libraries: `Base`, `Configs`, `Count`, `Delegable`, `E8S`, `Earning`, `Iter`, `List`, `Pagination`, `Proportion`, `Set`, `UniformBinaryVotes`, `Version`
-- Bases: `Principal`, `Text`, `Time`, `Error`, `Nat`, `Int`, `Debug`, `Timer`
+- Libraries: `Base`, `Configs`, `Count`, `Delegable`, `E8S`, `Earning`, `Iter`, `List`, `Pagination`, `Proportion`, `Set`, `UniformBinaryVotes`, `Version`, `Vector`
+- Bases: `Principal`, `Text`, `Time`, `Error`, `Nat`, `Int`, `Timer`, `Array`
 ## Modifiers
 
 ### 1. `shiftToMidnight(days)` returns `()`

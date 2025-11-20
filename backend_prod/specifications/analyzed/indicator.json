@@ -1701,6 +1701,13 @@
       "category": "base",
       "relativePath": "mo:base/Text",
       "depth": 2
+    },
+    "Array": {
+      "origin": "import Array \"mo:base/Array\";",
+      "name": "Array",
+      "category": "base",
+      "relativePath": "mo:base/Array",
+      "depth": 2
     }
   },
   "actorDependencies": [
@@ -1743,7 +1750,8 @@
     "Debug",
     "Timer",
     "Int",
-    "Text"
+    "Text",
+    "Array"
   ],
   "interfaceDependencies": [
     "Configs",

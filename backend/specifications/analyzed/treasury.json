@@ -706,6 +706,13 @@
       "category": "base",
       "relativePath": "mo:base/Principal",
       "depth": 2
+    },
+    "Map": {
+      "origin": "import Map \"../../library/Map\";",
+      "name": "Map",
+      "category": "library",
+      "relativePath": "../../library/Map",
+      "depth": 4
     }
   },
   "actorDependencies": [
@@ -718,7 +725,8 @@
     "E",
     "Configs",
     "E8S",
-    "Principal"
+    "Principal",
+    "Map"
   ],
   "interfaceDependencies": [
     "Configs",
