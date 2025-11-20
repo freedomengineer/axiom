@@ -39,6 +39,8 @@ const CANISTER_NAMES = {
     Escrow: 'escrow',
     Sales: 'sales',
     Axioms: 'axioms',
+    Chat: 'chat',
+    Assets: 'assets',
     Indicator: 'indicator',
     Frontend: 'frontend',
 } as const
@@ -336,7 +338,7 @@ export const createAgent = (network: 'local' | 'ic', identity?: Identity): Agent
     const host =
         network === 'ic'
             ? 'https://identity.ic0.app'
-            : `http://127.0.0.1:${execSync('dfx info replica-port', { encoding: 'utf-8', stdio: [] })}`
+            : `http://127.0.0.1:${execSync('dfx info webserver-port', { encoding: 'utf-8', stdio: [] })}`
 
     return new HttpAgent({ identity, host, fetch })
 }

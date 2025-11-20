@@ -23,6 +23,8 @@ export const DEPLOYABLE_ACTOR_NAMES_BY_CANISTER = {
     split: 'Split',
     acorn_ledger: 'ACORN',
     icpusd: 'ICPUSD',
+    chat: 'Chat',
+    assets: 'Assets',
     frontend: 'Frontend',
 } as const
 export const ACTOR_NAMES_BY_CANISTER = {
@@ -43,6 +45,8 @@ export const DEPLOYABLE_ACTORS = [
     'Affiliate',
     'ACORN',
     'ICPUSD',
+    'Chat',
+    'Assets',
     'Frontend',
 ]
 

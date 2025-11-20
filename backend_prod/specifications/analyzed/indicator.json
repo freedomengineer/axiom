@@ -4,24 +4,6 @@
   "category": "periphery",
   "functions": [
     {
-      "name": "createNewCanisters",
-      "flag": {
-        "isQuery": false,
-        "callerRequired": true
-      },
-      "argTypes": {},
-      "returnType": {
-        "origin": "async ()",
-        "singular": {
-          "name": "()"
-        },
-        "entries": [],
-        "isArray": false,
-        "isOptional": false,
-        "isAsync": true
-      }
-    },
-    {
       "name": "initialize",
       "flag": {
         "isQuery": false,
@@ -551,6 +533,65 @@
           "isAsync": false
         }
       },
+      "returnType": {
+        "origin": "async ()",
+        "singular": {
+          "name": "()"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
+      "name": "updateSettings",
+      "flag": {
+        "isQuery": false,
+        "callerRequired": true
+      },
+      "argTypes": {
+        "actorVariants": {
+          "origin": "[Actor.Variant]",
+          "singular": {
+            "name": "Variant",
+            "parent": "Actor"
+          },
+          "entries": [],
+          "isArray": true,
+          "isOptional": false,
+          "isAsync": false
+        },
+        "settings": {
+          "origin": "Management.Settings",
+          "singular": {
+            "name": "Settings",
+            "parent": "Management"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async ()",
+        "singular": {
+          "name": "()"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
+      "name": "createNewCanisters",
+      "flag": {
+        "isQuery": false,
+        "callerRequired": true
+      },
+      "argTypes": {},
       "returnType": {
         "origin": "async ()",
         "singular": {
@@ -1710,6 +1751,7 @@
     "Version",
     "Commitments",
     "Actor",
+    "Management",
     "ACORNInterface",
     "ICPUSDInterface",
     "TreasuryInterface",
@@ -2029,7 +2071,7 @@
                 null
               ],
               [
-                "#Messages",
+                "#Chat",
                 null
               ],
               [
@@ -2450,7 +2492,7 @@
                 null
               ],
               [
-                "#Messages",
+                "#Chat",
                 null
               ],
               [
@@ -2579,7 +2621,7 @@
           null
         ],
         [
-          "#Messages",
+          "#Chat",
           null
         ],
         [
@@ -2654,7 +2696,7 @@
                 null
               ],
               [
-                "#Messages",
+                "#Chat",
                 null
               ],
               [
@@ -2701,6 +2743,272 @@
       "isOptional": false,
       "isAsync": false
     },
+    "[Actor.Variant]": {
+      "origin": "[Actor.Variant]",
+      "singular": {
+        "name": "()"
+      },
+      "entries": [
+        [
+          "#Treasury",
+          null
+        ],
+        [
+          "#Split",
+          null
+        ],
+        [
+          "#Affiliate",
+          null
+        ],
+        [
+          "#Escrow",
+          null
+        ],
+        [
+          "#Sales",
+          null
+        ],
+        [
+          "#Axioms",
+          null
+        ],
+        [
+          "#DAO",
+          null
+        ],
+        [
+          "#Facade",
+          null
+        ],
+        [
+          "#Chat",
+          null
+        ],
+        [
+          "#Assets",
+          null
+        ],
+        [
+          "#Indicator",
+          null
+        ],
+        [
+          "#ICPUSD",
+          null
+        ],
+        [
+          "#Frontend",
+          null
+        ],
+        [
+          "#ACORN",
+          null
+        ],
+        [
+          "#Founder",
+          null
+        ]
+      ],
+      "isArray": true,
+      "isOptional": false,
+      "isAsync": false
+    },
+    "Management.Settings": {
+      "origin": "Management.Settings",
+      "singular": {
+        "name": "()"
+      },
+      "entries": [
+        [
+          "controllers",
+          {
+            "origin": "?[Principal]",
+            "singular": {
+              "name": "Principal"
+            },
+            "entries": [],
+            "isArray": true,
+            "isOptional": true,
+            "isAsync": false
+          }
+        ],
+        [
+          "compute_allocation",
+          {
+            "origin": "?Nat",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": true,
+            "isAsync": false
+          }
+        ],
+        [
+          "memory_allocation",
+          {
+            "origin": "?Nat",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": true,
+            "isAsync": false
+          }
+        ],
+        [
+          "freezing_threshold",
+          {
+            "origin": "?Nat",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": true,
+            "isAsync": false
+          }
+        ],
+        [
+          "reserved_cycles_limit",
+          {
+            "origin": "?Nat",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": true,
+            "isAsync": false
+          }
+        ],
+        [
+          "log_visibility",
+          {
+            "origin": "?{\n            #controllers;\n            // #public;\n            #allowed_viewers : [Principal]\n        }",
+            "singular": {
+              "name": "()"
+            },
+            "entries": [
+              [
+                "#controllers",
+                {
+                  "origin": "()",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "// #public",
+                {
+                  "origin": "()",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "#allowed_viewers",
+                {
+                  "origin": "[Principal]",
+                  "singular": {
+                    "name": "Principal"
+                  },
+                  "entries": [],
+                  "isArray": true,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ]
+            ],
+            "isArray": false,
+            "isOptional": true,
+            "isAsync": false
+          }
+        ],
+        [
+          "wasm_memory_limit",
+          {
+            "origin": "?Nat",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": true,
+            "isAsync": false
+          }
+        ],
+        [
+          "wasm_memory_threshold",
+          {
+            "origin": "?Nat",
+            "singular": {
+              "name": "Nat"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": true,
+            "isAsync": false
+          }
+        ],
+        [
+          "environment_variables",
+          {
+            "origin": "?[{ name : Text; value : Text }]",
+            "singular": {
+              "name": "()"
+            },
+            "entries": [
+              [
+                "name",
+                {
+                  "origin": "Text",
+                  "singular": {
+                    "name": "Text"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                "value",
+                {
+                  "origin": "Text",
+                  "singular": {
+                    "name": "Text"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ]
+            ],
+            "isArray": true,
+            "isOptional": true,
+            "isAsync": false
+          }
+        ]
+      ],
+      "isArray": false,
+      "isOptional": false,
+      "isAsync": false
+    },
     "Actor.DeployableVariant": {
       "origin": "Actor.DeployableVariant",
       "singular": {
@@ -2740,7 +3048,7 @@
           null
         ],
         [
-          "#Messages",
+          "#Chat",
           null
         ],
         [
@@ -2827,7 +3135,7 @@
           null
         ],
         [
-          "#Messages",
+          "#Chat",
           null
         ],
         [
@@ -3127,7 +3435,7 @@
                 null
               ],
               [
-                "#Messages",
+                "#Chat",
                 null
               ],
               [
@@ -3444,7 +3752,7 @@
                       null
                     ],
                     [
-                      "#Messages",
+                      "#Chat",
                       null
                     ],
                     [
@@ -3691,7 +3999,7 @@
                             null
                           ],
                           [
-                            "#Messages",
+                            "#Chat",
                             null
                           ],
                           [
@@ -3973,7 +4281,7 @@
           null
         ],
         [
-          "#Messages",
+          "#Chat",
           null
         ],
         [
@@ -4062,7 +4370,7 @@
                 null
               ],
               [
-                "#Messages",
+                "#Chat",
                 null
               ],
               [
@@ -4595,77 +4903,6 @@
       "isArray": true,
       "isOptional": false,
       "isAsync": true
-    },
-    "[Actor.Variant]": {
-      "origin": "[Actor.Variant]",
-      "singular": {
-        "name": "()"
-      },
-      "entries": [
-        [
-          "#Treasury",
-          null
-        ],
-        [
-          "#Split",
-          null
-        ],
-        [
-          "#Affiliate",
-          null
-        ],
-        [
-          "#Escrow",
-          null
-        ],
-        [
-          "#Sales",
-          null
-        ],
-        [
-          "#Axioms",
-          null
-        ],
-        [
-          "#DAO",
-          null
-        ],
-        [
-          "#Facade",
-          null
-        ],
-        [
-          "#Messages",
-          null
-        ],
-        [
-          "#Assets",
-          null
-        ],
-        [
-          "#Indicator",
-          null
-        ],
-        [
-          "#ICPUSD",
-          null
-        ],
-        [
-          "#Frontend",
-          null
-        ],
-        [
-          "#ACORN",
-          null
-        ],
-        [
-          "#Founder",
-          null
-        ]
-      ],
-      "isArray": true,
-      "isOptional": false,
-      "isAsync": false
     },
     "async ACORNInterface.ACORN": {
       "origin": "async ACORNInterface.ACORN",

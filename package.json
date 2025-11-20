@@ -4,9 +4,9 @@
     "version": "1.0.0",
     "type": "module",
     "scripts": {
-        "replica": "killall dfx icx-proxy && dfx start --replica || dfx start --replica",
-        "replica:clean": "killall dfx icx-proxy && dfx start --replica --clean || dfx start --replica --clean",
-        "replica:clean:background": "killall dfx icx-proxy && dfx start --replica --clean --background || dfx start --replica --clean --background",
+        "replica": "killall dfx icx-proxy && dfx start || dfx start",
+        "replica:clean": "killall dfx icx-proxy && dfx start --clean || dfx start --clean",
+        "replica:clean:background": "killall dfx icx-proxy && dfx start --clean --background || dfx start --clean --background",
         "deploy": "yarn analyze && npx tsx './scripts/deploy/local.ts'",
         "deploy:prod": "yarn analyze:prod && npx tsx './scripts/deploy/prod.ts'",
         "deploy:ic": "yarn analyze:prod && npx tsx './scripts/deploy/ic.ts'",

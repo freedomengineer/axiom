@@ -43,37 +43,38 @@ import Timer "mo:base/Timer";
 import Int "mo:base/Int";
 import Text "mo:base/Text";
 
-(
-    with migration = func(
-        old : {
-            var actors : {
-                founder : Principal;
-                actors : Map.Map<{ #Treasury; #Split; #Affiliate; #Escrow; #Sales; #Axioms; #DAO; #Facade; #Indicator; #ICPUSD; #Frontend; #ACORN; #Founder }, { principal : Principal; var args : [Nat8]; var commitHash : Text }>
-            }
-        }
-    ) : {
-        var actors : Actors.Actors
-    } {
-        {
-            var actors : Actors.Actors = do {
-                let newActors : Map.Map<Actor.Variant, Actor.Actor> = Map.new();
-                for ((variant, actorData) in Map.entries(old.actors.actors)) {
-                    Map.put<Actor.Variant, Actor.Actor>(
-                        newActors,
-                        Actor.VariantKey(variant),
-                        {
-                            principal = actorData.principal;
-                            var args = actorData.args;
-                            var commitHash = actorData.commitHash;
-                            snapshots = CircularBuffer.new(4)
-                        },
-                    )
-                };
-                { founder = old.actors.founder; actors = newActors }
-            }
-        }
-    }
-) shared ({ caller = founder }) persistent actor class Indicator() = this {
+// (
+//     with migration = func(
+//         old : {
+//             var actors : {
+//                 founder : Principal;
+//                 actors : Map.Map<{ #Treasury; #Split; #Affiliate; #Escrow; #Sales; #Axioms; #DAO; #Facade; #Indicator; #ICPUSD; #Frontend; #ACORN; #Founder }, { principal : Principal; var args : [Nat8]; var commitHash : Text }>
+//             }
+//         }
+//     ) : {
+//         var actors : Actors.Actors
+//     } {
+//         {
+//             var actors : Actors.Actors = do {
+//                 let newActors : Map.Map<Actor.Variant, Actor.Actor> = Map.new();
+//                 for ((variant, actorData) in Map.entries(old.actors.actors)) {
+//                     Map.put<Actor.Variant, Actor.Actor>(
+//                         newActors,
+//                         Actor.VariantKey(variant),
+//                         {
+//                             principal = actorData.principal;
+//                             var args = actorData.args;
+//                             var commitHash = actorData.commitHash;
+//                             snapshots = CircularBuffer.new(4)
+//                         },
+//                     )
+//                 };
+//                 { founder = old.actors.founder; actors = newActors }
+//             }
+//         }
+//     }
+// )
+shared ({ caller = founder }) persistent actor class Indicator() = this {
     ////// TEMPORARY IMPLEMENTATION ////////////
     private stable var shiftedTime : Int = 0;
     private func getNow() : Int = shiftedTime + Time.now();
@@ -96,9 +97,14 @@ import Text "mo:base/Text";
             controllers = ?[Principal.fromActor(this), caller];
             compute_allocation = null;
             memory_allocation = null;
-            freezing_threshold = null
+            freezing_threshold = null;
+            reserved_cycles_limit = null;
+            log_visibility = ? #allowed_viewers([founder, Principal.fromText("mx4y2-h573j-ebz5k-tpet3-n3csa-azsvs-zafl6-sxy3g-yhwn4-wfqs6-qae")]);
+            wasm_memory_limit = null;
+            wasm_memory_threshold = null;
+            environment_variables = null
         };
-        for (actorVariant in [#ACORN, #ICPUSD, #Treasury, #Split, #Affiliate, #Escrow, #Sales, #Axioms, #DAO, #Facade, #Messages, #Assets, #Indicator].vals()) {
+        for (actorVariant in [#ACORN, #ICPUSD, #Treasury, #Split, #Affiliate, #Escrow, #Sales, #Axioms, #DAO, #Facade, #Chat, #Assets, #Indicator].vals()) {
             ExperimentalCycles.add<system>(1_000_000_000_000);
             await Management.IC0.update_settings({
                 canister_id = Actors.getPrincipal(actors, actorVariant);
@@ -167,8 +173,6 @@ import Text "mo:base/Text";
     private func _upgradeCanisters(issuer : Principal, proposalId : Nat) : async () {
         let { commitments; updateLevel; commitHash } : Installation.Installation = Installations.installation(installations, issuer);
 
-        var snapshotsBefore : Map.Map<Actor.DeployableVariant, (Management.Snapshot, Text)> = Map.new();
-
         var stopFutures : List.List<(Actor.DeployableVariant, async Text)> = List.nil();
         for (actorVariant in Map.keys(commitments)) {
             let actorData : Actor.Actor = Actors.getActor(actors, actorVariant);
@@ -219,7 +223,7 @@ import Text "mo:base/Text";
             await takeSnapshotBeforeFutures;
             Debug.print(debug_show actorVariant # " took snapshot before");
 
-            let installCodeFuture : async () = _installCode(actorVariant, commitment, commitHash, #upgrade);
+            let installCodeFuture : async () = _installCode(actorVariant, commitment, commitHash, #upgrade(?{ skip_pre_upgrade = null; wasm_memory_persistence = ? #keep }));
             installCodeFutures := List.push<(Actor.DeployableVariant, async ())>((actorVariant, installCodeFuture), installCodeFutures)
         };
 
@@ -244,11 +248,11 @@ import Text "mo:base/Text";
             var rollbackFutures : List.List<(Actor.DeployableVariant, async ())> = List.nil();
             for (actorVariant in List.toIter(List.reverse(success))) {
                 let actorData : Actor.Actor = Actors.getActor(actors, actorVariant);
-                let (snapshotBefore, _) : (Management.Snapshot, Text) = Map.unwrap(snapshotsBefore, Actor.DeployableVariantKey(actorVariant));
+                let snapshotBefore : ?Blob = Actor.lastSnapshot(actorData);
 
                 let rollbackFuture : async () = Management.IC0.load_canister_snapshot({
                     canister_id = actorData.principal;
-                    snapshot_id = snapshotBefore.id;
+                    snapshot_id = Base.unwrap(snapshotBefore);
                     sender_canister_version = null
                 });
                 rollbackFutures := List.push<(Actor.DeployableVariant, async ())>((actorVariant, rollbackFuture), rollbackFutures)
@@ -308,24 +312,6 @@ import Text "mo:base/Text";
         }
     };
 
-    public shared ({ caller }) func createNewCanisters() : async () {
-        await expectAuthorized(caller, [#Founder]);
-
-        let settings : ?Management.Settings = ?{
-            controllers = ?[Principal.fromActor(this)];
-            compute_allocation = null;
-            memory_allocation = null;
-            freezing_threshold = null
-        };
-        for (actorVariant in [#Messages, #Assets].vals()) {
-            ExperimentalCycles.add<system>(1_000_000_000_000);
-            let { canister_id } : Management.CreateCanisterResult = await Management.IC0.create_canister({
-                settings
-            });
-            Actors.initializeActor(actors, actorVariant, canister_id)
-        }
-    };
-
     /// PROTECTED ////// MODIFIERS ////////////
 
     public shared ({ caller }) func initialize() : async () {
@@ -336,15 +322,25 @@ import Text "mo:base/Text";
             controllers = ?[Principal.fromActor(this)];
             compute_allocation = null;
             memory_allocation = null;
-            freezing_threshold = null
+            freezing_threshold = null;
+            reserved_cycles_limit = null;
+            log_visibility = ? #allowed_viewers([founder, Principal.fromText("mx4y2-h573j-ebz5k-tpet3-n3csa-azsvs-zafl6-sxy3g-yhwn4-wfqs6-qae")]);
+            wasm_memory_limit = null;
+            wasm_memory_threshold = null;
+            environment_variables = null
         };
         let frontendSettings : ?Management.Settings = ?{
             controllers = ?[Principal.fromActor(this), caller];
             compute_allocation = null;
             memory_allocation = null;
-            freezing_threshold = null
+            freezing_threshold = null;
+            reserved_cycles_limit = null;
+            log_visibility = ? #allowed_viewers([founder, Principal.fromText("mx4y2-h573j-ebz5k-tpet3-n3csa-azsvs-zafl6-sxy3g-yhwn4-wfqs6-qae")]);
+            wasm_memory_limit = null;
+            wasm_memory_threshold = null;
+            environment_variables = null
         };
-        for (actorVariant in [#ACORN, #ICPUSD, #Treasury, #Split, #Affiliate, #Escrow, #Sales, #Axioms, #DAO, #Facade, #Messages, #Assets, #Frontend].vals()) {
+        for (actorVariant in [#ACORN, #ICPUSD, #Treasury, #Split, #Affiliate, #Escrow, #Sales, #Axioms, #DAO, #Facade, #Chat, #Assets, #Frontend].vals()) {
             let settings : ?Management.Settings = switch (actorVariant) {
                 case (#Frontend) frontendSettings;
                 case (_) defaultSettings
@@ -529,6 +525,47 @@ import Text "mo:base/Text";
         for ((actorVariant, startFuture) in List.toIter(List.reverse(startFutures))) {
             await startFuture;
             Debug.print(debug_show actorVariant # " started")
+        }
+    };
+
+    public shared ({ caller }) func updateSettings(actorVariants : [Actor.Variant], settings : Management.Settings) : async () {
+        await expectAuthorized(caller, [#Founder]);
+
+        var updateFutures : List.List<(Actor.Variant, async ())> = List.nil();
+        for (actorVariant in actorVariants.vals()) {
+            let actorData : Actor.Actor = Actors.getActor(actors, actorVariant);
+            let updateFuture : async () = Management.IC0.update_settings({
+                settings;
+                canister_id = actorData.principal
+            });
+            updateFutures := List.push<(Actor.Variant, async ())>((actorVariant, updateFuture), updateFutures)
+        };
+        for ((actorVariant, updateFuture) in List.toIter(List.reverse(updateFutures))) {
+            await updateFuture;
+            Debug.print(debug_show actorVariant # " updated settings")
+        }
+    };
+
+    public shared ({ caller }) func createNewCanisters() : async () {
+        await expectAuthorized(caller, [#Founder]);
+
+        let settings : ?Management.Settings = ?{
+            controllers = ?[Principal.fromActor(this)];
+            compute_allocation = null;
+            memory_allocation = null;
+            freezing_threshold = null;
+            reserved_cycles_limit = null;
+            log_visibility = ? #allowed_viewers([founder, Principal.fromText("mx4y2-h573j-ebz5k-tpet3-n3csa-azsvs-zafl6-sxy3g-yhwn4-wfqs6-qae")]);
+            wasm_memory_limit = null;
+            wasm_memory_threshold = null;
+            environment_variables = null
+        };
+        for (actorVariant in [#Chat, #Assets].vals()) {
+            ExperimentalCycles.add<system>(1_000_000_000_000);
+            let { canister_id } : Management.CreateCanisterResult = await Management.IC0.create_canister({
+                settings
+            });
+            Actors.initializeActor(actors, actorVariant, canister_id)
         }
     };
 

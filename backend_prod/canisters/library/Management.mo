@@ -3,11 +3,23 @@ module {
         controllers : ?[Principal];
         compute_allocation : ?Nat;
         memory_allocation : ?Nat;
-        freezing_threshold : ?Nat
+        freezing_threshold : ?Nat;
+        reserved_cycles_limit : ?Nat;
+        log_visibility : ?{
+            #controllers;
+            // #public;
+            #allowed_viewers : [Principal]
+        };
+        wasm_memory_limit : ?Nat;
+        wasm_memory_threshold : ?Nat;
+        environment_variables : ?[{ name : Text; value : Text }]
     };
     public type InstallMode = {
         #reinstall;
-        #upgrade;
+        #upgrade : ?{
+            skip_pre_upgrade : ?Bool;
+            wasm_memory_persistence : ?{ #keep; #replace }
+        };
         #install
     };
 

@@ -60,7 +60,7 @@ module {
         #Axioms;
         #DAO;
         #Facade;
-        #Messages;
+        #Chat;
         #Assets;
         #Indicator
     };
@@ -73,7 +73,7 @@ module {
         #Axioms;
         #DAO;
         #Facade;
-        #Messages;
+        #Chat;
         #Assets;
         #Indicator;
         #ICPUSD;
@@ -89,7 +89,7 @@ module {
         #Axioms;
         #DAO;
         #Facade;
-        #Messages;
+        #Chat;
         #Assets;
         #Indicator;
         #ICPUSD;

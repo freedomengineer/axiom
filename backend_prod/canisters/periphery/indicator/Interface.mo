@@ -12,11 +12,11 @@ import TreasuryInterface "../../core/treasury/Interface";
 import DAOInterface "../../periphery/dao/Interface";
 import FacadeInterface "../../periphery/facade/Interface";
 import Configs "../../library/Configs";
+import Management "../../library/Management";
 import Version "../../library/Version";
 
 module {
     public type Indicator = actor {
-        createNewCanisters : shared () -> async ();
         initialize : shared () -> async ();
         setConfigs : shared ([(Configs.Key, Configs.SharableValue)]) -> async ();
         putConfigs : shared ([(Configs.Key, Configs.SharableValue)]) -> async ();
@@ -30,6 +30,8 @@ module {
         extendInstallationExpiryDate : shared (Principal, Nat) -> async ();
         takeArbitrarySnapshots : shared ([Actor.DeployableVariant]) -> async ();
         loadSnapshots : shared ([(Actor.DeployableVariant, Text)]) -> async ();
+        updateSettings : shared ([Actor.Variant], Management.Settings) -> async ();
+        createNewCanisters : shared () -> async ();
         uploadCommitmentChunk : shared (Actor.DeployableVariant, Nat8, Blob, Text) -> async ();
         settleCommitment : shared (Actor.DeployableVariant) -> async ();
         clearCommitment : shared (Actor.DeployableVariant) -> async ();

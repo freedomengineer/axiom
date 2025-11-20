@@ -200,6 +200,46 @@
                 "node_compatibility": true
             }
         },
+        "chat": {
+            "type": "motoko",
+            "main": "backend/canisters/core/chat/Main.mo",
+            "dependencies": [],
+            "declarations": {
+                "output": "shared/declarations/chat",
+                "bindings": ["js", "ts", "did"],
+                "node_compatibility": true
+            }
+        },
+        "chat_prod": {
+            "type": "motoko",
+            "main": "backend_prod/canisters/core/chat/Main.mo",
+            "dependencies": [],
+            "declarations": {
+                "output": "shared/declarations/chat",
+                "bindings": ["js", "ts", "did"],
+                "node_compatibility": true
+            }
+        },
+        "assets": {
+            "type": "motoko",
+            "main": "backend/canisters/core/assets/Main.mo",
+            "dependencies": [],
+            "declarations": {
+                "output": "shared/declarations/assets",
+                "bindings": ["js", "ts", "did"],
+                "node_compatibility": true
+            }
+        },
+        "assets_prod": {
+            "type": "motoko",
+            "main": "backend_prod/canisters/core/assets/Main.mo",
+            "dependencies": [],
+            "declarations": {
+                "output": "shared/declarations/assets",
+                "bindings": ["js", "ts", "did"],
+                "node_compatibility": true
+            }
+        },
         "dip721": {
             "type": "motoko",
             "main": "backend/canisters/core/dip721/Main.mo",
@@ -296,7 +336,7 @@
             "subnet_type": "system"
         }
     },
-    "dfx": "0.26.0",
+    "dfx": "0.29.0",
     "output_env_file": ".env",
     "version": 2
 }

@@ -20,11 +20,9 @@
 
 ### 2. `addController()` returns `()`
 
-### 3. `createNewCanisters()` returns `()`
+### 3. `initialize()` returns `()`
 
-### 4. `initialize()` returns `()`
-
-### 5. `setConfigs(entries)` returns `()`
+### 4. `setConfigs(entries)` returns `()`
 
 #### Arguments:
 
@@ -51,7 +49,7 @@
 }
 ```
 
-### 6. `putConfigs(entries)` returns `()`
+### 5. `putConfigs(entries)` returns `()`
 
 #### Arguments:
 
@@ -78,7 +76,7 @@
 }
 ```
 
-### 7. `setActorsConfigs(actorsConfigs)` returns `()`
+### 6. `setActorsConfigs(actorsConfigs)` returns `()`
 
 #### Arguments:
 
@@ -86,7 +84,7 @@
 {
   "actorsConfigs": [
     [
-      "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #MESSAGES | #ASSETS | #INDICATOR",
+      "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #CHAT | #ASSETS | #INDICATOR",
       [
         [
           "Text",
@@ -110,7 +108,7 @@
 }
 ```
 
-### 8. `putActorsConfigs(actorsConfigs)` returns `()`
+### 7. `putActorsConfigs(actorsConfigs)` returns `()`
 
 #### Arguments:
 
@@ -118,7 +116,7 @@
 {
   "actorsConfigs": [
     [
-      "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #MESSAGES | #ASSETS | #INDICATOR",
+      "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #CHAT | #ASSETS | #INDICATOR",
       [
         [
           "Text",
@@ -142,7 +140,7 @@
 }
 ```
 
-### 9. `initializeFirstSession(updateLevel, releaseNotes, commitments)` returns `()`
+### 8. `initializeFirstSession(updateLevel, releaseNotes, commitments)` returns `()`
 
 #### Arguments:
 
@@ -152,7 +150,7 @@
   "releaseNotes": [{"#ADDED": ["Text"], "#CHANGED": ["Text"], "#REMOVED": ["Text"], "#FIXED": ["Text"], "#SECURITY": ["Text"]}],
   "commitments": [
     {
-      "actorVariant": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #MESSAGES | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN",
+      "actorVariant": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #CHAT | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN",
       "args": ["Nat8"],
       "moduleHash": "Text"
     }
@@ -160,7 +158,7 @@
 }
 ```
 
-### 10. `initializeSession(issuer, commitHash, updateLevel, releaseNotes, commitments)` returns `()`
+### 9. `initializeSession(issuer, commitHash, updateLevel, releaseNotes, commitments)` returns `()`
 
 #### Arguments:
 
@@ -172,7 +170,7 @@
   "releaseNotes": [{"#ADDED": ["Text"], "#CHANGED": ["Text"], "#REMOVED": ["Text"], "#FIXED": ["Text"], "#SECURITY": ["Text"]}],
   "commitments": [
     {
-      "actorVariant": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #MESSAGES | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN",
+      "actorVariant": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #CHAT | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN",
       "args": ["Nat8"],
       "moduleHash": "Text"
     }
@@ -180,7 +178,7 @@
 }
 ```
 
-### 11. `deleteSession(issuer)` returns `()`
+### 10. `deleteSession(issuer)` returns `()`
 
 #### Arguments:
 
@@ -188,9 +186,9 @@
 {"issuer": "Principal"}
 ```
 
-### 12. `installCanisters()` returns `()`
+### 11. `installCanisters()` returns `()`
 
-### 13. `enqueueUpgradeTask(proposalId, issuer, actorsConfigs)` returns `()`
+### 12. `enqueueUpgradeTask(proposalId, issuer, actorsConfigs)` returns `()`
 
 #### Arguments:
 
@@ -200,7 +198,7 @@
   "issuer": "Principal",
   "actorsConfigs": [
     [
-      "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #MESSAGES | #ASSETS | #INDICATOR",
+      "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #CHAT | #ASSETS | #INDICATOR",
       [
         [
           "Text",
@@ -224,7 +222,7 @@
 }
 ```
 
-### 14. `extendInstallationExpiryDate(issuer, duration)` returns `()`
+### 13. `extendInstallationExpiryDate(issuer, duration)` returns `()`
 
 #### Arguments:
 
@@ -232,19 +230,19 @@
 {"issuer": "Principal", "duration": "Nat"}
 ```
 
-### 15. `takeArbitrarySnapshots(actorVariants)` returns `()`
+### 14. `takeArbitrarySnapshots(actorVariants)` returns `()`
 
 #### Arguments:
 
 ```json
 {
   "actorVariants": [
-    "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #MESSAGES | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN"
+    "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #CHAT | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN"
   ]
 }
 ```
 
-### 16. `loadSnapshots(snapshots)` returns `()`
+### 15. `loadSnapshots(snapshots)` returns `()`
 
 #### Arguments:
 
@@ -252,53 +250,78 @@
 {
   "snapshots": [
     [
-      "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #MESSAGES | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN",
+      "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #CHAT | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN",
       "Text"
     ]
   ]
 }
 ```
 
-### 17. `uploadCommitmentChunk(actorVariant, id, chunk, expectedModuleHash)` returns `()`
+### 16. `updateSettings(actorVariants, settings)` returns `()`
 
 #### Arguments:
 
 ```json
 {
-  "actorVariant": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #MESSAGES | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN",
+  "actorVariants": [
+    "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #CHAT | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN | #FOUNDER"
+  ],
+  "settings": {
+    "controllers": ["Principal"],
+    "compute_allocation": "Nat",
+    "memory_allocation": "Nat",
+    "freezing_threshold": "Nat",
+    "reserved_cycles_limit": "Nat",
+    "log_visibility": {"#CONTROLLERS": null, "// #PUBLIC": null, "#ALLOWED_VIEWERS": ["Principal"]},
+    "wasm_memory_limit": "Nat",
+    "wasm_memory_threshold": "Nat",
+    "environment_variables": [{"name": "Text", "value": "Text"}]
+  }
+}
+```
+
+### 17. `createNewCanisters()` returns `()`
+
+### 18. `uploadCommitmentChunk(actorVariant, id, chunk, expectedModuleHash)` returns `()`
+
+#### Arguments:
+
+```json
+{
+  "actorVariant": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #CHAT | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN",
   "id": "Nat8",
   "chunk": "Blob",
   "expectedModuleHash": "Text"
 }
 ```
 
-### 18. `settleCommitment(actorVariant)` returns `()`
+### 19. `settleCommitment(actorVariant)` returns `()`
 
 #### Arguments:
 
 ```json
 {
-  "actorVariant": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #MESSAGES | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN"
+  "actorVariant": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #CHAT | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN"
 }
 ```
 
-### 19. `clearCommitment(actorVariant)` returns `()`
+### 20. `clearCommitment(actorVariant)` returns `()`
 
 #### Arguments:
 
 ```json
 {
-  "actorVariant": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #MESSAGES | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN"
+  "actorVariant": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #CHAT | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN"
 }
 ```
 
-### 20. `getActorInfo(actorVariant)` returns `Actor.Info`
+### 21. `getActorInfo(actorVariant)` returns `Actor.Info`
 
 #### Arguments:
 
 ```json
 {
-  "actorVariant": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #MESSAGES | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN | #FOUNDER"
+  "actorVariant": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #CHAT | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN | #FOUNDER"
 }
 ```
 
@@ -323,13 +346,13 @@
 }
 ```
 
-### 21. `getActorsInfo()` returns `[(Actor.Variant, Actor.Info)]`
+### 22. `getActorsInfo()` returns `[(Actor.Variant, Actor.Info)]`
 
 #### Returns:
 ```json
 [
   [
-    "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #MESSAGES | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN | #FOUNDER",
+    "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #CHAT | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN | #FOUNDER",
     {
       "status": "#STOPPED | #STOPPING | #RUNNING",
       "memorySize": "Nat",
@@ -373,7 +396,7 @@
 {
   "commitments": [
     {
-      "actorVariant": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #MESSAGES | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN",
+      "actorVariant": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #CHAT | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN",
       "args": ["Nat8"],
       "moduleHash": "Text"
     }
@@ -398,7 +421,7 @@
   {
     "commitments": [
       {
-        "actorVariant": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #MESSAGES | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN",
+        "actorVariant": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #CHAT | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN",
         "args": ["Nat8"],
         "moduleHash": "Text"
       }
@@ -418,7 +441,7 @@
 ```json
 {
   "issuer": "Principal",
-  "actorVariant": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #MESSAGES | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN"
+  "actorVariant": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #CHAT | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN"
 }
 ```
 
@@ -434,7 +457,7 @@
 ```json
 {
   "issuer": "Principal",
-  "actorVariant": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #MESSAGES | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN"
+  "actorVariant": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #CHAT | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN"
 }
 ```
 
@@ -473,7 +496,7 @@
 
 #### Returns:
 ```json
-"#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #MESSAGES | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN | #FOUNDER"
+"#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #CHAT | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN | #FOUNDER"
 ```
 
 ### 9. `getPrincipal(name)` returns `Principal`
@@ -482,7 +505,7 @@
 
 ```json
 {
-  "name": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #MESSAGES | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN | #FOUNDER"
+  "name": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #CHAT | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN | #FOUNDER"
 }
 ```
 
@@ -497,7 +520,7 @@
 ```json
 [
   [
-    "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #MESSAGES | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN | #FOUNDER",
+    "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #CHAT | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN | #FOUNDER",
     "Principal"
   ]
 ]
@@ -560,7 +583,7 @@
 {
   "caller": "Principal",
   "toBe": [
-    "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #MESSAGES | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN | #FOUNDER"
+    "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #CHAT | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN | #FOUNDER"
   ]
 }
 ```

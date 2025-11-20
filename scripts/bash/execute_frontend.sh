@@ -1,9 +1,9 @@
 #!/bin/bash
 
-DFX_PORT=$(dfx info replica-port 2>/dev/null)
+DFX_PORT=$(dfx info webserver-port 2>/dev/null)
 
 if [ $? -ne 0 ] || ! [[ "$DFX_PORT" =~ ^[0-9]+$ ]] || [ "$DFX_PORT" -lt 1 ] || [ "$DFX_PORT" -gt 65535 ]; then
-  echo "Error: Failed to get a valid DFX port from 'dfx info replica-port'"
+  echo "Error: Failed to get a valid DFX port from 'dfx info webserver-port'"
   echo "Make sure dfx is running and configured correctly"
   exit 0
 fi

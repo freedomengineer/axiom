@@ -5,23 +5,27 @@ export const CONFIGURABLE_ACTORS = [
     'Indicator',
     'DAO',
     'Axioms',
+    'Chat',
     'Facade',
     'Escrow',
     'Sales',
     'Split',
     'Treasury',
     'Affiliate',
+    'Assets',
     'ICPUSD',
 ] as const
 export const DEPLOYABLE_ACTORS = [
     'DAO',
     'Axioms',
+    'Chat',
     'Facade',
     'Escrow',
     'Sales',
     'Split',
     'Treasury',
     'Affiliate',
+    'Assets',
     'ICPUSD',
 ] as const
 export const CONFIGS_TYPES = [

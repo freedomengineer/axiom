@@ -9,7 +9,7 @@ import { Secp256k1KeyIdentity } from '@dfinity/identity-secp256k1'
 import { Principal } from '@dfinity/principal'
 import fetch from 'isomorphic-fetch'
 
-export const dfxPort = 64895
+export const dfxPort = 4943
 
 export declare interface CreateActorOptions {
     agent?: Agent
