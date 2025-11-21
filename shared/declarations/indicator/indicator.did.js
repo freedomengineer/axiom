@@ -744,11 +744,9 @@ export const idlFactory = ({ IDL }) => {
     'Escrow' : IDL.Null,
     'Split' : IDL.Null,
     'Facade' : IDL.Null,
-    'Chat' : IDL.Null,
     'Indicator' : IDL.Null,
     'Axioms' : IDL.Null,
     'Affiliate' : IDL.Null,
-    'Assets' : IDL.Null,
     'Treasury' : IDL.Null,
   });
   const SharableConfigs = IDL.Vec(IDL.Tuple(Key, SharableValue));
@@ -774,12 +772,10 @@ export const idlFactory = ({ IDL }) => {
     'Escrow' : IDL.Null,
     'Split' : IDL.Null,
     'Facade' : IDL.Null,
-    'Chat' : IDL.Null,
     'Frontend' : IDL.Null,
     'Indicator' : IDL.Null,
     'Axioms' : IDL.Null,
     'Affiliate' : IDL.Null,
-    'Assets' : IDL.Null,
     'ACORN' : IDL.Null,
     'Treasury' : IDL.Null,
     'ICPUSD' : IDL.Null,
@@ -1485,13 +1481,11 @@ export const idlFactory = ({ IDL }) => {
     'Escrow' : IDL.Null,
     'Split' : IDL.Null,
     'Facade' : IDL.Null,
-    'Chat' : IDL.Null,
     'Frontend' : IDL.Null,
     'Indicator' : IDL.Null,
     'Axioms' : IDL.Null,
     'Affiliate' : IDL.Null,
     'Founder' : IDL.Null,
-    'Assets' : IDL.Null,
     'ACORN' : IDL.Null,
     'Treasury' : IDL.Null,
     'ICPUSD' : IDL.Null,
@@ -1502,13 +1496,11 @@ export const idlFactory = ({ IDL }) => {
     'Escrow' : IDL.Null,
     'Split' : IDL.Null,
     'Facade' : IDL.Null,
-    'Chat' : IDL.Null,
     'Frontend' : IDL.Null,
     'Indicator' : IDL.Null,
     'Axioms' : IDL.Null,
     'Affiliate' : IDL.Null,
     'Founder' : IDL.Null,
-    'Assets' : IDL.Null,
     'ACORN' : IDL.Null,
     'Treasury' : IDL.Null,
     'ICPUSD' : IDL.Null,
@@ -1582,12 +1574,10 @@ export const idlFactory = ({ IDL }) => {
     'Escrow' : IDL.Null,
     'Split' : IDL.Null,
     'Facade' : IDL.Null,
-    'Chat' : IDL.Null,
     'Frontend' : IDL.Null,
     'Indicator' : IDL.Null,
     'Axioms' : IDL.Null,
     'Affiliate' : IDL.Null,
-    'Assets' : IDL.Null,
     'ACORN' : IDL.Null,
     'Treasury' : IDL.Null,
     'ICPUSD' : IDL.Null,
@@ -1624,6 +1614,24 @@ export const idlFactory = ({ IDL }) => {
     'commitHash' : IDL.Text,
   });
   const Sharable__1 = IDL.Text;
+  const Settings = IDL.Record({
+    'freezing_threshold' : IDL.Opt(IDL.Nat),
+    'wasm_memory_threshold' : IDL.Opt(IDL.Nat),
+    'environment_variables' : IDL.Opt(
+      IDL.Vec(IDL.Record({ 'value' : IDL.Text, 'name' : IDL.Text }))
+    ),
+    'controllers' : IDL.Opt(IDL.Vec(IDL.Principal)),
+    'reserved_cycles_limit' : IDL.Opt(IDL.Nat),
+    'log_visibility' : IDL.Opt(
+      IDL.Variant({
+        'controllers' : IDL.Null,
+        'allowed_viewers' : IDL.Vec(IDL.Principal),
+      })
+    ),
+    'wasm_memory_limit' : IDL.Opt(IDL.Nat),
+    'memory_allocation' : IDL.Opt(IDL.Nat),
+    'compute_allocation' : IDL.Opt(IDL.Nat),
+  });
   const Indicator = IDL.Service({
     'ACORN' : IDL.Func([], [ACORN], ['query']),
     'Affiliate' : IDL.Func([], [Affiliate], ['query']),
@@ -1642,7 +1650,6 @@ export const idlFactory = ({ IDL }) => {
         ['query'],
       ),
     'clearCommitment' : IDL.Func([DeployableVariant], [], []),
-    'createNewCanisters' : IDL.Func([], [], []),
     'deleteSession' : IDL.Func([IDL.Principal], [], []),
     'enqueueUpgradeTask' : IDL.Func(
         [IDL.Nat, IDL.Principal, ActorsConfigs],
@@ -1709,6 +1716,7 @@ export const idlFactory = ({ IDL }) => {
     'settleCommitment' : IDL.Func([DeployableVariant], [], []),
     'shiftToMidnight' : IDL.Func([IDL.Nat], [], []),
     'takeArbitrarySnapshots' : IDL.Func([IDL.Vec(DeployableVariant)], [], []),
+    'updateSettings' : IDL.Func([IDL.Vec(Variant), Settings], [], []),
     'uploadCommitmentChunk' : IDL.Func(
         [DeployableVariant, IDL.Nat8, IDL.Vec(IDL.Nat8), IDL.Text],
         [],

@@ -27,13 +27,11 @@ export type ActorVariant = { 'DAO' : null } |
   { 'Escrow' : null } |
   { 'Split' : null } |
   { 'Facade' : null } |
-  { 'Chat' : null } |
   { 'Frontend' : null } |
   { 'Indicator' : null } |
   { 'Axioms' : null } |
   { 'Affiliate' : null } |
   { 'Founder' : null } |
-  { 'Assets' : null } |
   { 'ACORN' : null } |
   { 'Treasury' : null } |
   { 'ICPUSD' : null };
@@ -234,11 +232,9 @@ export type ConfigurableActorVariant = { 'DAO' : null } |
   { 'Escrow' : null } |
   { 'Split' : null } |
   { 'Facade' : null } |
-  { 'Chat' : null } |
   { 'Indicator' : null } |
   { 'Axioms' : null } |
   { 'Affiliate' : null } |
-  { 'Assets' : null } |
   { 'Treasury' : null };
 export interface CouponRedeemedData {
   'key' : string,
@@ -338,12 +334,10 @@ export type DeployableActorVariant = { 'DAO' : null } |
   { 'Escrow' : null } |
   { 'Split' : null } |
   { 'Facade' : null } |
-  { 'Chat' : null } |
   { 'Frontend' : null } |
   { 'Indicator' : null } |
   { 'Axioms' : null } |
   { 'Affiliate' : null } |
-  { 'Assets' : null } |
   { 'ACORN' : null } |
   { 'Treasury' : null } |
   { 'ICPUSD' : null };
@@ -352,12 +346,10 @@ export type DeployableVariant = { 'DAO' : null } |
   { 'Escrow' : null } |
   { 'Split' : null } |
   { 'Facade' : null } |
-  { 'Chat' : null } |
   { 'Frontend' : null } |
   { 'Indicator' : null } |
   { 'Axioms' : null } |
   { 'Affiliate' : null } |
-  { 'Assets' : null } |
   { 'ACORN' : null } |
   { 'Treasury' : null } |
   { 'ICPUSD' : null };
@@ -532,7 +524,6 @@ export interface Indicator {
   'addController' : ActorMethod<[], undefined>,
   'checkInstallationSettled' : ActorMethod<[Principal], boolean>,
   'clearCommitment' : ActorMethod<[DeployableVariant], undefined>,
-  'createNewCanisters' : ActorMethod<[], undefined>,
   'deleteSession' : ActorMethod<[Principal], undefined>,
   'enqueueUpgradeTask' : ActorMethod<
     [bigint, Principal, ActorsConfigs],
@@ -581,6 +572,7 @@ export interface Indicator {
   'settleCommitment' : ActorMethod<[DeployableVariant], undefined>,
   'shiftToMidnight' : ActorMethod<[bigint], undefined>,
   'takeArbitrarySnapshots' : ActorMethod<[Array<DeployableVariant>], undefined>,
+  'updateSettings' : ActorMethod<[Array<Variant>, Settings], undefined>,
   'uploadCommitmentChunk' : ActorMethod<
     [DeployableVariant, number, Uint8Array | number[], string],
     undefined
@@ -785,6 +777,20 @@ export interface Sales {
   'putConfigs' : ActorMethod<[Array<[Key, SharableValue]>], undefined>,
   'setConfigs' : ActorMethod<[Array<[Key, SharableValue]>], undefined>,
   'upgradePackage' : ActorMethod<[], undefined>,
+}
+export interface Settings {
+  'freezing_threshold' : [] | [bigint],
+  'wasm_memory_threshold' : [] | [bigint],
+  'environment_variables' : [] | [Array<{ 'value' : string, 'name' : string }>],
+  'controllers' : [] | [Array<Principal>],
+  'reserved_cycles_limit' : [] | [bigint],
+  'log_visibility' : [] | [
+    { 'controllers' : null } |
+      { 'allowed_viewers' : Array<Principal> }
+  ],
+  'wasm_memory_limit' : [] | [bigint],
+  'memory_allocation' : [] | [bigint],
+  'compute_allocation' : [] | [bigint],
 }
 export type Sharable = Array<SharableCommitment>;
 export interface SharableAchievementPackage {
@@ -1490,13 +1496,11 @@ export type Variant = { 'DAO' : null } |
   { 'Escrow' : null } |
   { 'Split' : null } |
   { 'Facade' : null } |
-  { 'Chat' : null } |
   { 'Frontend' : null } |
   { 'Indicator' : null } |
   { 'Axioms' : null } |
   { 'Affiliate' : null } |
   { 'Founder' : null } |
-  { 'Assets' : null } |
   { 'ACORN' : null } |
   { 'Treasury' : null } |
   { 'ICPUSD' : null };

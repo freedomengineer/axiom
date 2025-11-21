@@ -1,0 +1,82 @@
+type Value_2 = 
+ variant {
+   infinity;
+   value: ValueProp_2;
+ };
+type Value_1 = 
+ variant {
+   infinity;
+   value: ValueProp_1;
+ };
+type ValueProp_2 = 
+ variant {
+   exclusive: nat;
+   inclusive: nat;
+ };
+type ValueProp_1 = 
+ variant {
+   exclusive: int;
+   inclusive: int;
+ };
+type ValueProp = 
+ variant {
+   exclusive: float64;
+   inclusive: float64;
+ };
+type Value = 
+ variant {
+   infinity;
+   value: ValueProp;
+ };
+type SharableValue = 
+ variant {
+   Bool: bool;
+   Date: SharableDate;
+   Duration: nat;
+   E8S: SharableE8S;
+   Float: float64;
+   Nat: nat;
+   Proportion: SharableProportion;
+   RangeFloat: SharableRange;
+   RangeInt: SharableRange_1;
+   RangeNat: SharableRange_2;
+   Text: text;
+ };
+type SharableRange_2 = 
+ record {
+   Value_2;
+   Value_2;
+ };
+type SharableRange_1 = 
+ record {
+   Value_1;
+   Value_1;
+ };
+type SharableRange = 
+ record {
+   Value;
+   Value;
+ };
+type SharableProportion = 
+ record {
+   nat;
+   nat;
+ };
+type SharableE8S = nat;
+type SharableDate = nat;
+type Sharable = 
+ vec record {
+       Key;
+       SharableValue;
+     };
+type Key = text;
+type Assets = 
+ service {
+   /// PROTECTED ////// MODIFIERS ////////////
+   /// PUBLIC ////// MODIFIERS ////////////
+   /// PUBLIC ////// ACCESSORS ////////////
+   getConfig: (key: Key) -> (SharableValue) query;
+   getConfigs: () -> (Sharable) query;
+   shiftToMidnight: (days: nat) -> ();
+ };
+service : () -> Assets

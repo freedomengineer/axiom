@@ -368,7 +368,7 @@ import Array "mo:base/Array";
             wasm_memory_threshold = null;
             environment_variables = null
         };
-        for (actorVariant in [#ACORN, #ICPUSD, #Treasury, #Split, #Affiliate, #Escrow, #Sales, #Axioms, #DAO, #Facade, #Chat, #Assets, #Frontend].vals()) {
+        for (actorVariant in [#ACORN, #ICPUSD, #Treasury, #Split, #Affiliate, #Escrow, #Sales, #Axioms, #DAO, #Facade, #Encyclopedia, #Chat, #Assets, #Frontend].vals()) {
             let settings : ?Management.Settings = switch (actorVariant) {
                 case (#Frontend) frontendSettings;
                 case (_) defaultSettings
@@ -588,7 +588,7 @@ import Array "mo:base/Array";
             wasm_memory_threshold = null;
             environment_variables = null
         };
-        for (actorVariant in [#Chat, #Assets].vals()) {
+        for (actorVariant in [#Encyclopedia, #Chat, #Assets].vals()) {
             ExperimentalCycles.add<system>(1_000_000_000_000);
             let { canister_id } : Management.CreateCanisterResult = await Management.IC0.create_canister({
                 settings

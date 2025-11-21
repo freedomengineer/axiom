@@ -7,6 +7,9 @@ export const CORE_ACTOR_NAMES_BY_CANISTER = {
     escrow: 'Escrow',
     sales: 'Sales',
     axioms: 'Axioms',
+    encyclopedia: 'Encyclopedia',
+    chat: 'Chat',
+    assets: 'Assets',
 } as const
 
 export const PERIPHERY_ACTOR_NAMES_BY_CANISTER = {

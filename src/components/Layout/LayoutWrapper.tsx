@@ -37,15 +37,10 @@ const LayoutWrapper = ({
             window.location.replace(currentUrl.toString())
         }
 
-        if (version !== '0.0.1') {
-            deleteAllConfigsCache()
-            deleteAllPackagesCache()
+        if (version !== '0.0.2') {
             deleteAllStatusCache()
-            deleteAllUsernamesCache()
-            deleteAllNotificationsCache()
-            deleteAllTopCache()
             localStorage.clear()
-            setVersion('0.0.1')
+            setVersion('0.0.2')
         }
     }, [version])
 

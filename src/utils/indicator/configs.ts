@@ -5,6 +5,7 @@ export const CONFIGURABLE_ACTORS = [
     'Indicator',
     'DAO',
     'Axioms',
+    'Encyclopedia',
     'Chat',
     'Facade',
     'Escrow',
@@ -18,6 +19,7 @@ export const CONFIGURABLE_ACTORS = [
 export const DEPLOYABLE_ACTORS = [
     'DAO',
     'Axioms',
+    'Encyclopedia',
     'Chat',
     'Facade',
     'Escrow',

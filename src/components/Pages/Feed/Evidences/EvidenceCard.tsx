@@ -196,7 +196,7 @@ const EvidenceCard = ({
                     <ReplyIcon className="p-small h-6 w-6 stroke-[1.5px] md:h-7 md:w-7" />
                 </div>
             )}
-            <div className="px-medium py-extralarge gap-normal flex w-full flex-col items-center">
+            <div className="gap-normal px-medium py-extralarge flex w-full flex-col items-center">
                 {formObject.Picture && (
                     <img
                         src={buildBlobImage(formObject.Picture.blob as Uint8Array)}
@@ -206,15 +206,15 @@ const EvidenceCard = ({
                     />
                 )}
                 {formObject.Note && (
-                    <div className="mx-auto h-auto w-fit">
-                        <p className="text-tiny whitespace-pre-line  break-words text-center">
+                    <div className="mx-auto h-auto w-fit max-w-full">
+                        <p className="text-tiny whitespace-pre-line break-words text-center">
                             {formObject.Note.content.trim()}
                         </p>
                     </div>
                 )}
                 {formObject.Hyperlink && (
                     <Link
-                        className="pre-underline text-tiny mx-auto decoration-cold-800/50 hover:decoration-cold-800/100"
+                        className="text-tiny pre-underline mx-auto decoration-cold-800/50 hover:decoration-cold-800/100"
                         href={formObject.Hyperlink.url}
                         target="_blank"
                         rel="noreferrer"
@@ -249,22 +249,22 @@ const EvidenceCard = ({
                     </div>,
                     document.body
                 )}
-            <div className="px-medium py-small gap-tiny grid w-full grid-cols-2 grid-rows-2 rounded-b-md bg-cold-900 text-white md:flex">
-                <button
+            <div className="px-medium py-small flex w-full rounded-b-md bg-cold-900 text-white">
+                {/* <button
                     className={cn(
-                        'gap-small order-1 flex items-center hover:opacity-75',
+                        'flex items-center gap-small order-1 hover:opacity-75',
                         'touch-pan-y'
                     )}
                     onClick={() => setOpen(EPopup.HypothesisDetail)}
                 >
-                    <HypothesisIcon className="h-[16px] w-[16px] stroke-[2px] md:h-[18px] md:w-[18px]" />
-                    <span className="text-tiny md:mr-medium text-nowrap font-light text-white">
+                    <HypothesisIcon className="stroke-[2px] w-[16px] md:w-[18px] h-[16px] md:h-[18px]" />
+                    <span className="md:mr-medium font-light text-tiny text-white text-nowrap">
                         {item.hypothesisId}
                     </span>
-                </button>
+                </button> */}
                 <Link
                     className={cn(
-                        'gap-small order-3 flex items-center hover:opacity-75 md:order-2',
+                        'gap-small order-2 flex items-center hover:opacity-75',
                         'touch-pan-y'
                     )}
                     href={build(['profile', item.publisher.toText()])}
@@ -273,24 +273,24 @@ const EvidenceCard = ({
                         capitalRaised={publisher.capitalRaised.toString()}
                         className="mr-0 h-3.5 w-3.5 md:h-4 md:w-4"
                     />
-                    <span className="text-tiny md:mr-medium text-nowrap font-light text-white">
+                    <span className="text-tiny mr-3 text-nowrap font-light text-white">
                         {publisher.username}
                     </span>
                 </Link>
                 <button
                     className={cn(
-                        'gap-small order-2 ml-auto flex items-center hover:opacity-75 md:order-3 md:ml-0',
+                        'gap-small order-3 ml-0 flex items-center hover:opacity-75',
                         'touch-pan-y'
                     )}
                     onClick={() => setOpen(EPopup.EvidenceDetail)}
                 >
                     <NewTabIcon className="h-3.5 w-3.5 stroke-[2px]" />
-                    <span className="text-tiny md:mr-medium text-nowrap font-light text-white">
+                    <span className="mr-medium text-tiny text-nowrap font-light text-white">
                         view
                     </span>
                 </button>
-                <div className="hidden w-full md:order-4 md:block" />
-                <div className="order-4 ml-auto flex w-full max-w-44 flex-shrink-0 place-items-center items-center justify-between md:order-5 md:ml-0">
+                <div className="order-4 block w-full" />
+                <div className="order-5 ml-0 flex w-fit flex-shrink-0 place-items-center items-center justify-between gap-3">
                     <div className="gap-small flex items-center">
                         <EvidenceVote
                             choice={EVote.Positive}

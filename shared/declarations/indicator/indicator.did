@@ -7,9 +7,7 @@ type Variant =
  variant {
    ACORN;
    Affiliate;
-   Assets;
    Axioms;
-   Chat;
    DAO;
    Escrow;
    Facade;
@@ -981,6 +979,24 @@ type SharableAchievementPackage =
    "principal": opt principal;
  };
 type Sharable = vec SharableCommitment;
+type Settings = 
+ record {
+   compute_allocation: opt nat;
+   controllers: opt vec principal;
+   environment_variables: opt vec record {
+                                    name: text;
+                                    value: text;
+                                  };
+   freezing_threshold: opt nat;
+   log_visibility: opt variant {
+                         allowed_viewers: vec principal;
+                         controllers;
+                       };
+   memory_allocation: opt nat;
+   reserved_cycles_limit: opt nat;
+   wasm_memory_limit: opt nat;
+   wasm_memory_threshold: opt nat;
+ };
 type Sales = 
  service {
    addAchievementPackage: (Achievement, text, text, text) -> ();
@@ -1295,7 +1311,6 @@ type Indicator =
    addController: () -> ();
    checkInstallationSettled: (issuer: principal) -> (bool) query;
    clearCommitment: (actorVariant: DeployableVariant) -> ();
-   createNewCanisters: () -> ();
    deleteSession: (issuer: principal) -> ();
    enqueueUpgradeTask: (proposalId: nat, issuer: principal, actorsConfigs:
     ActorsConfigs) -> ();
@@ -1349,6 +1364,7 @@ type Indicator =
    settleCommitment: (actorVariant: DeployableVariant) -> ();
    shiftToMidnight: (days: nat) -> ();
    takeArbitrarySnapshots: (actorVariants: vec DeployableVariant) -> ();
+   updateSettings: (actorVariants: vec Variant, settings: Settings) -> ();
    /// PUBLIC ////// MODIFIERS ////////////
    uploadCommitmentChunk: (actorVariant: DeployableVariant, id: nat8, chunk:
     blob, expectedModuleHash: text) -> ();
@@ -1558,9 +1574,7 @@ type DeployableVariant =
  variant {
    ACORN;
    Affiliate;
-   Assets;
    Axioms;
-   Chat;
    DAO;
    Escrow;
    Facade;
@@ -1575,9 +1589,7 @@ type DeployableActorVariant =
  variant {
    ACORN;
    Affiliate;
-   Assets;
    Axioms;
-   Chat;
    DAO;
    Escrow;
    Facade;
@@ -1684,9 +1696,7 @@ type CouponRedeemedData =
 type ConfigurableActorVariant = 
  variant {
    Affiliate;
-   Assets;
    Axioms;
-   Chat;
    DAO;
    Escrow;
    Facade;
@@ -1906,9 +1916,7 @@ type ActorVariant =
  variant {
    ACORN;
    Affiliate;
-   Assets;
    Axioms;
-   Chat;
    DAO;
    Escrow;
    Facade;

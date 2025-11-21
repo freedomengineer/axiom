@@ -28,22 +28,13 @@ type Value =
    infinity;
    value: ValueProp;
  };
-type UpdateLevel__1 = 
- variant {
-   Major;
-   Minor;
-   Patch;
- };
 type UpdateLevel = 
  variant {
    Major;
    Minor;
    Patch;
  };
-type UniformBinaryVote__1 = record {choice: Choice;};
 type UniformBinaryVote = record {choice: Choice;};
-type Time__2 = int;
-type Time__1 = int;
 type Time = int;
 type TernaryVote = 
  record {
@@ -100,9 +91,9 @@ type Sharable__8 =
 type Sharable__7 = nat;
 type Sharable__6 = 
  record {
-   balance: SharableE8S__1;
+   balance: SharableE8S;
    lastWithdrawAt: Time;
-   revenue: SharableE8S__1;
+   revenue: SharableE8S;
  };
 type Sharable__5 = vec SharableNominee;
 type Sharable__4 = 
@@ -120,7 +111,7 @@ type Sharable__3 = vec SharableProposal;
 type Sharable__2 = 
  record {
    acornReward: nat;
-   callerVote: opt Delegable__2;
+   callerVote: opt Delegable__1;
    content: text;
    detachment: SharableDetachment;
    icpReward: nat;
@@ -143,7 +134,7 @@ type Sharable__1 =
                   nat;
                 };
    icpEarning: SharableEarning;
-   lastUpdateBallot: Time__1;
+   lastUpdateBallot: Time;
    proposalVotes: vec record {
                         nat;
                         Delegable__1;
@@ -188,7 +179,7 @@ type SharableRange =
 type SharableProposal = 
  record {
    acornReward: nat;
-   callerVote: opt Delegable__2;
+   callerVote: opt Delegable__1;
    content: text;
    detachment: SharableDetachment;
    icpReward: nat;
@@ -224,7 +215,7 @@ type SharableInstallation =
    commitHash: text;
    commitments: SharableCommitments;
    releaseNotes: ReleaseNotes;
-   updateLevel: UpdateLevel__1;
+   updateLevel: UpdateLevel;
  };
 type SharableField = 
  record {
@@ -233,11 +224,10 @@ type SharableField =
  };
 type SharableEarning = 
  record {
-   balance: SharableE8S__1;
+   balance: SharableE8S;
    lastWithdrawAt: Time;
-   revenue: SharableE8S__1;
+   revenue: SharableE8S;
  };
-type SharableE8S__1 = nat;
 type SharableE8S = nat;
 type SharableDetachment = 
  variant {
@@ -247,7 +237,7 @@ type SharableDetachment =
    Worker: SharableWorker;
  };
 type SharableDate = nat;
-type SharableConfigs__1 = record {actorsConfigs: ActorsConfigs__1;};
+type SharableConfigs__1 = record {actorsConfigs: ActorsConfigs;};
 type SharableConfigs = 
  vec record {
        Key;
@@ -262,7 +252,7 @@ type SharableCommitment =
  };
 type SharableCode = 
  record {
-   actorsConfigs: ActorsConfigs__1;
+   actorsConfigs: ActorsConfigs;
    installation: SharableInstallation;
  };
 type Sharable = vec SharableCommitment;
@@ -293,7 +283,7 @@ type Order =
  };
 type Milestone = 
  record {
-   date: Time__2;
+   date: Time;
    status: Status;
  };
 type Key = text;
@@ -324,11 +314,6 @@ type DeployableActorVariant =
    Split;
    Treasury;
  };
-type Delegable__2 = 
- variant {
-   Default: UniformBinaryVote__1;
-   Delegated: principal;
- };
 type Delegable__1 = 
  variant {
    Default: UniformBinaryVote;
@@ -342,50 +327,58 @@ type Delegable =
 type DAO = 
  service {
    cancelCodeUpload: () -> ();
-   castBallots: (vec principal) -> ();
-   enterElection: (text) -> ();
+   castBallots: (principals: vec principal) -> ();
+   enterElection: (title: text) -> ();
    /// PUBLIC ////// ASSERTERS ////////////
-   expectUserNotFound: (principal) -> () query;
+   expectUserNotFound: ("principal": principal) -> () query;
    /// PUBLIC ////// ACCESSORS ////////////
-   getConfig: (Key) -> (SharableValue) query;
+   getConfig: (key: Key) -> (SharableValue) query;
    getConfigs: () -> (Sharable__8) query;
    getDaysInPeriod: () -> (Sharable__7) query;
-   getEarning: (principal) -> (Sharable__6, Sharable__6) query;
-   getNominee: (principal) -> (Sharable__4) query;
-   getNominees: (Filter__1, Sort_1) -> (Sharable__5) query;
-   getNomineesPagination: (Filter__1, Sort_1, nat, nat) ->
-    (Pagination_1) query;
-   getProposal: (nat) -> (Sharable__2) query;
-   getProposals: (Filter, Sort) -> (Sharable__3) query;
-   getProposalsPagination: (Filter, Sort, nat, nat) -> (Pagination) query;
-   getUser: (principal) -> (Sharable__1) query;
+   getEarning: ("principal": principal) -> (Sharable__6, Sharable__6) query;
+   getNominee: (nomineePrincipal: principal) -> (Sharable__4) query;
+   getNominees: (filter: Filter__1, sort: Sort_1) -> (Sharable__5) query;
+   getNomineesPagination: (filter: Filter__1, sort: Sort_1, page: nat, limit:
+    nat) -> (Pagination_1) query;
+   getProposal: (proposalId: nat) -> (Sharable__2) query;
+   getProposals: (filter: Filter, sort: Sort) -> (Sharable__3) query;
+   getProposalsPagination: (filter: Filter, sort: Sort, page: nat, limit:
+    nat) -> (Pagination) query;
+   getUser: ("principal": principal) -> (Sharable__1) query;
    /// PROTECTED ////// MODIFIERS ////////////
    initialize: () -> ();
    /// PUBLIC ////// MODIFIERS ////////////
-   initializeCodeUploadSession: (text, UpdateLevel, ReleaseNotes,
-    Sharable) -> ();
+   initializeCodeUploadSession: (commitHash: text, updateLevel: UpdateLevel,
+    releaseNotes: ReleaseNotes, commitments: Sharable) -> ();
    leaveElection: () -> ();
-   openCodeProposal: (text, nat, nat, ActorsConfigs) -> (nat);
-   openConfigsProposal: (text, nat, nat, ActorsConfigs) -> (nat);
-   openFieldProposal: (text, text, text) -> (nat);
-   openWorkerProposal: (text, text, nat, nat) -> (nat);
-   putConfigs: (vec record {
-                      Key;
-                      SharableValue;
-                    }) -> ();
-   register: (principal) -> ();
-   retryConfigsProposal: (nat, text, nat, nat, ActorsConfigs) -> ();
-   retryFieldProposal: (nat, text, text, text) -> ();
-   retryWorkerProposal: (nat, text, nat, nat) -> ();
-   setCodeProposalExecuted: (nat) -> ();
-   setCodeProposalFailed: (nat, text) -> ();
-   setConfigs: (vec record {
-                      Key;
-                      SharableValue;
-                    }) -> ();
-   shiftToMidnight: (nat) -> ();
-   updateNomineeTitle: (text) -> ();
-   voteProposal: (nat, Delegable) -> ();
+   openCodeProposal: (content: text, acornReward: nat, icpReward: nat,
+    actorsConfigs: ActorsConfigs) -> (nat);
+   openConfigsProposal: (content: text, acornReward: nat, icpReward: 
+    nat, actorsConfigs: ActorsConfigs) -> (nat);
+   openFieldProposal: (content: text, name: text, description: text) -> (nat);
+   openWorkerProposal: (title: text, content: text, acornReward: nat,
+    icpReward: nat) -> (nat);
+   putConfigs: (entries: vec record {
+                               Key;
+                               SharableValue;
+                             }) -> ();
+   register: ("principal": principal) -> ();
+   retryConfigsProposal: (proposalId: nat, updatedContent: text,
+    updatedAcornReward: nat, updatedIcpReward: nat, updatedActorsConfigs:
+    ActorsConfigs) -> ();
+   retryFieldProposal: (proposalId: nat, updatedContent: text, updatedName:
+    text, updatedDescription: text) -> ();
+   retryWorkerProposal: (proposalId: nat, updatedContent: text,
+    updatedAcornReward: nat, updatedIcpReward: nat) -> ();
+   setCodeProposalExecuted: (proposalId: nat) -> ();
+   setCodeProposalFailed: (proposalId: nat, error: text) -> ();
+   setConfigs: (entries: vec record {
+                               Key;
+                               SharableValue;
+                             }) -> ();
+   shiftToMidnight: (days: nat) -> ();
+   updateNomineeTitle: (title: text) -> ();
+   voteProposal: (proposalId: nat, choice: Delegable) -> ();
    withdrawAll: () -> ();
  };
 type ConfigurableActorVariant = 
@@ -420,11 +413,6 @@ type Changes =
    Removed: vec text;
    Security: vec text;
  };
-type ActorsConfigs__1 = 
- vec record {
-       ConfigurableActorVariant;
-       SharableConfigs;
-     };
 type ActorsConfigs = 
  vec record {
        ConfigurableActorVariant;

@@ -3,9 +3,6 @@ import type { ActorMethod } from '@dfinity/agent';
 import type { IDL } from '@dfinity/candid';
 
 export type ActorsConfigs = Array<[ConfigurableActorVariant, SharableConfigs]>;
-export type ActorsConfigs__1 = Array<
-  [ConfigurableActorVariant, SharableConfigs]
->;
 export type Changes = { 'Security' : Array<string> } |
   { 'Fixed' : Array<string> } |
   { 'Changed' : Array<string> } |
@@ -90,8 +87,6 @@ export type Delegable = { 'Delegated' : Principal } |
   { 'Default' : Choice };
 export type Delegable__1 = { 'Delegated' : Principal } |
   { 'Default' : UniformBinaryVote };
-export type Delegable__2 = { 'Delegated' : Principal } |
-  { 'Default' : UniformBinaryVote__1 };
 export type DeployableActorVariant = { 'DAO' : null } |
   { 'Sales' : null } |
   { 'Escrow' : null } |
@@ -115,7 +110,7 @@ export interface Filter__1 {
   'isCustodian' : [] | [boolean],
 }
 export type Key = string;
-export interface Milestone { 'status' : Status, 'date' : Time__2 }
+export interface Milestone { 'status' : Status, 'date' : Time }
 export type Order = { 'descending' : null } |
   { 'ascending' : null };
 export interface Pagination {
@@ -135,7 +130,7 @@ export type ProposalVariant = { 'Code' : null } |
 export type ReleaseNotes = Array<Changes>;
 export type Sharable = Array<SharableCommitment>;
 export interface SharableCode {
-  'actorsConfigs' : ActorsConfigs__1,
+  'actorsConfigs' : ActorsConfigs,
   'installation' : SharableInstallation,
 }
 export interface SharableCommitment {
@@ -145,22 +140,21 @@ export interface SharableCommitment {
 }
 export type SharableCommitments = Array<SharableCommitment>;
 export type SharableConfigs = Array<[Key, SharableValue]>;
-export interface SharableConfigs__1 { 'actorsConfigs' : ActorsConfigs__1 }
+export interface SharableConfigs__1 { 'actorsConfigs' : ActorsConfigs }
 export type SharableDate = bigint;
 export type SharableDetachment = { 'Code' : SharableCode } |
   { 'Field' : SharableField } |
   { 'Configs' : SharableConfigs__1 } |
   { 'Worker' : SharableWorker };
 export type SharableE8S = bigint;
-export type SharableE8S__1 = bigint;
 export interface SharableEarning {
   'lastWithdrawAt' : Time,
-  'revenue' : SharableE8S__1,
-  'balance' : SharableE8S__1,
+  'revenue' : SharableE8S,
+  'balance' : SharableE8S,
 }
 export interface SharableField { 'name' : string, 'description' : string }
 export interface SharableInstallation {
-  'updateLevel' : UpdateLevel__1,
+  'updateLevel' : UpdateLevel,
   'releaseNotes' : ReleaseNotes,
   'commitments' : SharableCommitments,
   'commitHash' : string,
@@ -178,7 +172,7 @@ export interface SharableProposal {
   'title' : string,
   'icpReward' : bigint,
   'content' : string,
-  'callerVote' : [] | [Delegable__2],
+  'callerVote' : [] | [Delegable__1],
   'votes' : [
     Array<Principal>,
     Array<Principal>,
@@ -211,7 +205,7 @@ export interface Sharable__1 {
   'icpEarning' : SharableEarning,
   'referendumVotes' : Array<[bigint, TernaryVote]>,
   'acornEarning' : SharableEarning,
-  'lastUpdateBallot' : Time__1,
+  'lastUpdateBallot' : Time,
   'proposalVotes' : Array<[bigint, Delegable__1]>,
   'proposals' : Array<bigint>,
 }
@@ -220,7 +214,7 @@ export interface Sharable__2 {
   'title' : string,
   'icpReward' : bigint,
   'content' : string,
-  'callerVote' : [] | [Delegable__2],
+  'callerVote' : [] | [Delegable__1],
   'votes' : [
     Array<Principal>,
     Array<Principal>,
@@ -243,8 +237,8 @@ export interface Sharable__4 {
 export type Sharable__5 = Array<SharableNominee>;
 export interface Sharable__6 {
   'lastWithdrawAt' : Time,
-  'revenue' : SharableE8S__1,
-  'balance' : SharableE8S__1,
+  'revenue' : SharableE8S,
+  'balance' : SharableE8S,
 }
 export type Sharable__7 = bigint;
 export type Sharable__8 = Array<[Key, SharableValue]>;
@@ -272,14 +266,8 @@ export type StatusVariant = { 'Failed' : null } |
   { 'Expired' : null };
 export interface TernaryVote { 'value' : bigint, 'choice' : Choice__1 }
 export type Time = bigint;
-export type Time__1 = bigint;
-export type Time__2 = bigint;
 export interface UniformBinaryVote { 'choice' : Choice }
-export interface UniformBinaryVote__1 { 'choice' : Choice }
 export type UpdateLevel = { 'Patch' : null } |
-  { 'Major' : null } |
-  { 'Minor' : null };
-export type UpdateLevel__1 = { 'Patch' : null } |
   { 'Major' : null } |
   { 'Minor' : null };
 export type Value = { 'value' : ValueProp } |

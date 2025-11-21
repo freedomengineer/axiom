@@ -3,6 +3,7 @@
         "indicator": {
             "type": "motoko",
             "main": "backend/canisters/periphery/indicator/Main.mo",
+            "args": "--enhanced-orthogonal-persistence",
             "dependencies": [],
             "declarations": {
                 "output": "shared/declarations/indicator",
@@ -13,6 +14,7 @@
         "indicator_prod": {
             "type": "motoko",
             "main": "backend_prod/canisters/periphery/indicator/Main.mo",
+            "args": "--enhanced-orthogonal-persistence",
             "dependencies": [],
             "declarations": {
                 "output": "shared/declarations/indicator",
@@ -23,6 +25,7 @@
         "facade": {
             "type": "motoko",
             "main": "backend/canisters/periphery/facade/Main.mo",
+            "args": "--enhanced-orthogonal-persistence",
             "dependencies": [],
             "declarations": {
                 "output": "shared/declarations/facade",
@@ -33,6 +36,7 @@
         "facade_prod": {
             "type": "motoko",
             "main": "backend_prod/canisters/periphery/facade/Main.mo",
+            "args": "--enhanced-orthogonal-persistence",
             "dependencies": [],
             "declarations": {
                 "output": "shared/declarations/facade",
@@ -43,6 +47,7 @@
         "dao": {
             "type": "motoko",
             "main": "backend/canisters/periphery/dao/Main.mo",
+            "args": "--enhanced-orthogonal-persistence",
             "dependencies": [],
             "declarations": {
                 "output": "shared/declarations/dao",
@@ -53,6 +58,7 @@
         "dao_prod": {
             "type": "motoko",
             "main": "backend_prod/canisters/periphery/dao/Main.mo",
+            "args": "--enhanced-orthogonal-persistence",
             "dependencies": [],
             "declarations": {
                 "output": "shared/declarations/dao",
@@ -63,6 +69,7 @@
         "icpusd": {
             "type": "motoko",
             "main": "backend/canisters/core/icpusd/Main.mo",
+            "args": "--enhanced-orthogonal-persistence",
             "dependencies": ["xrc"],
             "declarations": {
                 "output": "shared/declarations/icpusd",
@@ -73,6 +80,7 @@
         "icpusd_prod": {
             "type": "motoko",
             "main": "backend_prod/canisters/core/icpusd/Main.mo",
+            "args": "--enhanced-orthogonal-persistence",
             "dependencies": ["xrc"],
             "declarations": {
                 "output": "shared/declarations/icpusd",
@@ -83,6 +91,7 @@
         "treasury": {
             "type": "motoko",
             "main": "backend/canisters/core/treasury/Main.mo",
+            "args": "--enhanced-orthogonal-persistence",
             "dependencies": [],
             "declarations": {
                 "output": "shared/declarations/treasury",
@@ -93,6 +102,7 @@
         "treasury_prod": {
             "type": "motoko",
             "main": "backend_prod/canisters/core/treasury/Main.mo",
+            "args": "--enhanced-orthogonal-persistence",
             "dependencies": [],
             "declarations": {
                 "output": "shared/declarations/treasury",
@@ -103,6 +113,7 @@
         "split": {
             "type": "motoko",
             "main": "backend/canisters/core/split/Main.mo",
+            "args": "--enhanced-orthogonal-persistence",
             "dependencies": ["icp_ledger"],
             "declarations": {
                 "output": "shared/declarations/split",
@@ -113,6 +124,7 @@
         "split_prod": {
             "type": "motoko",
             "main": "backend_prod/canisters/core/split/Main.mo",
+            "args": "--enhanced-orthogonal-persistence",
             "dependencies": ["icp_ledger"],
             "declarations": {
                 "output": "shared/declarations/split",
@@ -123,6 +135,7 @@
         "affiliate": {
             "type": "motoko",
             "main": "backend/canisters/core/affiliate/Main.mo",
+            "args": "--enhanced-orthogonal-persistence",
             "dependencies": [],
             "declarations": {
                 "output": "shared/declarations/affiliate",
@@ -133,6 +146,7 @@
         "affiliate_prod": {
             "type": "motoko",
             "main": "backend_prod/canisters/core/affiliate/Main.mo",
+            "args": "--enhanced-orthogonal-persistence",
             "dependencies": [],
             "declarations": {
                 "output": "shared/declarations/affiliate",
@@ -143,6 +157,7 @@
         "escrow": {
             "type": "motoko",
             "main": "backend/canisters/core/escrow/Main.mo",
+            "args": "--enhanced-orthogonal-persistence",
             "dependencies": [],
             "declarations": {
                 "output": "shared/declarations/escrow",
@@ -153,6 +168,7 @@
         "escrow_prod": {
             "type": "motoko",
             "main": "backend_prod/canisters/core/escrow/Main.mo",
+            "args": "--enhanced-orthogonal-persistence",
             "dependencies": [],
             "declarations": {
                 "output": "shared/declarations/escrow",
@@ -163,6 +179,7 @@
         "sales": {
             "type": "motoko",
             "main": "backend/canisters/core/sales/Main.mo",
+            "args": "--enhanced-orthogonal-persistence",
             "dependencies": [],
             "declarations": {
                 "output": "shared/declarations/sales",
@@ -173,6 +190,7 @@
         "sales_prod": {
             "type": "motoko",
             "main": "backend_prod/canisters/core/sales/Main.mo",
+            "args": "--enhanced-orthogonal-persistence",
             "dependencies": [],
             "declarations": {
                 "output": "shared/declarations/sales",
@@ -183,6 +201,7 @@
         "axioms": {
             "type": "motoko",
             "main": "backend/canisters/core/axioms/Main.mo",
+            "args": "--enhanced-orthogonal-persistence",
             "dependencies": [],
             "declarations": {
                 "output": "shared/declarations/axioms",
@@ -193,6 +212,7 @@
         "axioms_prod": {
             "type": "motoko",
             "main": "backend_prod/canisters/core/axioms/Main.mo",
+            "args": "--enhanced-orthogonal-persistence",
             "dependencies": [],
             "declarations": {
                 "output": "shared/declarations/axioms",
@@ -200,9 +220,32 @@
                 "node_compatibility": true
             }
         },
+        "encyclopedia": {
+            "type": "motoko",
+            "main": "backend/canisters/core/encyclopedia/Main.mo",
+            "args": "--enhanced-orthogonal-persistence",
+            "dependencies": [],
+            "declarations": {
+                "output": "shared/declarations/encyclopedia",
+                "bindings": ["js", "ts", "did"],
+                "node_compatibility": true
+            }
+        },
+        "encyclopedia_prod": {
+            "type": "motoko",
+            "main": "backend_prod/canisters/core/encyclopedia/Main.mo",
+            "args": "--enhanced-orthogonal-persistence",
+            "dependencies": [],
+            "declarations": {
+                "output": "shared/declarations/encyclopedia",
+                "bindings": ["js", "ts", "did"],
+                "node_compatibility": true
+            }
+        },
         "chat": {
             "type": "motoko",
             "main": "backend/canisters/core/chat/Main.mo",
+            "args": "--enhanced-orthogonal-persistence",
             "dependencies": [],
             "declarations": {
                 "output": "shared/declarations/chat",
@@ -213,6 +256,7 @@
         "chat_prod": {
             "type": "motoko",
             "main": "backend_prod/canisters/core/chat/Main.mo",
+            "args": "--enhanced-orthogonal-persistence",
             "dependencies": [],
             "declarations": {
                 "output": "shared/declarations/chat",
@@ -223,6 +267,7 @@
         "assets": {
             "type": "motoko",
             "main": "backend/canisters/core/assets/Main.mo",
+            "args": "--enhanced-orthogonal-persistence",
             "dependencies": [],
             "declarations": {
                 "output": "shared/declarations/assets",
@@ -233,6 +278,7 @@
         "assets_prod": {
             "type": "motoko",
             "main": "backend_prod/canisters/core/assets/Main.mo",
+            "args": "--enhanced-orthogonal-persistence",
             "dependencies": [],
             "declarations": {
                 "output": "shared/declarations/assets",

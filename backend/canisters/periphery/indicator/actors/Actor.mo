@@ -60,6 +60,7 @@ module {
         #Axioms;
         #DAO;
         #Facade;
+        #Encyclopedia;
         #Chat;
         #Assets;
         #Indicator
@@ -73,6 +74,7 @@ module {
         #Axioms;
         #DAO;
         #Facade;
+        #Encyclopedia;
         #Chat;
         #Assets;
         #Indicator;
@@ -89,6 +91,7 @@ module {
         #Axioms;
         #DAO;
         #Facade;
+        #Encyclopedia;
         #Chat;
         #Assets;
         #Indicator;

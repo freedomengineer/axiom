@@ -39,6 +39,7 @@ const CANISTER_NAMES = {
     Escrow: 'escrow',
     Sales: 'sales',
     Axioms: 'axioms',
+    Encyclopedia: 'encyclopedia',
     Chat: 'chat',
     Assets: 'assets',
     Indicator: 'indicator',
