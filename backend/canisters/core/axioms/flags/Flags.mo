@@ -90,12 +90,18 @@ module {
 
     /// PUBLIC ////// MODIFIERS ////////////
 
-    public func request(__ : Self, header : Header, requester : Principal, reason : Text, getNow : () -> Int) : Flag {
+    public func request(__ : Self, header : Header, requester : Principal, reason : Text, getUser : Principal -> User, getNow : () -> Int) : Flag {
         let flag : Flag = Flag.init(requester, reason, getNow);
         __.requesting := List.push(header, __.requesting);
-        switch (Map.includes(__.requests, Key(header))) {
-            case (true) Map.delete(__.requests, Key(header));
-            case (false) {}
+        switch (Map.get(__.requests, Key(header))) {
+            case (?existed) {
+                for (voter in BinaryVotes.voters(existed.votes)) {
+                    let user : User = getUser(voter);
+                    User.removeFlagVote(user, header)
+                };
+                Map.delete(__.requests, Key(header))
+            };
+            case (null) {}
         };
         Map.put(__.requests, Key(header), flag);
         flag

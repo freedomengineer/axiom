@@ -42,7 +42,7 @@ const DelegatedProposalVote = ({
             <MenuHandler>
                 <button
                     className={cn(
-                        'py-normal gap-small !text-tiny disabled:border-[var(--vote-color)]/0 disabled:bg-[var(--vote-color)]/50 col-span-2 flex transform items-center justify-center border-2 border-[var(--vote-color)] outline-none transition-all duration-200 ease-in-out disabled:pointer-events-none aria-checked:pointer-events-none',
+                        'py-normal gap-small !text-tiny disabled:border-[var(--vote-color)]/0 col-span-2 flex transform items-center justify-center border-2 border-[var(--vote-color)] outline-none transition-all duration-200 ease-in-out disabled:pointer-events-none disabled:bg-[var(--vote-color)] disabled:bg-opacity-50 aria-checked:pointer-events-none',
                         !isCurrentVote &&
                             `bg-[var(--vote-color)]/0 text-[var(--vote-color)] hover:bg-[var(--vote-color)] hover:text-white`,
                         isCurrentVote &&

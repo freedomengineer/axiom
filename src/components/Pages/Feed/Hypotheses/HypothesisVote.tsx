@@ -26,7 +26,6 @@ const HypothesisVote = ({
     const { Icon, bgColor, name } = VOTES[choice]
     const isCurrentVote = UnwrapVariant(vote?.choice) === choice
 
-    // Get custom color for this vote type
     const voteType = mapVoteTypeFromString(choice)
     const customColor = colors[voteType]
 
@@ -42,7 +41,7 @@ const HypothesisVote = ({
         >
             <button
                 className={cn(
-                    'py-normal text-tiny gap-small flex w-full transform select-none items-center justify-center text-white transition-all duration-300 ease-in-out hover:bg-opacity-80 hover:opacity-75 disabled:pointer-events-none disabled:bg-opacity-50',
+                    'py-normal text-tiny gap-small flex w-full transform select-none items-center justify-center border border-transparent text-white transition-all duration-300 ease-in-out hover:bg-opacity-80 hover:opacity-75 disabled:pointer-events-none disabled:bg-opacity-50',
                     bgColor,
                     className
                 )}

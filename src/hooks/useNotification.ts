@@ -315,8 +315,9 @@ export const getNumNotificationsCache = async (): Promise<number> => {
     return await db.notifications.count()
 }
 
-export const useNotificationPoller = (agent: Agent | null, intervalSeconds = 10) => {
+export const useNotificationPoller = (agent: Agent | null, intervalSeconds = 15) => {
     const agentRef = useRef(agent)
+    const intervalIdRef = useRef<NodeJS.Timeout | null>(null)
 
     useEffect(() => {
         agentRef.current = agent
@@ -327,12 +328,45 @@ export const useNotificationPoller = (agent: Agent | null, intervalSeconds = 10)
             if (agentRef.current) {
                 const principal = await agentRef.current.getPrincipal()
                 initializeDB(principal.toString())
+                console.log('useNotification: Querying notifications')
                 await queryNotifications(agentRef.current)
             }
         }
-        runQuery()
-        const intervalId = setInterval(runQuery, intervalSeconds * 1000)
-        return () => clearInterval(intervalId)
+
+        const startPolling = () => {
+            if (intervalIdRef.current) {
+                clearInterval(intervalIdRef.current)
+            }
+
+            if (!document.hidden) {
+                runQuery()
+                intervalIdRef.current = setInterval(runQuery, intervalSeconds * 1000)
+            }
+        }
+
+        const stopPolling = () => {
+            if (intervalIdRef.current) {
+                clearInterval(intervalIdRef.current)
+                intervalIdRef.current = null
+            }
+        }
+
+        const handleVisibilityChange = () => {
+            if (document.hidden) {
+                stopPolling()
+            } else {
+                startPolling()
+            }
+        }
+
+        startPolling()
+
+        document.addEventListener('visibilitychange', handleVisibilityChange)
+
+        return () => {
+            stopPolling()
+            document.removeEventListener('visibilitychange', handleVisibilityChange)
+        }
     }, [agent, intervalSeconds])
 }
 

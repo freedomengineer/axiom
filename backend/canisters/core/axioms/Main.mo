@@ -624,7 +624,7 @@ shared ({ caller = indicator }) persistent actor class Axioms() = this {
 
         let Treasury : TreasuryInterface.Treasury = await Indicator.Treasury();
         await Treasury.delegatedClaim(#DAO, caller, FLAG_REQUEST_FEE.val);
-        let flag : Flag.Flag = Flags.request(flags, header, caller, reason, getNow);
+        let flag : Flag.Flag = Flags.request(flags, header, caller, reason, _getUser, getNow);
 
         let Escrow : EscrowInterface.Escrow = await Indicator.Escrow();
         let value : Nat = await Escrow.getVotingPower(caller);
@@ -640,6 +640,7 @@ shared ({ caller = indicator }) persistent actor class Axioms() = this {
             let result : { #Approved; #Rejected; #Expired } = switch (poweredValueDifference >= 0) {
                 case (true) {
                     Flag.approved(flag);
+                    _remove(header, flag);
                     #Approved
                 };
                 case (false) {
@@ -648,7 +649,6 @@ shared ({ caller = indicator }) persistent actor class Axioms() = this {
                 }
             };
             Flags.finalize(flags, header);
-            _remove(header, flag);
 
             systemNotifications := List.push(#FlagResult({ header; result; timestamp = getNow() }), systemNotifications)
         };
@@ -762,6 +762,7 @@ shared ({ caller = indicator }) persistent actor class Axioms() = this {
             let result : { #Approved; #Rejected; #Expired } = switch (poweredValueDifference >= 0) {
                 case (true) {
                     Flag.approved(flag);
+                    _remove(header, flag);
                     #Approved
                 };
                 case (false) {
@@ -770,7 +771,6 @@ shared ({ caller = indicator }) persistent actor class Axioms() = this {
                 }
             };
             Flags.finalize(flags, header);
-            _remove(header, flag);
 
             ignore (
                 func() : async () {

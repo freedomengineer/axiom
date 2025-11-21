@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 
-import Spinner from '@components/Primitives/Spinner'
 import { Tab, TabPanel, Tabs, TabsBody, TabsHeader } from '@components/Primitives/MemorizedTabs'
+import Spinner from '@components/Primitives/Spinner'
 import Link from '@components/Shared/Link'
 import PageMetadata from '@components/Shared/PageMetadata'
 import Pagination from '@components/Shared/Pagination'
@@ -72,11 +72,11 @@ const SpecificHistoryPage = () => {
                     ))}
                 </TabsHeader>
                 <TabsBody>
-                    <p className="text-small py-normal text-right font-medium text-cold-800">
-                        Your revenue: {e8s.toString(revenue ?? 0n)} ACORNs
-                    </p>
                     {AGES.map(({ id }) => (
                         <TabPanel key={id} value={id}>
+                            <p className="text-small py-normal text-right font-medium text-cold-800">
+                                Your revenue: {e8s.toString(revenue ?? 0n)} ACORNs
+                            </p>
                             {ranks.length === 0 ? (
                                 <div className="flex h-full w-full flex-col items-center justify-center text-center">
                                     <p className="text-normal text-center font-medium text-cold-700">
@@ -196,7 +196,7 @@ const SpecificHistoryPage = () => {
                                     </table>
                                 </div>
                             )}
-                            <div className="mt-large flex justify-center">
+                            <div className="pt-large flex justify-center">
                                 <Pagination
                                     is={BigInt(ago!) + 1n}
                                     of={21n}

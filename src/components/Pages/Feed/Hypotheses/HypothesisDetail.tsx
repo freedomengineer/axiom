@@ -28,6 +28,7 @@ import useHypothesisDetails from '@hooks/useHypothesisDetails'
 import useVoteColors from '@hooks/useVoteColors'
 import cn from '@libs/class'
 import { formatDate } from '@libs/date'
+import { round } from '@libs/formatter'
 import { success } from '@libs/toastify'
 import { build } from '@libs/url'
 import { EVote as EEvidenceVote } from '@utils/feed/evidence'
@@ -85,7 +86,13 @@ const HypothesisDetail = ({
         handleAxiom,
         handleBookmark,
         handleRefresh,
+        setLocalItem: setLocalItemFromHook,
     } = useHypothesisDetails(item)
+
+    const syncSetLocalItem = (updatedItem: DAxioms.SharableHypothesis) => {
+        setLocalItemFromHook(updatedItem)
+        setLocalItem(updatedItem)
+    }
     const [postEvidenceOpen, setPostEvidenceOpen] = useState<
         EEvidenceVote | bigint | undefined | null
     >(null)
@@ -94,7 +101,7 @@ const HypothesisDetail = ({
 
     const handleCopy = () => {
         navigator.clipboard.writeText(
-            build(['feed', localItem.id], { ref: principal?.toText() ?? null }, true)
+            build(['feed', item.id], { ref: principal?.toText() ?? null }, true)
         )
         setCopied(true)
         success('Copied share link to clipboard')
@@ -216,7 +223,7 @@ const HypothesisDetail = ({
                         : `Post Reply to Evidence ${postEvidenceOpen?.toString()}`
                 }
                 href={build(
-                    ['feed', localItem.id, 'evidences', 'post'],
+                    ['feed', item.id, 'evidences', 'post'],
                     typeof postEvidenceOpen === 'string'
                         ? { side: postEvidenceOpen }
                         : { replyTo: postEvidenceOpen?.toString() }
@@ -225,7 +232,7 @@ const HypothesisDetail = ({
                 Icon={<EditIcon className="h-6 stroke-[1.5px]" />}
             >
                 <PostEvidence
-                    id={localItem.id}
+                    id={item.id}
                     side={typeof postEvidenceOpen === 'string' ? postEvidenceOpen : undefined}
                     replyTo={typeof postEvidenceOpen === 'bigint' ? postEvidenceOpen : undefined}
                     onSubmit={(side) => {
@@ -244,7 +251,7 @@ const HypothesisDetail = ({
                 Icon={<FlagIcon className="h-6 w-6 stroke-[1.5px] md:h-7 md:w-7" />}
             >
                 <RequestFlag
-                    header={{ id: localItem.id, category: Variant('Hypothesis') }}
+                    header={{ id: item.id, category: Variant('Hypothesis') }}
                     onSubmit={() => setOpen(null)}
                 />
             </Popup>
@@ -257,13 +264,13 @@ const HypothesisDetail = ({
             >
                 <PostHypothesis
                     isEdit={{
-                        id: localItem.id,
-                        fieldId: localItem.fieldId,
+                        id: item.id,
+                        fieldId: item.fieldId,
                         content: localItem.content,
                     }}
                     onSubmit={() => {
                         setOpen(null)
-                        handleRefresh()
+                        handleRefresh(syncSetLocalItem)
                     }}
                 />
             </Popup>
@@ -304,7 +311,7 @@ const HypothesisDetail = ({
                                     vote={vote}
                                     className="rounded-lg"
                                     handleVote={(custom) =>
-                                        handleVote(EVote.Positive, custom, setLocalItem)
+                                        handleVote(EVote.Positive, custom, syncSetLocalItem)
                                     }
                                     loading={votesLoading[EVote.Positive]}
                                 />
@@ -313,7 +320,7 @@ const HypothesisDetail = ({
                                     vote={vote}
                                     className="rounded-lg"
                                     handleVote={(custom) =>
-                                        handleVote(EVote.Neutral, custom, setLocalItem)
+                                        handleVote(EVote.Neutral, custom, syncSetLocalItem)
                                     }
                                     loading={votesLoading[EVote.Neutral]}
                                 />
@@ -322,7 +329,7 @@ const HypothesisDetail = ({
                                     vote={vote}
                                     className="rounded-lg"
                                     handleVote={(custom) =>
-                                        handleVote(EVote.Negative, custom, setLocalItem)
+                                        handleVote(EVote.Negative, custom, syncSetLocalItem)
                                     }
                                     loading={votesLoading[EVote.Negative]}
                                 />
@@ -390,38 +397,36 @@ const HypothesisDetail = ({
                                             })}
                                         </div>
                                         <div className="flex flex-col justify-center">
-                                            {Object.values(VOTES).map(
-                                                ({ bgColor, textColor }, index) => {
-                                                    const voteType =
-                                                        index === 0
-                                                            ? 'positive'
-                                                            : index === 1
-                                                              ? 'neutral'
-                                                              : index === 2
-                                                                ? 'negative'
-                                                                : 'delegated'
-                                                    const customColor =
-                                                        colors[voteType as keyof typeof colors]
+                                            {Object.values(VOTES).map((e, index) => {
+                                                const voteType =
+                                                    index === 0
+                                                        ? 'positive'
+                                                        : index === 1
+                                                          ? 'neutral'
+                                                          : index === 2
+                                                            ? 'negative'
+                                                            : 'delegated'
+                                                const customColor =
+                                                    colors[voteType as keyof typeof colors]
 
-                                                    return (
+                                                return (
+                                                    <div
+                                                        className="gap-small flex h-5 items-center md:h-6 xl:h-7"
+                                                        key={index}
+                                                        style={{ color: customColor }}
+                                                    >
                                                         <div
-                                                            className="gap-small flex h-5 items-center md:h-6 xl:h-7"
-                                                            key={index}
-                                                            style={{ color: customColor }}
-                                                        >
-                                                            <div
-                                                                className="h-4 w-7 rounded-full"
-                                                                style={{
-                                                                    backgroundColor: customColor,
-                                                                }}
-                                                            />
-                                                        </div>
-                                                    )
-                                                }
-                                            )}
+                                                            className="h-4 w-7 rounded-full"
+                                                            style={{
+                                                                backgroundColor: customColor,
+                                                            }}
+                                                        />
+                                                    </div>
+                                                )
+                                            })}
                                         </div>
                                         <div className="flex flex-col place-items-start items-start">
-                                            {Object.values(VOTES).map(({ textColor }, index) => {
+                                            {Object.values(VOTES).map((e, index) => {
                                                 const voteType =
                                                     index === 0
                                                         ? 'positive'
@@ -441,7 +446,7 @@ const HypothesisDetail = ({
                                                     >
                                                         <AcornIcon className="h-5 w-5 -translate-y-[2px] stroke-2 md:h-6 md:w-6" />
                                                         <span className="text-small font-medium">
-                                                            {poweredVotes[index].value}
+                                                            {round(poweredVotes[index].value)}
                                                         </span>
                                                         <span className="hidden md:block">
                                                             (
@@ -470,23 +475,23 @@ const HypothesisDetail = ({
                                     width={200}
                                     height={150}
                                     slotProps={{ legend: { hidden: true } }}
-                                    className="translate-x-[40px] md:translate-x-[60px] xl:translate-x-[80px]"
+                                    className="translate-x-[30px] md:translate-x-[70px] xl:translate-x-[80px]"
                                 />
                             </div>
                         )}
                         <div className="px-medium py-small gap-tiny grid w-full grid-cols-2 grid-rows-2 bg-cold-900 text-white md:flex">
                             <Link
                                 className="gap-small order-1 flex items-center hover:opacity-75"
-                                href={build(['feed', 'fields', localItem.fieldId])}
+                                href={build(['feed', 'fields', item.fieldId])}
                             >
                                 <FieldIcon className="h-4 w-4 stroke-[1.5px] md:h-5 md:w-5" />
                                 <span className="text-small md:mr-medium text-nowrap font-light text-white">
-                                    {localItem.fieldId}
+                                    {item.fieldId}
                                 </span>
                             </Link>
                             <Link
                                 className="gap-small order-3 flex items-center hover:opacity-75 md:order-2"
-                                href={build(['profile', localItem.publisher.toText()])}
+                                href={build(['profile', item.publisher.toText()])}
                             >
                                 <Symbol
                                     capitalRaised={publisher.capitalRaised.toString()}
@@ -499,14 +504,14 @@ const HypothesisDetail = ({
                             <div className="gap-small order-2 ml-auto flex items-center md:order-3 md:ml-0">
                                 <DateTimeIcon className="h-4 w-4 stroke-[1.5px] md:h-5 md:w-5" />
                                 <span className="text-small md:mr-medium text-nowrap font-light text-white">
-                                    {formatDate({ nano: localItem.publishDate })}
+                                    {formatDate({ nano: item.publishDate })}
                                 </span>
                             </div>
                             <div className="hidden w-full md:order-4 md:block" />
                             <div
                                 className={cn(
                                     'order-4 ml-auto grid h-6 flex-shrink-0 place-items-center items-center md:order-5 md:ml-0',
-                                    principal?.compareTo(localItem.publisher) === 'eq'
+                                    principal?.compareTo(item.publisher) === 'eq'
                                         ? 'w-40 grid-cols-5 md:w-48'
                                         : 'w-32 grid-cols-4 md:w-40'
                                 )}
@@ -520,7 +525,7 @@ const HypothesisDetail = ({
                                     ) : (
                                         <AdoptIcon
                                             className="mx-auto h-4 w-4 cursor-pointer stroke-[1.5px] hover:h-5 hover:w-5 hover:fill-white hover:text-cold-900 aria-selected:h-5 aria-selected:w-5 aria-selected:fill-white aria-selected:text-cold-900 aria-selected:hover:h-5 aria-selected:hover:w-5 aria-selected:hover:fill-none aria-selected:hover:text-white md:h-5 md:w-5 md:hover:h-6 md:hover:w-6 md:aria-selected:h-6 md:aria-selected:w-6"
-                                            onClick={() => handleAxiom()}
+                                            onClick={() => handleAxiom(syncSetLocalItem)}
                                             aria-selected={!!axiom}
                                         />
                                     )}
@@ -534,7 +539,7 @@ const HypothesisDetail = ({
                                     ) : (
                                         <BookmarkIcon
                                             className="mx-auto h-4 w-4 cursor-pointer stroke-[1.5px] hover:h-5 hover:w-5 hover:fill-white hover:text-cold-900 aria-selected:h-5 aria-selected:w-5 aria-selected:fill-white aria-selected:text-cold-900 aria-selected:hover:h-5 aria-selected:hover:w-5 aria-selected:hover:fill-none aria-selected:hover:text-white md:h-5 md:w-5 md:hover:h-6 md:hover:w-6 md:aria-selected:h-6 md:aria-selected:w-6"
-                                            onClick={() => handleBookmark()}
+                                            onClick={() => handleBookmark(syncSetLocalItem)}
                                             aria-selected={!!bookmark}
                                         />
                                     )}
@@ -556,7 +561,7 @@ const HypothesisDetail = ({
                                         <ShareIcon className="mx-auto h-4 w-4 stroke-[1.5px] md:h-5 md:w-5" />
                                     )}
                                 </button>
-                                {principal?.compareTo(localItem.publisher) === 'eq' && (
+                                {principal?.compareTo(item.publisher) === 'eq' && (
                                     <button
                                         className="w-8 hover:opacity-75 disabled:pointer-events-none md:w-10"
                                         onClick={() => setOpen(EPopup.EditHypothesis)}
@@ -576,64 +581,58 @@ const HypothesisDetail = ({
                             tempHideEvidences && 'pb-medium'
                         )}
                     >
-                        {Object.entries(VOTES).map(
-                            ([name, { bgColor, borderColor, textColor, Icon }], index) => {
-                                const voteType =
-                                    index === 0
-                                        ? 'positive'
-                                        : index === 1
-                                          ? 'neutral'
-                                          : index === 2
-                                            ? 'negative'
-                                            : 'delegated'
-                                const customColor = colors[voteType as keyof typeof colors]
+                        {Object.entries(VOTES).map(([name, { Icon }], index) => {
+                            const voteType =
+                                index === 0
+                                    ? 'positive'
+                                    : index === 1
+                                      ? 'neutral'
+                                      : index === 2
+                                        ? 'negative'
+                                        : 'delegated'
+                            const customColor = colors[voteType as keyof typeof colors]
 
-                                return index === 1 ? (
-                                    tempHideEvidences ? (
-                                        <button
-                                            key={index}
-                                            className="py-normal text-tiny gap-small col-span-3 flex w-full items-center justify-center rounded-lg border transition-all duration-300 ease-in-out hover:opacity-75"
-                                            style={{
-                                                backgroundColor: customColor,
-                                                borderColor: customColor,
-                                            }}
-                                            onClick={() => setTempHideEvidences(!tempHideEvidences)}
-                                        >
-                                            <EvidenceIcon className="h-5 stroke-[1.5px] md:h-6" />
-                                            <span>
-                                                VIEW EVIDENCE ({localItem.evidenceIds.length})
-                                            </span>
-                                        </button>
-                                    ) : (
-                                        <div
-                                            key={index}
-                                            className="py-normal text-tiny gap-small col-span-3 flex w-full items-center justify-center rounded-lg border"
-                                            style={{ borderColor: customColor, color: customColor }}
-                                        >
-                                            <EvidenceIcon className="h-5 stroke-[1.5px] md:h-6" />
-                                            <span>
-                                                THE EVIDENCE ({localItem.evidenceIds.length})
-                                            </span>
-                                        </div>
-                                    )
-                                ) : (
+                            return index === 1 ? (
+                                tempHideEvidences ? (
                                     <button
                                         key={index}
-                                        className="py-normal text-tiny gap-small col-span-2 flex w-full items-center justify-center rounded-lg border transition-all duration-300 ease-in-out hover:opacity-75"
+                                        className="py-normal text-tiny gap-small col-span-3 flex w-full items-center justify-center rounded-lg border transition-all duration-300 ease-in-out hover:opacity-75"
                                         style={{
                                             backgroundColor: customColor,
                                             borderColor: customColor,
                                         }}
-                                        onClick={() => setPostEvidenceOpen(name as EEvidenceVote)}
+                                        onClick={() => setTempHideEvidences(!tempHideEvidences)}
                                     >
-                                        <div className="gap-small flex items-center">
-                                            <Icon className="h-5 stroke-[1.5px] md:h-6" />
-                                            <span>{VOTES[voteKeys[index]].name}</span>
-                                        </div>
+                                        <EvidenceIcon className="h-5 stroke-[1.5px] md:h-6" />
+                                        <span>VIEW EVIDENCE ({localItem.evidenceIds.length})</span>
                                     </button>
+                                ) : (
+                                    <div
+                                        key={index}
+                                        className="py-normal text-tiny gap-small col-span-3 flex w-full items-center justify-center rounded-lg border"
+                                        style={{ borderColor: customColor, color: customColor }}
+                                    >
+                                        <EvidenceIcon className="h-5 stroke-[1.5px] md:h-6" />
+                                        <span>THE EVIDENCE ({localItem.evidenceIds.length})</span>
+                                    </div>
                                 )
-                            }
-                        )}
+                            ) : (
+                                <button
+                                    key={index}
+                                    className="py-normal text-tiny gap-small col-span-2 flex w-full items-center justify-center rounded-lg border transition-all duration-300 ease-in-out hover:opacity-75"
+                                    style={{
+                                        backgroundColor: customColor,
+                                        borderColor: customColor,
+                                    }}
+                                    onClick={() => setPostEvidenceOpen(name as EEvidenceVote)}
+                                >
+                                    <div className="gap-small flex items-center">
+                                        <Icon className="h-5 stroke-[1.5px] md:h-6" />
+                                        <span>{VOTES[voteKeys[index]].name}</span>
+                                    </div>
+                                </button>
+                            )
+                        })}
                     </div>
 
                     {!tempHideEvidences && (
@@ -652,6 +651,8 @@ const HypothesisDetail = ({
                                                 <EvidencesLayout
                                                     items={items}
                                                     onReply={setPostEvidenceOpen}
+                                                    localHypothesis={localItem}
+                                                    setLocalHypothesis={syncSetLocalItem}
                                                 />
                                             )}
                                             className="h-full w-full"
@@ -674,6 +675,8 @@ const HypothesisDetail = ({
                                                 <EvidencesLayout
                                                     items={items}
                                                     onReply={setPostEvidenceOpen}
+                                                    localHypothesis={localItem}
+                                                    setLocalHypothesis={syncSetLocalItem}
                                                 />
                                             )}
                                             className="h-full w-full"
@@ -745,6 +748,8 @@ const HypothesisDetail = ({
                                                         <EvidencesLayout
                                                             items={items}
                                                             onReply={setPostEvidenceOpen}
+                                                            localHypothesis={localItem}
+                                                            setLocalHypothesis={setLocalItem}
                                                         />
                                                     )}
                                                     className="h-full w-full"
@@ -765,6 +770,8 @@ const HypothesisDetail = ({
                                                         <EvidencesLayout
                                                             items={items}
                                                             onReply={setPostEvidenceOpen}
+                                                            localHypothesis={localItem}
+                                                            setLocalHypothesis={setLocalItem}
                                                         />
                                                     )}
                                                     className="h-full w-full"

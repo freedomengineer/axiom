@@ -1,4 +1,3 @@
-import { Principal } from '@dfinity/principal'
 import { useEffect, useState } from 'react'
 
 import SelectPackage from '@components/Shared/SelectPackgage'
@@ -9,7 +8,6 @@ import { sha256 } from '@libs/crypto'
 import { formatDate } from '@libs/date'
 import { error } from '@libs/toastify'
 import { Choices, ESteps, StepProps } from '@utils/login/step'
-import { DSales } from 'shared/types/services'
 import proportion, { Proportion } from 'shared/utils/proportion'
 import { Affiliate, ICP } from 'shared/utils/services'
 import { UnwrapVariant } from 'shared/utils/typings'
@@ -37,13 +35,15 @@ const PurchasePackage = ({ choices, setChoice, handlePrev, handleNext }: StepPro
                 .then(setBalance)
                 .catch(() => {})
         }
-        if (coupon) {
+    }, [principal])
+    useEffect(() => {
+        if (packages.length > 0 && coupon) {
             updateCoupon(coupon, () => {
                 localStorage.removeItem('code')
-                setCoupon(null)
+                setCoupon(undefined)
             })
         }
-    }, [principal])
+    }, [packages])
 
     const refreshBalance = async () => {
         if (!principal) return
@@ -71,7 +71,7 @@ const PurchasePackage = ({ choices, setChoice, handlePrev, handleNext }: StepPro
                     res = await Affiliate.call(undefined, true).getCoupon(hash)
                 } catch (e) {
                     onRedeemed?.()
-                    return null
+                    return
                 }
 
                 const status = UnwrapVariant(res.status)
@@ -80,6 +80,7 @@ const PurchasePackage = ({ choices, setChoice, handlePrev, handleNext }: StepPro
                     error(
                         `Coupon already redeemed by ${(status[1] as any).by.toText()} ${(formatDate({ nano: (status[1] as any).timestamp }), true)}`
                     )
+                    onRedeemed?.()
                 } else if (
                     status === 'Available' ||
                     (status[0] === 'Failed' && principal?.compareTo((status[1] as any).by) === 'eq')

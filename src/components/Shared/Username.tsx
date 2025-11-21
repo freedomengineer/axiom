@@ -1,4 +1,5 @@
 import { Principal } from '@dfinity/principal'
+import { Fragment } from 'react'
 
 import EngineerIcon from '@components/Assets/engineer.svg'
 import ExplorerIcon from '@components/Assets/explorer.svg'
@@ -14,14 +15,14 @@ import cn from '@libs/class'
 import Link from './Link'
 
 export const PACKAGES = {
-    '1000000000': 'Hobo',
-    '2000000000': 'Seeker',
-    '5000000000': 'Scribe',
-    '10000000000': 'Scientist',
-    '50000000000': 'Philosopher',
-    '100000000000': 'Engineer',
-    '500000000000': 'Explorer',
-    '1000000000000': 'Liberator',
+    '1000000000': ['Hobo', 'HOBO'],
+    '2000000000': ['Seeker', 'SEEKER'],
+    '5000000000': ['Scribe', 'SCRIBE'],
+    '10000000000': ['Scientist', 'SCIENT'],
+    '50000000000': ['Philosopher', 'PHILOS'],
+    '100000000000': ['Engineer', 'ENGINE'],
+    '500000000000': ['Explorer', 'EXPLOR'],
+    '1000000000000': ['Liberator', 'LIBER'],
 }
 
 export const Symbol = ({
@@ -145,7 +146,7 @@ const Username = ({
         )
     if (symbol) {
         return (
-            <span className="flex-nowrap place-items-center gap-1 text-nowrap">
+            <span className={cn('flex-nowrap place-items-center gap-1 text-nowrap')}>
                 <Symbol capitalRaised={capitalRaised} className={symbolClassName} />
                 {username}
             </span>
@@ -167,7 +168,7 @@ export const Usernames = ({
 }) => {
     if (className)
         return principals.map((principal, index) => (
-            <span key={index}>
+            <span key={principal.toText()}>
                 <Username
                     className={className}
                     principal={principal}
@@ -184,19 +185,14 @@ export const Usernames = ({
     return (
         <>
             {principals.map((principal, index) => (
-                <>
-                    <Username
-                        key={index}
-                        principal={principal}
-                        symbol={symbol}
-                        linkClassName={linkClassName}
-                    />
+                <Fragment key={principal.toText()}>
+                    <Username principal={principal} symbol={symbol} linkClassName={linkClassName} />
                     {index === principals.length - 1
                         ? ''
                         : index === principals.length - 2
                           ? ' and '
                           : ', '}
-                </>
+                </Fragment>
             ))}
         </>
     )

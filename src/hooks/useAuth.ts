@@ -27,7 +27,7 @@ type AuthContext = {
     user: DFacade.Sharable | undefined | null
     refreshUser: () => Promise<DFacade.Sharable | null>
     setPemIdentity: (identity: Identity) => void
-    login: () => void
+    login: (version: 'v1' | 'v2') => void
     logout: () => void
     pageStatus: PageStatus
     setPageStatus: (status: PageStatus) => void
@@ -47,7 +47,7 @@ export const AuthContext = createContext<AuthContext>({
     setPageStatus: () => {},
 })
 
-const defaultOptions: {
+const defaultOptionsV1: {
     createOptions: AuthClientCreateOptions
     loginOptions: AuthClientLoginOptions
 } = {
@@ -66,6 +66,19 @@ const defaultOptions: {
             process.env.DFX_NETWORK === 'ic'
                 ? `https://${process.env.CANISTER_ID_FRONTEND}.icp0.io`
                 : undefined,
+    },
+}
+const defaultOptionsV2: {
+    createOptions: AuthClientCreateOptions
+    loginOptions: AuthClientLoginOptions
+} = {
+    ...defaultOptionsV1,
+    loginOptions: {
+        ...defaultOptionsV1.loginOptions,
+        identityProvider:
+            process.env.DFX_NETWORK === 'ic'
+                ? 'https://id.ai/#authorize'
+                : `http://${process.env.CANISTER_ID_INTERNET_IDENTITY}.localhost:4943/`,
     },
 }
 
@@ -96,7 +109,11 @@ export const useAuthClient = () => {
                 setIsLoading(false)
             })
         } else {
-            AuthClient.create(defaultOptions.createOptions).then(onSuccess)
+            AuthClient.create(defaultOptionsV1.createOptions)
+                .then(onSuccess)
+                .catch(() => {
+                    AuthClient.create(defaultOptionsV2.createOptions).then(onSuccess)
+                })
         }
 
         const navigation: any = performance.getEntriesByType('navigation')[0]
@@ -155,10 +172,10 @@ export const useAuthClient = () => {
         }
     })
 
-    const login = () => {
+    const login = (version: 'v1' | 'v2' = 'v1') => {
         setIsLoading(true)
         authClient?.login({
-            ...defaultOptions.loginOptions,
+            ...(version === 'v1' ? defaultOptionsV1 : defaultOptionsV2).loginOptions,
             onSuccess: () => onSuccess(authClient).then(() => window.location.reload()),
             onError: () => setIsLoading(false),
         })

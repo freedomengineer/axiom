@@ -88,3 +88,23 @@ export const parsePrimitive = <T>(type: Primitive | Array<DText>, value: Opt<DTe
             return onParseVariant(type as any)(value) as Wrap<T>
     }
 }
+
+export const principalsEqual = (a: Principal, b: Principal) => {
+    return a.compareTo(b) === 'eq'
+}
+
+export const pseudoPrincipalsEqual = (a: any, b: any) => {
+    return Principal.fromUint8Array(a._arr).compareTo(Principal.fromUint8Array(b._arr)) === 'eq'
+}
+
+export const pseudoPrincipalEqual = (a: Principal, b: any) => {
+    return Principal.fromUint8Array(b._arr).compareTo(a) === 'eq'
+}
+
+export const pseudoPrincipalDisplay = (principal: any): string => {
+    return Principal.fromUint8Array(principal._arr).toText()
+}
+
+export const parsePseudoPrincipal = (principal: any): Principal => {
+    return Principal.fromUint8Array(principal._arr)
+}

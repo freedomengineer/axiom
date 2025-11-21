@@ -4,11 +4,13 @@ import BalanceCard from '@components/Pages/Profile/MyAssets/BalanceCard'
 import BurialsTab from '@components/Pages/Profile/MyAssets/BurialsTab'
 import { Tab, TabPanel, Tabs, TabsBody, TabsHeader } from '@components/Primitives/MemorizedTabs'
 import useAuth from '@hooks/useAuth'
+import useUserData from '@hooks/useUserData'
 import { DEscrow } from 'shared/types/services'
 import { ACORN, Escrow, ICP } from 'shared/utils/services'
 
 import CouponsTab from './CouponsTab'
 import EarningTab from './EarningTab'
+
 enum ETab {
     Burials = 'Burials',
     Rewards = 'Rewards',
@@ -17,6 +19,7 @@ enum ETab {
 
 const MyAssetsLayout = ({ tab = ETab.Burials }: { tab?: ETab }) => {
     const { principal } = useAuth()
+    const userData = useUserData(principal ?? null)
 
     const [balances, setBalances] = useState<{ ACORN: bigint; ICP: bigint }>()
 
@@ -48,6 +51,16 @@ const MyAssetsLayout = ({ tab = ETab.Burials }: { tab?: ETab }) => {
         ])
     }
 
+    const claimable = {
+        [ETab.Burials]: userData?.escrowClaimable ?? 0n,
+        [ETab.Rewards]:
+            (userData?.affiliateEarning?.balance ?? 0n) +
+            (userData?.axiomsEarning.balance ?? 0n) +
+            (userData?.daoEarning[0].balance ?? 0n) +
+            (userData?.daoEarning[1].balance ?? 0n),
+        [ETab.Coupons]: 0n,
+    }
+
     return (
         <div className="gap-medium flex w-full flex-col">
             <div className="gap-medium flex flex-col items-center md:flex-row">
@@ -63,10 +76,19 @@ const MyAssetsLayout = ({ tab = ETab.Burials }: { tab?: ETab }) => {
                 />
             </div>
             <Tabs value={currentTab}>
-                <TabsHeader>
+                <TabsHeader className="z-0 overflow-x-hidden">
                     {Object.keys(ETab).map((tab) => (
                         <Tab value={tab} onClick={() => setCurrentTab(tab as ETab)}>
-                            {tab}
+                            <div className="relative mx-auto w-fit">
+                                {tab}
+                                <div
+                                    className="absolute -top-[1.5rem] right-[1.5rem] z-50 overflow-visible aria-hidden:hidden md:-top-[1.5rem] md:right-[1.5rem]"
+                                    aria-hidden={claimable[tab as ETab] === 0n}
+                                >
+                                    <div className="live-dot"></div>
+                                    <div className="live-animated"></div>
+                                </div>
+                            </div>
                         </Tab>
                     ))}
                 </TabsHeader>

@@ -5,16 +5,19 @@ import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 
 import AcornColouredIcon from '@components/Assets/acorn_coloured.svg'
+import AdoptIcon from '@components/Assets/adopt.svg'
 import AxiomACEIcon from '@components/Assets/axiom_ace.svg'
 import ForwardIcon from '@components/Assets/forward.svg'
 import HypothesisIcon from '@components/Assets/hypothesis.svg'
 import ProfileIcon from '@components/Assets/profile.svg'
+import StarIcon from '@components/Assets/star.svg'
 import FieldInline from '@components/Pages/Feed/Fields/FieldInline'
 import Link from '@components/Shared/Link'
 import siteMetadata from '@data/siteMetadata.json'
 import useAuth from '@hooks/useAuth'
 import useLocalStorage from '@hooks/useLocalStorage'
 import { useSpecificUserData } from '@hooks/useUserData'
+import { DAxioms } from 'shared/types/services'
 
 const MAIN_ROUTES = [
     {
@@ -41,6 +44,8 @@ const Sidebar = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
     const [toggle2, setToggle2] = useLocalStorage('sideBarToggle2')
     const [toggle3, setToggle3] = useLocalStorage('sideBarToggle3')
     const [pattern, setPattern] = useState<string>('')
+    const [sortBy, setSortBy] = useState<'alphabetical' | 'popularity'>('popularity')
+    const [activeFields, setActiveFields] = useState<DAxioms.SharableField[]>([])
     const [limit, setLimit] = useState(FIELD_LIMIT)
 
     const targetTime = new Date().setUTCHours(24, 0, 0, 0)
@@ -54,11 +59,25 @@ const Sidebar = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
         return () => clearInterval(interval)
     }, [targetTime])
 
-    const activeFields = !fields
-        ? []
-        : pattern
-          ? fields.filter((field) => field.name.toLowerCase().includes(pattern.toLowerCase()))
-          : fields
+    useEffect(() => {
+        if (!fields) {
+            setActiveFields([])
+            return
+        }
+
+        let newActiveFields = pattern
+            ? fields.filter((field) => field.name.toLowerCase().includes(pattern.toLowerCase()))
+            : [...fields]
+
+        if (sortBy === 'alphabetical') {
+            newActiveFields = [...newActiveFields].sort((a, b) => a.name.localeCompare(b.name))
+        } else {
+            newActiveFields = [...newActiveFields].sort(
+                (a, b) => b.members.length - a.members.length
+            )
+        }
+        setActiveFields(newActiveFields)
+    }, [fields, pattern, sortBy])
 
     const handleOpen = (index: number) => {
         switch (index) {
@@ -159,7 +178,7 @@ const Sidebar = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
                         </span>
                     </AccordionHeader>
                     <AccordionBody className="gap-normal flex flex-col items-center justify-center py-0">
-                        <div className="px-medium pt-extratiny w-full">
+                        <div className="px-normal pt-extratiny gap-small flex w-full items-center justify-between">
                             <input
                                 type="text"
                                 className="input py-extratiny h-7 font-normal text-cold-800"
@@ -167,6 +186,21 @@ const Sidebar = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
                                 onChange={(e) => setPattern(e.target.value)}
                                 aria-selected={!!pattern}
                             />
+                            {sortBy === 'popularity' ? (
+                                <button
+                                    className="text-tiny pre-underline p-tiny rounded-full stroke-[1.5px] text-cold-800 hover:bg-black/10"
+                                    onClick={() => setSortBy('alphabetical')}
+                                >
+                                    <StarIcon className="h-5" />
+                                </button>
+                            ) : (
+                                <button
+                                    className="text-tiny pre-underline p-tiny rounded-full stroke-[1.5px] text-cold-800 hover:bg-black/10"
+                                    onClick={() => setSortBy('popularity')}
+                                >
+                                    <AdoptIcon className="h-5" />
+                                </button>
+                            )}
                         </div>
                         <div className="gap-tiny px-medium flex w-full flex-col justify-start">
                             {activeFields.slice(0, limit).map((item, i) => (

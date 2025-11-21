@@ -103,7 +103,7 @@ const BurialsTab = ({
                         'Withdraw interests & exp. burials'
                     )}
                     <div
-                        className="absolute -top-[1.8rem] right-[1.9rem] z-50 aria-hidden:hidden"
+                        className="absolute -top-[1.8rem] right-[1.9rem] z-50 overflow-visible aria-hidden:hidden"
                         aria-hidden={
                             expiredAmount === 0n &&
                             burials?.every((b) => b.claimableInterest === 0n)
@@ -123,7 +123,7 @@ const BurialsTab = ({
                                     'No.',
                                     'Type',
                                     'Amount',
-                                    'Power.',
+                                    'Power',
                                     'Issued date',
                                     'Expiry date',
                                     'Interest',

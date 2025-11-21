@@ -39,35 +39,7 @@ import Timer "mo:base/Timer";
 import Random "mo:base/Random";
 import Debug "mo:base/Debug";
 
-(
-    with migration = func(
-        old : {
-            var users : Map.Map<Principal, { referrer : ?Principal; referrals : Count.Count; earning : Earning.Earning }>
-        }
-    ) : {
-        var users : Users.Users
-    } {
-        {
-
-            var users : Users.Users = do {
-                let newUsers : Users.Users = Map.new<Principal, User.User>();
-                for ((principal, user) in Map.entries(old.users)) {
-                    Map.put<Principal, User.User>(
-                        newUsers,
-                        Map.PrincipalKey(principal),
-                        {
-                            referrer = user.referrer;
-                            referrals = user.referrals;
-                            earning = user.earning;
-                            var coupons = List.nil()
-                        },
-                    )
-                };
-                newUsers
-            }
-        }
-    }
-) shared ({ caller = indicator }) persistent actor class Affiliate() = this {
+shared ({ caller = indicator }) persistent actor class Affiliate() = this {
     ////// TEMPORARY IMPLEMENTATION ////////////
     private stable var shiftedTime : Int = 0;
     private func getNow() : Int = shiftedTime + Time.now();
