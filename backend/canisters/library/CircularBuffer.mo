@@ -78,6 +78,11 @@ module {
         case (true) __.buffer[(__.head + __.length - i - 1) % __.capacity]
     };
 
+    public func toBeReplaced<T>(__ : Self<T>) : ?T = switch (__.length < __.capacity) {
+        case (false) __.buffer[__.head];
+        case (true) null
+    };
+
     public func size<T>(__ : Self<T>) : Nat = __.length;
     public func capacity<T>(__ : Self<T>) : Nat = __.capacity;
 

@@ -12,7 +12,7 @@ import {
 
 ///
 
-export const DFX_PORT = execSync('dfx info replica-port', { encoding: 'utf-8', stdio: [] })
+export const DFX_PORT = execSync('dfx info webserver-port', { encoding: 'utf-8', stdio: [] })
 export const BASE_PATH = process.cwd().split('canisters')[0]
 
 ///

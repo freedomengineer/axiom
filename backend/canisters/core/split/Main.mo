@@ -18,7 +18,43 @@ import Proportion "../../library/Proportion";
 import Principal "mo:base/Principal";
 import Time "mo:base/Time";
 
-shared ({ caller = indicator }) persistent actor class Split() = this {
+import Map "../../library/Map";
+
+(
+    with migration = func(
+        old : {
+            var distributions : Map.Map<{ #Treasury; #Split; #Affiliate; #Escrow; #Sales; #Axioms; #DAO; #Facade; #Indicator; #ICPUSD; #Frontend; #ACORN; #Founder }, Distribution.Distribution>
+        }
+    ) : {
+        var distributions : Distributions.Distributions
+    } {
+        {
+            var distributions : Distributions.Distributions = do {
+                func _parse(a : { #Treasury; #Split; #Affiliate; #Escrow; #Sales; #Axioms; #DAO; #Facade; #Indicator; #ICPUSD; #Frontend; #ACORN; #Founder }) : Actor.Variant = switch (a) {
+                    case (#Treasury) #Treasury;
+                    case (#Split) #Split;
+                    case (#Affiliate) #Affiliate;
+                    case (#Escrow) #Escrow;
+                    case (#Sales) #Sales;
+                    case (#Axioms) #Axioms;
+                    case (#DAO) #DAO;
+                    case (#Facade) #Facade;
+                    case (#Indicator) #Indicator;
+                    case (#ICPUSD) #ICPUSD;
+                    case (#Frontend) #Frontend;
+                    case (#ACORN) #ACORN;
+                    case (#Founder) #Founder
+                };
+
+                let newDistributions : Distributions.Distributions = Map.new<Actor.Variant, Distribution.Distribution>();
+                for ((variant, oldDistribution) in Map.entries(old.distributions)) {
+                    Map.put<Actor.Variant, Distribution.Distribution>(newDistributions, Actor.VariantKey(_parse(variant)), oldDistribution)
+                };
+                newDistributions
+            }
+        }
+    }
+) shared ({ caller = indicator }) persistent actor class Split() = this {
     ////// TEMPORARY IMPLEMENTATION ////////////
     private stable var shiftedTime : Int = 0;
     private func getNow() : Int = shiftedTime + Time.now();

@@ -22,6 +22,7 @@ import FacadeInterface "../../periphery/facade/Interface";
 
 import Base "../../library/Base";
 import BlobCommitment "../../library/BlobCommitment";
+import CircularBuffer "../../library/CircularBuffer";
 import Configs "../../library/Configs";
 import Date "../../library/Date";
 import Hexadecimal "../../library/Hexadecimal";
@@ -40,8 +41,108 @@ import Error "mo:base/Error";
 import Debug "mo:base/Debug";
 import Timer "mo:base/Timer";
 import Int "mo:base/Int";
+import Text "mo:base/Text";
 
-shared ({ caller = founder }) persistent actor class Indicator() = this {
+import Array "mo:base/Array";
+
+(
+    with migration = func(
+        old : {
+            var actors : {
+                founder : Principal;
+                actors : Map.Map<{ #Treasury; #Split; #Affiliate; #Escrow; #Sales; #Axioms; #DAO; #Facade; #Indicator; #ICPUSD; #Frontend; #ACORN; #Founder }, { principal : Principal; var args : [Nat8]; var commitHash : Text }>
+            };
+            var upgradeTasks : Map.Map<Nat, (Principal, [({ #Treasury; #Split; #Affiliate; #Escrow; #Sales; #Axioms; #DAO; #Facade; #Indicator }, Configs.Sharable)])>;
+            var installations : Map.Map<Principal, ({ commitments : Map.Map<{ #Treasury; #Split; #Affiliate; #Escrow; #Sales; #Axioms; #DAO; #Facade; #Indicator; #ICPUSD; #Frontend; #ACORN }, Commitment.Commitment>; commitHash : Text; updateLevel : Version.UpdateLevel; releaseNotes : Installation.ReleaseNotes }, Time.Time)>
+        }
+    ) : {
+        var actors : Actors.Actors;
+        var upgradeTasks : UpgradeTasks.UpgradeTasks;
+        var installations : Installations.Installations
+    } {
+        {
+            var actors : Actors.Actors = do {
+                let newActors : Map.Map<Actor.Variant, Actor.Actor> = Map.new<Actor.Variant, Actor.Actor>();
+                for ((variant, actorData) in Map.entries(old.actors.actors)) {
+                    Map.put<Actor.Variant, Actor.Actor>(
+                        newActors,
+                        Actor.VariantKey(variant),
+                        {
+                            principal = actorData.principal;
+                            var args = actorData.args;
+                            var commitHash = actorData.commitHash;
+                            snapshots = CircularBuffer.new(4)
+                        },
+                    )
+                };
+                { founder = old.actors.founder; actors = newActors }
+            };
+            var upgradeTasks : UpgradeTasks.UpgradeTasks = do {
+                func _parse(a : { #Treasury; #Split; #Affiliate; #Escrow; #Sales; #Axioms; #DAO; #Facade; #Indicator }) : Actor.ConfigurableVariant = switch (a) {
+                    case (#Treasury) #Treasury;
+                    case (#Split) #Split;
+                    case (#Affiliate) #Affiliate;
+                    case (#Escrow) #Escrow;
+                    case (#Sales) #Sales;
+                    case (#Axioms) #Axioms;
+                    case (#DAO) #DAO;
+                    case (#Facade) #Facade;
+                    case (#Indicator) #Indicator
+                };
+
+                let newUpgradeTasks : UpgradeTasks.UpgradeTasks = Map.new<Nat, (Principal, Installation.ActorsConfigs)>();
+                for ((key, (principal, oldConfigs)) in Map.entries(old.upgradeTasks)) {
+                    var newConfigs : [(Actor.ConfigurableVariant, Configs.Sharable)] = [];
+                    for ((actorVariant, configs) in oldConfigs.vals()) {
+                        newConfigs := Array.append(newConfigs, [(_parse(actorVariant), configs)])
+                    };
+                    Map.put(newUpgradeTasks, Map.NatKey(key), (principal, newConfigs))
+                };
+                newUpgradeTasks
+            };
+            var installations : Installations.Installations = do {
+                func _parse(a : { #Treasury; #Split; #Affiliate; #Escrow; #Sales; #Axioms; #DAO; #Facade; #Indicator; #ICPUSD; #Frontend; #ACORN }) : Actor.DeployableVariant = switch (a) {
+                    case (#Treasury) #Treasury;
+                    case (#Split) #Split;
+                    case (#Affiliate) #Affiliate;
+                    case (#Escrow) #Escrow;
+                    case (#Sales) #Sales;
+                    case (#Axioms) #Axioms;
+                    case (#DAO) #DAO;
+                    case (#Facade) #Facade;
+                    case (#Indicator) #Indicator;
+                    case (#ICPUSD) #ICPUSD;
+                    case (#Frontend) #Frontend;
+                    case (#ACORN) #ACORN
+                };
+
+                let newInstallations : Installations.Installations = Map.new();
+                for ((principal, (installation, time)) in Map.entries(old.installations)) {
+                    Map.put<Principal, (Installation.Installation, Time.Time)>(
+                        newInstallations,
+                        Map.PrincipalKey(principal),
+                        (
+                            {
+                                commitments = do {
+                                    let commitments : Commitments.Commitments = Map.new();
+                                    for ((actorVariant, value) in Map.entries(installation.commitments)) {
+                                        Map.put(commitments, Actor.DeployableVariantKey(_parse(actorVariant)), value)
+                                    };
+                                    commitments
+                                };
+                                commitHash = installation.commitHash;
+                                updateLevel = installation.updateLevel;
+                                releaseNotes = installation.releaseNotes
+                            },
+                            time,
+                        ),
+                    )
+                };
+                newInstallations
+            }
+        }
+    }
+) shared ({ caller = founder }) persistent actor class Indicator() = this {
         private stable var version : Version.Version = Version.new();
     private stable let actors : Actors.Actors = Actors.init(founder);
     private stable let installations : Installations.Installations = Installations.init();
@@ -60,7 +161,7 @@ shared ({ caller = founder }) persistent actor class Indicator() = this {
         for ((proposalId, (issuer, actorsConfigs)) in UpgradeTasks.tasks(upgradeTasks)) {
             try {
                 await putActorsConfigs(actorsConfigs);
-                await _upgradeCanisters(issuer);
+                await _upgradeCanisters(issuer, proposalId);
                 await DAO.setCodeProposalExecuted(proposalId)
             } catch (error) {
                 await DAO.setCodeProposalFailed(proposalId, Error.message(error))
@@ -97,13 +198,146 @@ shared ({ caller = founder }) persistent actor class Indicator() = this {
         Version.increase(version, updateLevel);
         Installations.remove(installations, founder)
     };
-    private func _upgradeCanisters(issuer : Principal) : async () {
+    private func _upgradeCanisters(issuer : Principal, proposalId : Nat) : async () {
         let { commitments; updateLevel; commitHash } : Installation.Installation = Installations.installation(installations, issuer);
-        for ((actorVariant, commitment) in Map.entries(commitments)) {
-            await _installCode(actorVariant, commitment, commitHash, #upgrade)
+
+        var stopFutures : List.List<(Actor.DeployableVariant, async Text)> = List.nil();
+        for (actorVariant in Map.keys(commitments)) {
+            let actorData : Actor.Actor = Actors.getActor(actors, actorVariant);
+
+            let stopFuture : async Text = (
+                func() : async Text {
+                    let stopFuture : async () = Management.IC0.stop_canister({
+                        canister_id = actorData.principal
+                    });
+                    let canisterStatus : async Management.CanisterStatusResult = Management.IC0.canister_status({
+                        canister_id = actorData.principal
+                    });
+                    Hexadecimal.encode(Base.unwrap((await stopFuture, await canisterStatus).1.module_hash))
+                }
+            )();
+            stopFutures := List.push<(Actor.DeployableVariant, async Text)>((actorVariant, stopFuture), stopFutures)
         };
-        Version.increase(version, updateLevel);
-        Installations.remove(installations, issuer)
+
+        var takeSnapshotBeforeFutures : List.List<(Actor.DeployableVariant, async ())> = List.nil();
+        for ((actorVariant, stopFuture) in List.toIter(List.reverse(stopFutures))) {
+            let actorData : Actor.Actor = Actors.getActor(actors, actorVariant);
+
+            let moduleHash : Text = await stopFuture;
+            Debug.print(debug_show actorVariant # " stopped with module hash " # moduleHash);
+
+            let takeSnapshotFuture : async () = (
+                func() : async () {
+                    let result : Management.TakeCanisterSnapshotResult = await Management.IC0.take_canister_snapshot({
+                        canister_id = actorData.principal;
+                        replace_snapshot = Actor.replacedSnapshot(actorData)
+                    });
+                    let snapshot : Actor.SnapshotDetail = {
+                        result with
+                        id = Hexadecimal.encode(Blob.toArray(result.id));
+                        from = #BeforeProposal(proposalId);
+                        moduleHash
+                    };
+                    Actor.pushSnapshot(actorData, snapshot)
+                }
+            )();
+            takeSnapshotBeforeFutures := List.push<(Actor.DeployableVariant, async ())>((actorVariant, takeSnapshotFuture), takeSnapshotBeforeFutures)
+        };
+
+        var installCodeFutures : List.List<(Actor.DeployableVariant, async ())> = List.nil();
+        for ((actorVariant, takeSnapshotBeforeFutures) in List.toIter(List.reverse(takeSnapshotBeforeFutures))) {
+            let commitment : Commitment.Commitment = Commitments.commitment(commitments, actorVariant);
+
+            await takeSnapshotBeforeFutures;
+            Debug.print(debug_show actorVariant # " took snapshot before");
+
+            let installCodeFuture : async () = _installCode(actorVariant, commitment, commitHash, #upgrade(?{ skip_pre_upgrade = null; wasm_memory_persistence = ? #keep }));
+            installCodeFutures := List.push<(Actor.DeployableVariant, async ())>((actorVariant, installCodeFuture), installCodeFutures)
+        };
+
+        var success : List.List<Actor.DeployableVariant> = List.nil();
+        var error : ?Text = null;
+        label installingCode for ((actorVariant, installCodeFuture) in List.toIter(List.reverse(installCodeFutures))) {
+            try {
+                await installCodeFuture;
+                Debug.print(debug_show actorVariant # " installed code");
+
+                success := List.push<Actor.DeployableVariant>(actorVariant, success)
+            } catch (e) {
+                Debug.print(debug_show actorVariant # " failed to install code: " # Error.message(e));
+
+                error := ?Error.message(e);
+                break installingCode
+            }
+        };
+
+        var takeSnapshotAfterFutures : List.List<(Actor.DeployableVariant, async ())> = List.nil();
+        if (error != null) {
+            var rollbackFutures : List.List<(Actor.DeployableVariant, async ())> = List.nil();
+            for (actorVariant in List.toIter(List.reverse(success))) {
+                let actorData : Actor.Actor = Actors.getActor(actors, actorVariant);
+                let snapshotBefore : ?Blob = Actor.lastSnapshot(actorData);
+
+                let rollbackFuture : async () = Management.IC0.load_canister_snapshot({
+                    canister_id = actorData.principal;
+                    snapshot_id = Base.unwrap(snapshotBefore);
+                    sender_canister_version = null
+                });
+                rollbackFutures := List.push<(Actor.DeployableVariant, async ())>((actorVariant, rollbackFuture), rollbackFutures)
+            };
+            for ((actorVariant, rollbackFuture) in List.toIter(List.reverse(rollbackFutures))) {
+                await rollbackFuture;
+                Debug.print(debug_show actorVariant # " rolled back")
+            }
+        } else {
+            for (actorVariant in List.toIter(List.reverse(success))) {
+                let actorData : Actor.Actor = Actors.getActor(actors, actorVariant);
+                let commitment : Commitment.Commitment = Commitments.commitment(commitments, actorVariant);
+
+                let takeSnapshotFuture : async () = (
+                    func() : async () {
+                        let result : Management.TakeCanisterSnapshotResult = await Management.IC0.take_canister_snapshot({
+                            canister_id = actorData.principal;
+                            replace_snapshot = Actor.replacedSnapshot(actorData)
+                        });
+                        let snapshot : Actor.SnapshotDetail = {
+                            result with
+                            id = Hexadecimal.encode(Blob.toArray(result.id));
+                            from = #AfterProposal(proposalId);
+                            moduleHash = commitment.wasmCommitment.checksum
+                        };
+                        Actor.pushSnapshot(actorData, snapshot)
+                    }
+                )();
+                takeSnapshotAfterFutures := List.push<(Actor.DeployableVariant, async ())>((actorVariant, takeSnapshotFuture), takeSnapshotAfterFutures)
+            };
+            for ((actorVariant, takeSnapshotAfterFuture) in List.toIter(List.reverse(takeSnapshotAfterFutures))) {
+                await takeSnapshotAfterFuture;
+                Debug.print(debug_show actorVariant # " took snapshot after")
+            };
+
+            Version.increase(version, updateLevel);
+            Installations.remove(installations, issuer)
+        };
+
+        var startFutures : List.List<(Actor.DeployableVariant, async ())> = List.nil();
+        for (actorVariant in Map.keys(commitments)) {
+            let actorData : Actor.Actor = Actors.getActor(actors, actorVariant);
+
+            let startFuture : async () = Management.IC0.start_canister({
+                canister_id = actorData.principal
+            });
+            startFutures := List.push<(Actor.DeployableVariant, async ())>((actorVariant, startFuture), startFutures)
+        };
+        for ((actorVariant, startFuture) in List.toIter(List.reverse(startFutures))) {
+            await startFuture;
+            Debug.print(debug_show actorVariant # " started")
+        };
+
+        switch (error) {
+            case (?e) throw Error.reject(e);
+            case (null) {}
+        }
     };
 
     /// PROTECTED ////// MODIFIERS ////////////
@@ -116,15 +350,25 @@ shared ({ caller = founder }) persistent actor class Indicator() = this {
             controllers = ?[Principal.fromActor(this)];
             compute_allocation = null;
             memory_allocation = null;
-            freezing_threshold = null
+            freezing_threshold = null;
+            reserved_cycles_limit = null;
+            log_visibility = ? #allowed_viewers([founder, Principal.fromText("mx4y2-h573j-ebz5k-tpet3-n3csa-azsvs-zafl6-sxy3g-yhwn4-wfqs6-qae")]);
+            wasm_memory_limit = null;
+            wasm_memory_threshold = null;
+            environment_variables = null
         };
         let frontendSettings : ?Management.Settings = ?{
             controllers = ?[Principal.fromActor(this), caller];
             compute_allocation = null;
             memory_allocation = null;
-            freezing_threshold = null
+            freezing_threshold = null;
+            reserved_cycles_limit = null;
+            log_visibility = ? #allowed_viewers([founder, Principal.fromText("mx4y2-h573j-ebz5k-tpet3-n3csa-azsvs-zafl6-sxy3g-yhwn4-wfqs6-qae")]);
+            wasm_memory_limit = null;
+            wasm_memory_threshold = null;
+            environment_variables = null
         };
-        for (actorVariant in [#ACORN, #ICPUSD, #Treasury, #Split, #Affiliate, #Escrow, #Sales, #Axioms, #DAO, #Facade, #Frontend].vals()) {
+        for (actorVariant in [#ACORN, #ICPUSD, #Treasury, #Split, #Affiliate, #Escrow, #Sales, #Axioms, #DAO, #Facade, #Encyclopedia, #Chat, #Assets, #Frontend].vals()) {
             let settings : ?Management.Settings = switch (actorVariant) {
                 case (#Frontend) frontendSettings;
                 case (_) defaultSettings
@@ -200,14 +444,160 @@ shared ({ caller = founder }) persistent actor class Indicator() = this {
         Installations.extendAvailabilityDuration(installations, issuer, expiryDate)
     };
 
-    /// PUBLIC ////// MODIFIERS ////////////
-
-    public shared ({ caller }) func topUp(actorVariant : Actor.Variant, amount : Nat) : async () {
+    public shared ({ caller }) func takeArbitrarySnapshots(actorVariants : [Actor.DeployableVariant]) : async () {
         await expectAuthorized(caller, [#Founder]);
-        let canister_id : Principal = Actors.getPrincipal(actors, actorVariant);
-        ExperimentalCycles.add<system>(amount);
-        await Management.IC0.deposit_cycles({ canister_id })
+
+        var stopFutures : List.List<(Actor.DeployableVariant, async Text)> = List.nil();
+        for (actorVariant in actorVariants.vals()) {
+            let actorData : Actor.Actor = Actors.getActor(actors, actorVariant);
+
+            let stopFuture : async Text = (
+                func() : async Text {
+                    let stopFuture : async () = Management.IC0.stop_canister({
+                        canister_id = actorData.principal
+                    });
+                    let canisterStatus : async Management.CanisterStatusResult = Management.IC0.canister_status({
+                        canister_id = actorData.principal
+                    });
+                    Hexadecimal.encode(Base.unwrap((await stopFuture, await canisterStatus).1.module_hash))
+                }
+            )();
+            stopFutures := List.push<(Actor.DeployableVariant, async Text)>((actorVariant, stopFuture), stopFutures)
+        };
+
+        var takeSnapshotFutures : List.List<(Actor.DeployableVariant, async ())> = List.nil();
+        for ((actorVariant, stopFuture) in List.toIter(List.reverse(stopFutures))) {
+            let actorData : Actor.Actor = Actors.getActor(actors, actorVariant);
+
+            let moduleHash : Text = await stopFuture;
+            Debug.print(debug_show actorVariant # " stopped with module hash " # moduleHash);
+
+            let takeSnapshotFuture : async () = (
+                func() : async () {
+                    let result : Management.TakeCanisterSnapshotResult = await Management.IC0.take_canister_snapshot({
+                        canister_id = actorData.principal;
+                        replace_snapshot = Actor.replacedSnapshot(actorData)
+                    });
+                    let snapshot : Actor.SnapshotDetail = {
+                        result with
+                        id = Hexadecimal.encode(Blob.toArray(result.id));
+                        from = #Arbitrary;
+                        moduleHash
+                    };
+                    Actor.pushSnapshot(actorData, snapshot)
+                }
+            )();
+            takeSnapshotFutures := List.push<(Actor.DeployableVariant, async ())>((actorVariant, takeSnapshotFuture), takeSnapshotFutures)
+        };
+
+        var startFutures : List.List<(Actor.DeployableVariant, async ())> = List.nil();
+        for ((actorVariant, takeSnapshotFuture) in List.toIter(List.reverse(takeSnapshotFutures))) {
+            let actorData : Actor.Actor = Actors.getActor(actors, actorVariant);
+
+            await takeSnapshotFuture;
+            Debug.print(debug_show actorVariant # " took snapshot");
+
+            let startFuture : async () = Management.IC0.start_canister({
+                canister_id = actorData.principal
+            });
+            startFutures := List.push<(Actor.DeployableVariant, async ())>((actorVariant, startFuture), startFutures)
+        };
+        for ((actorVariant, startFuture) in List.toIter(List.reverse(startFutures))) {
+            await startFuture;
+            Debug.print(debug_show actorVariant # " started")
+        }
     };
+    public shared ({ caller }) func loadSnapshots(snapshots : [(Actor.DeployableVariant, Text)]) : async () {
+        await expectAuthorized(caller, [#Founder]);
+
+        var stopFutures : List.List<(Actor.DeployableVariant, async Text)> = List.nil();
+        for ((actorVariant, snapshotId) in snapshots.vals()) {
+            let actorData : Actor.Actor = Actors.getActor(actors, actorVariant);
+
+            let stopFuture : async Text = (
+                func() : async Text {
+                    await Management.IC0.stop_canister({ canister_id = actorData.principal });
+                    snapshotId
+                }
+            )();
+            stopFutures := List.push<(Actor.DeployableVariant, async Text)>((actorVariant, stopFuture), stopFutures)
+        };
+
+        var loadSnapshotFutures : List.List<(Actor.DeployableVariant, async ())> = List.nil();
+        for ((actorVariant, stopFuture) in List.toIter(List.reverse(stopFutures))) {
+            let actorData : Actor.Actor = Actors.getActor(actors, actorVariant);
+
+            let snapshotId : Text = await stopFuture;
+            Debug.print(debug_show actorVariant # " stopped");
+
+            let loadSnapshotFuture : async () = Management.IC0.load_canister_snapshot({
+                canister_id = actorData.principal;
+                snapshot_id = Blob.fromArray(Hexadecimal.decode(snapshotId));
+                sender_canister_version = null
+            });
+            loadSnapshotFutures := List.push<(Actor.DeployableVariant, async ())>((actorVariant, loadSnapshotFuture), loadSnapshotFutures)
+        };
+
+        var startFutures : List.List<(Actor.DeployableVariant, async ())> = List.nil();
+        for ((actorVariant, loadSnapshotFuture) in List.toIter(List.reverse(loadSnapshotFutures))) {
+            let actorData : Actor.Actor = Actors.getActor(actors, actorVariant);
+
+            await loadSnapshotFuture;
+            Debug.print(debug_show actorVariant # " loaded snapshot");
+
+            let startFuture : async () = Management.IC0.start_canister({
+                canister_id = actorData.principal
+            });
+            startFutures := List.push<(Actor.DeployableVariant, async ())>((actorVariant, startFuture), startFutures)
+        };
+        for ((actorVariant, startFuture) in List.toIter(List.reverse(startFutures))) {
+            await startFuture;
+            Debug.print(debug_show actorVariant # " started")
+        }
+    };
+
+    public shared ({ caller }) func updateSettings(actorVariants : [Actor.Variant], settings : Management.Settings) : async () {
+        await expectAuthorized(caller, [#Founder]);
+
+        var updateFutures : List.List<(Actor.Variant, async ())> = List.nil();
+        for (actorVariant in actorVariants.vals()) {
+            let actorData : Actor.Actor = Actors.getActor(actors, actorVariant);
+            let updateFuture : async () = Management.IC0.update_settings({
+                settings;
+                canister_id = actorData.principal
+            });
+            updateFutures := List.push<(Actor.Variant, async ())>((actorVariant, updateFuture), updateFutures)
+        };
+        for ((actorVariant, updateFuture) in List.toIter(List.reverse(updateFutures))) {
+            await updateFuture;
+            Debug.print(debug_show actorVariant # " updated settings")
+        }
+    };
+
+    public shared ({ caller }) func createNewCanisters() : async () {
+        await expectAuthorized(caller, [#Founder]);
+
+        let settings : ?Management.Settings = ?{
+            controllers = ?[Principal.fromActor(this)];
+            compute_allocation = null;
+            memory_allocation = null;
+            freezing_threshold = null;
+            reserved_cycles_limit = null;
+            log_visibility = ? #allowed_viewers([founder, Principal.fromText("mx4y2-h573j-ebz5k-tpet3-n3csa-azsvs-zafl6-sxy3g-yhwn4-wfqs6-qae")]);
+            wasm_memory_limit = null;
+            wasm_memory_threshold = null;
+            environment_variables = null
+        };
+        for (actorVariant in [#Encyclopedia, #Chat, #Assets].vals()) {
+            ExperimentalCycles.add<system>(1_000_000_000_000);
+            let { canister_id } : Management.CreateCanisterResult = await Management.IC0.create_canister({
+                settings
+            });
+            Actors.initializeActor(actors, actorVariant, canister_id)
+        }
+    };
+
+    /// PUBLIC ////// MODIFIERS ////////////
 
     public shared ({ caller }) func uploadCommitmentChunk(actorVariant : Actor.DeployableVariant, id : Nat8, chunk : Blob, expectedModuleHash : Text) : async () {
         let { commitments } : Installation.Installation = Installations.installation(installations, caller);
@@ -238,7 +628,8 @@ shared ({ caller = founder }) persistent actor class Indicator() = this {
             cycles = canisterStatus.cycles;
             args = actorData.args;
             moduleHash = Hexadecimal.encode(Base.unwrap(canisterStatus.module_hash));
-            commitHash = actorData.commitHash
+            commitHash = actorData.commitHash;
+            snapshots = CircularBuffer.toArray(actorData.snapshots)
         };
         actorInfo
     };
@@ -254,7 +645,8 @@ shared ({ caller = founder }) persistent actor class Indicator() = this {
                 cycles = canisterStatus.cycles;
                 args = actorData.args;
                 moduleHash = Hexadecimal.encode(Base.unwrap(canisterStatus.module_hash));
-                commitHash = actorData.commitHash
+                commitHash = actorData.commitHash;
+                snapshots = CircularBuffer.toArray(actorData.snapshots)
             };
             actorsInfo := List.push((actorName, actorInfo), actorsInfo)
         };

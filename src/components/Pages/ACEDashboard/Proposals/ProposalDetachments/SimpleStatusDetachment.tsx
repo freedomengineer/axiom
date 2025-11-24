@@ -30,7 +30,9 @@ const SimpleStatusDetachment = ({ actorStatus }: { actorStatus: ActorStatus }) =
                 </thead>
                 <tbody>
                     {Object.entries(actorStatus).map(([key, [, value]], i) => {
-                        const isLastRow = i === Object.keys(actorStatus).length - 1
+                        const isLastRow = i === Object.keys(actorStatus).length - 2
+
+                        if (key.includes('Snapshot')) return null
 
                         return (
                             <tr key={i} className="group cursor-pointer hover:bg-cold-50">
@@ -77,7 +79,7 @@ const SimpleStatusDetachment = ({ actorStatus }: { actorStatus: ActorStatus }) =
                                                     <code>{value as string}</code>
                                                 </Link>
                                             ),
-                                        }?.[key] ?? value}
+                                        }?.[key] ?? String(value)}
                                     </code>
                                 </td>
                             </tr>

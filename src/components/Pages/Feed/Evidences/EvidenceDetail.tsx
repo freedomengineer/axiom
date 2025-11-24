@@ -193,7 +193,7 @@ const EvidenceDetail = ({
                     />
                 )}
                 {formObject.Note && (
-                    <div className="mx-auto h-auto w-fit">
+                    <div className="mx-auto h-auto w-fit max-w-full">
                         <p className="text-tiny whitespace-pre-line  break-words text-center">
                             {formObject.Note.content}
                         </p>
@@ -236,7 +236,7 @@ const EvidenceDetail = ({
                     </div>,
                     document.body
                 )}
-            <div className="px-medium py-small gap-tiny grid w-full grid-cols-2 grid-rows-2 rounded-b-md bg-cold-900 text-white md:flex">
+            <div className="px-medium py-small gap-small grid w-full grid-cols-2 grid-rows-2 rounded-b-md bg-cold-900 text-white md:flex">
                 <button
                     className="gap-small order-1 flex items-center hover:opacity-75"
                     onClick={() => setOpen(EPopup.HypothesisDetail)}
@@ -268,7 +268,7 @@ const EvidenceDetail = ({
                     </span>
                 </button>
                 <div className="hidden w-full md:order-4 md:block" />
-                <div className="order-4 ml-auto flex w-full max-w-44 flex-shrink-0 place-items-center items-center justify-between md:order-5 md:ml-0">
+                <div className="order-4 ml-auto flex w-fit flex-shrink-0 place-items-center items-center justify-between gap-3 md:order-5 md:ml-0">
                     <div className="gap-tiny flex items-center">
                         <EvidenceVote
                             choice={EVote.Positive}

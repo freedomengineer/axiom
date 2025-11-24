@@ -12,6 +12,7 @@ import TreasuryInterface "../../core/treasury/Interface";
 import DAOInterface "../../periphery/dao/Interface";
 import FacadeInterface "../../periphery/facade/Interface";
 import Configs "../../library/Configs";
+import Management "../../library/Management";
 import Version "../../library/Version";
 
 module {
@@ -30,7 +31,10 @@ module {
         installCanisters : shared () -> async ();
         enqueueUpgradeTask : shared (Nat, Principal, Installation.ActorsConfigs) -> async ();
         extendInstallationExpiryDate : shared (Principal, Nat) -> async ();
-        topUp : shared (Actor.Variant, Nat) -> async ();
+        takeArbitrarySnapshots : shared ([Actor.DeployableVariant]) -> async ();
+        loadSnapshots : shared ([(Actor.DeployableVariant, Text)]) -> async ();
+        updateSettings : shared ([Actor.Variant], Management.Settings) -> async ();
+        createNewCanisters : shared () -> async ();
         uploadCommitmentChunk : shared (Actor.DeployableVariant, Nat8, Blob, Text) -> async ();
         settleCommitment : shared (Actor.DeployableVariant) -> async ();
         clearCommitment : shared (Actor.DeployableVariant) -> async ();

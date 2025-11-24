@@ -37,11 +37,10 @@ export const idlFactory = ({ IDL }) => {
   const Sharable__8 = IDL.Vec(IDL.Tuple(Key, SharableValue));
   const Sharable__7 = IDL.Nat;
   const Time = IDL.Int;
-  const SharableE8S__1 = IDL.Nat;
   const Sharable__6 = IDL.Record({
     'lastWithdrawAt' : Time,
-    'revenue' : SharableE8S__1,
-    'balance' : SharableE8S__1,
+    'revenue' : SharableE8S,
+    'balance' : SharableE8S,
   });
   const Sharable__4 = IDL.Record({
     'title' : IDL.Text,
@@ -78,10 +77,10 @@ export const idlFactory = ({ IDL }) => {
     'Negative' : IDL.Null,
     'Positive' : IDL.Null,
   });
-  const UniformBinaryVote__1 = IDL.Record({ 'choice' : Choice });
-  const Delegable__2 = IDL.Variant({
+  const UniformBinaryVote = IDL.Record({ 'choice' : Choice });
+  const Delegable__1 = IDL.Variant({
     'Delegated' : IDL.Principal,
-    'Default' : UniformBinaryVote__1,
+    'Default' : UniformBinaryVote,
   });
   const ConfigurableActorVariant = IDL.Variant({
     'DAO' : IDL.Null,
@@ -95,10 +94,10 @@ export const idlFactory = ({ IDL }) => {
     'Treasury' : IDL.Null,
   });
   const SharableConfigs = IDL.Vec(IDL.Tuple(Key, SharableValue));
-  const ActorsConfigs__1 = IDL.Vec(
+  const ActorsConfigs = IDL.Vec(
     IDL.Tuple(ConfigurableActorVariant, SharableConfigs)
   );
-  const UpdateLevel__1 = IDL.Variant({
+  const UpdateLevel = IDL.Variant({
     'Patch' : IDL.Null,
     'Major' : IDL.Null,
     'Minor' : IDL.Null,
@@ -132,20 +131,20 @@ export const idlFactory = ({ IDL }) => {
   });
   const SharableCommitments = IDL.Vec(SharableCommitment);
   const SharableInstallation = IDL.Record({
-    'updateLevel' : UpdateLevel__1,
+    'updateLevel' : UpdateLevel,
     'releaseNotes' : ReleaseNotes,
     'commitments' : SharableCommitments,
     'commitHash' : IDL.Text,
   });
   const SharableCode = IDL.Record({
-    'actorsConfigs' : ActorsConfigs__1,
+    'actorsConfigs' : ActorsConfigs,
     'installation' : SharableInstallation,
   });
   const SharableField = IDL.Record({
     'name' : IDL.Text,
     'description' : IDL.Text,
   });
-  const SharableConfigs__1 = IDL.Record({ 'actorsConfigs' : ActorsConfigs__1 });
+  const SharableConfigs__1 = IDL.Record({ 'actorsConfigs' : ActorsConfigs });
   const SharableWorker = IDL.Record({});
   const SharableDetachment = IDL.Variant({
     'Code' : SharableCode,
@@ -162,14 +161,13 @@ export const idlFactory = ({ IDL }) => {
     'Retried' : IDL.Null,
     'Expired' : IDL.Null,
   });
-  const Time__2 = IDL.Int;
-  const Milestone = IDL.Record({ 'status' : Status, 'date' : Time__2 });
+  const Milestone = IDL.Record({ 'status' : Status, 'date' : Time });
   const Sharable__2 = IDL.Record({
     'id' : IDL.Nat,
     'title' : IDL.Text,
     'icpReward' : IDL.Nat,
     'content' : IDL.Text,
-    'callerVote' : IDL.Opt(Delegable__2),
+    'callerVote' : IDL.Opt(Delegable__1),
     'votes' : IDL.Tuple(
       IDL.Vec(IDL.Principal),
       IDL.Vec(IDL.Principal),
@@ -214,7 +212,7 @@ export const idlFactory = ({ IDL }) => {
     'title' : IDL.Text,
     'icpReward' : IDL.Nat,
     'content' : IDL.Text,
-    'callerVote' : IDL.Opt(Delegable__2),
+    'callerVote' : IDL.Opt(Delegable__1),
     'votes' : IDL.Tuple(
       IDL.Vec(IDL.Principal),
       IDL.Vec(IDL.Principal),
@@ -234,8 +232,8 @@ export const idlFactory = ({ IDL }) => {
   });
   const SharableEarning = IDL.Record({
     'lastWithdrawAt' : Time,
-    'revenue' : SharableE8S__1,
-    'balance' : SharableE8S__1,
+    'revenue' : SharableE8S,
+    'balance' : SharableE8S,
   });
   const Choice__1 = IDL.Variant({
     'Negative' : IDL.Null,
@@ -243,31 +241,17 @@ export const idlFactory = ({ IDL }) => {
     'Neutral' : IDL.Null,
   });
   const TernaryVote = IDL.Record({ 'value' : IDL.Nat, 'choice' : Choice__1 });
-  const Time__1 = IDL.Int;
-  const UniformBinaryVote = IDL.Record({ 'choice' : Choice });
-  const Delegable__1 = IDL.Variant({
-    'Delegated' : IDL.Principal,
-    'Default' : UniformBinaryVote,
-  });
   const Sharable__1 = IDL.Record({
     'ballots' : IDL.Vec(IDL.Tuple(IDL.Principal, IDL.Nat)),
     'referendums' : IDL.Vec(IDL.Nat),
     'icpEarning' : SharableEarning,
     'referendumVotes' : IDL.Vec(IDL.Tuple(IDL.Nat, TernaryVote)),
     'acornEarning' : SharableEarning,
-    'lastUpdateBallot' : Time__1,
+    'lastUpdateBallot' : Time,
     'proposalVotes' : IDL.Vec(IDL.Tuple(IDL.Nat, Delegable__1)),
     'proposals' : IDL.Vec(IDL.Nat),
   });
-  const UpdateLevel = IDL.Variant({
-    'Patch' : IDL.Null,
-    'Major' : IDL.Null,
-    'Minor' : IDL.Null,
-  });
   const Sharable = IDL.Vec(SharableCommitment);
-  const ActorsConfigs = IDL.Vec(
-    IDL.Tuple(ConfigurableActorVariant, SharableConfigs)
-  );
   const Delegable = IDL.Variant({
     'Delegated' : IDL.Principal,
     'Default' : Choice,

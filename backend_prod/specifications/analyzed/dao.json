@@ -1713,18 +1713,32 @@
       "relativePath": "mo:base/Int",
       "depth": 2
     },
-    "Debug": {
-      "origin": "import Debug \"mo:base/Debug\";",
-      "name": "Debug",
-      "category": "base",
-      "relativePath": "mo:base/Debug",
-      "depth": 2
-    },
     "Timer": {
       "origin": "import Timer \"mo:base/Timer\";",
       "name": "Timer",
       "category": "base",
       "relativePath": "mo:base/Timer",
+      "depth": 2
+    },
+    "Vector": {
+      "origin": "import Vector \"../../library/Vector\";",
+      "name": "Vector",
+      "category": "library",
+      "relativePath": "../../library/Vector",
+      "depth": 4
+    },
+    "Actor": {
+      "origin": "import Actor \"../indicator/actors/Actor\";",
+      "name": "Actor",
+      "category": "attribute",
+      "relativePath": "../indicator/actors/Actor",
+      "depth": 4
+    },
+    "Array": {
+      "origin": "import Array \"mo:base/Array\";",
+      "name": "Array",
+      "category": "base",
+      "relativePath": "mo:base/Array",
       "depth": 2
     }
   },
@@ -1766,8 +1780,10 @@
     "Error",
     "Nat",
     "Int",
-    "Debug",
-    "Timer"
+    "Timer",
+    "Vector",
+    "Actor",
+    "Array"
   ],
   "interfaceDependencies": [
     "Configs",
@@ -2223,6 +2239,18 @@
                 null
               ],
               [
+                "#Encyclopedia",
+                null
+              ],
+              [
+                "#Chat",
+                null
+              ],
+              [
+                "#Assets",
+                null
+              ],
+              [
                 "#Indicator",
                 null
               ],
@@ -2319,6 +2347,18 @@
               ],
               [
                 "#Facade",
+                null
+              ],
+              [
+                "#Encyclopedia",
+                null
+              ],
+              [
+                "#Chat",
+                null
+              ],
+              [
+                "#Assets",
                 null
               ],
               [
@@ -3940,6 +3980,18 @@
                                   null
                                 ],
                                 [
+                                  "#Encyclopedia",
+                                  null
+                                ],
+                                [
+                                  "#Chat",
+                                  null
+                                ],
+                                [
+                                  "#Assets",
+                                  null
+                                ],
+                                [
                                   "#Indicator",
                                   null
                                 ]
@@ -4265,6 +4317,18 @@
                                         null
                                       ],
                                       [
+                                        "#Encyclopedia",
+                                        null
+                                      ],
+                                      [
+                                        "#Chat",
+                                        null
+                                      ],
+                                      [
+                                        "#Assets",
+                                        null
+                                      ],
+                                      [
                                         "#Indicator",
                                         null
                                       ],
@@ -4555,6 +4619,18 @@
                                 ],
                                 [
                                   "#Facade",
+                                  null
+                                ],
+                                [
+                                  "#Encyclopedia",
+                                  null
+                                ],
+                                [
+                                  "#Chat",
+                                  null
+                                ],
+                                [
+                                  "#Assets",
                                   null
                                 ],
                                 [
@@ -5416,6 +5492,18 @@
                                   null
                                 ],
                                 [
+                                  "#Encyclopedia",
+                                  null
+                                ],
+                                [
+                                  "#Chat",
+                                  null
+                                ],
+                                [
+                                  "#Assets",
+                                  null
+                                ],
+                                [
                                   "#Indicator",
                                   null
                                 ]
@@ -5741,6 +5829,18 @@
                                         null
                                       ],
                                       [
+                                        "#Encyclopedia",
+                                        null
+                                      ],
+                                      [
+                                        "#Chat",
+                                        null
+                                      ],
+                                      [
+                                        "#Assets",
+                                        null
+                                      ],
+                                      [
                                         "#Indicator",
                                         null
                                       ],
@@ -6031,6 +6131,18 @@
                                 ],
                                 [
                                   "#Facade",
+                                  null
+                                ],
+                                [
+                                  "#Encyclopedia",
+                                  null
+                                ],
+                                [
+                                  "#Chat",
+                                  null
+                                ],
+                                [
+                                  "#Assets",
                                   null
                                 ],
                                 [
@@ -6728,6 +6840,18 @@
                                         null
                                       ],
                                       [
+                                        "#Encyclopedia",
+                                        null
+                                      ],
+                                      [
+                                        "#Chat",
+                                        null
+                                      ],
+                                      [
+                                        "#Assets",
+                                        null
+                                      ],
+                                      [
                                         "#Indicator",
                                         null
                                       ]
@@ -7053,6 +7177,18 @@
                                               null
                                             ],
                                             [
+                                              "#Encyclopedia",
+                                              null
+                                            ],
+                                            [
+                                              "#Chat",
+                                              null
+                                            ],
+                                            [
+                                              "#Assets",
+                                              null
+                                            ],
+                                            [
                                               "#Indicator",
                                               null
                                             ],
@@ -7343,6 +7479,18 @@
                                       ],
                                       [
                                         "#Facade",
+                                        null
+                                      ],
+                                      [
+                                        "#Encyclopedia",
+                                        null
+                                      ],
+                                      [
+                                        "#Chat",
+                                        null
+                                      ],
+                                      [
+                                        "#Assets",
                                         null
                                       ],
                                       [

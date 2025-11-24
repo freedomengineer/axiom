@@ -11,7 +11,7 @@ import Option "mo:base/Option";
 import Bool "mo:base/Bool";
 import Principal "mo:base/Principal";
 
-shared actor class Dip721NFT(custodian : Principal, init : Types.Dip721NonFungibleToken) = Self {
+shared persistent actor class Dip721NFT(custodian : Principal, init : Types.Dip721NonFungibleToken) = Self {
     stable var transactionId : Types.TransactionId = 0;
     stable var nfts = List.nil<Types.Nft>();
     stable var custodians = List.make<Principal>(custodian);
@@ -21,7 +21,7 @@ shared actor class Dip721NFT(custodian : Principal, init : Types.Dip721NonFungib
     stable var maxLimit : Nat16 = init.maxLimit;
 
     // https://forum.dfinity.org/t/is-there-any-address-0-equivalent-at-dfinity-motoko/5445/3
-    let null_address : Principal = Principal.fromText("aaaaa-aa");
+    transient let null_address : Principal = Principal.fromText("aaaaa-aa");
 
     public query func balanceOfDip721(user : Principal) : async Nat64 {
         return Nat64.fromNat(

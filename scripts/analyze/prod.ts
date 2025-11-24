@@ -10,6 +10,9 @@ const CANISTERS_TO_ANALYZE: InternalCanisterName[] = [
     'escrow',
     'sales',
     'axioms',
+    'encyclopedia',
+    'chat',
+    'assets',
     'indicator',
 ]
 for (const canisterName of CANISTERS_TO_ANALYZE) {

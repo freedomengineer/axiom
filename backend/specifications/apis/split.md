@@ -6,7 +6,7 @@
 - Attributes: `Distribution`, `Distributions`, `Actor`, `ICP`
 - Interfaces: `IndicatorInterface`
 - Commons: `C`, `E`
-- Libraries: `Configs`, `E8S`, `Earning`, `Iter`, `Proportion`
+- Libraries: `Configs`, `E8S`, `Earning`, `Iter`, `Proportion`, `Map`
 - Bases: `Principal`, `Time`
 ## Modifiers
 
@@ -99,7 +99,7 @@
 
 ```json
 {
-  "recipientVariant": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN | #FOUNDER",
+  "recipientVariant": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #ENCYCLOPEDIA | #CHAT | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN | #FOUNDER",
   "amount": "Nat"
 }
 ```
@@ -169,14 +169,14 @@
 
 ```json
 {
-  "actorVariant": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN | #FOUNDER"
+  "actorVariant": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #ENCYCLOPEDIA | #CHAT | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN | #FOUNDER"
 }
 ```
 
 #### Returns:
 ```json
 {
-  "actorVariant": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN | #FOUNDER",
+  "actorVariant": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #ENCYCLOPEDIA | #CHAT | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN | #FOUNDER",
   "earning": {"revenue": "Nat", "balance": "Nat", "lastWithdrawAt": "Time"},
   "proportion": ["Nat", "Nat"]
 }
@@ -188,7 +188,7 @@
 ```json
 [
   {
-    "actorVariant": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN | #FOUNDER",
+    "actorVariant": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #ENCYCLOPEDIA | #CHAT | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN | #FOUNDER",
     "earning": {"revenue": "Nat", "balance": "Nat", "lastWithdrawAt": "Time"},
     "proportion": ["Nat", "Nat"]
   }
@@ -201,7 +201,7 @@
 
 ```json
 {
-  "actorVariant": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN | #FOUNDER"
+  "actorVariant": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #ENCYCLOPEDIA | #CHAT | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN | #FOUNDER"
 }
 ```
 
@@ -216,7 +216,7 @@
 
 ```json
 {
-  "actorVariant": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN | #FOUNDER"
+  "actorVariant": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #ENCYCLOPEDIA | #CHAT | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN | #FOUNDER"
 }
 ```
 

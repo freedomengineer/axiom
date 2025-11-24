@@ -6,8 +6,8 @@
 - Attributes: `Actor`, `Actors`, `Installation`, `Installations`, `Commitment`, `Commitments`, `UpgradeTasks`
 - Commons: `C`, `E`
 - Interfaces: `ACORNInterface`, `ICPUSDInterface`, `TreasuryInterface`, `SplitInterface`, `AffiliateInterface`, `EscrowInterface`, `SalesInterface`, `AxiomsInterface`, `DAOInterface`, `FacadeInterface`
-- Libraries: `Base`, `BlobCommitment`, `Configs`, `Date`, `Hexadecimal`, `Iter`, `Management`, `Map`, `Version`
-- Bases: `Principal`, `Blob`, `Nat`, `Time`, `List`, `ExperimentalCycles`, `Error`, `Debug`, `Timer`, `Int`
+- Libraries: `Base`, `BlobCommitment`, `CircularBuffer`, `Configs`, `Date`, `Hexadecimal`, `Iter`, `Management`, `Map`, `Version`
+- Bases: `Principal`, `Blob`, `Nat`, `Time`, `List`, `ExperimentalCycles`, `Error`, `Debug`, `Timer`, `Int`, `Text`, `Array`
 ## Modifiers
 
 ### 1. `initialize()` returns `()`
@@ -74,7 +74,7 @@
 {
   "actorsConfigs": [
     [
-      "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #INDICATOR",
+      "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #ENCYCLOPEDIA | #CHAT | #ASSETS | #INDICATOR",
       [
         [
           "Text",
@@ -106,7 +106,7 @@
 {
   "actorsConfigs": [
     [
-      "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #INDICATOR",
+      "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #ENCYCLOPEDIA | #CHAT | #ASSETS | #INDICATOR",
       [
         [
           "Text",
@@ -140,7 +140,7 @@
   "releaseNotes": [{"#ADDED": ["Text"], "#CHANGED": ["Text"], "#REMOVED": ["Text"], "#FIXED": ["Text"], "#SECURITY": ["Text"]}],
   "commitments": [
     {
-      "actorVariant": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN",
+      "actorVariant": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #ENCYCLOPEDIA | #CHAT | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN",
       "args": ["Nat8"],
       "moduleHash": "Text"
     }
@@ -160,7 +160,7 @@
   "releaseNotes": [{"#ADDED": ["Text"], "#CHANGED": ["Text"], "#REMOVED": ["Text"], "#FIXED": ["Text"], "#SECURITY": ["Text"]}],
   "commitments": [
     {
-      "actorVariant": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN",
+      "actorVariant": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #ENCYCLOPEDIA | #CHAT | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN",
       "args": ["Nat8"],
       "moduleHash": "Text"
     }
@@ -188,7 +188,7 @@
   "issuer": "Principal",
   "actorsConfigs": [
     [
-      "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #INDICATOR",
+      "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #ENCYCLOPEDIA | #CHAT | #ASSETS | #INDICATOR",
       [
         [
           "Text",
@@ -220,57 +220,98 @@
 {"issuer": "Principal", "duration": "Nat"}
 ```
 
-### 12. `topUp(actorVariant, amount)` returns `()`
+### 12. `takeArbitrarySnapshots(actorVariants)` returns `()`
 
 #### Arguments:
 
 ```json
 {
-  "actorVariant": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN | #FOUNDER",
-  "amount": "Nat"
+  "actorVariants": [
+    "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #ENCYCLOPEDIA | #CHAT | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN"
+  ]
 }
 ```
 
-### 13. `uploadCommitmentChunk(actorVariant, id, chunk, expectedModuleHash)` returns `()`
+### 13. `loadSnapshots(snapshots)` returns `()`
 
 #### Arguments:
 
 ```json
 {
-  "actorVariant": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN",
+  "snapshots": [
+    [
+      "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #ENCYCLOPEDIA | #CHAT | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN",
+      "Text"
+    ]
+  ]
+}
+```
+
+### 14. `updateSettings(actorVariants, settings)` returns `()`
+
+#### Arguments:
+
+```json
+{
+  "actorVariants": [
+    "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #ENCYCLOPEDIA | #CHAT | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN | #FOUNDER"
+  ],
+  "settings": {
+    "controllers": ["Principal"],
+    "compute_allocation": "Nat",
+    "memory_allocation": "Nat",
+    "freezing_threshold": "Nat",
+    "reserved_cycles_limit": "Nat",
+    "log_visibility": {"#CONTROLLERS": null, "// #PUBLIC": null, "#ALLOWED_VIEWERS": ["Principal"]},
+    "wasm_memory_limit": "Nat",
+    "wasm_memory_threshold": "Nat",
+    "environment_variables": [{"name": "Text", "value": "Text"}]
+  }
+}
+```
+
+### 15. `createNewCanisters()` returns `()`
+
+### 16. `uploadCommitmentChunk(actorVariant, id, chunk, expectedModuleHash)` returns `()`
+
+#### Arguments:
+
+```json
+{
+  "actorVariant": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #ENCYCLOPEDIA | #CHAT | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN",
   "id": "Nat8",
   "chunk": "Blob",
   "expectedModuleHash": "Text"
 }
 ```
 
-### 14. `settleCommitment(actorVariant)` returns `()`
+### 17. `settleCommitment(actorVariant)` returns `()`
 
 #### Arguments:
 
 ```json
 {
-  "actorVariant": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN"
+  "actorVariant": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #ENCYCLOPEDIA | #CHAT | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN"
 }
 ```
 
-### 15. `clearCommitment(actorVariant)` returns `()`
+### 18. `clearCommitment(actorVariant)` returns `()`
 
 #### Arguments:
 
 ```json
 {
-  "actorVariant": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN"
+  "actorVariant": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #ENCYCLOPEDIA | #CHAT | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN"
 }
 ```
 
-### 16. `getActorInfo(actorVariant)` returns `Actor.Info`
+### 19. `getActorInfo(actorVariant)` returns `Actor.Info`
 
 #### Arguments:
 
 ```json
 {
-  "actorVariant": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN | #FOUNDER"
+  "actorVariant": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #ENCYCLOPEDIA | #CHAT | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN | #FOUNDER"
 }
 ```
 
@@ -282,24 +323,42 @@
   "cycles": "Nat",
   "args": ["Nat8"],
   "moduleHash": "Text",
-  "commitHash": "Text"
+  "commitHash": "Text",
+  "snapshots": [
+    {
+      "id": "Text",
+      "taken_at_timestamp": "Nat64",
+      "total_size": "Nat64",
+      "from": {"#BEFOREPROPOSAL": "Nat", "#AFTERPROPOSAL": "Nat", "#ARBITRARY": null},
+      "moduleHash": "Text"
+    }
+  ]
 }
 ```
 
-### 17. `getActorsInfo()` returns `[(Actor.Variant, Actor.Info)]`
+### 20. `getActorsInfo()` returns `[(Actor.Variant, Actor.Info)]`
 
 #### Returns:
 ```json
 [
   [
-    "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN | #FOUNDER",
+    "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #ENCYCLOPEDIA | #CHAT | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN | #FOUNDER",
     {
       "status": "#STOPPED | #STOPPING | #RUNNING",
       "memorySize": "Nat",
       "cycles": "Nat",
       "args": ["Nat8"],
       "moduleHash": "Text",
-      "commitHash": "Text"
+      "commitHash": "Text",
+      "snapshots": [
+        {
+          "id": "Text",
+          "taken_at_timestamp": "Nat64",
+          "total_size": "Nat64",
+          "from": {"#BEFOREPROPOSAL": "Nat", "#AFTERPROPOSAL": "Nat", "#ARBITRARY": null},
+          "moduleHash": "Text"
+        }
+      ]
     }
   ]
 ]
@@ -320,7 +379,7 @@
 {
   "commitments": [
     {
-      "actorVariant": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN",
+      "actorVariant": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #ENCYCLOPEDIA | #CHAT | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN",
       "args": ["Nat8"],
       "moduleHash": "Text"
     }
@@ -345,7 +404,7 @@
   {
     "commitments": [
       {
-        "actorVariant": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN",
+        "actorVariant": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #ENCYCLOPEDIA | #CHAT | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN",
         "args": ["Nat8"],
         "moduleHash": "Text"
       }
@@ -365,7 +424,7 @@
 ```json
 {
   "issuer": "Principal",
-  "actorVariant": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN"
+  "actorVariant": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #ENCYCLOPEDIA | #CHAT | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN"
 }
 ```
 
@@ -381,7 +440,7 @@
 ```json
 {
   "issuer": "Principal",
-  "actorVariant": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN"
+  "actorVariant": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #ENCYCLOPEDIA | #CHAT | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN"
 }
 ```
 
@@ -420,7 +479,7 @@
 
 #### Returns:
 ```json
-"#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN | #FOUNDER"
+"#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #ENCYCLOPEDIA | #CHAT | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN | #FOUNDER"
 ```
 
 ### 8. `getPrincipal(name)` returns `Principal`
@@ -429,7 +488,7 @@
 
 ```json
 {
-  "name": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN | #FOUNDER"
+  "name": "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #ENCYCLOPEDIA | #CHAT | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN | #FOUNDER"
 }
 ```
 
@@ -444,7 +503,7 @@
 ```json
 [
   [
-    "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN | #FOUNDER",
+    "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #ENCYCLOPEDIA | #CHAT | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN | #FOUNDER",
     "Principal"
   ]
 ]
@@ -507,7 +566,7 @@
 {
   "caller": "Principal",
   "toBe": [
-    "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN | #FOUNDER"
+    "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #ENCYCLOPEDIA | #CHAT | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN | #FOUNDER"
   ]
 }
 ```
