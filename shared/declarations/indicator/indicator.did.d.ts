@@ -27,13 +27,16 @@ export type ActorVariant = { 'DAO' : null } |
   { 'Escrow' : null } |
   { 'Split' : null } |
   { 'Facade' : null } |
+  { 'Chat' : null } |
   { 'Frontend' : null } |
   { 'Indicator' : null } |
   { 'Axioms' : null } |
   { 'Affiliate' : null } |
   { 'Founder' : null } |
+  { 'Assets' : null } |
   { 'ACORN' : null } |
   { 'Treasury' : null } |
+  { 'Encyclopedia' : null } |
   { 'ICPUSD' : null };
 export type ActorsConfigs = Array<[ConfigurableActorVariant, SharableConfigs]>;
 export interface Affiliate {
@@ -110,6 +113,13 @@ export type ApproveResult = { 'Ok' : bigint } |
       { 'Expired' : { 'ledger_time' : bigint } } |
       { 'InsufficientFunds' : { 'balance' : bigint } }
   };
+export interface Assets {
+  'getConfig' : ActorMethod<[Key], SharableValue>,
+  'getConfigs' : ActorMethod<[], Sharable__3>,
+  'putConfigs' : ActorMethod<[Array<[Key, SharableValue]>], undefined>,
+  'setConfigs' : ActorMethod<[Array<[Key, SharableValue]>], undefined>,
+  'shiftToMidnight' : ActorMethod<[bigint], undefined>,
+}
 export interface Axioms {
   'addToAxioms' : ActorMethod<[bigint], undefined>,
   'addToBookmarks' : ActorMethod<[bigint], undefined>,
@@ -219,6 +229,16 @@ export type Changes = { 'Security' : Array<string> } |
   { 'Changed' : Array<string> } |
   { 'Added' : Array<string> } |
   { 'Removed' : Array<string> };
+export interface Chat {
+  'expectUserNotFound' : ActorMethod<[Principal], undefined>,
+  'getConfig' : ActorMethod<[Key], SharableValue>,
+  'getConfigs' : ActorMethod<[], Sharable__3>,
+  'initialize' : ActorMethod<[], undefined>,
+  'putConfigs' : ActorMethod<[Array<[Key, SharableValue]>], undefined>,
+  'register' : ActorMethod<[Principal, bigint], undefined>,
+  'setConfigs' : ActorMethod<[Array<[Key, SharableValue]>], undefined>,
+  'shiftToMidnight' : ActorMethod<[bigint], undefined>,
+}
 export type Choice = { 'Delegated' : null } |
   { 'Negative' : null } |
   { 'Positive' : null };
@@ -232,10 +252,13 @@ export type ConfigurableActorVariant = { 'DAO' : null } |
   { 'Escrow' : null } |
   { 'Split' : null } |
   { 'Facade' : null } |
+  { 'Chat' : null } |
   { 'Indicator' : null } |
   { 'Axioms' : null } |
   { 'Affiliate' : null } |
-  { 'Treasury' : null };
+  { 'Assets' : null } |
+  { 'Treasury' : null } |
+  { 'Encyclopedia' : null };
 export interface CouponRedeemedData {
   'key' : string,
   'user' : Principal,
@@ -334,24 +357,30 @@ export type DeployableActorVariant = { 'DAO' : null } |
   { 'Escrow' : null } |
   { 'Split' : null } |
   { 'Facade' : null } |
+  { 'Chat' : null } |
   { 'Frontend' : null } |
   { 'Indicator' : null } |
   { 'Axioms' : null } |
   { 'Affiliate' : null } |
+  { 'Assets' : null } |
   { 'ACORN' : null } |
   { 'Treasury' : null } |
+  { 'Encyclopedia' : null } |
   { 'ICPUSD' : null };
 export type DeployableVariant = { 'DAO' : null } |
   { 'Sales' : null } |
   { 'Escrow' : null } |
   { 'Split' : null } |
   { 'Facade' : null } |
+  { 'Chat' : null } |
   { 'Frontend' : null } |
   { 'Indicator' : null } |
   { 'Axioms' : null } |
   { 'Affiliate' : null } |
+  { 'Assets' : null } |
   { 'ACORN' : null } |
   { 'Treasury' : null } |
+  { 'Encyclopedia' : null } |
   { 'ICPUSD' : null };
 export interface Dip721NonFungibleToken {
   'maxLimit' : number,
@@ -362,6 +391,16 @@ export interface Dip721NonFungibleToken {
 export type ElectionResult = { 'New' : null } |
   { 'Unchanged' : null } |
   { 'Removed' : null };
+export interface Encyclopedia {
+  'expectUserNotFound' : ActorMethod<[Principal], undefined>,
+  'getConfig' : ActorMethod<[Key], SharableValue>,
+  'getConfigs' : ActorMethod<[], Sharable__3>,
+  'initialize' : ActorMethod<[], undefined>,
+  'putConfigs' : ActorMethod<[Array<[Key, SharableValue]>], undefined>,
+  'register' : ActorMethod<[Principal, bigint], undefined>,
+  'setConfigs' : ActorMethod<[Array<[Key, SharableValue]>], undefined>,
+  'shiftToMidnight' : ActorMethod<[bigint], undefined>,
+}
 export interface Entry { 'rank' : bigint, 'score' : bigint }
 export interface Escrow {
   'bury' : ActorMethod<[bigint, Option], undefined>,
@@ -513,8 +552,11 @@ export type IdentifierVariant = { 'Principal' : Principal } |
 export interface Indicator {
   'ACORN' : ActorMethod<[], Principal>,
   'Affiliate' : ActorMethod<[], Principal>,
+  'Assets' : ActorMethod<[], Principal>,
   'Axioms' : ActorMethod<[], Principal>,
+  'Chat' : ActorMethod<[], Principal>,
   'DAO' : ActorMethod<[], Principal>,
+  'Encyclopedia' : ActorMethod<[], Principal>,
   'Escrow' : ActorMethod<[], Principal>,
   'Facade' : ActorMethod<[], Principal>,
   'ICPUSD' : ActorMethod<[], Principal>,
@@ -524,6 +566,7 @@ export interface Indicator {
   'addController' : ActorMethod<[], undefined>,
   'checkInstallationSettled' : ActorMethod<[Principal], boolean>,
   'clearCommitment' : ActorMethod<[DeployableVariant], undefined>,
+  'createNewCanisters' : ActorMethod<[], undefined>,
   'deleteSession' : ActorMethod<[Principal], undefined>,
   'enqueueUpgradeTask' : ActorMethod<
     [bigint, Principal, ActorsConfigs],
@@ -1496,13 +1539,16 @@ export type Variant = { 'DAO' : null } |
   { 'Escrow' : null } |
   { 'Split' : null } |
   { 'Facade' : null } |
+  { 'Chat' : null } |
   { 'Frontend' : null } |
   { 'Indicator' : null } |
   { 'Axioms' : null } |
   { 'Affiliate' : null } |
   { 'Founder' : null } |
+  { 'Assets' : null } |
   { 'ACORN' : null } |
   { 'Treasury' : null } |
+  { 'Encyclopedia' : null } |
   { 'ICPUSD' : null };
 export type Variant__1 = { 'ExcludedPublishers' : null } |
   { 'ExcludedFields' : null };

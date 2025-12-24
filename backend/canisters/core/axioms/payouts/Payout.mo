@@ -2,9 +2,11 @@ import Rank "../ranks/Rank";
 import Ranks "../ranks/Ranks";
 import User "../users/User";
 
+import DoubleRankTree "../../../library/doubletree/DoubleRankTree";
 import E8S "../../../library/E8S";
 import List "../../../library/List";
 import Map "../../../library/Map";
+import Proportion "../../../library/Proportion";
 
 import Nat "mo:base/Nat";
 
@@ -15,6 +17,8 @@ module {
     private type Map<K, V> = Map.Map<K, V>;
     private type E8S = E8S.E8S;
     private type SharableE8S = E8S.Sharable;
+    private type Proportion = Proportion.Proportion;
+    private type Ranking<T> = DoubleRankTree.Ranking<T>;
 
     private type User = User.User;
     private type Rank = Rank.Rank;
@@ -29,6 +33,21 @@ module {
     public func callerRevenueCallback(caller : ?(Principal, User)) : Self -> ?Nat = switch (caller) {
         case (?(caller, _)) func(payout) = ?getCallerRevenue(payout, caller);
         case (null) func(_) = null
+    };
+
+    public type PayingState = {
+        ageIndex : Nat;
+        paidHypotheses : [(Float, Ranking<Nat>)];
+        recipients : Map<Principal, E8S>;
+        var ranks : Ranks.Ranks;
+        var currentIndex : Nat;
+        var currentHypothesisPayout : E8S;
+        distributionFactor : Proportion
+    };
+    public type PayoutState = {
+        #Idle;
+        #ComputingRank : { ageIndex : Nat };
+        #Paying : PayingState
     };
 
     /// AXIOMS ////// PAYOUT ////////////

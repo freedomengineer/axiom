@@ -545,6 +545,36 @@
       }
     },
     {
+      "name": "popSnapshots",
+      "flag": {
+        "isQuery": false,
+        "callerRequired": true
+      },
+      "argTypes": {
+        "actorVariants": {
+          "origin": "[Actor.DeployableVariant]",
+          "singular": {
+            "name": "DeployableVariant",
+            "parent": "Actor"
+          },
+          "entries": [],
+          "isArray": true,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async ()",
+        "singular": {
+          "name": "()"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
       "name": "updateSettings",
       "flag": {
         "isQuery": false,
@@ -574,24 +604,6 @@
           "isAsync": false
         }
       },
-      "returnType": {
-        "origin": "async ()",
-        "singular": {
-          "name": "()"
-        },
-        "entries": [],
-        "isArray": false,
-        "isOptional": false,
-        "isAsync": true
-      }
-    },
-    {
-      "name": "createNewCanisters",
-      "flag": {
-        "isQuery": false,
-        "callerRequired": true
-      },
-      "argTypes": {},
       "returnType": {
         "origin": "async ()",
         "singular": {
@@ -1419,6 +1431,63 @@
         "isOptional": false,
         "isAsync": true
       }
+    },
+    {
+      "name": "Encyclopedia",
+      "flag": {
+        "isQuery": true,
+        "callerRequired": false
+      },
+      "argTypes": {},
+      "returnType": {
+        "origin": "async EncyclopediaInterface.Encyclopedia",
+        "singular": {
+          "name": "Encyclopedia",
+          "parent": "EncyclopediaInterface"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
+      "name": "Chat",
+      "flag": {
+        "isQuery": true,
+        "callerRequired": false
+      },
+      "argTypes": {},
+      "returnType": {
+        "origin": "async ChatInterface.Chat",
+        "singular": {
+          "name": "Chat",
+          "parent": "ChatInterface"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
+      "name": "Assets",
+      "flag": {
+        "isQuery": true,
+        "callerRequired": false
+      },
+      "argTypes": {},
+      "returnType": {
+        "origin": "async AssetsInterface.Assets",
+        "singular": {
+          "name": "Assets",
+          "parent": "AssetsInterface"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
     }
   ],
   "imports": {
@@ -1539,6 +1608,27 @@
       "name": "AxiomsInterface",
       "category": "interface",
       "relativePath": "../../core/axioms/Interface",
+      "depth": 5
+    },
+    "EncyclopediaInterface": {
+      "origin": "import EncyclopediaInterface \"../../core/encyclopedia/Interface\";",
+      "name": "EncyclopediaInterface",
+      "category": "interface",
+      "relativePath": "../../core/encyclopedia/Interface",
+      "depth": 5
+    },
+    "ChatInterface": {
+      "origin": "import ChatInterface \"../../core/chat/Interface\";",
+      "name": "ChatInterface",
+      "category": "interface",
+      "relativePath": "../../core/chat/Interface",
+      "depth": 5
+    },
+    "AssetsInterface": {
+      "origin": "import AssetsInterface \"../../core/assets/Interface\";",
+      "name": "AssetsInterface",
+      "category": "interface",
+      "relativePath": "../../core/assets/Interface",
       "depth": 5
     },
     "DAOInterface": {
@@ -1728,6 +1818,9 @@
     "EscrowInterface",
     "SalesInterface",
     "AxiomsInterface",
+    "EncyclopediaInterface",
+    "ChatInterface",
+    "AssetsInterface",
     "DAOInterface",
     "FacadeInterface",
     "Base",
@@ -1769,7 +1862,10 @@
     "SalesInterface",
     "AxiomsInterface",
     "DAOInterface",
-    "FacadeInterface"
+    "FacadeInterface",
+    "EncyclopediaInterface",
+    "ChatInterface",
+    "AssetsInterface"
   ],
   "typeDefinitions": {
     "async ()": {
@@ -5064,6 +5160,39 @@
       "singular": {
         "name": "Facade",
         "parent": "FacadeInterface"
+      },
+      "entries": [],
+      "isArray": false,
+      "isOptional": false,
+      "isAsync": true
+    },
+    "async EncyclopediaInterface.Encyclopedia": {
+      "origin": "async EncyclopediaInterface.Encyclopedia",
+      "singular": {
+        "name": "Encyclopedia",
+        "parent": "EncyclopediaInterface"
+      },
+      "entries": [],
+      "isArray": false,
+      "isOptional": false,
+      "isAsync": true
+    },
+    "async ChatInterface.Chat": {
+      "origin": "async ChatInterface.Chat",
+      "singular": {
+        "name": "Chat",
+        "parent": "ChatInterface"
+      },
+      "entries": [],
+      "isArray": false,
+      "isOptional": false,
+      "isAsync": true
+    },
+    "async AssetsInterface.Assets": {
+      "origin": "async AssetsInterface.Assets",
+      "singular": {
+        "name": "Assets",
+        "parent": "AssetsInterface"
       },
       "entries": [],
       "isArray": false,

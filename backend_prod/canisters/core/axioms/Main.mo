@@ -67,6 +67,8 @@ shared ({ caller = indicator }) persistent actor class Axioms() = this {
     private stable let evidences : Evidences.Evidences = Evidences.init();
     private stable let flags : Flags.Flags = Flags.init();
 
+    private stable var payoutState : Payout.PayoutState = #Idle;
+
     private stable let configs : Configs.Configs = Configs.make([
         /// Age payout
         ("AGE_1_PAYOUT", #E8S(E8S.fromFloat(4_000.0))),
@@ -113,166 +115,220 @@ shared ({ caller = indicator }) persistent actor class Axioms() = this {
         /// New Configs v0.2.2
         ("MAX_DAILY_HYPOTHESES_BY_TIER", #Nat(1)),
         ("MAX_DAILY_EVIDENCES_BY_TIER", #Nat(2)),
+
+        /// New Configs v0.3.1
+        ("PAYOUT_BATCH_SIZE", #Nat(40)),
     ]);
 
     /// PRIVATE ////// MODIFIERS ////////////
 
     private func _payout() : async () {
-        let PUBLISHER_PAYOUT_PROPORTION : Proportion.Proportion = Configs.Proportion(configs, "PUBLISHER_PAYOUT_PROPORTION");
-        let EVIDENCES_PAYOUT_PROPORTION : Proportion.Proportion = Configs.Proportion(configs, "EVIDENCES_PAYOUT_PROPORTION");
-        let REGULAR_VOTERS_PAYOUT_PROPORTION : Proportion.Proportion = Configs.Proportion(configs, "REGULAR_VOTERS_PAYOUT_PROPORTION");
-        let POWERED_VOTERS_PAYOUT_PROPORTION : Proportion.Proportion = Configs.Proportion(configs, "POWERED_VOTERS_PAYOUT_PROPORTION");
+        switch (payoutState) {
+            case (#Idle) return;
 
-        let now : Time.Time = Time.now();
-        let lastId = Hypotheses.lastId(hypotheses);
-
-        label agePaying for ((i, { interval; maxHypotheses; nextPaidId; payouts }) in Array.entries(ages)) {
-            let start = nextPaidId.val;
-            if (start > lastId) {
-                Payouts.skip(payouts);
-                continue agePaying
-            };
-            label shifting while (nextPaidId.val <= lastId) {
-                switch (Hypotheses.hypothesisRemovedOpt(hypotheses, nextPaidId.val)) {
-                    case (null) {};
-                    case (?hypothesis) if (Date.getMidnightsElapsed(now, hypothesis.publishDate) < interval) break shifting
+            case (#ComputingRank({ ageIndex })) {
+                if (ageIndex >= ages.size()) {
+                    payoutState := #Idle;
+                    Debug.print("Daily Payout Completed Successfully.");
+                    return
                 };
-                Count.increment(nextPaidId)
-            };
 
-            let scores : (Nat) -> ?(Nat, Nat) = func(i) {
-                switch (Hypotheses.hypothesisRemovedOpt(hypotheses, i)) {
-                    case (?{ votes }) ?(TernaryVotes.getRegularValue(votes), TernaryVotes.getPoweredValue(votes));
-                    case (null) null
-                }
-            };
-            let paidRange : Iter.Iter<Nat> = Iter.range(start, lastId);
-            let hypothesisOrdering : ClusterTree.ClusterTree<Float, DoubleRankTree.Ranking<Nat>> = DoubleClusterTree.getAverageRankTreeFromIter(paidRange, scores, Nat.compare);
-            let paidHypotheses : [(Float, DoubleRankTree.Ranking<Nat>)] = ClusterTree.getFlattenEntries(hypothesisOrdering, #trim(maxHypotheses), #ascending);
+                let now : Time.Time = Time.now();
+                let lastId = Hypotheses.lastId(hypotheses);
 
-            /// n
-            let totalHypotheses : Nat = paidHypotheses.size();
-            if (totalHypotheses == 0) {
-                Payouts.skip(payouts);
-                continue agePaying
-            };
+                let { interval; maxHypotheses; nextPaidId; payouts } = Ages.age(ages, ageIndex);
+                let start = nextPaidId.val;
 
-            /// a
-            let HYPOTHESIS_PAYOUT_DECAY_PROPORTION : Proportion.Proportion = Configs.Proportion(configs, "AGE_" # debug_show (i +1) # "_HYPOTHESIS_PAYOUT_DECAY_PROPORTION");
-            /// y
-            let AGE_PAYOUT : E8S.E8S = Configs.E8S(configs, "AGE_" # debug_show (i + 1) # "_PAYOUT");
-
-            /// r = (1 - a) * (1 - a^n)^-1
-            let distributionFactor : Proportion.Proportion = Proportion.getMul(
-                Proportion.getComplement(HYPOTHESIS_PAYOUT_DECAY_PROPORTION),
-                Proportion.getInverse(
-                    Proportion.getComplement(
-                        Proportion.getPow(HYPOTHESIS_PAYOUT_DECAY_PROPORTION, totalHypotheses)
-                    )
-                ),
-            );
-            /// P_1 = y * r
-            let currentHypothesisPayout : E8S.E8S = E8S.getScaleBy(AGE_PAYOUT, distributionFactor);
-
-            Debug.print("Hypothesis payouts for age " # debug_show (i + 1));
-            Debug.print(debug_show ({ n = totalHypotheses; r = distributionFactor; P_1 = currentHypothesisPayout }));
-
-            var ranks : Ranks.Ranks = List.nil();
-            let recipients = Map.new<Principal, E8S.E8S>();
-            let onExistedRecipient = func(a : E8S.E8S, b : E8S.E8S) : E8S.E8S = E8S.getAdd(a, b);
-
-            label hypothesesPaying for ((averageRank, { key = hypothesisId; a = regularEntry; b = poweredEntry }) in paidHypotheses.vals()) {
-                ranks := List.push({ hypothesisId; regularEntry; poweredEntry; averageRank }, ranks);
-                let hypothesis : Hypothesis.Hypothesis = Hypotheses.hypothesis(hypotheses, hypothesisId);
-                Debug.print(debug_show ({ hypothesisId; averageRank; regularEntry; poweredEntry; P_k = currentHypothesisPayout }));
-
-                // Publisher
-                let publisherPayout : E8S.E8S = E8S.getScaleBy(currentHypothesisPayout, PUBLISHER_PAYOUT_PROPORTION);
-                Map.putOnCollision(recipients, Map.PrincipalKey(hypothesis.publisher), publisherPayout, onExistedRecipient);
-
-                // Evidences
-                let evidencesSize : Nat = List.size(hypothesis.evidenceIds);
-                switch (evidencesSize) {
-                    case (0) {
-                        let evidencesPayout : E8S.E8S = E8S.getScaleBy(currentHypothesisPayout, EVIDENCES_PAYOUT_PROPORTION);
-                        Map.putOnCollision(recipients, Map.PrincipalKey(hypothesis.publisher), evidencesPayout, onExistedRecipient)
+                if (start > lastId) {
+                    Payouts.skip(payouts);
+                    payoutState := #ComputingRank({ ageIndex = ageIndex + 1 });
+                    ignore Timer.setTimer<system>(#nanoseconds(0), _payout);
+                    return
+                };
+                label shifting while (nextPaidId.val <= lastId) {
+                    switch (Hypotheses.hypothesisRemovedOpt(hypotheses, nextPaidId.val)) {
+                        case (null) {};
+                        case (?hypothesis) if (Date.getMidnightsElapsed(now, hypothesis.publishDate) < interval) break shifting
                     };
-                    case (_) {
-                        let evidenceScores : (Nat) -> ?(Int, Int) = func(i) {
-                            switch (Evidences.evidenceRemovedOpt(evidences, i)) {
-                                case (?{ votes }) ?(BinaryVotes.getRegularPositiveDiffValue(votes), BinaryVotes.getPoweredPositiveDiffValue(votes));
-                                case (null) null
-                            }
+                    Count.increment(nextPaidId)
+                };
+
+                let scores : (Nat) -> ?(Nat, Nat) = func(i) {
+                    switch (Hypotheses.hypothesisRemovedOpt(hypotheses, i)) {
+                        case (?{ votes }) ?(TernaryVotes.getRegularValue(votes), TernaryVotes.getPoweredValue(votes));
+                        case (null) null
+                    }
+                };
+                let paidRange : Iter.Iter<Nat> = Iter.range(start, lastId);
+                let hypothesisOrdering : ClusterTree.ClusterTree<Float, DoubleRankTree.Ranking<Nat>> = DoubleClusterTree.getAverageRankTreeFromIter(paidRange, scores, Nat.compare);
+                let paidHypotheses : [(Float, DoubleRankTree.Ranking<Nat>)] = ClusterTree.getFlattenEntries(hypothesisOrdering, #trim(maxHypotheses), #ascending);
+
+                /// n
+                let totalHypotheses : Nat = paidHypotheses.size();
+                if (totalHypotheses == 0) {
+                    Payouts.skip(payouts);
+                    payoutState := #ComputingRank({ ageIndex = ageIndex + 1 });
+                    ignore Timer.setTimer<system>(#nanoseconds(0), _payout);
+                    return
+                };
+
+                /// a
+                let HYPOTHESIS_PAYOUT_DECAY_PROPORTION : Proportion.Proportion = Configs.Proportion(configs, "AGE_" # debug_show (ageIndex + 1) # "_HYPOTHESIS_PAYOUT_DECAY_PROPORTION");
+                /// y
+                let AGE_PAYOUT : E8S.E8S = Configs.E8S(configs, "AGE_" # debug_show (ageIndex + 1) # "_PAYOUT");
+
+                /// r = (1 - a) * (1 - a^n)^-1
+                let distributionFactor : Proportion.Proportion = Proportion.getMul(
+                    Proportion.getComplement(HYPOTHESIS_PAYOUT_DECAY_PROPORTION),
+                    Proportion.getInverse(
+                        Proportion.getComplement(
+                            Proportion.getPow(HYPOTHESIS_PAYOUT_DECAY_PROPORTION, totalHypotheses)
+                        )
+                    ),
+                );
+                /// P_1 = y * r
+                let currentHypothesisPayout : E8S.E8S = E8S.getScaleBy(AGE_PAYOUT, distributionFactor);
+
+                Debug.print("Hypothesis payouts for age " # debug_show (ageIndex + 1));
+                Debug.print(debug_show ({ n = totalHypotheses; r = distributionFactor; P_1 = currentHypothesisPayout }));
+
+                payoutState := #Paying({
+                    ageIndex;
+                    paidHypotheses;
+                    recipients = Map.new<Principal, E8S.E8S>();
+                    var ranks = Ranks.init();
+                    var currentIndex = 0;
+                    var currentHypothesisPayout = currentHypothesisPayout;
+                    distributionFactor
+                });
+                ignore Timer.setTimer<system>(#nanoseconds(0), _payout)
+            };
+
+            case (#Paying(state)) {
+                let PUBLISHER_PAYOUT_PROPORTION = Configs.Proportion(configs, "PUBLISHER_PAYOUT_PROPORTION");
+                let EVIDENCES_PAYOUT_PROPORTION = Configs.Proportion(configs, "EVIDENCES_PAYOUT_PROPORTION");
+                let REGULAR_VOTERS_PAYOUT_PROPORTION = Configs.Proportion(configs, "REGULAR_VOTERS_PAYOUT_PROPORTION");
+                let POWERED_VOTERS_PAYOUT_PROPORTION = Configs.Proportion(configs, "POWERED_VOTERS_PAYOUT_PROPORTION");
+
+                let HYPOTHESIS_PAYOUT_DECAY_PROPORTION = Configs.Proportion(configs, "AGE_" # debug_show (state.ageIndex + 1) # "_HYPOTHESIS_PAYOUT_DECAY_PROPORTION");
+                let EVIDENCE_PAYOUT_DECAY_PROPORTION = Configs.Proportion(configs, "EVIDENCE_PAYOUT_DECAY_PROPORTION");
+                let PAYOUT_BATCH_SIZE = Configs.Nat(configs, "PAYOUT_BATCH_SIZE");
+
+                let onExistedRecipient = func(a : E8S.E8S, b : E8S.E8S) : E8S.E8S = E8S.getAdd(a, b);
+
+                var processedCount = 0;
+                while (processedCount < PAYOUT_BATCH_SIZE and state.currentIndex < state.paidHypotheses.size()) {
+                    let (averageRank, { key = hypothesisId; a = regularEntry; b = poweredEntry }) = state.paidHypotheses[state.currentIndex];
+
+                    state.ranks := List.push({ hypothesisId; regularEntry; poweredEntry; averageRank }, state.ranks);
+                    Debug.print(debug_show ({ hypothesisId; averageRank; regularEntry; poweredEntry; P_k = state.currentHypothesisPayout }));
+
+                    let hypothesis : Hypothesis.Hypothesis = Hypotheses.hypothesis(hypotheses, hypothesisId);
+
+                    // Publisher
+                    let publisherPayout : E8S.E8S = E8S.getScaleBy(state.currentHypothesisPayout, PUBLISHER_PAYOUT_PROPORTION);
+                    Map.putOnCollision(state.recipients, Map.PrincipalKey(hypothesis.publisher), publisherPayout, onExistedRecipient);
+
+                    // Evidences
+                    let evidencesSize : Nat = List.size(hypothesis.evidenceIds);
+                    switch (evidencesSize) {
+                        case (0) {
+                            let evidencesPayout : E8S.E8S = E8S.getScaleBy(state.currentHypothesisPayout, EVIDENCES_PAYOUT_PROPORTION);
+                            Map.putOnCollision(state.recipients, Map.PrincipalKey(hypothesis.publisher), evidencesPayout, onExistedRecipient)
                         };
-                        let evidenceOrdering : ClusterTree.ClusterTree<Float, DoubleRankTree.Ranking<Nat>> = DoubleClusterTree.getAverageRankTreeFromList(hypothesis.evidenceIds, evidenceScores, Nat.compare);
-                        let paidEvidences : [(Float, DoubleRankTree.Ranking<Nat>)] = ClusterTree.getFlattenEntries(evidenceOrdering, #all, #ascending);
+                        case (_) {
+                            let evidenceScores : (Nat) -> ?(Int, Int) = func(i) {
+                                switch (Evidences.evidenceRemovedOpt(evidences, i)) {
+                                    case (?{ votes }) ?(BinaryVotes.getRegularPositiveDiffValue(votes), BinaryVotes.getPoweredPositiveDiffValue(votes));
+                                    case (null) null
+                                }
+                            };
+                            let evidenceOrdering : ClusterTree.ClusterTree<Float, DoubleRankTree.Ranking<Nat>> = DoubleClusterTree.getAverageRankTreeFromList(hypothesis.evidenceIds, evidenceScores, Nat.compare);
+                            let paidEvidences : [(Float, DoubleRankTree.Ranking<Nat>)] = ClusterTree.getFlattenEntries(evidenceOrdering, #all, #ascending);
 
-                        /// a
-                        let EVIDENCE_PAYOUT_DECAY_PROPORTION : Proportion.Proportion = Configs.Proportion(configs, "EVIDENCE_PAYOUT_DECAY_PROPORTION");
-                        /// y
-                        let evidencesPayout : E8S.E8S = E8S.getScaleBy(currentHypothesisPayout, EVIDENCES_PAYOUT_PROPORTION);
+                            /// a
+                            let EVIDENCE_PAYOUT_DECAY_PROPORTION : Proportion.Proportion = Configs.Proportion(configs, "EVIDENCE_PAYOUT_DECAY_PROPORTION");
+                            /// y
+                            let evidencesPayout : E8S.E8S = E8S.getScaleBy(state.currentHypothesisPayout, EVIDENCES_PAYOUT_PROPORTION);
 
-                        /// r = (1 - a) * (1 - a^n)^-1
-                        let evidenceDistributionFactor : Proportion.Proportion = Proportion.getMul(
-                            Proportion.getComplement(EVIDENCE_PAYOUT_DECAY_PROPORTION),
-                            Proportion.getInverse(
-                                Proportion.getComplement(
-                                    Proportion.getPow(EVIDENCE_PAYOUT_DECAY_PROPORTION, evidencesSize)
-                                )
-                            ),
-                        );
-                        /// P_1 = y * r
-                        let currentEvidencePayout : E8S.E8S = E8S.getScaleBy(evidencesPayout, evidenceDistributionFactor);
+                            /// r = (1 - a) * (1 - a^n)^-1
+                            let evidenceDistributionFactor : Proportion.Proportion = Proportion.getMul(
+                                Proportion.getComplement(EVIDENCE_PAYOUT_DECAY_PROPORTION),
+                                Proportion.getInverse(
+                                    Proportion.getComplement(
+                                        Proportion.getPow(EVIDENCE_PAYOUT_DECAY_PROPORTION, evidencesSize)
+                                    )
+                                ),
+                            );
+                            /// P_1 = y * r
+                            let currentEvidencePayout : E8S.E8S = E8S.getScaleBy(evidencesPayout, evidenceDistributionFactor);
 
-                        Debug.print("Evidences payouts for hypothesis " # debug_show hypothesisId);
-                        Debug.print(debug_show ({ n = evidencesSize; r = evidenceDistributionFactor; P_1 = currentEvidencePayout }));
+                            Debug.print("Evidences payouts for hypothesis " # debug_show hypothesisId);
+                            Debug.print(debug_show ({ n = evidencesSize; r = evidenceDistributionFactor; P_1 = currentEvidencePayout }));
 
-                        label evidencesPaying for ((averageRank, { key = evidenceId; a = regularEntry; b = poweredEntry }) in paidEvidences.vals()) {
-                            let evidence : Evidence.Evidence = Evidences.evidence(evidences, evidenceId);
-                            Map.putOnCollision(recipients, Map.PrincipalKey(evidence.publisher), currentEvidencePayout, onExistedRecipient);
+                            for ((averageRank, { key = evidenceId; a = regularEntry; b = poweredEntry }) in paidEvidences.vals()) {
+                                let evidence : Evidence.Evidence = Evidences.evidence(evidences, evidenceId);
+                                Map.putOnCollision(state.recipients, Map.PrincipalKey(evidence.publisher), currentEvidencePayout, onExistedRecipient);
 
-                            Debug.print(debug_show ({ evidenceId; averageRank; regularEntry; poweredEntry; P_k = currentEvidencePayout }));
+                                Debug.print(debug_show ({ evidenceId; averageRank; regularEntry; poweredEntry; P_k = currentEvidencePayout }));
 
-                            /// P_{k+1} = P_k * a
-                            E8S.scaleBy(currentEvidencePayout, EVIDENCE_PAYOUT_DECAY_PROPORTION)
+                                /// P_{k+1} = P_k * a
+                                E8S.scaleBy(currentEvidencePayout, EVIDENCE_PAYOUT_DECAY_PROPORTION)
+                            }
                         }
-                    }
+                    };
+
+                    // Voters
+                    var poweredVoters : List.List<Principal> = List.nil();
+                    let regularVotersSize : Nat = TernaryVotes.getRegularValue(hypothesis.votes);
+                    if (regularVotersSize > 0) {
+                        let regularVotersProportion : Proportion.Proportion = Proportion.getMul(REGULAR_VOTERS_PAYOUT_PROPORTION, Proportion.make(1, regularVotersSize));
+                        let regularVotersPayout : E8S.E8S = E8S.getScaleBy(state.currentHypothesisPayout, regularVotersProportion);
+                        for (voter in TernaryVotes.voters(hypothesis.votes)) {
+                            Map.putOnCollision(state.recipients, Map.PrincipalKey(voter), regularVotersPayout, onExistedRecipient);
+
+                            let user : User.User = Users.user(users, voter);
+                            if (User.isPoweredVoter(user, hypothesisId)) poweredVoters := List.push(voter, poweredVoters)
+                        }
+                    };
+
+                    let poweredVotersSize : Nat = List.size(poweredVoters);
+                    if (poweredVotersSize > 0) {
+                        let poweredVotersProportion : Proportion.Proportion = Proportion.getMul(POWERED_VOTERS_PAYOUT_PROPORTION, Proportion.make(1, poweredVotersSize));
+                        let poweredVotersPayout : E8S.E8S = E8S.getScaleBy(state.currentHypothesisPayout, poweredVotersProportion);
+                        for (poweredVoter in List.toIter(poweredVoters)) {
+                            Map.putOnCollision(state.recipients, Map.PrincipalKey(poweredVoter), poweredVotersPayout, onExistedRecipient)
+                        }
+                    };
+
+                    /// P_{k+1} = P_k * a
+                    E8S.scaleBy(state.currentHypothesisPayout, HYPOTHESIS_PAYOUT_DECAY_PROPORTION);
+
+                    state.currentIndex += 1;
+                    processedCount += 1
                 };
 
-                // Voters
-                var poweredVoters : List.List<Principal> = List.nil();
-                let regularVotersSize : Nat = TernaryVotes.getRegularValue(hypothesis.votes);
-                if (regularVotersSize > 0) {
-                    let regularVotersProportion : Proportion.Proportion = Proportion.getMul(REGULAR_VOTERS_PAYOUT_PROPORTION, Proportion.make(1, regularVotersSize));
-                    let regularVotersPayout : E8S.E8S = E8S.getScaleBy(currentHypothesisPayout, regularVotersProportion);
-                    for (voter in TernaryVotes.voters(hypothesis.votes)) {
-                        Map.putOnCollision(recipients, Map.PrincipalKey(voter), regularVotersPayout, onExistedRecipient);
+                if (state.currentIndex >= state.paidHypotheses.size()) {
+                    for ((recipient, payout) in Map.entries(state.recipients)) {
+                        let user : User.User = Users.user(users, recipient);
+                        User.depositMint(user, payout)
+                    };
 
-                        let user : User.User = Users.user(users, voter);
-                        if (User.isPoweredVoter(user, hypothesisId)) poweredVoters := List.push(voter, poweredVoters)
-                    }
+                    let payout : Payout.Payout = {
+                        ranks = List.reverse(state.ranks);
+                        recipients = state.recipients
+                    };
+                    let age = Ages.age(ages, state.ageIndex);
+                    Payouts.paid(age.payouts, payout);
+                    payoutState := #ComputingRank({ ageIndex = state.ageIndex + 1 });
+
+                    Debug.print("Payout batch completed")
+                } else {
+                    Debug.print("Payout batch not completed: " # debug_show state.currentIndex # " of " # debug_show state.paidHypotheses.size())
                 };
 
-                let poweredVotersSize : Nat = List.size(poweredVoters);
-                if (poweredVotersSize > 0) {
-                    let poweredVotersProportion : Proportion.Proportion = Proportion.getMul(POWERED_VOTERS_PAYOUT_PROPORTION, Proportion.make(1, poweredVotersSize));
-                    let poweredVotersPayout : E8S.E8S = E8S.getScaleBy(currentHypothesisPayout, poweredVotersProportion);
-                    for (poweredVoter in List.toIter(poweredVoters)) {
-                        Map.putOnCollision(recipients, Map.PrincipalKey(poweredVoter), poweredVotersPayout, onExistedRecipient)
-                    }
-                };
-
-                /// P_{k+1} = P_k * a
-                E8S.scaleBy(currentHypothesisPayout, HYPOTHESIS_PAYOUT_DECAY_PROPORTION)
-            };
-
-            for ((recipient, payout) in Map.entries(recipients)) {
-                let user : User.User = Users.user(users, recipient);
-                User.depositMint(user, payout)
-            };
-
-            let payout : Payout.Payout = { ranks = List.reverse(ranks); recipients };
-            Payouts.paid(payouts, payout)
+                ignore Timer.setTimer<system>(#nanoseconds(0), _payout)
+            }
         }
     };
     private func _remove(header : Flag.Header, flag : Flag.Flag) {
@@ -355,7 +411,9 @@ shared ({ caller = indicator }) persistent actor class Axioms() = this {
                 await Facade.postSystemNotifications(systemNotifications)
             }
         )();
-        await _payout()
+
+        payoutState := #ComputingRank({ ageIndex = 0 });
+        ignore Timer.setTimer<system>(#nanoseconds(0), _payout)
     };
 
     private func _getUserDailyLimit(user : User.User, tier : Nat, category : { #Hypothesis; #Evidence }) : Proportion.Proportion {

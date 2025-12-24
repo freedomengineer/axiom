@@ -17,6 +17,9 @@ import AffiliateInterface "../../core/affiliate/Interface";
 import EscrowInterface "../../core/escrow/Interface";
 import SalesInterface "../../core/sales/Interface";
 import AxiomsInterface "../../core/axioms/Interface";
+import EncyclopediaInterface "../../core/encyclopedia/Interface";
+import ChatInterface "../../core/chat/Interface";
+import AssetsInterface "../../core/assets/Interface";
 import DAOInterface "../../periphery/dao/Interface";
 import FacadeInterface "../../periphery/facade/Interface";
 
@@ -50,20 +53,20 @@ import Array "mo:base/Array";
         old : {
             var actors : {
                 founder : Principal;
-                actors : Map.Map<{ #Treasury; #Split; #Affiliate; #Escrow; #Sales; #Axioms; #DAO; #Facade; #Indicator; #ICPUSD; #Frontend; #ACORN; #Founder }, { principal : Principal; var args : [Nat8]; var commitHash : Text }>
-            };
-            var upgradeTasks : Map.Map<Nat, (Principal, [({ #Treasury; #Split; #Affiliate; #Escrow; #Sales; #Axioms; #DAO; #Facade; #Indicator }, Configs.Sharable)])>;
-            var installations : Map.Map<Principal, ({ commitments : Map.Map<{ #Treasury; #Split; #Affiliate; #Escrow; #Sales; #Axioms; #DAO; #Facade; #Indicator; #ICPUSD; #Frontend; #ACORN }, Commitment.Commitment>; commitHash : Text; updateLevel : Version.UpdateLevel; releaseNotes : Installation.ReleaseNotes }, Time.Time)>
+                actors : Map.Map<Actor.Variant, { principal : Principal; var args : [Nat8]; var commitHash : Text; snapshots : CircularBuffer.CircularBuffer<Actor.SnapshotDetail> }>
+            }
         }
     ) : {
-        var actors : Actors.Actors;
-        var upgradeTasks : UpgradeTasks.UpgradeTasks;
-        var installations : Installations.Installations
+        var actors : Actors.Actors
     } {
         {
             var actors : Actors.Actors = do {
                 let newActors : Map.Map<Actor.Variant, Actor.Actor> = Map.new<Actor.Variant, Actor.Actor>();
                 for ((variant, actorData) in Map.entries(old.actors.actors)) {
+                    let newSnapshots = CircularBuffer.new<Actor.SnapshotDetail>(3);
+                    for (snapshot in CircularBuffer.vals(actorData.snapshots)) {
+                        CircularBuffer.push(newSnapshots, snapshot)
+                    };
                     Map.put<Actor.Variant, Actor.Actor>(
                         newActors,
                         Actor.VariantKey(variant),
@@ -71,75 +74,13 @@ import Array "mo:base/Array";
                             principal = actorData.principal;
                             var args = actorData.args;
                             var commitHash = actorData.commitHash;
-                            snapshots = CircularBuffer.new(4)
+                            var snapshots = newSnapshots
                         },
                     )
                 };
                 { founder = old.actors.founder; actors = newActors }
             };
-            var upgradeTasks : UpgradeTasks.UpgradeTasks = do {
-                func _parse(a : { #Treasury; #Split; #Affiliate; #Escrow; #Sales; #Axioms; #DAO; #Facade; #Indicator }) : Actor.ConfigurableVariant = switch (a) {
-                    case (#Treasury) #Treasury;
-                    case (#Split) #Split;
-                    case (#Affiliate) #Affiliate;
-                    case (#Escrow) #Escrow;
-                    case (#Sales) #Sales;
-                    case (#Axioms) #Axioms;
-                    case (#DAO) #DAO;
-                    case (#Facade) #Facade;
-                    case (#Indicator) #Indicator
-                };
 
-                let newUpgradeTasks : UpgradeTasks.UpgradeTasks = Map.new<Nat, (Principal, Installation.ActorsConfigs)>();
-                for ((key, (principal, oldConfigs)) in Map.entries(old.upgradeTasks)) {
-                    var newConfigs : [(Actor.ConfigurableVariant, Configs.Sharable)] = [];
-                    for ((actorVariant, configs) in oldConfigs.vals()) {
-                        newConfigs := Array.append(newConfigs, [(_parse(actorVariant), configs)])
-                    };
-                    Map.put(newUpgradeTasks, Map.NatKey(key), (principal, newConfigs))
-                };
-                newUpgradeTasks
-            };
-            var installations : Installations.Installations = do {
-                func _parse(a : { #Treasury; #Split; #Affiliate; #Escrow; #Sales; #Axioms; #DAO; #Facade; #Indicator; #ICPUSD; #Frontend; #ACORN }) : Actor.DeployableVariant = switch (a) {
-                    case (#Treasury) #Treasury;
-                    case (#Split) #Split;
-                    case (#Affiliate) #Affiliate;
-                    case (#Escrow) #Escrow;
-                    case (#Sales) #Sales;
-                    case (#Axioms) #Axioms;
-                    case (#DAO) #DAO;
-                    case (#Facade) #Facade;
-                    case (#Indicator) #Indicator;
-                    case (#ICPUSD) #ICPUSD;
-                    case (#Frontend) #Frontend;
-                    case (#ACORN) #ACORN
-                };
-
-                let newInstallations : Installations.Installations = Map.new();
-                for ((principal, (installation, time)) in Map.entries(old.installations)) {
-                    Map.put<Principal, (Installation.Installation, Time.Time)>(
-                        newInstallations,
-                        Map.PrincipalKey(principal),
-                        (
-                            {
-                                commitments = do {
-                                    let commitments : Commitments.Commitments = Map.new();
-                                    for ((actorVariant, value) in Map.entries(installation.commitments)) {
-                                        Map.put(commitments, Actor.DeployableVariantKey(_parse(actorVariant)), value)
-                                    };
-                                    commitments
-                                };
-                                commitHash = installation.commitHash;
-                                updateLevel = installation.updateLevel;
-                                releaseNotes = installation.releaseNotes
-                            },
-                            time,
-                        ),
-                    )
-                };
-                newInstallations
-            }
         }
     }
 ) shared ({ caller = founder }) persistent actor class Indicator() = this {
@@ -595,6 +536,40 @@ import Array "mo:base/Array";
             Debug.print(debug_show actorVariant # " started")
         }
     };
+    public shared ({ caller }) func popSnapshots(actorVariants : [Actor.DeployableVariant]) : async () {
+        await expectAuthorized(caller, [#Founder]);
+
+        var popSnapshotFutures : List.List<(Actor.DeployableVariant, async ())> = List.nil();
+        for (actorVariant in actorVariants.vals()) {
+            let actorData : Actor.Actor = Actors.getActor(actors, actorVariant);
+            let poppedSnapshot : ?Blob = Actor.toBePoppedSnapshot(actorData);
+            switch (poppedSnapshot) {
+                case (null) {
+                    Debug.print(debug_show actorVariant # " has no snapshot to pop")
+                };
+                case (?snapshot_id) {
+                    let popSnapshotFuture : async () = (
+                        func() : async () {
+                            try {
+                                await Management.IC0.delete_canister_snapshot({
+                                    canister_id = actorData.principal;
+                                    snapshot_id
+                                });
+                                Actor.popSnapshot(actorData)
+                            } catch (e) {
+                                Debug.print(debug_show actorVariant # " failed to pop snapshot: " # Error.message(e))
+                            }
+                        }
+                    )();
+                    popSnapshotFutures := List.push<(Actor.DeployableVariant, async ())>((actorVariant, popSnapshotFuture), popSnapshotFutures)
+                }
+            }
+        };
+        for ((actorVariant, popSnapshotFuture) in List.toIter(List.reverse(popSnapshotFutures))) {
+            await popSnapshotFuture;
+            Debug.print(debug_show actorVariant # " popped snapshot")
+        }
+    };
 
     public shared ({ caller }) func updateSettings(actorVariants : [Actor.Variant], settings : Management.Settings) : async () {
         await expectAuthorized(caller, [#Founder]);
@@ -611,29 +586,6 @@ import Array "mo:base/Array";
         for ((actorVariant, updateFuture) in List.toIter(List.reverse(updateFutures))) {
             await updateFuture;
             Debug.print(debug_show actorVariant # " updated settings")
-        }
-    };
-
-    public shared ({ caller }) func createNewCanisters() : async () {
-        await expectAuthorized(caller, [#Founder]);
-
-        let settings : ?Management.Settings = ?{
-            controllers = ?[Principal.fromActor(this)];
-            compute_allocation = null;
-            memory_allocation = null;
-            freezing_threshold = null;
-            reserved_cycles_limit = null;
-            log_visibility = ? #allowed_viewers([founder, Principal.fromText("mx4y2-h573j-ebz5k-tpet3-n3csa-azsvs-zafl6-sxy3g-yhwn4-wfqs6-qae")]);
-            wasm_memory_limit = null;
-            wasm_memory_threshold = null;
-            environment_variables = null
-        };
-        for (actorVariant in [#Encyclopedia, #Chat, #Assets].vals()) {
-            ExperimentalCycles.add<system>(1_000_000_000_000);
-            let { canister_id } : Management.CreateCanisterResult = await Management.IC0.create_canister({
-                settings
-            });
-            Actors.initializeActor(actors, actorVariant, canister_id)
         }
     };
 
@@ -786,6 +738,18 @@ import Array "mo:base/Array";
     public query func Facade() : async FacadeInterface.Facade {
         let facadeId : Text = Principal.toText(Actors.getPrincipal(actors, #Facade));
         actor (facadeId)
+    };
+    public query func Encyclopedia() : async EncyclopediaInterface.Encyclopedia {
+        let encyclopediaId : Text = Principal.toText(Actors.getPrincipal(actors, #Encyclopedia));
+        actor (encyclopediaId)
+    };
+    public query func Chat() : async ChatInterface.Chat {
+        let chatId : Text = Principal.toText(Actors.getPrincipal(actors, #Chat));
+        actor (chatId)
+    };
+    public query func Assets() : async AssetsInterface.Assets {
+        let assetsId : Text = Principal.toText(Actors.getPrincipal(actors, #Assets));
+        actor (assetsId)
     };
 
     /// PRIVATE ////// CRON JOBS ////////////

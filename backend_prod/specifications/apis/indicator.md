@@ -5,7 +5,7 @@
 
 - Attributes: `Actor`, `Actors`, `Installation`, `Installations`, `Commitment`, `Commitments`, `UpgradeTasks`
 - Commons: `C`, `E`
-- Interfaces: `ACORNInterface`, `ICPUSDInterface`, `TreasuryInterface`, `SplitInterface`, `AffiliateInterface`, `EscrowInterface`, `SalesInterface`, `AxiomsInterface`, `DAOInterface`, `FacadeInterface`
+- Interfaces: `ACORNInterface`, `ICPUSDInterface`, `TreasuryInterface`, `SplitInterface`, `AffiliateInterface`, `EscrowInterface`, `SalesInterface`, `AxiomsInterface`, `EncyclopediaInterface`, `ChatInterface`, `AssetsInterface`, `DAOInterface`, `FacadeInterface`
 - Libraries: `Base`, `BlobCommitment`, `CircularBuffer`, `Configs`, `Date`, `Hexadecimal`, `Iter`, `Management`, `Map`, `Version`
 - Bases: `Principal`, `Blob`, `Nat`, `Time`, `List`, `ExperimentalCycles`, `Error`, `Debug`, `Timer`, `Int`, `Text`, `Array`
 ## Modifiers
@@ -247,7 +247,19 @@
 }
 ```
 
-### 14. `updateSettings(actorVariants, settings)` returns `()`
+### 14. `popSnapshots(actorVariants)` returns `()`
+
+#### Arguments:
+
+```json
+{
+  "actorVariants": [
+    "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #ENCYCLOPEDIA | #CHAT | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN"
+  ]
+}
+```
+
+### 15. `updateSettings(actorVariants, settings)` returns `()`
 
 #### Arguments:
 
@@ -269,8 +281,6 @@
   }
 }
 ```
-
-### 15. `createNewCanisters()` returns `()`
 
 ### 16. `uploadCommitmentChunk(actorVariant, id, chunk, expectedModuleHash)` returns `()`
 
@@ -641,4 +651,25 @@
 #### Returns:
 ```json
 "Facade"
+```
+
+### 24. `Encyclopedia()` returns `EncyclopediaInterface.Encyclopedia`
+
+#### Returns:
+```json
+"Encyclopedia"
+```
+
+### 25. `Chat()` returns `ChatInterface.Chat`
+
+#### Returns:
+```json
+"Chat"
+```
+
+### 26. `Assets()` returns `AssetsInterface.Assets`
+
+#### Returns:
+```json
+"Assets"
 ```

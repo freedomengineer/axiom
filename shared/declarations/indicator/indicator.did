@@ -7,8 +7,11 @@ type Variant =
  variant {
    ACORN;
    Affiliate;
+   Assets;
    Axioms;
+   Chat;
    DAO;
+   Encyclopedia;
    Escrow;
    Facade;
    Founder;
@@ -1300,8 +1303,11 @@ type Indicator =
    /// PUBLIC ////// ACTORS ////////////
    ACORN: () -> (ACORN) query;
    Affiliate: () -> (Affiliate) query;
+   Assets: () -> (Assets) query;
    Axioms: () -> (Axioms) query;
+   Chat: () -> (Chat) query;
    DAO: () -> (DAO) query;
+   Encyclopedia: () -> (Encyclopedia) query;
    Escrow: () -> (Escrow) query;
    Facade: () -> (Facade) query;
    ICPUSD: () -> (ICPUSD) query;
@@ -1311,6 +1317,7 @@ type Indicator =
    addController: () -> ();
    checkInstallationSettled: (issuer: principal) -> (bool) query;
    clearCommitment: (actorVariant: DeployableVariant) -> ();
+   createNewCanisters: () -> ();
    deleteSession: (issuer: principal) -> ();
    enqueueUpgradeTask: (proposalId: nat, issuer: principal, actorsConfigs:
     ActorsConfigs) -> ();
@@ -1557,6 +1564,23 @@ type Entry =
    rank: int;
    score: int;
  };
+type Encyclopedia = 
+ service {
+   expectUserNotFound: (principal) -> () query;
+   getConfig: (Key) -> (SharableValue) query;
+   getConfigs: () -> (Sharable__3) query;
+   initialize: () -> ();
+   putConfigs: (vec record {
+                      Key;
+                      SharableValue;
+                    }) -> ();
+   register: (principal, nat) -> ();
+   setConfigs: (vec record {
+                      Key;
+                      SharableValue;
+                    }) -> ();
+   shiftToMidnight: (nat) -> ();
+ };
 type ElectionResult = 
  variant {
    New;
@@ -1574,8 +1598,11 @@ type DeployableVariant =
  variant {
    ACORN;
    Affiliate;
+   Assets;
    Axioms;
+   Chat;
    DAO;
+   Encyclopedia;
    Escrow;
    Facade;
    Frontend;
@@ -1589,8 +1616,11 @@ type DeployableActorVariant =
  variant {
    ACORN;
    Affiliate;
+   Assets;
    Axioms;
+   Chat;
    DAO;
+   Encyclopedia;
    Escrow;
    Facade;
    Frontend;
@@ -1696,8 +1726,11 @@ type CouponRedeemedData =
 type ConfigurableActorVariant = 
  variant {
    Affiliate;
+   Assets;
    Axioms;
+   Chat;
    DAO;
+   Encyclopedia;
    Escrow;
    Facade;
    Indicator;
@@ -1721,6 +1754,23 @@ type Choice =
    Delegated;
    Negative;
    Positive;
+ };
+type Chat = 
+ service {
+   expectUserNotFound: (principal) -> () query;
+   getConfig: (Key) -> (SharableValue) query;
+   getConfigs: () -> (Sharable__3) query;
+   initialize: () -> ();
+   putConfigs: (vec record {
+                      Key;
+                      SharableValue;
+                    }) -> ();
+   register: (principal, nat) -> ();
+   setConfigs: (vec record {
+                      Key;
+                      SharableValue;
+                    }) -> ();
+   shiftToMidnight: (nat) -> ();
  };
 type Changes = 
  variant {
@@ -1826,6 +1876,20 @@ type Axioms =
    voteHypothesis: (nat, Choice__1, opt CustomValue) -> ();
    withdrawAll: () -> ();
  };
+type Assets = 
+ service {
+   getConfig: (Key) -> (SharableValue) query;
+   getConfigs: () -> (Sharable__3) query;
+   putConfigs: (vec record {
+                      Key;
+                      SharableValue;
+                    }) -> ();
+   setConfigs: (vec record {
+                      Key;
+                      SharableValue;
+                    }) -> ();
+   shiftToMidnight: (nat) -> ();
+ };
 type ApproveResult = 
  variant {
    Err:
@@ -1916,8 +1980,11 @@ type ActorVariant =
  variant {
    ACORN;
    Affiliate;
+   Assets;
    Axioms;
+   Chat;
    DAO;
+   Encyclopedia;
    Escrow;
    Facade;
    Founder;
