@@ -2,8 +2,11 @@ type Variant =
  variant {
    ACORN;
    Affiliate;
+   Assets;
    Axioms;
+   Chat;
    DAO;
+   Encyclopedia;
    Escrow;
    Facade;
    Founder;
@@ -47,30 +50,30 @@ type Value =
 type Time = int;
 type Split = 
  service {
-   affiliateDeposit: (principal, nat) -> (nat);
-   deposit: (principal, nat) -> ();
-   externalTransfer: (principal, nat) -> ();
-   getBalance: (Variant) -> (Sharable) query;
+   affiliateDeposit: (sender: principal, amount: nat) -> (nat);
+   deposit: (sender: principal, amount: nat) -> ();
+   externalTransfer: (recipient: principal, amount: nat) -> ();
+   getBalance: (actorVariant: Variant) -> (Sharable) query;
    /// PUBLIC ////// ACCESSORS ////////////
-   getConfig: (Key) -> (SharableValue) query;
+   getConfig: (key: Key) -> (SharableValue) query;
    getConfigs: () -> (Sharable__4) query;
-   getDistribution: (Variant) -> (Sharable__3) query;
+   getDistribution: (actorVariant: Variant) -> (Sharable__3) query;
    getDistributions: () -> (Sharable__2) query;
-   getEarning: (Variant) -> (Sharable__1) query;
+   getEarning: (actorVariant: Variant) -> (Sharable__1) query;
    getTotalBalance: () -> (Sharable) query;
    getTotalRevenue: () -> (Sharable) query;
    /// PUBLIC ////// MODIFIERS ////////////
-   internalTransfer: (Variant, nat) -> ();
-   putConfigs: (vec record {
-                      Key;
-                      SharableValue;
-                    }) -> ();
+   internalTransfer: (recipientVariant: Variant, amount: nat) -> ();
+   putConfigs: (entries: vec record {
+                               Key;
+                               SharableValue;
+                             }) -> ();
    /// PROTECTED ////// MODIFIERS ////////////
-   setConfigs: (vec record {
-                      Key;
-                      SharableValue;
-                    }) -> ();
-   shiftToMidnight: (nat) -> ();
+   setConfigs: (entries: vec record {
+                               Key;
+                               SharableValue;
+                             }) -> ();
+   shiftToMidnight: (days: nat) -> ();
  };
 type Sharable__4 = 
  vec record {
@@ -81,14 +84,14 @@ type Sharable__3 =
  record {
    actorVariant: ActorVariant;
    earning: SharableEarning;
-   proportion: SharableProportion__1;
+   proportion: SharableProportion;
  };
 type Sharable__2 = vec SharableDistribution;
 type Sharable__1 = 
  record {
-   balance: SharableE8S__1;
+   balance: SharableE8S;
    lastWithdrawAt: Time;
-   revenue: SharableE8S__1;
+   revenue: SharableE8S;
  };
 type SharableValue = 
  variant {
@@ -119,11 +122,6 @@ type SharableRange =
    Value;
    Value;
  };
-type SharableProportion__1 = 
- record {
-   nat;
-   nat;
- };
 type SharableProportion = 
  record {
    nat;
@@ -131,17 +129,16 @@ type SharableProportion =
  };
 type SharableEarning = 
  record {
-   balance: SharableE8S__1;
+   balance: SharableE8S;
    lastWithdrawAt: Time;
-   revenue: SharableE8S__1;
+   revenue: SharableE8S;
  };
-type SharableE8S__1 = nat;
 type SharableE8S = nat;
 type SharableDistribution = 
  record {
    actorVariant: ActorVariant;
    earning: SharableEarning;
-   proportion: SharableProportion__1;
+   proportion: SharableProportion;
  };
 type SharableDate = nat;
 type Sharable = nat;
@@ -150,8 +147,11 @@ type ActorVariant =
  variant {
    ACORN;
    Affiliate;
+   Assets;
    Axioms;
+   Chat;
    DAO;
+   Encyclopedia;
    Escrow;
    Facade;
    Founder;

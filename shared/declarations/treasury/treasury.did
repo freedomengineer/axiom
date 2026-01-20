@@ -2,8 +2,11 @@ type Variant =
  variant {
    ACORN;
    Affiliate;
+   Assets;
    Axioms;
+   Chat;
    DAO;
+   Encyclopedia;
    Escrow;
    Facade;
    Founder;
@@ -46,32 +49,33 @@ type Value =
  };
 type Treasury = 
  service {
-   claim: (principal, nat) -> ();
-   delegatedClaim: (Variant, principal, nat) -> ();
-   delegatedExternalTransfer: (Variant, principal, nat) -> ();
-   externalMint: (principal, nat) -> ();
-   externalTransfer: (principal, nat) -> ();
-   getAllocated: (Variant) -> (Sharable) query;
-   getAllocation: (Variant) -> (Sharable__3) query;
+   claim: (sender: principal, amount: nat) -> ();
+   delegatedClaim: (recipient: Variant, sender: principal, amount: nat) -> ();
+   delegatedExternalTransfer: (sender: Variant, recipient: principal, amount:
+    nat) -> ();
+   externalMint: (recipient: principal, amount: nat) -> ();
+   externalTransfer: (recipient: principal, amount: nat) -> ();
+   getAllocated: (actorVariant: Variant) -> (Sharable) query;
+   getAllocation: (actorVariant: Variant) -> (Sharable__3) query;
    getAllocations: () -> (Sharable__2) query;
-   getBalance: (Variant) -> (Sharable) query;
+   getBalance: (actorVariant: Variant) -> (Sharable) query;
    getCirculatingSupply: () -> (Sharable) query;
    /// PUBLIC ////// ACCESSORS ////////////
-   getConfig: (Key) -> (SharableValue) query;
+   getConfig: (key: Key) -> (SharableValue) query;
    getConfigs: () -> (Sharable__1) query;
    getReserveSupply: () -> (Sharable) query;
    getTotalSupply: () -> (Sharable) query;
-   internalMint: (Variant, nat) -> ();
-   internalTransfer: (Variant, nat) -> ();
-   putConfigs: (vec record {
-                      Key;
-                      SharableValue;
-                    }) -> ();
+   internalMint: (recipient: Variant, amount: nat) -> ();
+   internalTransfer: (recipient: Variant, amount: nat) -> ();
+   putConfigs: (entries: vec record {
+                               Key;
+                               SharableValue;
+                             }) -> ();
    /// PUBLIC ////// MODIFIERS ////////////
-   setConfigs: (vec record {
-                      Key;
-                      SharableValue;
-                    }) -> ();
+   setConfigs: (entries: vec record {
+                               Key;
+                               SharableValue;
+                             }) -> ();
  };
 type Sharable__3 = 
  record {
@@ -133,8 +137,11 @@ type ActorVariant =
  variant {
    ACORN;
    Affiliate;
+   Assets;
    Axioms;
+   Chat;
    DAO;
+   Encyclopedia;
    Escrow;
    Facade;
    Founder;

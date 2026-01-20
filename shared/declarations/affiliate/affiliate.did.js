@@ -94,12 +94,10 @@ export const idlFactory = ({ IDL }) => {
     'of' : IDL.Nat,
     'result' : IDL.Vec(Sharable),
   });
-  const Time__1 = IDL.Int;
-  const SharableE8S__1 = IDL.Nat;
   const Sharable__2 = IDL.Record({
-    'lastWithdrawAt' : Time__1,
-    'revenue' : SharableE8S__1,
-    'balance' : SharableE8S__1,
+    'lastWithdrawAt' : Time,
+    'revenue' : SharableE8S,
+    'balance' : SharableE8S,
   });
   const PrivateFilter = IDL.Record({
     'status' : IDL.Opt(StatusVariant),
@@ -137,9 +135,9 @@ export const idlFactory = ({ IDL }) => {
     'callerRank' : IDL.Opt(IDL.Nat),
   });
   const SharableEarning = IDL.Record({
-    'lastWithdrawAt' : Time__1,
-    'revenue' : SharableE8S__1,
-    'balance' : SharableE8S__1,
+    'lastWithdrawAt' : Time,
+    'revenue' : SharableE8S,
+    'balance' : SharableE8S,
   });
   const SharableCount = IDL.Nat;
   const Sharable__1 = IDL.Record({

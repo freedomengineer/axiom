@@ -108,11 +108,10 @@ export interface SharableCoupon {
 }
 export type SharableDate = bigint;
 export type SharableE8S = bigint;
-export type SharableE8S__1 = bigint;
 export interface SharableEarning {
-  'lastWithdrawAt' : Time__1,
-  'revenue' : SharableE8S__1,
-  'balance' : SharableE8S__1,
+  'lastWithdrawAt' : Time,
+  'revenue' : SharableE8S,
+  'balance' : SharableE8S,
 }
 export type SharableProportion = [bigint, bigint];
 export type SharableRange = [Value, Value];
@@ -136,9 +135,9 @@ export interface Sharable__1 {
   'referrals' : SharableCount,
 }
 export interface Sharable__2 {
-  'lastWithdrawAt' : Time__1,
-  'revenue' : SharableE8S__1,
-  'balance' : SharableE8S__1,
+  'lastWithdrawAt' : Time,
+  'revenue' : SharableE8S,
+  'balance' : SharableE8S,
 }
 export type Sharable__3 = Array<SharableCoupon>;
 export type Sharable__4 = Array<[Key, SharableValue]>;
@@ -155,7 +154,6 @@ export type StatusVariant = { 'Available' : null } |
   { 'Redeemed' : null } |
   { 'Locked' : null };
 export type Time = bigint;
-export type Time__1 = bigint;
 export interface TopNonPagination {
   'result' : TopResult,
   'callerRank' : [] | [bigint],

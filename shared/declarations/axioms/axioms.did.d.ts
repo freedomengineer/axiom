@@ -103,14 +103,8 @@ export interface Axioms {
 }
 export type BinaryChoice = { 'Negative' : null } |
   { 'Positive' : null };
-export type BinaryChoice__1 = { 'Negative' : null } |
-  { 'Positive' : null };
 export interface BinaryVote { 'value' : bigint, 'choice' : Choice__1 }
-export interface BinaryVote__1 { 'value' : bigint, 'choice' : Choice__1 }
-export interface BinaryVote__2 { 'value' : bigint, 'choice' : Choice__1 }
 export type Category = { 'Hypothesis' : null } |
-  { 'Evidence' : null };
-export type Category__1 = { 'Hypothesis' : null } |
   { 'Evidence' : null };
 export type Choice = { 'Negative' : null } |
   { 'Positive' : null } |
@@ -137,7 +131,7 @@ export interface Filter__1 {
   'status' : [] | [Status],
   'requester' : [] | [Principal],
   'voter' : [] | [Principal],
-  'category' : [] | [Category__1],
+  'category' : [] | [Category],
 }
 export interface Filter__2 { 'q' : [] | [string], 'member' : [] | [Principal] }
 export interface Filter__3 {
@@ -191,32 +185,26 @@ export interface SharableBinaryVotes {
   'powered' : OneSideSharable__1,
   'regular' : OneSideSharable__1,
 }
-export interface SharableBinaryVotes__1 {
-  'powered' : OneSideSharable__1,
-  'regular' : OneSideSharable__1,
-}
 export type SharableConfig = { 'ExcludedPublishers' : Array<Principal> } |
   { 'ExcludedFields' : Array<string> };
 export type SharableCount = bigint;
 export type SharableDate = bigint;
 export type SharableE8S = bigint;
-export type SharableE8S__1 = bigint;
-export type SharableE8S__2 = bigint;
 export interface SharableEarning {
   'lastWithdrawAt' : Time,
-  'revenue' : SharableE8S__1,
-  'balance' : SharableE8S__1,
+  'revenue' : SharableE8S,
+  'balance' : SharableE8S,
 }
 export interface SharableEvidence {
   'id' : bigint,
-  'callerVote' : [] | [BinaryVote__2],
-  'votes' : SharableBinaryVotes__1,
+  'callerVote' : [] | [BinaryVote],
+  'votes' : SharableBinaryVotes,
   'publishDate' : bigint,
   'form' : Form,
   'publisher' : Principal,
   'repliedTo' : [] | [bigint],
   'replies' : Array<bigint>,
-  'choice' : BinaryChoice__1,
+  'choice' : BinaryChoice,
   'hypothesisId' : bigint,
 }
 export interface SharableField {
@@ -225,23 +213,23 @@ export interface SharableField {
   'callerRole' : [] | [Role],
   'name' : string,
   'description' : string,
-  'creationDate' : Time__2,
+  'creationDate' : Time,
 }
 export interface SharableFlag {
   'id' : bigint,
-  'status' : Status__1,
+  'status' : Status,
   'requester' : Principal,
-  'callerVote' : [] | [BinaryVote__1],
+  'callerVote' : [] | [BinaryVote],
   'votes' : SharableBinaryVotes,
   'category' : Category,
-  'requestDate' : Time__1,
+  'requestDate' : Time,
   'reason' : string,
 }
 export interface SharableHypothesis {
   'id' : bigint,
   'content' : string,
   'axioms' : SharableCount,
-  'callerVote' : [] | [TernaryVote__1],
+  'callerVote' : [] | [TernaryVote],
   'votes' : SharableTernaryVotes,
   'publishDate' : bigint,
   'publisher' : Principal,
@@ -252,7 +240,7 @@ export interface SharableHypothesis {
 }
 export interface SharablePayout {
   'ranks' : SharableRanks,
-  'callerRevenue' : [] | [SharableE8S__2],
+  'callerRevenue' : [] | [SharableE8S],
 }
 export type SharableProportion = [bigint, bigint];
 export type SharableRange = [Value, Value];
@@ -284,14 +272,14 @@ export type Sharable__1 = Array<SharableConfig>;
 export type Sharable__10 = Array<SharableEvidence>;
 export interface Sharable__11 {
   'lastWithdrawAt' : Time,
-  'revenue' : SharableE8S__1,
-  'balance' : SharableE8S__1,
+  'revenue' : SharableE8S,
+  'balance' : SharableE8S,
 }
 export type Sharable__12 = Array<[Key, SharableValue]>;
 export type Sharable__13 = Array<SharablePayout>;
 export interface Sharable__14 {
   'ranks' : SharableRanks,
-  'callerRevenue' : [] | [SharableE8S__2],
+  'callerRevenue' : [] | [SharableE8S],
 }
 export interface Sharable__2 {
   'evidences' : Array<bigint>,
@@ -312,7 +300,7 @@ export interface Sharable__3 {
   'id' : bigint,
   'content' : string,
   'axioms' : SharableCount,
-  'callerVote' : [] | [TernaryVote__1],
+  'callerVote' : [] | [TernaryVote],
   'votes' : SharableTernaryVotes,
   'publishDate' : bigint,
   'publisher' : Principal,
@@ -324,12 +312,12 @@ export interface Sharable__3 {
 export type Sharable__4 = Array<SharableHypothesis>;
 export interface Sharable__5 {
   'id' : bigint,
-  'status' : Status__1,
+  'status' : Status,
   'requester' : Principal,
-  'callerVote' : [] | [BinaryVote__1],
+  'callerVote' : [] | [BinaryVote],
   'votes' : SharableBinaryVotes,
   'category' : Category,
-  'requestDate' : Time__1,
+  'requestDate' : Time,
   'reason' : string,
 }
 export type Sharable__6 = Array<SharableFlag>;
@@ -339,19 +327,19 @@ export interface Sharable__7 {
   'callerRole' : [] | [Role],
   'name' : string,
   'description' : string,
-  'creationDate' : Time__2,
+  'creationDate' : Time,
 }
 export type Sharable__8 = Array<SharableField>;
 export interface Sharable__9 {
   'id' : bigint,
-  'callerVote' : [] | [BinaryVote__2],
-  'votes' : SharableBinaryVotes__1,
+  'callerVote' : [] | [BinaryVote],
+  'votes' : SharableBinaryVotes,
   'publishDate' : bigint,
   'form' : Form,
   'publisher' : Principal,
   'repliedTo' : [] | [bigint],
   'replies' : Array<bigint>,
-  'choice' : BinaryChoice__1,
+  'choice' : BinaryChoice,
   'hypothesisId' : bigint,
 }
 export interface Sort { 'by' : Sort__1, 'order' : Order }
@@ -377,15 +365,8 @@ export type Status = { 'Approved' : null } |
   { 'Rejected' : null } |
   { 'Requested' : null } |
   { 'Expired' : null };
-export type Status__1 = { 'Approved' : null } |
-  { 'Rejected' : null } |
-  { 'Requested' : null } |
-  { 'Expired' : null };
 export interface TernaryVote { 'value' : bigint, 'choice' : Choice }
-export interface TernaryVote__1 { 'value' : bigint, 'choice' : Choice }
 export type Time = bigint;
-export type Time__1 = bigint;
-export type Time__2 = bigint;
 export interface TopNonPagination {
   'result' : TopResult,
   'callerRank' : [] | [bigint],

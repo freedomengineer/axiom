@@ -1,7 +1,10 @@
 import * as _DACORN from 'shared/declarations/acorn_ledger/acorn_ledger.did.js'
 import * as _DAffiliate from 'shared/declarations/affiliate/affiliate.did.js'
+import * as _DAssets from 'shared/declarations/assets/assets.did.js'
 import * as _DAxioms from 'shared/declarations/axioms/axioms.did.js'
+import * as _DChat from 'shared/declarations/chat/chat.did.js'
 import * as _DDAO from 'shared/declarations/dao/dao.did.js'
+import * as _DEncyclopedia from 'shared/declarations/encyclopedia/encyclopedia.did.js'
 import * as _DEscrow from 'shared/declarations/escrow/escrow.did.js'
 import * as _DFacade from 'shared/declarations/facade/facade.did.js'
 import * as _DICP from 'shared/declarations/icp_ledger/icp_ledger.did.js'
@@ -23,6 +26,14 @@ export const DAO = new Actor<_DDAO._SERVICE>(
 export const Axioms = new Actor<_DAxioms._SERVICE>(
     (process.env.CANISTER_ID_AXIOMS ?? process.env.CANISTER_ID_AXIOMS_PROD)!,
     _DAxioms.idlFactory
+)
+export const Encyclopedia = new Actor<_DEncyclopedia._SERVICE>(
+    (process.env.CANISTER_ID_ENCYCLOPEDIA ?? process.env.CANISTER_ID_ENCYCLOPEDIA_PROD)!,
+    _DEncyclopedia.idlFactory
+)
+export const Chat = new Actor<_DChat._SERVICE>(
+    (process.env.CANISTER_ID_CHAT ?? process.env.CANISTER_ID_CHAT_PROD)!,
+    _DChat.idlFactory
 )
 export const Facade = new Actor<_DFacade._SERVICE>(
     (process.env.CANISTER_ID_FACADE ?? process.env.CANISTER_ID_FACADE_PROD)!,
@@ -57,6 +68,10 @@ export const ACORN = new Actor<_DACORN._SERVICE>(
     _DACORN.idlFactory
 )
 export const ICP = new Actor<_DICP._SERVICE>(process.env.CANISTER_ID_ICP_LEDGER!, _DICP.idlFactory)
+export const Assets = new Actor<_DAssets._SERVICE>(
+    (process.env.CANISTER_ID_ASSETS ?? process.env.CANISTER_ID_ASSETS_PROD)!,
+    _DAssets.idlFactory
+)
 export const Frontend = new Actor<_DIndicator._SERVICE>(
     process.env.CANISTER_ID_FRONTEND!,
     _DIndicator.idlFactory

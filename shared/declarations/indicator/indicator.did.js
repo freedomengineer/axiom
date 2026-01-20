@@ -330,6 +330,13 @@ export const idlFactory = ({ IDL }) => {
     'shiftToMidnight' : IDL.Func([IDL.Nat], [], []),
     'withdrawAll' : IDL.Func([], [], []),
   });
+  const Assets = IDL.Service({
+    'getConfig' : IDL.Func([Key], [SharableValue], ['query']),
+    'getConfigs' : IDL.Func([], [Sharable__3], ['query']),
+    'putConfigs' : IDL.Func([IDL.Vec(IDL.Tuple(Key, SharableValue))], [], []),
+    'setConfigs' : IDL.Func([IDL.Vec(IDL.Tuple(Key, SharableValue))], [], []),
+    'shiftToMidnight' : IDL.Func([IDL.Nat], [], []),
+  });
   const Entry = IDL.Record({ 'rank' : IDL.Int, 'score' : IDL.Int });
   const SharableRank = IDL.Record({
     'poweredEntry' : Entry,
@@ -701,6 +708,16 @@ export const idlFactory = ({ IDL }) => {
       ),
     'withdrawAll' : IDL.Func([], [], []),
   });
+  const Chat = IDL.Service({
+    'expectUserNotFound' : IDL.Func([IDL.Principal], [], ['query']),
+    'getConfig' : IDL.Func([Key], [SharableValue], ['query']),
+    'getConfigs' : IDL.Func([], [Sharable__3], ['query']),
+    'initialize' : IDL.Func([], [], []),
+    'putConfigs' : IDL.Func([IDL.Vec(IDL.Tuple(Key, SharableValue))], [], []),
+    'register' : IDL.Func([IDL.Principal, IDL.Nat], [], []),
+    'setConfigs' : IDL.Func([IDL.Vec(IDL.Tuple(Key, SharableValue))], [], []),
+    'shiftToMidnight' : IDL.Func([IDL.Nat], [], []),
+  });
   const Sharable__4 = IDL.Nat;
   const Sharable__19 = IDL.Record({
     'title' : IDL.Text,
@@ -744,10 +761,13 @@ export const idlFactory = ({ IDL }) => {
     'Escrow' : IDL.Null,
     'Split' : IDL.Null,
     'Facade' : IDL.Null,
+    'Chat' : IDL.Null,
     'Indicator' : IDL.Null,
     'Axioms' : IDL.Null,
     'Affiliate' : IDL.Null,
+    'Assets' : IDL.Null,
     'Treasury' : IDL.Null,
+    'Encyclopedia' : IDL.Null,
   });
   const SharableConfigs = IDL.Vec(IDL.Tuple(Key, SharableValue));
   const ActorsConfigs = IDL.Vec(
@@ -772,12 +792,15 @@ export const idlFactory = ({ IDL }) => {
     'Escrow' : IDL.Null,
     'Split' : IDL.Null,
     'Facade' : IDL.Null,
+    'Chat' : IDL.Null,
     'Frontend' : IDL.Null,
     'Indicator' : IDL.Null,
     'Axioms' : IDL.Null,
     'Affiliate' : IDL.Null,
+    'Assets' : IDL.Null,
     'ACORN' : IDL.Null,
     'Treasury' : IDL.Null,
+    'Encyclopedia' : IDL.Null,
     'ICPUSD' : IDL.Null,
   });
   const SharableCommitment = IDL.Record({
@@ -980,6 +1003,16 @@ export const idlFactory = ({ IDL }) => {
     'updateNomineeTitle' : IDL.Func([IDL.Text], [], []),
     'voteProposal' : IDL.Func([IDL.Nat, Delegable], [], []),
     'withdrawAll' : IDL.Func([], [], []),
+  });
+  const Encyclopedia = IDL.Service({
+    'expectUserNotFound' : IDL.Func([IDL.Principal], [], ['query']),
+    'getConfig' : IDL.Func([Key], [SharableValue], ['query']),
+    'getConfigs' : IDL.Func([], [Sharable__3], ['query']),
+    'initialize' : IDL.Func([], [], []),
+    'putConfigs' : IDL.Func([IDL.Vec(IDL.Tuple(Key, SharableValue))], [], []),
+    'register' : IDL.Func([IDL.Principal, IDL.Nat], [], []),
+    'setConfigs' : IDL.Func([IDL.Vec(IDL.Tuple(Key, SharableValue))], [], []),
+    'shiftToMidnight' : IDL.Func([IDL.Nat], [], []),
   });
   const Option = IDL.Variant({
     'Perpetual' : IDL.Null,
@@ -1481,13 +1514,16 @@ export const idlFactory = ({ IDL }) => {
     'Escrow' : IDL.Null,
     'Split' : IDL.Null,
     'Facade' : IDL.Null,
+    'Chat' : IDL.Null,
     'Frontend' : IDL.Null,
     'Indicator' : IDL.Null,
     'Axioms' : IDL.Null,
     'Affiliate' : IDL.Null,
     'Founder' : IDL.Null,
+    'Assets' : IDL.Null,
     'ACORN' : IDL.Null,
     'Treasury' : IDL.Null,
+    'Encyclopedia' : IDL.Null,
     'ICPUSD' : IDL.Null,
   });
   const ActorVariant = IDL.Variant({
@@ -1496,13 +1532,16 @@ export const idlFactory = ({ IDL }) => {
     'Escrow' : IDL.Null,
     'Split' : IDL.Null,
     'Facade' : IDL.Null,
+    'Chat' : IDL.Null,
     'Frontend' : IDL.Null,
     'Indicator' : IDL.Null,
     'Axioms' : IDL.Null,
     'Affiliate' : IDL.Null,
     'Founder' : IDL.Null,
+    'Assets' : IDL.Null,
     'ACORN' : IDL.Null,
     'Treasury' : IDL.Null,
+    'Encyclopedia' : IDL.Null,
     'ICPUSD' : IDL.Null,
   });
   const Sharable__9 = IDL.Record({
@@ -1574,12 +1613,15 @@ export const idlFactory = ({ IDL }) => {
     'Escrow' : IDL.Null,
     'Split' : IDL.Null,
     'Facade' : IDL.Null,
+    'Chat' : IDL.Null,
     'Frontend' : IDL.Null,
     'Indicator' : IDL.Null,
     'Axioms' : IDL.Null,
     'Affiliate' : IDL.Null,
+    'Assets' : IDL.Null,
     'ACORN' : IDL.Null,
     'Treasury' : IDL.Null,
+    'Encyclopedia' : IDL.Null,
     'ICPUSD' : IDL.Null,
   });
   const SnapshotFrom = IDL.Variant({
@@ -1635,8 +1677,11 @@ export const idlFactory = ({ IDL }) => {
   const Indicator = IDL.Service({
     'ACORN' : IDL.Func([], [ACORN], ['query']),
     'Affiliate' : IDL.Func([], [Affiliate], ['query']),
+    'Assets' : IDL.Func([], [Assets], ['query']),
     'Axioms' : IDL.Func([], [Axioms], ['query']),
+    'Chat' : IDL.Func([], [Chat], ['query']),
     'DAO' : IDL.Func([], [DAO], ['query']),
+    'Encyclopedia' : IDL.Func([], [Encyclopedia], ['query']),
     'Escrow' : IDL.Func([], [Escrow], ['query']),
     'Facade' : IDL.Func([], [Facade], ['query']),
     'ICPUSD' : IDL.Func([], [ICPUSD], ['query']),
@@ -1650,6 +1695,7 @@ export const idlFactory = ({ IDL }) => {
         ['query'],
       ),
     'clearCommitment' : IDL.Func([DeployableVariant], [], []),
+    'createNewCanisters' : IDL.Func([], [], []),
     'deleteSession' : IDL.Func([IDL.Principal], [], []),
     'enqueueUpgradeTask' : IDL.Func(
         [IDL.Nat, IDL.Principal, ActorsConfigs],
@@ -1709,6 +1755,7 @@ export const idlFactory = ({ IDL }) => {
         [],
         [],
       ),
+    'popSnapshots' : IDL.Func([IDL.Vec(DeployableVariant)], [], []),
     'putActorsConfigs' : IDL.Func([ActorsConfigs], [], []),
     'putConfigs' : IDL.Func([IDL.Vec(IDL.Tuple(Key, SharableValue))], [], []),
     'setActorsConfigs' : IDL.Func([ActorsConfigs], [], []),

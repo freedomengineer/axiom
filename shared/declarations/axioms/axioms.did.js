@@ -7,18 +7,17 @@ export const idlFactory = ({ IDL }) => {
     'hypothesisId' : IDL.Nat,
   });
   const SharableRanks = IDL.Vec(SharableRank);
-  const SharableE8S__2 = IDL.Nat;
+  const SharableE8S = IDL.Nat;
   const Sharable__14 = IDL.Record({
     'ranks' : SharableRanks,
-    'callerRevenue' : IDL.Opt(SharableE8S__2),
+    'callerRevenue' : IDL.Opt(SharableE8S),
   });
   const SharablePayout = IDL.Record({
     'ranks' : SharableRanks,
-    'callerRevenue' : IDL.Opt(SharableE8S__2),
+    'callerRevenue' : IDL.Opt(SharableE8S),
   });
   const Sharable__13 = IDL.Vec(SharablePayout);
   const Key = IDL.Text;
-  const SharableE8S = IDL.Nat;
   const SharableDate = IDL.Nat;
   const SharableProportion = IDL.Tuple(IDL.Nat, IDL.Nat);
   const ValueProp_1 = IDL.Variant({
@@ -54,19 +53,18 @@ export const idlFactory = ({ IDL }) => {
   });
   const Sharable__12 = IDL.Vec(IDL.Tuple(Key, SharableValue));
   const Time = IDL.Int;
-  const SharableE8S__1 = IDL.Nat;
   const Sharable__11 = IDL.Record({
     'lastWithdrawAt' : Time,
-    'revenue' : SharableE8S__1,
-    'balance' : SharableE8S__1,
+    'revenue' : SharableE8S,
+    'balance' : SharableE8S,
   });
   const Choice__1 = IDL.Variant({
     'Negative' : IDL.Null,
     'Positive' : IDL.Null,
   });
-  const BinaryVote__2 = IDL.Record({ 'value' : IDL.Nat, 'choice' : Choice__1 });
+  const BinaryVote = IDL.Record({ 'value' : IDL.Nat, 'choice' : Choice__1 });
   const OneSideSharable__1 = IDL.Tuple(IDL.Nat, IDL.Nat);
-  const SharableBinaryVotes__1 = IDL.Record({
+  const SharableBinaryVotes = IDL.Record({
     'powered' : OneSideSharable__1,
     'regular' : OneSideSharable__1,
   });
@@ -79,25 +77,21 @@ export const idlFactory = ({ IDL }) => {
     'Hyperlink' : Hyperlink,
   });
   const Form = IDL.Vec(Format);
-  const BinaryChoice__1 = IDL.Variant({
+  const BinaryChoice = IDL.Variant({
     'Negative' : IDL.Null,
     'Positive' : IDL.Null,
   });
   const Sharable__9 = IDL.Record({
     'id' : IDL.Nat,
-    'callerVote' : IDL.Opt(BinaryVote__2),
-    'votes' : SharableBinaryVotes__1,
+    'callerVote' : IDL.Opt(BinaryVote),
+    'votes' : SharableBinaryVotes,
     'publishDate' : IDL.Int,
     'form' : Form,
     'publisher' : IDL.Principal,
     'repliedTo' : IDL.Opt(IDL.Nat),
     'replies' : IDL.Vec(IDL.Nat),
-    'choice' : BinaryChoice__1,
+    'choice' : BinaryChoice,
     'hypothesisId' : IDL.Nat,
-  });
-  const BinaryChoice = IDL.Variant({
-    'Negative' : IDL.Null,
-    'Positive' : IDL.Null,
   });
   const Filter__3 = IDL.Record({
     'q' : IDL.Opt(IDL.Text),
@@ -122,14 +116,14 @@ export const idlFactory = ({ IDL }) => {
   const Sort_3 = IDL.Record({ 'by' : Sort__4, 'order' : Order });
   const SharableEvidence = IDL.Record({
     'id' : IDL.Nat,
-    'callerVote' : IDL.Opt(BinaryVote__2),
-    'votes' : SharableBinaryVotes__1,
+    'callerVote' : IDL.Opt(BinaryVote),
+    'votes' : SharableBinaryVotes,
     'publishDate' : IDL.Int,
     'form' : Form,
     'publisher' : IDL.Principal,
     'repliedTo' : IDL.Opt(IDL.Nat),
     'replies' : IDL.Vec(IDL.Nat),
-    'choice' : BinaryChoice__1,
+    'choice' : BinaryChoice,
     'hypothesisId' : IDL.Nat,
   });
   const Sharable__10 = IDL.Vec(SharableEvidence);
@@ -139,14 +133,13 @@ export const idlFactory = ({ IDL }) => {
     'result' : IDL.Vec(Sharable__9),
   });
   const Role = IDL.Variant({ 'Guest' : IDL.Null, 'Member' : IDL.Null });
-  const Time__2 = IDL.Int;
   const Sharable__7 = IDL.Record({
     'members' : IDL.Vec(IDL.Principal),
     'hypothesisIds' : IDL.Vec(IDL.Nat),
     'callerRole' : IDL.Opt(Role),
     'name' : IDL.Text,
     'description' : IDL.Text,
-    'creationDate' : Time__2,
+    'creationDate' : Time,
   });
   const Filter__2 = IDL.Record({
     'q' : IDL.Opt(IDL.Text),
@@ -164,7 +157,7 @@ export const idlFactory = ({ IDL }) => {
     'callerRole' : IDL.Opt(Role),
     'name' : IDL.Text,
     'description' : IDL.Text,
-    'creationDate' : Time__2,
+    'creationDate' : Time,
   });
   const Sharable__8 = IDL.Vec(SharableField);
   const Pagination_2 = IDL.Record({
@@ -177,54 +170,38 @@ export const idlFactory = ({ IDL }) => {
     'Evidence' : IDL.Null,
   });
   const Header = IDL.Record({ 'id' : IDL.Nat, 'category' : Category });
-  const Status__1 = IDL.Variant({
-    'Approved' : IDL.Null,
-    'Rejected' : IDL.Null,
-    'Requested' : IDL.Null,
-    'Expired' : IDL.Null,
-  });
-  const BinaryVote__1 = IDL.Record({ 'value' : IDL.Nat, 'choice' : Choice__1 });
-  const SharableBinaryVotes = IDL.Record({
-    'powered' : OneSideSharable__1,
-    'regular' : OneSideSharable__1,
-  });
-  const Time__1 = IDL.Int;
-  const Sharable__5 = IDL.Record({
-    'id' : IDL.Nat,
-    'status' : Status__1,
-    'requester' : IDL.Principal,
-    'callerVote' : IDL.Opt(BinaryVote__1),
-    'votes' : SharableBinaryVotes,
-    'category' : Category,
-    'requestDate' : Time__1,
-    'reason' : IDL.Text,
-  });
   const Status = IDL.Variant({
     'Approved' : IDL.Null,
     'Rejected' : IDL.Null,
     'Requested' : IDL.Null,
     'Expired' : IDL.Null,
   });
-  const Category__1 = IDL.Variant({
-    'Hypothesis' : IDL.Null,
-    'Evidence' : IDL.Null,
+  const Sharable__5 = IDL.Record({
+    'id' : IDL.Nat,
+    'status' : Status,
+    'requester' : IDL.Principal,
+    'callerVote' : IDL.Opt(BinaryVote),
+    'votes' : SharableBinaryVotes,
+    'category' : Category,
+    'requestDate' : Time,
+    'reason' : IDL.Text,
   });
   const Filter__1 = IDL.Record({
     'status' : IDL.Opt(Status),
     'requester' : IDL.Opt(IDL.Principal),
     'voter' : IDL.Opt(IDL.Principal),
-    'category' : IDL.Opt(Category__1),
+    'category' : IDL.Opt(Category),
   });
   const Sort__2 = IDL.Variant({ 'difference' : IDL.Null, 'recent' : IDL.Null });
   const Sort_1 = IDL.Record({ 'by' : Sort__2, 'order' : Order });
   const SharableFlag = IDL.Record({
     'id' : IDL.Nat,
-    'status' : Status__1,
+    'status' : Status,
     'requester' : IDL.Principal,
-    'callerVote' : IDL.Opt(BinaryVote__1),
+    'callerVote' : IDL.Opt(BinaryVote),
     'votes' : SharableBinaryVotes,
     'category' : Category,
-    'requestDate' : Time__1,
+    'requestDate' : Time,
     'reason' : IDL.Text,
   });
   const Sharable__6 = IDL.Vec(SharableFlag);
@@ -261,7 +238,7 @@ export const idlFactory = ({ IDL }) => {
     'Positive' : IDL.Null,
     'Neutral' : IDL.Null,
   });
-  const TernaryVote__1 = IDL.Record({ 'value' : IDL.Nat, 'choice' : Choice });
+  const TernaryVote = IDL.Record({ 'value' : IDL.Nat, 'choice' : Choice });
   const OneSideSharable = IDL.Tuple(IDL.Nat, IDL.Nat, IDL.Nat);
   const SharableTernaryVotes = IDL.Record({
     'powered' : OneSideSharable,
@@ -271,7 +248,7 @@ export const idlFactory = ({ IDL }) => {
     'id' : IDL.Nat,
     'content' : IDL.Text,
     'axioms' : SharableCount,
-    'callerVote' : IDL.Opt(TernaryVote__1),
+    'callerVote' : IDL.Opt(TernaryVote),
     'votes' : SharableTernaryVotes,
     'publishDate' : IDL.Int,
     'publisher' : IDL.Principal,
@@ -285,7 +262,7 @@ export const idlFactory = ({ IDL }) => {
     'id' : IDL.Nat,
     'content' : IDL.Text,
     'axioms' : SharableCount,
-    'callerVote' : IDL.Opt(TernaryVote__1),
+    'callerVote' : IDL.Opt(TernaryVote),
     'votes' : SharableTernaryVotes,
     'publishDate' : IDL.Int,
     'publisher' : IDL.Principal,
@@ -312,11 +289,9 @@ export const idlFactory = ({ IDL }) => {
   });
   const SharableEarning = IDL.Record({
     'lastWithdrawAt' : Time,
-    'revenue' : SharableE8S__1,
-    'balance' : SharableE8S__1,
+    'revenue' : SharableE8S,
+    'balance' : SharableE8S,
   });
-  const TernaryVote = IDL.Record({ 'value' : IDL.Nat, 'choice' : Choice });
-  const BinaryVote = IDL.Record({ 'value' : IDL.Nat, 'choice' : Choice__1 });
   const Sharable__2 = IDL.Record({
     'evidences' : IDL.Vec(IDL.Nat),
     'principal' : IDL.Principal,

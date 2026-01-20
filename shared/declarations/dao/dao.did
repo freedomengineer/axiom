@@ -303,8 +303,11 @@ type DeployableActorVariant =
  variant {
    ACORN;
    Affiliate;
+   Assets;
    Axioms;
+   Chat;
    DAO;
+   Encyclopedia;
    Escrow;
    Facade;
    Frontend;
@@ -384,8 +387,11 @@ type DAO =
 type ConfigurableActorVariant = 
  variant {
    Affiliate;
+   Assets;
    Axioms;
+   Chat;
    DAO;
+   Encyclopedia;
    Escrow;
    Facade;
    Indicator;

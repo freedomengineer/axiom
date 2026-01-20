@@ -5,13 +5,16 @@ export const idlFactory = ({ IDL }) => {
     'Escrow' : IDL.Null,
     'Split' : IDL.Null,
     'Facade' : IDL.Null,
+    'Chat' : IDL.Null,
     'Frontend' : IDL.Null,
     'Indicator' : IDL.Null,
     'Axioms' : IDL.Null,
     'Affiliate' : IDL.Null,
     'Founder' : IDL.Null,
+    'Assets' : IDL.Null,
     'ACORN' : IDL.Null,
     'Treasury' : IDL.Null,
+    'Encyclopedia' : IDL.Null,
     'ICPUSD' : IDL.Null,
   });
   const Sharable = IDL.Nat;
@@ -52,43 +55,44 @@ export const idlFactory = ({ IDL }) => {
   });
   const Sharable__4 = IDL.Vec(IDL.Tuple(Key, SharableValue));
   const Time = IDL.Int;
-  const SharableE8S__1 = IDL.Nat;
   const SharableEarning = IDL.Record({
     'lastWithdrawAt' : Time,
-    'revenue' : SharableE8S__1,
-    'balance' : SharableE8S__1,
+    'revenue' : SharableE8S,
+    'balance' : SharableE8S,
   });
-  const SharableProportion__1 = IDL.Tuple(IDL.Nat, IDL.Nat);
   const ActorVariant = IDL.Variant({
     'DAO' : IDL.Null,
     'Sales' : IDL.Null,
     'Escrow' : IDL.Null,
     'Split' : IDL.Null,
     'Facade' : IDL.Null,
+    'Chat' : IDL.Null,
     'Frontend' : IDL.Null,
     'Indicator' : IDL.Null,
     'Axioms' : IDL.Null,
     'Affiliate' : IDL.Null,
     'Founder' : IDL.Null,
+    'Assets' : IDL.Null,
     'ACORN' : IDL.Null,
     'Treasury' : IDL.Null,
+    'Encyclopedia' : IDL.Null,
     'ICPUSD' : IDL.Null,
   });
   const Sharable__3 = IDL.Record({
     'earning' : SharableEarning,
-    'proportion' : SharableProportion__1,
+    'proportion' : SharableProportion,
     'actorVariant' : ActorVariant,
   });
   const SharableDistribution = IDL.Record({
     'earning' : SharableEarning,
-    'proportion' : SharableProportion__1,
+    'proportion' : SharableProportion,
     'actorVariant' : ActorVariant,
   });
   const Sharable__2 = IDL.Vec(SharableDistribution);
   const Sharable__1 = IDL.Record({
     'lastWithdrawAt' : Time,
-    'revenue' : SharableE8S__1,
-    'balance' : SharableE8S__1,
+    'revenue' : SharableE8S,
+    'balance' : SharableE8S,
   });
   const Split = IDL.Service({
     'affiliateDeposit' : IDL.Func([IDL.Principal, IDL.Nat], [IDL.Nat], []),

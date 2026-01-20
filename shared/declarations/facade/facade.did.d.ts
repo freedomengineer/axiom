@@ -40,7 +40,7 @@ export type ExecutedResult = { 'Failed' : null } |
   { 'Executed' : null };
 export interface Facade {
   'editAvatar' : ActorMethod<[[] | [Picture]], undefined>,
-  'editLinks' : ActorMethod<[Array<Hyperlink__1>], undefined>,
+  'editLinks' : ActorMethod<[Array<Hyperlink>], undefined>,
   'editLocation' : ActorMethod<[[] | [string]], undefined>,
   'editUsername' : ActorMethod<[string], undefined>,
   'getConfig' : ActorMethod<[Key], SharableValue>,
@@ -59,16 +59,16 @@ export interface Facade {
   'getUsersPrincipal' : ActorMethod<[], Array<Principal>>,
   'initialize' : ActorMethod<[], undefined>,
   'postSystemGenericNotification' : ActorMethod<
-    [string, [] | [Hyperlink__1]],
+    [string, [] | [Hyperlink]],
     undefined
   >,
-  'postSystemNotification' : ActorMethod<[SystemVariantParam__1], undefined>,
+  'postSystemNotification' : ActorMethod<[SystemVariantParam], undefined>,
   'postSystemNotifications' : ActorMethod<
     [SystemNotificationsBatch],
     undefined
   >,
   'postUserNotification' : ActorMethod<
-    [Principal, UserVariantParam__1],
+    [Principal, UserVariantParam],
     undefined
   >,
   'postUserNotifications' : ActorMethod<
@@ -76,7 +76,7 @@ export interface Facade {
     undefined
   >,
   'postUsersNotification' : ActorMethod<
-    [UsersBatch, UserVariantParam__1],
+    [UsersBatch, UserVariantParam],
     undefined
   >,
   'postUsersNotifications' : ActorMethod<[UsersNotificationsBatch], undefined>,
@@ -93,8 +93,6 @@ export interface Facade {
 export interface Filter { 'q' : [] | [string], 'capitalRaised' : [] | [bigint] }
 export interface FlagHeader { 'id' : bigint, 'category' : Category }
 export interface Hyperlink { 'url' : string, 'anchorText' : string }
-export interface Hyperlink__1 { 'url' : string, 'anchorText' : string }
-export interface Hyperlink__2 { 'url' : string, 'anchorText' : string }
 export interface Identifier {
   'principal' : Principal,
   'username' : string,
@@ -179,8 +177,8 @@ export type Result = { 'Approved' : null } |
 export interface Sharable {
   'principal' : Principal,
   'username' : string,
-  'links' : Array<Hyperlink__2>,
-  'creationDate' : Time__1,
+  'links' : Array<Hyperlink>,
+  'creationDate' : Time,
   'capitalRaised' : bigint,
   'location' : string,
   'avatar' : [] | [Picture],
@@ -342,88 +340,12 @@ export type SystemVariantParam = {
       'timestamp' : Time,
     }
   };
-export type SystemVariantParam__1 = {
-    'TallyResult' : {
-      'new' : Array<Principal>,
-      'timestamp' : Time,
-      'unchanged' : Array<Principal>,
-      'removed' : Array<Principal>,
-    }
-  } |
-  {
-    'FlagResult' : {
-      'result' : Result,
-      'timestamp' : Time,
-      'header' : FlagHeader,
-    }
-  } |
-  {
-    'ProposalExecuted' : {
-      'result' : ExecutedResult,
-      'timestamp' : Time,
-      'proposer' : Principal,
-      'proposalId' : bigint,
-    }
-  } |
-  { 'FlagRequested' : { 'timestamp' : Time, 'header' : FlagHeader } } |
-  {
-    'SystemGeneric' : {
-      'link' : [] | [Hyperlink],
-      'message' : string,
-      'timestamp' : Time,
-    }
-  };
 export type TernaryChoice = { 'Negative' : null } |
   { 'Positive' : null } |
   { 'Neutral' : null };
 export type Time = bigint;
-export type Time__1 = bigint;
 export type UserNotificationsBatch = [] | [[UserVariantParam, List_2]];
 export type UserVariantParam = {
-    'NewEvidencesFromFollowings' : NewEvidencesFromFollowingsData
-  } |
-  {
-    'NewAxiomsToHypothesis' : {
-      'id' : bigint,
-      'data' : NewAxiomsToHypothesisData,
-    }
-  } |
-  { 'NewReferrals' : NewReferralsData } |
-  { 'CustodianElectionResult' : CustodianElectionResultData } |
-  { 'ProposalExecuted' : ProposalExecutedData } |
-  { 'NewBallots' : NewBallotsData } |
-  { 'ProposalResult' : ProposalResultData } |
-  { 'CustodianProposalResult' : CustodianProposalResultData } |
-  {
-    'NewEvidencesToHypothesis' : {
-      'id' : bigint,
-      'data' : NewEvidencesToHypothesisData,
-    }
-  } |
-  { 'CustodianProposalOpened' : CustodianProposalOpenedData } |
-  { 'CustodianProposalDelegated' : CustodianProposalDelegatedData } |
-  {
-    'NewVotesToHypothesis' : {
-      'id' : bigint,
-      'data' : NewVotesToHypothesisData,
-    }
-  } |
-  { 'NewFollowers' : NewFollowersData } |
-  {
-    'NewVotesToEvidence' : { 'id' : bigint, 'data' : NewVotesToEvidenceData }
-  } |
-  { 'NewHypothesesFromFollowings' : NewHypothesesFromFollowingsData } |
-  { 'CouponRedeemed' : CouponRedeemedData } |
-  {
-    'NewVotesToProposal' : { 'id' : bigint, 'data' : NewVotesToProposalData }
-  } |
-  {
-    'NewRepliesToEvidence' : {
-      'id' : bigint,
-      'data' : NewRepliesToEvidenceData,
-    }
-  };
-export type UserVariantParam__1 = {
     'NewEvidencesFromFollowings' : NewEvidencesFromFollowingsData
   } |
   {

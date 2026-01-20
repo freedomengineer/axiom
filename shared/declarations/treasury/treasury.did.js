@@ -5,13 +5,16 @@ export const idlFactory = ({ IDL }) => {
     'Escrow' : IDL.Null,
     'Split' : IDL.Null,
     'Facade' : IDL.Null,
+    'Chat' : IDL.Null,
     'Frontend' : IDL.Null,
     'Indicator' : IDL.Null,
     'Axioms' : IDL.Null,
     'Affiliate' : IDL.Null,
     'Founder' : IDL.Null,
+    'Assets' : IDL.Null,
     'ACORN' : IDL.Null,
     'Treasury' : IDL.Null,
+    'Encyclopedia' : IDL.Null,
     'ICPUSD' : IDL.Null,
   });
   const Sharable = IDL.Nat;
@@ -21,13 +24,16 @@ export const idlFactory = ({ IDL }) => {
     'Escrow' : IDL.Null,
     'Split' : IDL.Null,
     'Facade' : IDL.Null,
+    'Chat' : IDL.Null,
     'Frontend' : IDL.Null,
     'Indicator' : IDL.Null,
     'Axioms' : IDL.Null,
     'Affiliate' : IDL.Null,
     'Founder' : IDL.Null,
+    'Assets' : IDL.Null,
     'ACORN' : IDL.Null,
     'Treasury' : IDL.Null,
+    'Encyclopedia' : IDL.Null,
     'ICPUSD' : IDL.Null,
   });
   const Sharable__3 = IDL.Record({

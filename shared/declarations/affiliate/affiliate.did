@@ -45,7 +45,6 @@ type TopNonPagination =
    callerRank: opt nat;
    result: TopResult;
  };
-type Time__1 = int;
 type Time = int;
 type StatusVariant = 
  variant {
@@ -94,9 +93,9 @@ type Sharable__4 =
 type Sharable__3 = vec SharableCoupon;
 type Sharable__2 = 
  record {
-   balance: SharableE8S__1;
-   lastWithdrawAt: Time__1;
-   revenue: SharableE8S__1;
+   balance: SharableE8S;
+   lastWithdrawAt: Time;
+   revenue: SharableE8S;
  };
 type Sharable__1 = 
  record {
@@ -141,11 +140,10 @@ type SharableProportion =
  };
 type SharableEarning = 
  record {
-   balance: SharableE8S__1;
-   lastWithdrawAt: Time__1;
-   revenue: SharableE8S__1;
+   balance: SharableE8S;
+   lastWithdrawAt: Time;
+   revenue: SharableE8S;
  };
-type SharableE8S__1 = nat;
 type SharableE8S = nat;
 type SharableDate = nat;
 type SharableCoupon = 
@@ -225,45 +223,50 @@ type Filter =
 type Affiliate = 
  service {
    /// PUBLIC ////// MODIFIERS ////////////
-   createCoupon: (nat) -> (PrivateSharable);
+   createCoupon: (capitalRaised: nat) -> (PrivateSharable);
    /// PUBLIC ////// ASSERTERS ////////////
-   expectUserNotFound: (principal) -> () query;
-   fillReferrals: (principal, nat, opt principal) -> ();
+   expectUserNotFound: ("principal": principal) -> () query;
+   fillReferrals: ("principal": principal, icpPaid: nat, referrer:
+    opt principal) -> ();
    /// PUBLIC ////// ACCESSORS ////////////
-   getConfig: (Key) -> (SharableValue) query;
+   getConfig: (key: Key) -> (SharableValue) query;
    getConfigs: () -> (Sharable__4) query;
-   getCoupon: (text) -> (Sharable) query;
-   getCoupons: (Filter, Sort_1) -> (Sharable__3) query;
-   getCouponsPagination: (Filter, Sort_1, nat, nat) -> (Pagination_1) query;
-   getEarning: (principal) -> (Sharable__2) query;
-   getPrivateCoupon: (text) -> (PrivateSharable) query;
-   getPrivateCoupons: (PrivateFilter, Sort) -> (PrivateSharable__1) query;
-   getPrivateCouponsPagination: (PrivateFilter, Sort, nat, nat) ->
-    (Pagination) query;
-   getTop: (variant {
-              CouponGenerators;
-              Referrers;
-            }) -> (TopNonPagination) query;
-   getTopPagination: (variant {
+   getCoupon: (key: text) -> (Sharable) query;
+   getCoupons: (filter: Filter, sort: Sort_1) -> (Sharable__3) query;
+   getCouponsPagination: (filter: Filter, sort: Sort_1, page: nat, limit:
+    nat) -> (Pagination_1) query;
+   getEarning: ("principal": principal) -> (Sharable__2) query;
+   getPrivateCoupon: (key: text) -> (PrivateSharable) query;
+   getPrivateCoupons: (filter: PrivateFilter, sort: Sort) ->
+    (PrivateSharable__1) query;
+   getPrivateCouponsPagination: (filter: PrivateFilter, sort: Sort, page:
+    nat, limit: nat) -> (Pagination) query;
+   getTop: (category: variant {
                         CouponGenerators;
                         Referrers;
-                      }, nat, nat) -> (TopPagination) query;
-   getUser: (principal) -> (Sharable__1) query;
-   getUserCouponTotal: (principal) -> (nat, nat) query;
+                      }) -> (TopNonPagination) query;
+   getTopPagination: (category: variant {
+                                  CouponGenerators;
+                                  Referrers;
+                                }, page: nat, limit: nat) ->
+    (TopPagination) query;
+   getUser: ("principal": principal) -> (Sharable__1) query;
+   getUserCouponTotal: ("principal": principal) -> (nat, nat) query;
    /// PROTECTED ////// MODIFIERS ////////////
    initialize: () -> ();
-   lockCoupon: (vec nat8, principal) -> (Sharable);
-   putConfigs: (vec record {
-                      Key;
-                      SharableValue;
-                    }) -> ();
-   redeemCoupon: (vec nat8, principal) -> ();
-   redeemCouponFailed: (vec nat8, principal, text) -> ();
-   setConfigs: (vec record {
-                      Key;
-                      SharableValue;
-                    }) -> ();
-   shiftToMidnight: (nat) -> ();
+   lockCoupon: (code: vec nat8, "principal": principal) -> (Sharable);
+   putConfigs: (entries: vec record {
+                               Key;
+                               SharableValue;
+                             }) -> ();
+   redeemCoupon: (code: vec nat8, "principal": principal) -> ();
+   redeemCouponFailed: (code: vec nat8, "principal": principal, reason:
+    text) -> ();
+   setConfigs: (entries: vec record {
+                               Key;
+                               SharableValue;
+                             }) -> ();
+   shiftToMidnight: (days: nat) -> ();
    withdrawAll: () -> ();
  };
 service : () -> Affiliate

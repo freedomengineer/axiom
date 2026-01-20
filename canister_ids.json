@@ -34,5 +34,14 @@
   },
   "frontend": {
     "ic": "zcdoa-uyaaa-aaaap-qpztq-cai"
+  },
+  "encyclopedia_prod": {
+    "ic": "qqupt-kqaaa-aaaap-qqk6q-cai"
+  },
+  "chat_prod": {
+    "ic": "qzxep-4yaaa-aaaap-qqk7a-cai"
+  },
+  "assets_prod": {
+    "ic": "q6wc3-raaaa-aaaap-qqk7q-cai"
   }
 }

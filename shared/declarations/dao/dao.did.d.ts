@@ -19,10 +19,13 @@ export type ConfigurableActorVariant = { 'DAO' : null } |
   { 'Escrow' : null } |
   { 'Split' : null } |
   { 'Facade' : null } |
+  { 'Chat' : null } |
   { 'Indicator' : null } |
   { 'Axioms' : null } |
   { 'Affiliate' : null } |
-  { 'Treasury' : null };
+  { 'Assets' : null } |
+  { 'Treasury' : null } |
+  { 'Encyclopedia' : null };
 export interface DAO {
   'cancelCodeUpload' : ActorMethod<[], undefined>,
   'castBallots' : ActorMethod<[Array<Principal>], undefined>,
@@ -92,12 +95,15 @@ export type DeployableActorVariant = { 'DAO' : null } |
   { 'Escrow' : null } |
   { 'Split' : null } |
   { 'Facade' : null } |
+  { 'Chat' : null } |
   { 'Frontend' : null } |
   { 'Indicator' : null } |
   { 'Axioms' : null } |
   { 'Affiliate' : null } |
+  { 'Assets' : null } |
   { 'ACORN' : null } |
   { 'Treasury' : null } |
+  { 'Encyclopedia' : null } |
   { 'ICPUSD' : null };
 export interface Filter {
   'status' : [] | [StatusVariant],

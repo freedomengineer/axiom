@@ -50,25 +50,11 @@ type TopNonPagination =
    callerRank: opt nat;
    result: TopResult;
  };
-type Time__2 = int;
-type Time__1 = int;
 type Time = int;
-type TernaryVote__1 = 
- record {
-   choice: Choice;
-   value: nat;
- };
 type TernaryVote = 
  record {
    choice: Choice;
    value: nat;
- };
-type Status__1 = 
- variant {
-   Approved;
-   Expired;
-   Rejected;
-   Requested;
  };
 type Status = 
  variant {
@@ -126,8 +112,8 @@ type Sort =
  };
 type Sharable__9 = 
  record {
-   callerVote: opt BinaryVote__2;
-   choice: BinaryChoice__1;
+   callerVote: opt BinaryVote;
+   choice: BinaryChoice;
    form: Form;
    hypothesisId: nat;
    id: nat;
@@ -135,13 +121,13 @@ type Sharable__9 =
    publisher: principal;
    repliedTo: opt nat;
    replies: vec nat;
-   votes: SharableBinaryVotes__1;
+   votes: SharableBinaryVotes;
  };
 type Sharable__8 = vec SharableField;
 type Sharable__7 = 
  record {
    callerRole: opt Role;
-   creationDate: Time__2;
+   creationDate: Time;
    description: text;
    hypothesisIds: vec nat;
    members: vec principal;
@@ -150,13 +136,13 @@ type Sharable__7 =
 type Sharable__6 = vec SharableFlag;
 type Sharable__5 = 
  record {
-   callerVote: opt BinaryVote__1;
+   callerVote: opt BinaryVote;
    category: Category;
    id: nat;
    reason: text;
-   requestDate: Time__1;
+   requestDate: Time;
    requester: principal;
-   status: Status__1;
+   status: Status;
    votes: SharableBinaryVotes;
  };
 type Sharable__4 = vec SharableHypothesis;
@@ -165,7 +151,7 @@ type Sharable__3 =
    axioms: SharableCount;
    callerAxiom: opt bool;
    callerBookmark: opt bool;
-   callerVote: opt TernaryVote__1;
+   callerVote: opt TernaryVote;
    content: text;
    evidenceIds: vec nat;
    fieldId: text;
@@ -198,7 +184,7 @@ type Sharable__2 =
  };
 type Sharable__14 = 
  record {
-   callerRevenue: opt SharableE8S__2;
+   callerRevenue: opt SharableE8S;
    ranks: SharableRanks;
  };
 type Sharable__13 = vec SharablePayout;
@@ -209,9 +195,9 @@ type Sharable__12 =
      };
 type Sharable__11 = 
  record {
-   balance: SharableE8S__1;
+   balance: SharableE8S;
    lastWithdrawAt: Time;
-   revenue: SharableE8S__1;
+   revenue: SharableE8S;
  };
 type Sharable__10 = vec SharableEvidence;
 type Sharable__1 = vec SharableConfig;
@@ -264,7 +250,7 @@ type SharableProportion =
  };
 type SharablePayout = 
  record {
-   callerRevenue: opt SharableE8S__2;
+   callerRevenue: opt SharableE8S;
    ranks: SharableRanks;
  };
 type SharableHypothesis = 
@@ -272,7 +258,7 @@ type SharableHypothesis =
    axioms: SharableCount;
    callerAxiom: opt bool;
    callerBookmark: opt bool;
-   callerVote: opt TernaryVote__1;
+   callerVote: opt TernaryVote;
    content: text;
    evidenceIds: vec nat;
    fieldId: text;
@@ -283,19 +269,19 @@ type SharableHypothesis =
  };
 type SharableFlag = 
  record {
-   callerVote: opt BinaryVote__1;
+   callerVote: opt BinaryVote;
    category: Category;
    id: nat;
    reason: text;
-   requestDate: Time__1;
+   requestDate: Time;
    requester: principal;
-   status: Status__1;
+   status: Status;
    votes: SharableBinaryVotes;
  };
 type SharableField = 
  record {
    callerRole: opt Role;
-   creationDate: Time__2;
+   creationDate: Time;
    description: text;
    hypothesisIds: vec nat;
    members: vec principal;
@@ -303,8 +289,8 @@ type SharableField =
  };
 type SharableEvidence = 
  record {
-   callerVote: opt BinaryVote__2;
-   choice: BinaryChoice__1;
+   callerVote: opt BinaryVote;
+   choice: BinaryChoice;
    form: Form;
    hypothesisId: nat;
    id: nat;
@@ -312,16 +298,14 @@ type SharableEvidence =
    publisher: principal;
    repliedTo: opt nat;
    replies: vec nat;
-   votes: SharableBinaryVotes__1;
+   votes: SharableBinaryVotes;
  };
 type SharableEarning = 
  record {
-   balance: SharableE8S__1;
+   balance: SharableE8S;
    lastWithdrawAt: Time;
-   revenue: SharableE8S__1;
+   revenue: SharableE8S;
  };
-type SharableE8S__2 = nat;
-type SharableE8S__1 = nat;
 type SharableE8S = nat;
 type SharableDate = nat;
 type SharableCount = nat;
@@ -329,11 +313,6 @@ type SharableConfig =
  variant {
    ExcludedFields: vec text;
    ExcludedPublishers: vec principal;
- };
-type SharableBinaryVotes__1 = 
- record {
-   powered: OneSideSharable__1;
-   regular: OneSideSharable__1;
  };
 type SharableBinaryVotes = 
  record {
@@ -432,7 +411,7 @@ type Filter__2 =
  };
 type Filter__1 = 
  record {
-   category: opt Category__1;
+   category: opt Category;
    requester: opt principal;
    status: opt Status;
    voter: opt principal;
@@ -472,35 +451,15 @@ type Choice =
    Neutral;
    Positive;
  };
-type Category__1 = 
- variant {
-   Evidence;
-   Hypothesis;
- };
 type Category = 
  variant {
    Evidence;
    Hypothesis;
  };
-type BinaryVote__2 = 
- record {
-   choice: Choice__1;
-   value: nat;
- };
-type BinaryVote__1 = 
- record {
-   choice: Choice__1;
-   value: nat;
- };
 type BinaryVote = 
  record {
    choice: Choice__1;
    value: nat;
- };
-type BinaryChoice__1 = 
- variant {
-   Negative;
-   Positive;
  };
 type BinaryChoice = 
  variant {
@@ -509,86 +468,92 @@ type BinaryChoice =
  };
 type Axioms = 
  service {
-   addToAxioms: (nat) -> ();
-   addToBookmarks: (nat) -> ();
-   createField: (text, text) -> ();
-   editHypothesis: (nat, text) -> ();
+   addToAxioms: (hypothesisId: nat) -> ();
+   addToBookmarks: (hypothesisId: nat) -> ();
+   createField: (name: text, description: text) -> ();
+   editHypothesis: (hypothesisId: nat, content: text) -> ();
    /// PUBLIC ////// ASSERTERS ////////////
-   expectUserNotFound: (principal) -> () query;
-   follow: (principal) -> ();
-   getAgePayout: (nat, nat) -> (Sharable__14) query;
-   getAgePayouts: (nat) -> (Sharable__13) query;
-   getAgesPayout: (nat) -> (Sharable__13) query;
+   expectUserNotFound: ("principal": principal) -> () query;
+   follow: ("principal": principal) -> ();
+   getAgePayout: (ageId: nat, ago: nat) -> (Sharable__14) query;
+   getAgePayouts: (ageId: nat) -> (Sharable__13) query;
+   getAgesPayout: (ago: nat) -> (Sharable__13) query;
    getAgesPayouts: () -> (vec Sharable__13) query;
    /// PUBLIC ////// ACCESSORS ////////////
-   getConfig: (Key) -> (SharableValue) query;
+   getConfig: (key: Key) -> (SharableValue) query;
    getConfigs: () -> (Sharable__12) query;
-   getEarning: (principal) -> (Sharable__11) query;
-   getEvidence: (nat) -> (Sharable__9) query;
-   getEvidences: (Filter__3, Sort_3) -> (Sharable__10) query;
-   getEvidencesPagination: (Filter__3, Sort_3, nat, nat) ->
-    (Pagination_3) query;
-   getField: (text) -> (Sharable__7) query;
-   getFields: (Filter__2, Sort_2) -> (Sharable__8) query;
-   getFieldsPagination: (Filter__2, Sort_2, nat, nat) -> (Pagination_2) query;
-   getFlag: (Header) -> (Sharable__5) query;
-   getFlags: (Filter__1, Sort_1) -> (Sharable__6) query;
-   getFlagsPagination: (Filter__1, Sort_1, nat, nat) -> (Pagination_1) query;
-   getHypotheses: (Filter, Sort) -> (Sharable__4) query;
-   getHypothesesPagination: (Filter, Sort, nat, nat) -> (Pagination) query;
-   getHypothesis: (nat) -> (Sharable__3) query;
-   getTop:
-    (variant {
-       AcornEarners;
-       EvidencePublishers;
-       EvidenceVoters;
-       HypothesisPublishers;
-       HypothesisVoters;
-       Influencers;
-     }) -> (TopNonPagination) query;
-   getTopPagination:
-    (variant {
-       AcornEarners;
-       EvidencePublishers;
-       EvidenceVoters;
-       HypothesisPublishers;
-       HypothesisVoters;
-       Influencers;
-     }, nat, nat) -> (TopPagination) query;
-   getUser: (principal) -> (Sharable__2) query;
+   getEarning: ("principal": principal) -> (Sharable__11) query;
+   getEvidence: (evidenceId: nat) -> (Sharable__9) query;
+   getEvidences: (filter: Filter__3, sort: Sort_3) -> (Sharable__10) query;
+   getEvidencesPagination: (filter: Filter__3, sort: Sort_3, page: nat,
+    limit: nat) -> (Pagination_3) query;
+   getField: (name: text) -> (Sharable__7) query;
+   getFields: (filter: Filter__2, sort: Sort_2) -> (Sharable__8) query;
+   getFieldsPagination: (filter: Filter__2, sort: Sort_2, page: nat, limit:
+    nat) -> (Pagination_2) query;
+   getFlag: (header: Header) -> (Sharable__5) query;
+   getFlags: (filter: Filter__1, sort: Sort_1) -> (Sharable__6) query;
+   getFlagsPagination: (filter: Filter__1, sort: Sort_1, page: nat, limit:
+    nat) -> (Pagination_1) query;
+   getHypotheses: (filter: Filter, sort: Sort) -> (Sharable__4) query;
+   getHypothesesPagination: (filter: Filter, sort: Sort, page: nat, limit:
+    nat) -> (Pagination) query;
+   getHypothesis: (hypothesisId: nat) -> (Sharable__3) query;
+   getTop: (category:
+    variant {
+      AcornEarners;
+      EvidencePublishers;
+      EvidenceVoters;
+      HypothesisPublishers;
+      HypothesisVoters;
+      Influencers;
+    }) -> (TopNonPagination) query;
+   getTopPagination: (category:
+    variant {
+      AcornEarners;
+      EvidencePublishers;
+      EvidenceVoters;
+      HypothesisPublishers;
+      HypothesisVoters;
+      Influencers;
+    }, page: nat, limit: nat) -> (TopPagination) query;
+   getUser: ("principal": principal) -> (Sharable__2) query;
    getUserConfigs: () -> (Sharable__1) query;
    /// PROTECTED ////// MODIFIERS ////////////
    initialize: () -> ();
    /// PUBLIC ////// MODIFIERS ////////////
-   joinField: (text) -> ();
-   leaveField: (text) -> ();
-   publishEvidence: (nat, Form, Choice__1, opt nat) -> (nat);
-   publishHypothesis: (text, text) -> (nat);
-   putConfigs: (vec record {
-                      Key;
-                      SharableValue;
-                    }) -> ();
-   register: (principal) -> ();
-   removeEvidenceVote: (nat) -> ();
-   removeFlagVote: (Header) -> ();
-   removeFromAxioms: (nat) -> ();
-   removeFromBookmarks: (nat) -> ();
-   removeHypothesisVote: (nat) -> ();
-   requestFlag: (Header, text) -> ();
+   joinField: (fieldId: text) -> ();
+   leaveField: (fieldId: text) -> ();
+   publishEvidence: (hypothesisId: nat, form: Form, choice: Choice__1,
+    repliedTo: opt nat) -> (nat);
+   publishHypothesis: (fieldId: text, content: text) -> (nat);
+   putConfigs: (entries: vec record {
+                               Key;
+                               SharableValue;
+                             }) -> ();
+   register: ("principal": principal) -> ();
+   removeEvidenceVote: (evidenceId: nat) -> ();
+   removeFlagVote: (header: Header) -> ();
+   removeFromAxioms: (hypothesisId: nat) -> ();
+   removeFromBookmarks: (hypothesisId: nat) -> ();
+   removeHypothesisVote: (hypothesisId: nat) -> ();
+   requestFlag: (header: Header, reason: text) -> ();
    restoreAllUserConfigs: () -> ();
-   restoreUserConfig: (Variant) -> ();
-   setAllUserConfigs: (vec Sharable) -> ();
-   setBatchUserConfigs: (vec Sharable) -> ();
-   setConfigs: (vec record {
-                      Key;
-                      SharableValue;
-                    }) -> ();
-   setUserConfig: (Sharable) -> ();
-   shiftToMidnight: (nat) -> ();
-   unfollow: (principal) -> ();
-   voteEvidence: (nat, Choice__1, opt CustomValue) -> ();
-   voteFlag: (Header, Choice__1) -> ();
-   voteHypothesis: (nat, Choice, opt CustomValue) -> ();
+   restoreUserConfig: ("variant": Variant) -> ();
+   setAllUserConfigs: (configs: vec Sharable) -> ();
+   setBatchUserConfigs: (configs: vec Sharable) -> ();
+   setConfigs: (entries: vec record {
+                               Key;
+                               SharableValue;
+                             }) -> ();
+   setUserConfig: (config: Sharable) -> ();
+   shiftToMidnight: (days: nat) -> ();
+   unfollow: ("principal": principal) -> ();
+   voteEvidence: (evidenceId: nat, choice: Choice__1, custom:
+    opt CustomValue) -> ();
+   voteFlag: (header: Header, choice: Choice__1) -> ();
+   voteHypothesis: (hypothesisId: nat, choice: Choice, custom:
+    opt CustomValue) -> ();
    withdrawAll: () -> ();
  };
 service : () -> Axioms
