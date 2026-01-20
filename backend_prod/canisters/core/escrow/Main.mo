@@ -4,6 +4,7 @@ import Users "users/Users";
 import User "users/User";
 import TreasuryInterface "../treasury/Interface";
 import IndicatorInterface "../../periphery/indicator/Interface";
+import IndicatorInterfaceOld "../../periphery/indicator/InterfaceOld";
 
 import C "../../common/Constants";
 import E "../../common/Errors";
@@ -17,8 +18,15 @@ import Proportion "../../library/Proportion";
 import Principal "mo:base/Principal";
 import Time "mo:base/Time";
 
-shared ({ caller = indicator }) persistent actor class Escrow() = this {
-        private stable let Indicator : IndicatorInterface.Indicator = actor (Principal.toText(indicator));
+(
+    with migration = func(
+        old : {
+            var Indicator : IndicatorInterfaceOld.Indicator
+        }
+    ) : {
+    } { {} }
+) shared ({ caller = indicator }) persistent actor class Escrow() = this {
+        private transient let Indicator : IndicatorInterface.Indicator = actor (Principal.toText(indicator));
 
     private stable let users : Users.Users = Users.init();
 

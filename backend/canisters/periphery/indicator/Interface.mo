@@ -3,7 +3,10 @@ import Commitments "commitments/Commitments";
 import Installation "installations/Installation";
 import ACORNInterface "../../core/acorn/Interface";
 import AffiliateInterface "../../core/affiliate/Interface";
+import AssetsInterface "../../core/assets/Interface";
 import AxiomsInterface "../../core/axioms/Interface";
+import ChatInterface "../../core/chat/Interface";
+import EncyclopediaInterface "../../core/encyclopedia/Interface";
 import EscrowInterface "../../core/escrow/Interface";
 import ICPUSDInterface "../../core/icpusd/Interface";
 import SalesInterface "../../core/sales/Interface";
@@ -33,6 +36,7 @@ module {
         extendInstallationExpiryDate : shared (Principal, Nat) -> async ();
         takeArbitrarySnapshots : shared ([Actor.DeployableVariant]) -> async ();
         loadSnapshots : shared ([(Actor.DeployableVariant, Text)]) -> async ();
+        popSnapshots : shared ([Actor.DeployableVariant]) -> async ();
         updateSettings : shared ([Actor.Variant], Management.Settings) -> async ();
         createNewCanisters : shared () -> async ();
         uploadCommitmentChunk : shared (Actor.DeployableVariant, Nat8, Blob, Text) -> async ();
@@ -63,5 +67,8 @@ module {
         Axioms : query () -> async AxiomsInterface.Axioms;
         DAO : query () -> async DAOInterface.DAO;
         Facade : query () -> async FacadeInterface.Facade;
+        Encyclopedia : query () -> async EncyclopediaInterface.Encyclopedia;
+        Chat : query () -> async ChatInterface.Chat;
+        Assets : query () -> async AssetsInterface.Assets;
     };
 };

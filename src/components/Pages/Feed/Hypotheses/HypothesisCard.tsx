@@ -201,7 +201,7 @@ const HypothesisCard = ({
                                             style={{ backgroundColor: customColor }}
                                         />
                                         <span>
-                                            {regularVotes[index].value} (
+                                            {regularVotes[index].value.toLocaleString('en')} (
                                             {parseFloat(
                                                 (
                                                     (regularVotes[index].value /

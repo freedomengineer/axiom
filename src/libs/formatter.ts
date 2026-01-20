@@ -18,13 +18,6 @@ export const normal = (str: string): string => {
     return str.charAt(0).toLowerCase() + str.slice(1)
 }
 
-export const round = (value: number, decimals: number = 2): string => {
-    let rounded = value.toFixed(decimals)
-    // trim trailing zeros
-    rounded = rounded.replace(/\.?0+$/, '')
-    return rounded
-}
-
 export const formatConfigValue = (
     configValue: UnwrapDVariant<DIndicator.SharableValue>
 ): string => {

@@ -17,6 +17,7 @@ import EscrowInterface "../../core/escrow/Interface";
 import AxiomsInterface "../../core/axioms/Interface";
 import DAOInterface "../../periphery/dao/Interface";
 import IndicatorInterface "../../periphery/indicator/Interface";
+import IndicatorInterfaceOld "../../periphery/indicator/InterfaceOld";
 
 import C "../../common/Constants";
 import E "../../common/Errors";
@@ -35,8 +36,15 @@ import Time "mo:base/Time";
 import Text "mo:base/Text";
 import Error "mo:base/Error";
 
-shared ({ caller = indicator }) persistent actor class Facade() = this {
-        private stable let Indicator : IndicatorInterface.Indicator = actor (Principal.toText(indicator));
+(
+    with migration = func(
+        old : {
+            var Indicator : IndicatorInterfaceOld.Indicator
+        }
+    ) : {
+    } { {} }
+) shared ({ caller = indicator }) persistent actor class Facade() = this {
+        private transient let Indicator : IndicatorInterface.Indicator = actor (Principal.toText(indicator));
 
     private stable let users : Users.Users = Users.init();
     private stable let notifications : Notifications.Notifications = Notifications.init();

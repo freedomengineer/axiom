@@ -63,7 +63,9 @@ const AssetsPage = () => {
                             {
                                 innerRadius: 100,
                                 outerRadius: 120,
-                                data: Object.values(allocations.outer).flat(),
+                                data: Object.values(allocations.outer)
+                                    .flat()
+                                    .filter((item) => !item.label.includes('Balance')),
                             },
                         ]}
                         width={400}
@@ -96,7 +98,9 @@ const AssetsPage = () => {
                                     />
                                     <div className="flex flex-col">
                                         <span className="font-semibold">{label}</span>
-                                        <span className="font-normal">{value}</span>
+                                        <span className="font-normal">
+                                            {value.toLocaleString('en')}
+                                        </span>
                                     </div>
                                 </div>
                                 <div className="text-tiny flex w-[200px] md:w-[260px]">
@@ -123,7 +127,9 @@ const AssetsPage = () => {
                                                     <span className="w-[70px] font-semibold md:w-[90px]">
                                                         {label.split(' ')[1]}
                                                     </span>
-                                                    <span className="font-normal">{value}</span>
+                                                    <span className="font-normal">
+                                                        {value.toLocaleString('en')}
+                                                    </span>
                                                 </div>
                                             )
                                         )}
@@ -185,7 +191,9 @@ const AssetsPage = () => {
                                     />
                                     <div className="flex flex-col">
                                         <span className="font-semibold">{label}</span>
-                                        <span className="font-normal">{value}</span>
+                                        <span className="font-normal">
+                                            {value.toLocaleString('en')}
+                                        </span>
                                     </div>
                                 </div>
                                 <div className="text-tiny flex w-[200px] md:w-[260px]">
@@ -210,7 +218,9 @@ const AssetsPage = () => {
                                                     <span className="w-[70px] font-semibold md:w-[90px]">
                                                         {label.split(' ')[1]}
                                                     </span>
-                                                    <span className="font-normal">{value}</span>
+                                                    <span className="font-normal">
+                                                        {value.toLocaleString('en')}
+                                                    </span>
                                                 </div>
                                             )
                                         )}

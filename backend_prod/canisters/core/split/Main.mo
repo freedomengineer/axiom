@@ -5,6 +5,7 @@ import Actor "../../periphery/indicator/actors/Actor";
 import ICP "canister:icp_ledger";
 
 import IndicatorInterface "../../periphery/indicator/Interface";
+import IndicatorInterfaceOld "../../periphery/indicator/InterfaceOld";
 
 import C "../../common/Constants";
 import E "../../common/Errors";
@@ -23,39 +24,12 @@ import Map "../../library/Map";
 (
     with migration = func(
         old : {
-            var distributions : Map.Map<{ #Treasury; #Split; #Affiliate; #Escrow; #Sales; #Axioms; #DAO; #Facade; #Indicator; #ICPUSD; #Frontend; #ACORN; #Founder }, Distribution.Distribution>
+            var Indicator : IndicatorInterfaceOld.Indicator
         }
     ) : {
-        var distributions : Distributions.Distributions
-    } {
-        {
-            var distributions : Distributions.Distributions = do {
-                func _parse(a : { #Treasury; #Split; #Affiliate; #Escrow; #Sales; #Axioms; #DAO; #Facade; #Indicator; #ICPUSD; #Frontend; #ACORN; #Founder }) : Actor.Variant = switch (a) {
-                    case (#Treasury) #Treasury;
-                    case (#Split) #Split;
-                    case (#Affiliate) #Affiliate;
-                    case (#Escrow) #Escrow;
-                    case (#Sales) #Sales;
-                    case (#Axioms) #Axioms;
-                    case (#DAO) #DAO;
-                    case (#Facade) #Facade;
-                    case (#Indicator) #Indicator;
-                    case (#ICPUSD) #ICPUSD;
-                    case (#Frontend) #Frontend;
-                    case (#ACORN) #ACORN;
-                    case (#Founder) #Founder
-                };
-
-                let newDistributions : Distributions.Distributions = Map.new<Actor.Variant, Distribution.Distribution>();
-                for ((variant, oldDistribution) in Map.entries(old.distributions)) {
-                    Map.put<Actor.Variant, Distribution.Distribution>(newDistributions, Actor.VariantKey(_parse(variant)), oldDistribution)
-                };
-                newDistributions
-            }
-        }
-    }
+    } { {} }
 ) shared ({ caller = indicator }) persistent actor class Split() = this {
-        private stable let Indicator : IndicatorInterface.Indicator = actor (Principal.toText(indicator));
+        private transient let Indicator : IndicatorInterface.Indicator = actor (Principal.toText(indicator));
 
     private stable let distributions : Distributions.Distributions = Distributions.init();
 

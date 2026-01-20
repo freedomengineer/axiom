@@ -4,9 +4,9 @@
 
 
 - Attributes: `Allocation`, `Allocations`, `Actor`, `ACORNTypes`
-- Interfaces: `ACORNInterface`, `IndicatorInterface`
+- Interfaces: `ACORNInterface`, `IndicatorInterface`, `IndicatorInterfaceOld`
 - Commons: `E`
-- Libraries: `Configs`, `E8S`, `Map`
+- Libraries: `Configs`, `E8S`
 - Bases: `Principal`
 ## Modifiers
 

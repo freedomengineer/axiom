@@ -54,7 +54,8 @@ const SimpleStatusDetachment = ({ actorStatus }: { actorStatus: ActorStatus }) =
                                 >
                                     <code>
                                         {{
-                                            'Memory size': `${((value as number) / 1048576).toFixed(8)} MB`,
+                                            'Memory size': `${((value as number) / 1048576).toLocaleString('en', { maximumFractionDigits: 4 })} MB`,
+                                            Cycles: `${(value as number).toLocaleString('en')} (${Number((value as number) / 1e12).toLocaleString('en', { maximumFractionDigits: 2 })}T)`,
                                             Principal: (
                                                 <Link
                                                     openInNewTab

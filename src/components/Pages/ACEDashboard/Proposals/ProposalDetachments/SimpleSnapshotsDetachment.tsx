@@ -75,7 +75,7 @@ const SimpleSnapshotsDetachment = ({ snapshots }: { snapshots: ActorStatus['Snap
                                     >
                                         <code>
                                             {{
-                                                'Snapshot size': `${((value as number) / 1048576).toFixed(8)} MB`,
+                                                'Snapshot size': `${((value as number) / 1048576).toLocaleString('en', { maximumFractionDigits: 4 })} MB`,
                                                 'Taken date': formatDateTime({
                                                     nano: BigInt(snap['Taken date'][1]),
                                                 }),

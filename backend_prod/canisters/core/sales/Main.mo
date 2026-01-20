@@ -11,9 +11,10 @@ import DIP721Interface "../dip721/Interface";
 
 import AffiliateInterface "../affiliate/Interface";
 import EscrowInterface "../escrow/Interface";
+import TreasuryInterface "../treasury/Interface";
 import FacadeInterface "../../periphery/facade/Interface";
 import IndicatorInterface "../../periphery/indicator/Interface";
-import TreasuryInterface "../treasury/Interface";
+import IndicatorInterfaceOld "../../periphery/indicator/InterfaceOld";
 
 import E "../../common/Errors";
 
@@ -30,8 +31,15 @@ import ExperimentalCycles "mo:base/ExperimentalCycles";
 import Debug "mo:base/Debug";
 import Error "mo:base/Error";
 
-shared ({ caller = indicator }) persistent actor class Sales() = this {
-    private stable let Indicator : IndicatorInterface.Indicator = actor (Principal.toText(indicator));
+(
+    with migration = func(
+        old : {
+            var Indicator : IndicatorInterfaceOld.Indicator
+        }
+    ) : {
+    } { {} }
+) shared ({ caller = indicator }) persistent actor class Sales() = this {
+    private transient let Indicator : IndicatorInterface.Indicator = actor (Principal.toText(indicator));
 
     private stable let packages : Packages.Packages = Packages.init();
     private stable let achievementPackages : AchievementPackages.AchievementPackages = AchievementPackages.init();

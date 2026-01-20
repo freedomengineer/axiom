@@ -3,7 +3,7 @@
 ## Dependencies
 
 
-- Interfaces: `IndicatorInterface`
+- Interfaces: `IndicatorInterface`, `IndicatorInterfaceOld`
 - Commons: `C`
 - Libraries: `Configs`, `Iter`
 - Bases: `Principal`, `Time`

@@ -39,7 +39,9 @@ const toNumber = (a: Nullish<E8S>, decimals: number = 8): number => {
 }
 const toString = (a: Nullish<E8S>, decimals: number = 8): string => {
     if (isNullish(a)) return '0'
-    return toNumber(a, decimals).toString()
+    return toNumber(a, decimals).toLocaleString('en', {
+        maximumFractionDigits: decimals,
+    })
 }
 
 export default {

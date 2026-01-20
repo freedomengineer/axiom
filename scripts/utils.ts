@@ -71,7 +71,7 @@ const _getDeploymentArgs = (canister: CanisterName, actorsPrincipal: IndicatorAc
                         initial_balances: [
                             {
                                 _0_: { owner: actorsPrincipal['Treasury'], subaccount: [] },
-                                _1_: e8s.fromNumber(20_090_000_000),
+                                _1_: e8s.fromNumber(450_000_000),
                             },
                         ],
                         fee_collector_account: [],

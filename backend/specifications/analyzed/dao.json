@@ -1553,20 +1553,6 @@
       "relativePath": "../facade/notifications/Notification",
       "depth": 4
     },
-    "IndicatorInterface": {
-      "origin": "import IndicatorInterface \"../indicator/Interface\";",
-      "name": "IndicatorInterface",
-      "category": "interface",
-      "relativePath": "../indicator/Interface",
-      "depth": 3
-    },
-    "FacadeInterface": {
-      "origin": "import FacadeInterface \"../facade/Interface\";",
-      "name": "FacadeInterface",
-      "category": "interface",
-      "relativePath": "../facade/Interface",
-      "depth": 3
-    },
     "EscrowInterface": {
       "origin": "import EscrowInterface \"../../core/escrow/Interface\";",
       "name": "EscrowInterface",
@@ -1594,6 +1580,27 @@
       "category": "interface",
       "relativePath": "../../core/axioms/Interface",
       "depth": 5
+    },
+    "FacadeInterface": {
+      "origin": "import FacadeInterface \"../facade/Interface\";",
+      "name": "FacadeInterface",
+      "category": "interface",
+      "relativePath": "../facade/Interface",
+      "depth": 3
+    },
+    "IndicatorInterface": {
+      "origin": "import IndicatorInterface \"../indicator/Interface\";",
+      "name": "IndicatorInterface",
+      "category": "interface",
+      "relativePath": "../indicator/Interface",
+      "depth": 3
+    },
+    "IndicatorInterfaceOld": {
+      "origin": "import IndicatorInterfaceOld \"../indicator/InterfaceOld\";",
+      "name": "IndicatorInterfaceOld",
+      "category": "interface",
+      "relativePath": "../indicator/InterfaceOld",
+      "depth": 3
     },
     "C": {
       "origin": "import C \"../../common/Constants\";",
@@ -1748,27 +1755,6 @@
       "category": "base",
       "relativePath": "mo:base/Timer",
       "depth": 2
-    },
-    "Vector": {
-      "origin": "import Vector \"../../library/Vector\";",
-      "name": "Vector",
-      "category": "library",
-      "relativePath": "../../library/Vector",
-      "depth": 4
-    },
-    "Actor": {
-      "origin": "import Actor \"../indicator/actors/Actor\";",
-      "name": "Actor",
-      "category": "attribute",
-      "relativePath": "../indicator/actors/Actor",
-      "depth": 4
-    },
-    "Array": {
-      "origin": "import Array \"mo:base/Array\";",
-      "name": "Array",
-      "category": "base",
-      "relativePath": "mo:base/Array",
-      "depth": 2
     }
   },
   "actorDependencies": [
@@ -1782,12 +1768,13 @@
     "Commitments",
     "Installation",
     "Notification",
-    "IndicatorInterface",
-    "FacadeInterface",
     "EscrowInterface",
     "SplitInterface",
     "TreasuryInterface",
     "AxiomsInterface",
+    "FacadeInterface",
+    "IndicatorInterface",
+    "IndicatorInterfaceOld",
     "C",
     "E",
     "Base",
@@ -1809,10 +1796,7 @@
     "Error",
     "Nat",
     "Int",
-    "Timer",
-    "Vector",
-    "Actor",
-    "Array"
+    "Timer"
   ],
   "interfaceDependencies": [
     "Configs",

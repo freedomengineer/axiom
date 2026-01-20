@@ -23,11 +23,11 @@ import EscrowInterface "../escrow/Interface";
 import TreasuryInterface "../treasury/Interface";
 import FacadeInterface "../../periphery/facade/Interface";
 import IndicatorInterface "../../periphery/indicator/Interface";
+import IndicatorInterfaceOld "../../periphery/indicator/InterfaceOld";
 
 import C "../../common/Constants";
 import E "../../common/Errors";
 
-import Array "../../library/Array";
 import Base "../../library/Base";
 import Configs "../../library/Configs";
 import ClusterTree "../../library/ClusterTree";
@@ -44,7 +44,6 @@ import Map "../../library/Map";
 import Pagination "../../library/Pagination";
 import Proportion "../../library/Proportion";
 import Set "../../library/Set";
-import Vector "../../library/Vector";
 import BinaryVotes "../../library/votes/BinaryVotes";
 import TernaryVotes "../../library/votes/TernaryVotes";
 
@@ -57,7 +56,14 @@ import Timer "mo:base/Timer";
 import Float "mo:base/Float";
 import Debug "mo:base/Debug";
 
-shared ({ caller = indicator }) persistent actor class Axioms() = this {
+(
+    with migration = func(
+        old : {
+            var Indicator : IndicatorInterfaceOld.Indicator
+        }
+    ) : {
+    } { {} }
+) shared ({ caller = indicator }) persistent actor class Axioms() = this {
     ////// TEMPORARY IMPLEMENTATION ////////////
     private stable var shiftedTime : Int = 0;
     private func getNow() : Int = shiftedTime + Time.now();
@@ -69,7 +75,7 @@ shared ({ caller = indicator }) persistent actor class Axioms() = this {
     };
     ////// TEMPORARY IMPLEMENTATION ////////////
 
-    private stable let Indicator : IndicatorInterface.Indicator = actor (Principal.toText(indicator));
+    private transient let Indicator : IndicatorInterface.Indicator = actor (Principal.toText(indicator));
 
     private stable let ages : Ages.Ages = Ages.init();
     private stable let users : Users.Users = Users.init();

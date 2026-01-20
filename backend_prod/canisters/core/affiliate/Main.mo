@@ -3,15 +3,12 @@ import Users "users/Users";
 import Coupon "coupons/Coupon";
 import Coupons "coupons/Coupons";
 
-import Actor "../../periphery/indicator/actors/Actor";
-import Notification "../../periphery/facade/notifications/Notification";
-import Distributions "../split/distributions/Distributions";
-
-import IndicatorInterface "../../periphery/indicator/Interface";
-import FacadeInterface "../../periphery/facade/Interface";
 import ICPUSDInterface "../icpusd/Interface";
 import SalesInterface "../sales/Interface";
 import SplitInterface "../split/Interface";
+import FacadeInterface "../../periphery/facade/Interface";
+import IndicatorInterface "../../periphery/indicator/Interface";
+import IndicatorInterfaceOld "../../periphery/indicator/InterfaceOld";
 
 import C "../../common/Constants";
 import E "../../common/Errors";
@@ -19,13 +16,10 @@ import E "../../common/Errors";
 import Array "../../library/Array";
 import Base "../../library/Base";
 import Configs "../../library/Configs";
-import Count "../../library/Count";
 import E8S "../../library/E8S";
 import Earning "../../library/Earning";
-import Hexadecimal "../../library/Hexadecimal";
 import Iter "../../library/Iter";
 import List "../../library/List";
-import Map "../../library/Map";
 import Pagination "../../library/Pagination";
 import Proportion "../../library/Proportion";
 import SHA256 "../../library/SHA256";
@@ -35,12 +29,18 @@ import Principal "mo:base/Principal";
 import Nat "mo:base/Nat";
 import Int "mo:base/Int";
 import Time "mo:base/Time";
-import Timer "mo:base/Timer";
 import Random "mo:base/Random";
 import Debug "mo:base/Debug";
 
-shared ({ caller = indicator }) persistent actor class Affiliate() = this {
-        private stable let Indicator : IndicatorInterface.Indicator = actor (Principal.toText(indicator));
+(
+    with migration = func(
+        old : {
+            var Indicator : IndicatorInterfaceOld.Indicator
+        }
+    ) : {
+    } { {} }
+) shared ({ caller = indicator }) persistent actor class Affiliate() = this {
+        private transient let Indicator : IndicatorInterface.Indicator = actor (Principal.toText(indicator));
 
     private stable let users : Users.Users = Users.init();
     private stable let coupons : Coupons.Coupons = Coupons.init();

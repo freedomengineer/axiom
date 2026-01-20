@@ -9,12 +9,13 @@ import Commitments "../indicator/commitments/Commitments";
 import Installation "../indicator/installations/Installation";
 import Notification "../facade/notifications/Notification";
 
-import IndicatorInterface "../indicator/Interface";
-import FacadeInterface "../facade/Interface";
 import EscrowInterface "../../core/escrow/Interface";
 import SplitInterface "../../core/split/Interface";
 import TreasuryInterface "../../core/treasury/Interface";
 import AxiomsInterface "../../core/axioms/Interface";
+import FacadeInterface "../facade/Interface";
+import IndicatorInterface "../indicator/Interface";
+import IndicatorInterfaceOld "../indicator/InterfaceOld";
 
 import C "../../common/Constants";
 import E "../../common/Errors";
@@ -42,142 +43,16 @@ import Nat "mo:base/Nat";
 import Int "mo:base/Int";
 import Timer "mo:base/Timer";
 
-import Vector "../../library/Vector";
-import Actor "../indicator/actors/Actor";
-import Array "mo:base/Array";
 
 (
     with migration = func(
         old : {
-            var proposals : {
-                proposals : Vector.Vector<{ proposer : Principal; title : Text; var content : Text; var timeline : [Proposal.Milestone]; var acornReward : E8S.E8S; var icpReward : E8S.E8S; var votes : UniformBinaryVotes.Votes; var detachment : { #Code : { actorsConfigs : [({ #Treasury; #Split; #Affiliate; #Escrow; #Sales; #Axioms; #DAO; #Facade; #Indicator }, Configs.Sharable)]; installation : { commitments : [{ actorVariant : { #Treasury; #Split; #Affiliate; #Escrow; #Sales; #Axioms; #DAO; #Facade; #Indicator; #ICPUSD; #Frontend; #ACORN }; args : [Nat8]; moduleHash : Text }]; commitHash : Text; updateLevel : Version.UpdateLevel; releaseNotes : Installation.ReleaseNotes } }; #Field : Detachment.Field; #Worker : Detachment.Worker; #Configs : { actorsConfigs : [({ #Treasury; #Split; #Affiliate; #Escrow; #Sales; #Axioms; #DAO; #Facade; #Indicator }, Configs.Sharable)] } } }>;
-                var lockedIds : List.List<Nat>;
-                var retryingIds : List.List<Nat>;
-                nextExpiredId : Count.Count
-            }
+            var Indicator : IndicatorInterfaceOld.Indicator
         }
     ) : {
-        var proposals : Proposals.Proposals
-    } {
-        {
-            var proposals : Proposals.Proposals = do {
-                func _parse(a : { #Treasury; #Split; #Affiliate; #Escrow; #Sales; #Axioms; #DAO; #Facade; #Indicator }) : Actor.ConfigurableVariant = switch (a) {
-                    case (#Treasury) #Treasury;
-                    case (#Split) #Split;
-                    case (#Affiliate) #Affiliate;
-                    case (#Escrow) #Escrow;
-                    case (#Sales) #Sales;
-                    case (#Axioms) #Axioms;
-                    case (#DAO) #DAO;
-                    case (#Facade) #Facade;
-                    case (#Indicator) #Indicator
-                };
-
-                let newProposals : Vector.Vector<Proposal.Proposal> = Vector.map<{ proposer : Principal; title : Text; var content : Text; var timeline : [Proposal.Milestone]; var acornReward : E8S.E8S; var icpReward : E8S.E8S; var votes : UniformBinaryVotes.Votes; var detachment : { #Code : { actorsConfigs : [({ #Treasury; #Split; #Affiliate; #Escrow; #Sales; #Axioms; #DAO; #Facade; #Indicator }, Configs.Sharable)]; installation : { commitments : [{ actorVariant : { #Treasury; #Split; #Affiliate; #Escrow; #Sales; #Axioms; #DAO; #Facade; #Indicator; #ICPUSD; #Frontend; #ACORN }; args : [Nat8]; moduleHash : Text }]; commitHash : Text; updateLevel : Version.UpdateLevel; releaseNotes : Installation.ReleaseNotes } }; #Field : Detachment.Field; #Worker : Detachment.Worker; #Configs : { actorsConfigs : [({ #Treasury; #Split; #Affiliate; #Escrow; #Sales; #Axioms; #DAO; #Facade; #Indicator }, Configs.Sharable)] } } }, Proposal.Proposal>(
-                    old.proposals.proposals,
-                    func(oldProposal) = {
-                        proposer = oldProposal.proposer;
-                        title = oldProposal.title;
-                        var content = oldProposal.content;
-                        var timeline = oldProposal.timeline;
-                        var acornReward = oldProposal.acornReward;
-                        var icpReward = oldProposal.icpReward;
-                        var votes = oldProposal.votes;
-                        var detachment = switch (oldProposal.detachment) {
-                            case (#Worker(oldDetachment)) #Worker(oldDetachment);
-                            case (#Field(oldDetachment)) #Field(oldDetachment);
-                            case (#Configs(oldConfigs)) {
-                                func _parse(a : { #Treasury; #Split; #Affiliate; #Escrow; #Sales; #Axioms; #DAO; #Facade; #Indicator }) : Actor.ConfigurableVariant = switch (a) {
-                                    case (#Treasury) #Treasury;
-                                    case (#Split) #Split;
-                                    case (#Affiliate) #Affiliate;
-                                    case (#Escrow) #Escrow;
-                                    case (#Sales) #Sales;
-                                    case (#Axioms) #Axioms;
-                                    case (#DAO) #DAO;
-                                    case (#Facade) #Facade;
-                                    case (#Indicator) #Indicator
-                                };
-
-                                var newConfigs : Installation.ActorsConfigs = [];
-                                for ((actorVariant, configs) in oldConfigs.actorsConfigs.vals()) {
-                                    newConfigs := Array.append(newConfigs, [(_parse(actorVariant), configs)])
-                                };
-                                #Configs({ actorsConfigs = newConfigs })
-                            };
-                            case (#Code(oldDetachment)) {
-                                func _parseConfigurable(a : { #Treasury; #Split; #Affiliate; #Escrow; #Sales; #Axioms; #DAO; #Facade; #Indicator }) : Actor.ConfigurableVariant = switch (a) {
-                                    case (#Treasury) #Treasury;
-                                    case (#Split) #Split;
-                                    case (#Affiliate) #Affiliate;
-                                    case (#Escrow) #Escrow;
-                                    case (#Sales) #Sales;
-                                    case (#Axioms) #Axioms;
-                                    case (#DAO) #DAO;
-                                    case (#Facade) #Facade;
-                                    case (#Indicator) #Indicator
-                                };
-                                func _parseDeployable(a : { #Treasury; #Split; #Affiliate; #Escrow; #Sales; #Axioms; #DAO; #Facade; #Indicator; #ICPUSD; #Frontend; #ACORN }) : Actor.DeployableVariant = switch (a) {
-                                    case (#Treasury) #Treasury;
-                                    case (#Split) #Split;
-                                    case (#Affiliate) #Affiliate;
-                                    case (#Escrow) #Escrow;
-                                    case (#Sales) #Sales;
-                                    case (#Axioms) #Axioms;
-                                    case (#DAO) #DAO;
-                                    case (#Facade) #Facade;
-                                    case (#Indicator) #Indicator;
-                                    case (#ICPUSD) #ICPUSD;
-                                    case (#Frontend) #Frontend;
-                                    case (#ACORN) #ACORN
-                                };
-
-                                #Code({
-                                    actorsConfigs = do {
-                                        var newConfigs : Installation.ActorsConfigs = [];
-                                        for ((actorVariant, configs) in oldDetachment.actorsConfigs.vals()) {
-                                            newConfigs := Array.append(newConfigs, [(_parseConfigurable(actorVariant), configs)])
-                                        };
-                                        newConfigs
-                                    };
-                                    installation = {
-                                        commitments = do {
-                                            var newCommitments : Commitments.Sharable = [];
-
-                                            for (oldCommitment in oldDetachment.installation.commitments.vals()) {
-                                                newCommitments := Array.append(
-                                                    newCommitments,
-                                                    [{
-                                                        actorVariant = _parseDeployable(oldCommitment.actorVariant);
-                                                        args = oldCommitment.args;
-                                                        moduleHash = oldCommitment.moduleHash
-                                                    }],
-                                                )
-                                            };
-
-                                            newCommitments
-                                        };
-                                        commitHash = oldDetachment.installation.commitHash;
-                                        updateLevel = oldDetachment.installation.updateLevel;
-                                        releaseNotes = oldDetachment.installation.releaseNotes
-                                    }
-                                })
-                            };
-
-                        }
-                    },
-                );
-                {
-                    proposals = newProposals;
-                    var lockedIds = old.proposals.lockedIds;
-                    var retryingIds = old.proposals.retryingIds;
-                    nextExpiredId = old.proposals.nextExpiredId
-                }
-            }
-        }
-    }
+    } { {} }
 ) shared ({ caller = indicator }) persistent actor class DAO() = this {
-        private stable let Indicator : IndicatorInterface.Indicator = actor (Principal.toText(indicator));
+        private transient let Indicator : IndicatorInterface.Indicator = actor (Principal.toText(indicator));
 
     private stable let proposals : Proposals.Proposals = Proposals.init();
     private stable let users : Users.Users = Users.init();

@@ -64,7 +64,7 @@ const HypothesisVote = ({
                             <>
                                 <hr className="h-5 w-[2px] bg-white md:h-6" />
                                 <div className="gap-small flex items-center">
-                                    <span>{valueOf(vote!.value)}</span>
+                                    <span>{valueOf(vote!.value).toLocaleString('en')}</span>
                                     <AcornIcon className="h-5 stroke-[1.5px] md:h-6" />
                                 </div>
                             </>

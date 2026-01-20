@@ -3,11 +3,11 @@
 ## Dependencies
 
 
-- Attributes: `User`, `Users`, `Coupon`, `Coupons`, `Actor`, `Notification`, `Distributions`
-- Interfaces: `IndicatorInterface`, `FacadeInterface`, `ICPUSDInterface`, `SalesInterface`, `SplitInterface`
+- Attributes: `User`, `Users`, `Coupon`, `Coupons`
+- Interfaces: `ICPUSDInterface`, `SalesInterface`, `SplitInterface`, `FacadeInterface`, `IndicatorInterface`, `IndicatorInterfaceOld`
 - Commons: `C`, `E`
-- Libraries: `Array`, `Base`, `Configs`, `Count`, `E8S`, `Earning`, `Hexadecimal`, `Iter`, `List`, `Map`, `Pagination`, `Proportion`, `SHA256`
-- Bases: `Blob`, `Principal`, `Nat`, `Int`, `Time`, `Timer`, `Random`, `Debug`
+- Libraries: `Array`, `Base`, `Configs`, `E8S`, `Earning`, `Iter`, `List`, `Pagination`, `Proportion`, `SHA256`
+- Bases: `Blob`, `Principal`, `Nat`, `Int`, `Time`, `Random`, `Debug`
 ## Modifiers
 
 ### 1. `initialize()` returns `()`

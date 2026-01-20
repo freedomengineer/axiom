@@ -679,6 +679,13 @@
       "relativePath": "../../periphery/indicator/Interface",
       "depth": 5
     },
+    "IndicatorInterfaceOld": {
+      "origin": "import IndicatorInterfaceOld \"../../periphery/indicator/InterfaceOld\";",
+      "name": "IndicatorInterfaceOld",
+      "category": "interface",
+      "relativePath": "../../periphery/indicator/InterfaceOld",
+      "depth": 5
+    },
     "E": {
       "origin": "import E \"../../common/Errors\";",
       "name": "E",
@@ -706,13 +713,6 @@
       "category": "base",
       "relativePath": "mo:base/Principal",
       "depth": 2
-    },
-    "Map": {
-      "origin": "import Map \"../../library/Map\";",
-      "name": "Map",
-      "category": "library",
-      "relativePath": "../../library/Map",
-      "depth": 4
     }
   },
   "actorDependencies": [
@@ -722,11 +722,11 @@
     "ACORNTypes",
     "ACORNInterface",
     "IndicatorInterface",
+    "IndicatorInterfaceOld",
     "E",
     "Configs",
     "E8S",
-    "Principal",
-    "Map"
+    "Principal"
   ],
   "interfaceDependencies": [
     "Configs",

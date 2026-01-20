@@ -131,7 +131,7 @@ module {
         principal;
         var args = [];
         var commitHash = "593d4687448ceb4282a7493c51494e1fff17b460";
-        snapshots = CircularBuffer.new(4)
+        snapshots = CircularBuffer.new(2)
     };
 
     /// PUBLIC ////// MODIFIERS ////////////
@@ -143,6 +143,9 @@ module {
 
     public func pushSnapshot(__ : Self, snapshot : SnapshotDetail) {
         CircularBuffer.push(__.snapshots, snapshot)
+    };
+    public func popSnapshot(__ : Self) {
+        ignore CircularBuffer.pop(__.snapshots)
     };
 
     /// PUBLIC ////// ACCESSORS ////////////
@@ -156,7 +159,11 @@ module {
         canister_id = __.principal
     };
 
-    public func replacedSnapshot(__ : Self) : ?Blob = switch (CircularBuffer.getRev(__.snapshots, 3)) {
+    public func replacedSnapshot(__ : Self) : ?Blob = switch (CircularBuffer.getRev(__.snapshots, 2)) {
+        case (null) null;
+        case (?snapshot) ?Blob.fromArray(Hexadecimal.decode(snapshot.id))
+    };
+    public func toBePoppedSnapshot(__ : Self) : ?Blob = switch (CircularBuffer.toBePopped(__.snapshots)) {
         case (null) null;
         case (?snapshot) ?Blob.fromArray(Hexadecimal.decode(snapshot.id))
     };
