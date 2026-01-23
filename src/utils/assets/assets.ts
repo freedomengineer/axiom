@@ -6,7 +6,7 @@ export type ChartData = { label: string; value: number; color: string }
 
 export const ALLOCATIONS = {
     Sales: {
-        total: 10_000_000_000.0,
+        total: 100_000_000.0,
         hexColor: '#4A148C',
         reservingColor: '#4A148C',
         balanceColor: '#4A148C80',
@@ -16,7 +16,7 @@ export const ALLOCATIONS = {
         borderColor: 'border-purple-900',
     },
     Axioms: {
-        total: 5_000_000_000.0,
+        total: 200_000_000.0,
         hexColor: '#FF6F00',
         reservingColor: '#FF6F00',
         balanceColor: '#FF6F0080',
@@ -26,7 +26,7 @@ export const ALLOCATIONS = {
         borderColor: 'border-amber-900',
     },
     Escrow: {
-        total: 5_000_000_000.0 + 10_000_000.0,
+        total: 100_000_000.0 + 10_000_000.0,
         hexColor: '#1B5E20',
         reservingColor: '#1B5E20',
         balanceColor: '#1B5E2080',
@@ -36,7 +36,7 @@ export const ALLOCATIONS = {
         borderColor: 'border-green-900',
     },
     DAO: {
-        total: 80_000_000.0,
+        total: 40_000_000.0,
         hexColor: '#B71C1C',
         reservingColor: '#B71C1C',
         balanceColor: '#B71C1C80',
@@ -87,9 +87,7 @@ export const computeAllocationsChartData = (
             ALLOCATIONS[key as keyof typeof ALLOCATIONS]
         const allocatedValue = e8s.toNumber(allocated)
         const balanceValue = e8s.toNumber(balance)
-        const circulatingValue = e8s.toNumber(
-            e8s.sub(e8s.fromNumber(total), e8s.add(allocated, balance))
-        )
+        const circulatingValue = e8s.toNumber(e8s.sub(e8s.fromNumber(total), allocated))
 
         inner[key] = { label: `${key} Max Supply`, value: total, color: hexColor }
         outer[key] = [

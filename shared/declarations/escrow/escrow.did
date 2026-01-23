@@ -86,14 +86,13 @@ type SharableProportion =
    nat;
    nat;
  };
-type SharableE8S__1 = nat;
 type SharableE8S = nat;
 type SharableDate = nat;
 type SharableBurials = vec SharableBurial;
 type SharableBurial = 
  record {
-   amount: SharableE8S__1;
-   claimableInterest: SharableE8S__1;
+   amount: SharableE8S;
+   claimableInterest: SharableE8S;
    coefficient: nat;
    expiryDate: Time;
    issueDate: Time;
@@ -111,40 +110,41 @@ type Key = text;
 type Escrow = 
  service {
    /// PUBLIC ////// MODIFIERS ////////////
-   bury: (nat, Option) -> ();
+   bury: (amount: nat, option: Option) -> ();
    /// PUBLIC ////// ASSERTERS ////////////
-   expectUserNotFound: (principal) -> () query;
-   getBurials: (principal) -> (Sharable__2) query;
-   getBuriedAmount: (principal) -> (nat) query;
-   getClaimableAmount: (principal) -> (nat) query;
+   expectUserNotFound: ("principal": principal) -> () query;
+   getBurials: ("principal": principal) -> (Sharable__2) query;
+   getBuriedAmount: ("principal": principal) -> (nat) query;
+   getClaimableAmount: ("principal": principal) -> (nat) query;
    /// PUBLIC ////// ACCESSORS ////////////
-   getConfig: (Key) -> (SharableValue) query;
+   getConfig: (key: Key) -> (SharableValue) query;
    getConfigs: () -> (Sharable__1) query;
-   getExpiredAmount: (principal) -> (nat) query;
-   getInterestAmount: (principal) -> (nat) query;
-   getTop: (variant {
-              AcornBuriers;
-              PoweredVoters;
-            }) -> (TopNonPagination) query;
-   getTopPagination: (variant {
+   getExpiredAmount: ("principal": principal) -> (nat) query;
+   getInterestAmount: ("principal": principal) -> (nat) query;
+   getTop: (category: variant {
                         AcornBuriers;
                         PoweredVoters;
-                      }, nat, nat) -> (TopPagination) query;
-   getUser: (principal) -> (Sharable) query;
-   getVotingPower: (principal) -> (nat) query;
+                      }) -> (TopNonPagination) query;
+   getTopPagination: (category: variant {
+                                  AcornBuriers;
+                                  PoweredVoters;
+                                }, page: nat, limit: nat) ->
+    (TopPagination) query;
+   getUser: ("principal": principal) -> (Sharable) query;
+   getVotingPower: ("principal": principal) -> (nat) query;
    /// PROTECTED ////// MODIFIERS ////////////
    initialize: () -> ();
-   putConfigs: (vec record {
-                      Key;
-                      SharableValue;
-                    }) -> ();
-   register: (principal, nat) -> ();
-   setConfigs: (vec record {
-                      Key;
-                      SharableValue;
-                    }) -> ();
-   shiftToMidnight: (nat) -> ();
-   transferFounderBurial: (principal, principal) -> ();
+   putConfigs: (entries: vec record {
+                               Key;
+                               SharableValue;
+                             }) -> ();
+   register: ("principal": principal, initialAmount: nat) -> ();
+   setConfigs: (entries: vec record {
+                               Key;
+                               SharableValue;
+                             }) -> ();
+   shiftToMidnight: (days: nat) -> ();
+   transferFounderBurial: (from: principal, to: principal) -> ();
    withdrawAll: () -> ();
  };
 service : () -> Escrow

@@ -88,10 +88,13 @@ export const idlFactory = ({ IDL }) => {
     'Escrow' : IDL.Null,
     'Split' : IDL.Null,
     'Facade' : IDL.Null,
+    'Chat' : IDL.Null,
     'Indicator' : IDL.Null,
     'Axioms' : IDL.Null,
     'Affiliate' : IDL.Null,
+    'Assets' : IDL.Null,
     'Treasury' : IDL.Null,
+    'Encyclopedia' : IDL.Null,
   });
   const SharableConfigs = IDL.Vec(IDL.Tuple(Key, SharableValue));
   const ActorsConfigs = IDL.Vec(
@@ -116,12 +119,15 @@ export const idlFactory = ({ IDL }) => {
     'Escrow' : IDL.Null,
     'Split' : IDL.Null,
     'Facade' : IDL.Null,
+    'Chat' : IDL.Null,
     'Frontend' : IDL.Null,
     'Indicator' : IDL.Null,
     'Axioms' : IDL.Null,
     'Affiliate' : IDL.Null,
+    'Assets' : IDL.Null,
     'ACORN' : IDL.Null,
     'Treasury' : IDL.Null,
+    'Encyclopedia' : IDL.Null,
     'ICPUSD' : IDL.Null,
   });
   const SharableCommitment = IDL.Record({

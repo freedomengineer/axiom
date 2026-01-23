@@ -41,13 +41,12 @@ export interface SharableBurial {
   'issueDate' : Time,
   'coefficient' : bigint,
   'expiryDate' : Time,
-  'claimableInterest' : SharableE8S__1,
-  'amount' : SharableE8S__1,
+  'claimableInterest' : SharableE8S,
+  'amount' : SharableE8S,
 }
 export type SharableBurials = Array<SharableBurial>;
 export type SharableDate = bigint;
 export type SharableE8S = bigint;
-export type SharableE8S__1 = bigint;
 export type SharableProportion = [bigint, bigint];
 export type SharableRange = [Value, Value];
 export type SharableRange_1 = [Value_1, Value_1];

@@ -2319,6 +2319,13 @@
       "relativePath": "../../periphery/indicator/Interface",
       "depth": 5
     },
+    "IndicatorInterfaceOld": {
+      "origin": "import IndicatorInterfaceOld \"../../periphery/indicator/InterfaceOld\";",
+      "name": "IndicatorInterfaceOld",
+      "category": "interface",
+      "relativePath": "../../periphery/indicator/InterfaceOld",
+      "depth": 5
+    },
     "C": {
       "origin": "import C \"../../common/Constants\";",
       "name": "C",
@@ -2331,13 +2338,6 @@
       "name": "E",
       "category": "common",
       "relativePath": "../../common/Errors",
-      "depth": 4
-    },
-    "Array": {
-      "origin": "import Array \"../../library/Array\";",
-      "name": "Array",
-      "category": "library",
-      "relativePath": "../../library/Array",
       "depth": 4
     },
     "Base": {
@@ -2452,13 +2452,6 @@
       "relativePath": "../../library/Set",
       "depth": 4
     },
-    "Vector": {
-      "origin": "import Vector \"../../library/Vector\";",
-      "name": "Vector",
-      "category": "library",
-      "relativePath": "../../library/Vector",
-      "depth": 4
-    },
     "BinaryVotes": {
       "origin": "import BinaryVotes \"../../library/votes/BinaryVotes\";",
       "name": "BinaryVotes",
@@ -2554,9 +2547,9 @@
     "TreasuryInterface",
     "FacadeInterface",
     "IndicatorInterface",
+    "IndicatorInterfaceOld",
     "C",
     "E",
-    "Array",
     "Base",
     "Configs",
     "ClusterTree",
@@ -2573,7 +2566,6 @@
     "Pagination",
     "Proportion",
     "Set",
-    "Vector",
     "BinaryVotes",
     "TernaryVotes",
     "Time",

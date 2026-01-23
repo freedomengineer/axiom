@@ -7,13 +7,16 @@ export type ActorVariant = { 'DAO' : null } |
   { 'Escrow' : null } |
   { 'Split' : null } |
   { 'Facade' : null } |
+  { 'Chat' : null } |
   { 'Frontend' : null } |
   { 'Indicator' : null } |
   { 'Axioms' : null } |
   { 'Affiliate' : null } |
   { 'Founder' : null } |
+  { 'Assets' : null } |
   { 'ACORN' : null } |
   { 'Treasury' : null } |
+  { 'Encyclopedia' : null } |
   { 'ICPUSD' : null };
 export type Key = string;
 export type Sharable = bigint;
@@ -86,13 +89,16 @@ export type Variant = { 'DAO' : null } |
   { 'Escrow' : null } |
   { 'Split' : null } |
   { 'Facade' : null } |
+  { 'Chat' : null } |
   { 'Frontend' : null } |
   { 'Indicator' : null } |
   { 'Axioms' : null } |
   { 'Affiliate' : null } |
   { 'Founder' : null } |
+  { 'Assets' : null } |
   { 'ACORN' : null } |
   { 'Treasury' : null } |
+  { 'Encyclopedia' : null } |
   { 'ICPUSD' : null };
 export interface _SERVICE extends Treasury {}
 export declare const idlFactory: IDL.InterfaceFactory;

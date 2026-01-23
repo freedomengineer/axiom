@@ -4,10 +4,7 @@ export const idlFactory = ({ IDL }) => {
   const List_2 = IDL.Rec();
   const List_3 = IDL.Rec();
   const Picture = IDL.Record({ 'blob' : IDL.Vec(IDL.Nat8) });
-  const Hyperlink__1 = IDL.Record({
-    'url' : IDL.Text,
-    'anchorText' : IDL.Text,
-  });
+  const Hyperlink = IDL.Record({ 'url' : IDL.Text, 'anchorText' : IDL.Text });
   const Key = IDL.Text;
   const SharableE8S = IDL.Nat;
   const SharableDate = IDL.Nat;
@@ -223,7 +220,6 @@ export const idlFactory = ({ IDL }) => {
     'Evidence' : IDL.Null,
   });
   const FlagHeader = IDL.Record({ 'id' : IDL.Nat, 'category' : Category });
-  const Hyperlink = IDL.Record({ 'url' : IDL.Text, 'anchorText' : IDL.Text });
   const SharableSystemVariant = IDL.Variant({
     'TallyResult' : IDL.Record({
       'new' : IDL.Vec(IDL.Principal),
@@ -253,16 +249,11 @@ export const idlFactory = ({ IDL }) => {
     IDL.Vec(SharableUserVariant),
     IDL.Vec(SharableSystemVariant),
   );
-  const Hyperlink__2 = IDL.Record({
-    'url' : IDL.Text,
-    'anchorText' : IDL.Text,
-  });
-  const Time__1 = IDL.Int;
   const Sharable = IDL.Record({
     'principal' : IDL.Principal,
     'username' : IDL.Text,
-    'links' : IDL.Vec(Hyperlink__2),
-    'creationDate' : Time__1,
+    'links' : IDL.Vec(Hyperlink),
+    'creationDate' : Time,
     'capitalRaised' : IDL.Nat,
     'location' : IDL.Text,
     'avatar' : IDL.Opt(Picture),
@@ -295,31 +286,6 @@ export const idlFactory = ({ IDL }) => {
     'of' : IDL.Nat,
     'result' : IDL.Vec(Sharable),
   });
-  const SystemVariantParam__1 = IDL.Variant({
-    'TallyResult' : IDL.Record({
-      'new' : IDL.Vec(IDL.Principal),
-      'timestamp' : Time,
-      'unchanged' : IDL.Vec(IDL.Principal),
-      'removed' : IDL.Vec(IDL.Principal),
-    }),
-    'FlagResult' : IDL.Record({
-      'result' : Result,
-      'timestamp' : Time,
-      'header' : FlagHeader,
-    }),
-    'ProposalExecuted' : IDL.Record({
-      'result' : ExecutedResult,
-      'timestamp' : Time,
-      'proposer' : IDL.Principal,
-      'proposalId' : IDL.Nat,
-    }),
-    'FlagRequested' : IDL.Record({ 'timestamp' : Time, 'header' : FlagHeader }),
-    'SystemGeneric' : IDL.Record({
-      'link' : IDL.Opt(Hyperlink),
-      'message' : IDL.Text,
-      'timestamp' : Time,
-    }),
-  });
   const SystemVariantParam = IDL.Variant({
     'TallyResult' : IDL.Record({
       'new' : IDL.Vec(IDL.Principal),
@@ -349,44 +315,6 @@ export const idlFactory = ({ IDL }) => {
   const SystemNotificationsBatch = IDL.Opt(
     IDL.Tuple(SystemVariantParam, List_3)
   );
-  const UserVariantParam__1 = IDL.Variant({
-    'NewEvidencesFromFollowings' : NewEvidencesFromFollowingsData,
-    'NewAxiomsToHypothesis' : IDL.Record({
-      'id' : IDL.Nat,
-      'data' : NewAxiomsToHypothesisData,
-    }),
-    'NewReferrals' : NewReferralsData,
-    'CustodianElectionResult' : CustodianElectionResultData,
-    'ProposalExecuted' : ProposalExecutedData,
-    'NewBallots' : NewBallotsData,
-    'ProposalResult' : ProposalResultData,
-    'CustodianProposalResult' : CustodianProposalResultData,
-    'NewEvidencesToHypothesis' : IDL.Record({
-      'id' : IDL.Nat,
-      'data' : NewEvidencesToHypothesisData,
-    }),
-    'CustodianProposalOpened' : CustodianProposalOpenedData,
-    'CustodianProposalDelegated' : CustodianProposalDelegatedData,
-    'NewVotesToHypothesis' : IDL.Record({
-      'id' : IDL.Nat,
-      'data' : NewVotesToHypothesisData,
-    }),
-    'NewFollowers' : NewFollowersData,
-    'NewVotesToEvidence' : IDL.Record({
-      'id' : IDL.Nat,
-      'data' : NewVotesToEvidenceData,
-    }),
-    'NewHypothesesFromFollowings' : NewHypothesesFromFollowingsData,
-    'CouponRedeemed' : CouponRedeemedData,
-    'NewVotesToProposal' : IDL.Record({
-      'id' : IDL.Nat,
-      'data' : NewVotesToProposalData,
-    }),
-    'NewRepliesToEvidence' : IDL.Record({
-      'id' : IDL.Nat,
-      'data' : NewRepliesToEvidenceData,
-    }),
-  });
   const UserVariantParam = IDL.Variant({
     'NewEvidencesFromFollowings' : NewEvidencesFromFollowingsData,
     'NewAxiomsToHypothesis' : IDL.Record({
@@ -437,7 +365,7 @@ export const idlFactory = ({ IDL }) => {
   );
   const Facade = IDL.Service({
     'editAvatar' : IDL.Func([IDL.Opt(Picture)], [], []),
-    'editLinks' : IDL.Func([IDL.Vec(Hyperlink__1)], [], []),
+    'editLinks' : IDL.Func([IDL.Vec(Hyperlink)], [], []),
     'editLocation' : IDL.Func([IDL.Opt(IDL.Text)], [], []),
     'editUsername' : IDL.Func([IDL.Text], [], []),
     'getConfig' : IDL.Func([Key], [SharableValue], ['query']),
@@ -461,14 +389,14 @@ export const idlFactory = ({ IDL }) => {
     'getUsersPrincipal' : IDL.Func([], [IDL.Vec(IDL.Principal)], ['query']),
     'initialize' : IDL.Func([], [], []),
     'postSystemGenericNotification' : IDL.Func(
-        [IDL.Text, IDL.Opt(Hyperlink__1)],
+        [IDL.Text, IDL.Opt(Hyperlink)],
         [],
         [],
       ),
-    'postSystemNotification' : IDL.Func([SystemVariantParam__1], [], []),
+    'postSystemNotification' : IDL.Func([SystemVariantParam], [], []),
     'postSystemNotifications' : IDL.Func([SystemNotificationsBatch], [], []),
     'postUserNotification' : IDL.Func(
-        [IDL.Principal, UserVariantParam__1],
+        [IDL.Principal, UserVariantParam],
         [],
         [],
       ),
@@ -477,11 +405,7 @@ export const idlFactory = ({ IDL }) => {
         [],
         [],
       ),
-    'postUsersNotification' : IDL.Func(
-        [UsersBatch, UserVariantParam__1],
-        [],
-        [],
-      ),
+    'postUsersNotification' : IDL.Func([UsersBatch, UserVariantParam], [], []),
     'postUsersNotifications' : IDL.Func([UsersNotificationsBatch], [], []),
     'putConfigs' : IDL.Func([IDL.Vec(IDL.Tuple(Key, SharableValue))], [], []),
     'register' : IDL.Func([IDL.Text, IDL.Nat, IDL.Opt(IDL.Principal)], [], []),

@@ -1072,41 +1072,6 @@
       "relativePath": "coupons/Coupons",
       "depth": 2
     },
-    "Actor": {
-      "origin": "import Actor \"../../periphery/indicator/actors/Actor\";",
-      "name": "Actor",
-      "category": "attribute",
-      "relativePath": "../../periphery/indicator/actors/Actor",
-      "depth": 6
-    },
-    "Notification": {
-      "origin": "import Notification \"../../periphery/facade/notifications/Notification\";",
-      "name": "Notification",
-      "category": "attribute",
-      "relativePath": "../../periphery/facade/notifications/Notification",
-      "depth": 6
-    },
-    "Distributions": {
-      "origin": "import Distributions \"../split/distributions/Distributions\";",
-      "name": "Distributions",
-      "category": "attribute",
-      "relativePath": "../split/distributions/Distributions",
-      "depth": 4
-    },
-    "IndicatorInterface": {
-      "origin": "import IndicatorInterface \"../../periphery/indicator/Interface\";",
-      "name": "IndicatorInterface",
-      "category": "interface",
-      "relativePath": "../../periphery/indicator/Interface",
-      "depth": 5
-    },
-    "FacadeInterface": {
-      "origin": "import FacadeInterface \"../../periphery/facade/Interface\";",
-      "name": "FacadeInterface",
-      "category": "interface",
-      "relativePath": "../../periphery/facade/Interface",
-      "depth": 5
-    },
     "ICPUSDInterface": {
       "origin": "import ICPUSDInterface \"../icpusd/Interface\";",
       "name": "ICPUSDInterface",
@@ -1127,6 +1092,27 @@
       "category": "interface",
       "relativePath": "../split/Interface",
       "depth": 3
+    },
+    "FacadeInterface": {
+      "origin": "import FacadeInterface \"../../periphery/facade/Interface\";",
+      "name": "FacadeInterface",
+      "category": "interface",
+      "relativePath": "../../periphery/facade/Interface",
+      "depth": 5
+    },
+    "IndicatorInterface": {
+      "origin": "import IndicatorInterface \"../../periphery/indicator/Interface\";",
+      "name": "IndicatorInterface",
+      "category": "interface",
+      "relativePath": "../../periphery/indicator/Interface",
+      "depth": 5
+    },
+    "IndicatorInterfaceOld": {
+      "origin": "import IndicatorInterfaceOld \"../../periphery/indicator/InterfaceOld\";",
+      "name": "IndicatorInterfaceOld",
+      "category": "interface",
+      "relativePath": "../../periphery/indicator/InterfaceOld",
+      "depth": 5
     },
     "C": {
       "origin": "import C \"../../common/Constants\";",
@@ -1163,13 +1149,6 @@
       "relativePath": "../../library/Configs",
       "depth": 4
     },
-    "Count": {
-      "origin": "import Count \"../../library/Count\";",
-      "name": "Count",
-      "category": "library",
-      "relativePath": "../../library/Count",
-      "depth": 4
-    },
     "E8S": {
       "origin": "import E8S \"../../library/E8S\";",
       "name": "E8S",
@@ -1184,13 +1163,6 @@
       "relativePath": "../../library/Earning",
       "depth": 4
     },
-    "Hexadecimal": {
-      "origin": "import Hexadecimal \"../../library/Hexadecimal\";",
-      "name": "Hexadecimal",
-      "category": "library",
-      "relativePath": "../../library/Hexadecimal",
-      "depth": 4
-    },
     "Iter": {
       "origin": "import Iter \"../../library/Iter\";",
       "name": "Iter",
@@ -1203,13 +1175,6 @@
       "name": "List",
       "category": "library",
       "relativePath": "../../library/List",
-      "depth": 4
-    },
-    "Map": {
-      "origin": "import Map \"../../library/Map\";",
-      "name": "Map",
-      "category": "library",
-      "relativePath": "../../library/Map",
       "depth": 4
     },
     "Pagination": {
@@ -1268,13 +1233,6 @@
       "relativePath": "mo:base/Time",
       "depth": 2
     },
-    "Timer": {
-      "origin": "import Timer \"mo:base/Timer\";",
-      "name": "Timer",
-      "category": "base",
-      "relativePath": "mo:base/Timer",
-      "depth": 2
-    },
     "Random": {
       "origin": "import Random \"mo:base/Random\";",
       "name": "Random",
@@ -1295,26 +1253,21 @@
     "Users",
     "Coupon",
     "Coupons",
-    "Actor",
-    "Notification",
-    "Distributions",
-    "IndicatorInterface",
-    "FacadeInterface",
     "ICPUSDInterface",
     "SalesInterface",
     "SplitInterface",
+    "FacadeInterface",
+    "IndicatorInterface",
+    "IndicatorInterfaceOld",
     "C",
     "E",
     "Array",
     "Base",
     "Configs",
-    "Count",
     "E8S",
     "Earning",
-    "Hexadecimal",
     "Iter",
     "List",
-    "Map",
     "Pagination",
     "Proportion",
     "SHA256",
@@ -1323,7 +1276,6 @@
     "Nat",
     "Int",
     "Time",
-    "Timer",
     "Random",
     "Debug"
   ],

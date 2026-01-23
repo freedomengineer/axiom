@@ -7,17 +7,16 @@ export const idlFactory = ({ IDL }) => {
     'Single' : IDL.Null,
   });
   const Time = IDL.Int;
-  const SharableE8S__1 = IDL.Nat;
+  const SharableE8S = IDL.Nat;
   const SharableBurial = IDL.Record({
     'issueDate' : Time,
     'coefficient' : IDL.Nat,
     'expiryDate' : Time,
-    'claimableInterest' : SharableE8S__1,
-    'amount' : SharableE8S__1,
+    'claimableInterest' : SharableE8S,
+    'amount' : SharableE8S,
   });
   const Sharable__2 = IDL.Vec(SharableBurial);
   const Key = IDL.Text;
-  const SharableE8S = IDL.Nat;
   const SharableDate = IDL.Nat;
   const SharableProportion = IDL.Tuple(IDL.Nat, IDL.Nat);
   const ValueProp_1 = IDL.Variant({

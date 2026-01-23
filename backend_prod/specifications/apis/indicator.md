@@ -5,7 +5,7 @@
 
 - Attributes: `Actor`, `Actors`, `Installation`, `Installations`, `Commitment`, `Commitments`, `UpgradeTasks`
 - Commons: `C`, `E`
-- Interfaces: `ACORNInterface`, `ICPUSDInterface`, `TreasuryInterface`, `SplitInterface`, `AffiliateInterface`, `EscrowInterface`, `SalesInterface`, `AxiomsInterface`, `DAOInterface`, `FacadeInterface`
+- Interfaces: `ACORNInterface`, `ICPUSDInterface`, `TreasuryInterface`, `SplitInterface`, `AffiliateInterface`, `EscrowInterface`, `SalesInterface`, `AxiomsInterface`, `EncyclopediaInterface`, `ChatInterface`, `AssetsInterface`, `DAOInterface`, `FacadeInterface`
 - Libraries: `Base`, `BlobCommitment`, `CircularBuffer`, `Configs`, `Date`, `Hexadecimal`, `Iter`, `Management`, `Map`, `Version`
 - Bases: `Principal`, `Blob`, `Nat`, `Time`, `List`, `ExperimentalCycles`, `Error`, `Debug`, `Timer`, `Int`, `Text`, `Array`
 ## Modifiers
@@ -247,7 +247,19 @@
 }
 ```
 
-### 14. `updateSettings(actorVariants, settings)` returns `()`
+### 14. `popSnapshots(actorVariants)` returns `()`
+
+#### Arguments:
+
+```json
+{
+  "actorVariants": [
+    "#TREASURY | #SPLIT | #AFFILIATE | #ESCROW | #SALES | #AXIOMS | #DAO | #FACADE | #ENCYCLOPEDIA | #CHAT | #ASSETS | #INDICATOR | #ICPUSD | #FRONTEND | #ACORN"
+  ]
+}
+```
+
+### 15. `updateSettings(actorVariants, settings)` returns `()`
 
 #### Arguments:
 
@@ -270,9 +282,9 @@
 }
 ```
 
-### 15. `createNewCanisters()` returns `()`
+### 16. `createNewCanisters()` returns `()`
 
-### 16. `uploadCommitmentChunk(actorVariant, id, chunk, expectedModuleHash)` returns `()`
+### 17. `uploadCommitmentChunk(actorVariant, id, chunk, expectedModuleHash)` returns `()`
 
 #### Arguments:
 
@@ -285,7 +297,7 @@
 }
 ```
 
-### 17. `settleCommitment(actorVariant)` returns `()`
+### 18. `settleCommitment(actorVariant)` returns `()`
 
 #### Arguments:
 
@@ -295,7 +307,7 @@
 }
 ```
 
-### 18. `clearCommitment(actorVariant)` returns `()`
+### 19. `clearCommitment(actorVariant)` returns `()`
 
 #### Arguments:
 
@@ -305,7 +317,7 @@
 }
 ```
 
-### 19. `getActorInfo(actorVariant)` returns `Actor.Info`
+### 20. `getActorInfo(actorVariant)` returns `Actor.Info`
 
 #### Arguments:
 
@@ -336,7 +348,7 @@
 }
 ```
 
-### 20. `getActorsInfo()` returns `[(Actor.Variant, Actor.Info)]`
+### 21. `getActorsInfo()` returns `[(Actor.Variant, Actor.Info)]`
 
 #### Returns:
 ```json
@@ -641,4 +653,25 @@
 #### Returns:
 ```json
 "Facade"
+```
+
+### 24. `Encyclopedia()` returns `EncyclopediaInterface.Encyclopedia`
+
+#### Returns:
+```json
+"Encyclopedia"
+```
+
+### 25. `Chat()` returns `ChatInterface.Chat`
+
+#### Returns:
+```json
+"Chat"
+```
+
+### 26. `Assets()` returns `AssetsInterface.Assets`
+
+#### Returns:
+```json
+"Assets"
 ```

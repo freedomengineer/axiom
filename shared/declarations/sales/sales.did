@@ -85,15 +85,17 @@ type SharableAchievementPackage =
 type Sharable = vec SharablePackage;
 type Sales = 
  service {
-   addAchievementPackage: (Achievement, text, text, text) -> ();
-   addPackage: (nat, text, text, text) -> ();
-   computeAcornToMint: (nat) -> (ACORNToMint);
-   deployAchievementPackage: (Achievement) -> ();
-   deployPackage: (nat) -> ();
-   expectPackageFound: (nat) -> (nat) query;
+   addAchievementPackage: (achievement: Achievement, name: text, symbol:
+    text, logoUri: text) -> ();
+   addPackage: (capitalRaised: nat, name: text, symbol: text, logoUri:
+    text) -> ();
+   computeAcornToMint: (capitalRaised: nat) -> (ACORNToMint);
+   deployAchievementPackage: (achievement: Achievement) -> ();
+   deployPackage: (capitalRaised: nat) -> ();
+   expectPackageFound: (capitalRaised: nat) -> (nat) query;
    /// PUBLIC ////// ASSERTERS ////////////
-   expectPackageNotFound: (nat) -> () query;
-   forceUpdateCapitalRaised: (vec principal) ->
+   expectPackageNotFound: (capitalRaised: nat) -> () query;
+   forceUpdateCapitalRaised: (users: vec principal) ->
     (ForceUpdateCapitalRaisedResult);
    getAchievementPackagePrincipals: () ->
     (vec record {
@@ -102,10 +104,10 @@ type Sales =
          }) query;
    getAchievementPackages: () -> (Sharable__1) query;
    /// PUBLIC ////// ACCESSORS ////////////
-   getConfig: (Key) -> (SharableValue) query;
+   getConfig: (key: Key) -> (SharableValue) query;
    getConfigs: () -> (Sharable__2) query;
-   getOwnedAchievementPackages: (principal) -> (Sharable__1);
-   getOwnedPackages: (principal) -> (Sharable);
+   getOwnedAchievementPackages: ("principal": principal) -> (Sharable__1);
+   getOwnedPackages: ("principal": principal) -> (Sharable);
    getPackagePrincipals: () -> (vec record {
                                       nat;
                                       principal;
@@ -113,16 +115,16 @@ type Sales =
    getPackages: () -> (Sharable) query;
    /// PROTECTED ////// MODIFIERS ////////////
    initialize: () -> ();
-   mintAchievementPackage: (Achievement) -> ();
-   mintPackage: (principal, nat) -> (nat);
-   putConfigs: (vec record {
-                      Key;
-                      SharableValue;
-                    }) -> ();
-   setConfigs: (vec record {
-                      Key;
-                      SharableValue;
-                    }) -> ();
+   mintAchievementPackage: (achievement: Achievement) -> ();
+   mintPackage: (recipient: principal, capitalRaised: nat) -> (nat);
+   putConfigs: (entries: vec record {
+                               Key;
+                               SharableValue;
+                             }) -> ();
+   setConfigs: (entries: vec record {
+                               Key;
+                               SharableValue;
+                             }) -> ();
    /// PUBLIC ////// MODIFIERS ////////////
    upgradePackage: () -> ();
  };

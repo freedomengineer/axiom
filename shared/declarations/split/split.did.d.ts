@@ -7,31 +7,32 @@ export type ActorVariant = { 'DAO' : null } |
   { 'Escrow' : null } |
   { 'Split' : null } |
   { 'Facade' : null } |
+  { 'Chat' : null } |
   { 'Frontend' : null } |
   { 'Indicator' : null } |
   { 'Axioms' : null } |
   { 'Affiliate' : null } |
   { 'Founder' : null } |
+  { 'Assets' : null } |
   { 'ACORN' : null } |
   { 'Treasury' : null } |
+  { 'Encyclopedia' : null } |
   { 'ICPUSD' : null };
 export type Key = string;
 export type Sharable = bigint;
 export type SharableDate = bigint;
 export interface SharableDistribution {
   'earning' : SharableEarning,
-  'proportion' : SharableProportion__1,
+  'proportion' : SharableProportion,
   'actorVariant' : ActorVariant,
 }
 export type SharableE8S = bigint;
-export type SharableE8S__1 = bigint;
 export interface SharableEarning {
   'lastWithdrawAt' : Time,
-  'revenue' : SharableE8S__1,
-  'balance' : SharableE8S__1,
+  'revenue' : SharableE8S,
+  'balance' : SharableE8S,
 }
 export type SharableProportion = [bigint, bigint];
-export type SharableProportion__1 = [bigint, bigint];
 export type SharableRange = [Value, Value];
 export type SharableRange_1 = [Value_1, Value_1];
 export type SharableRange_2 = [Value_2, Value_2];
@@ -48,13 +49,13 @@ export type SharableValue = { 'E8S' : SharableE8S } |
   { 'Duration' : bigint };
 export interface Sharable__1 {
   'lastWithdrawAt' : Time,
-  'revenue' : SharableE8S__1,
-  'balance' : SharableE8S__1,
+  'revenue' : SharableE8S,
+  'balance' : SharableE8S,
 }
 export type Sharable__2 = Array<SharableDistribution>;
 export interface Sharable__3 {
   'earning' : SharableEarning,
-  'proportion' : SharableProportion__1,
+  'proportion' : SharableProportion,
   'actorVariant' : ActorVariant,
 }
 export type Sharable__4 = Array<[Key, SharableValue]>;
@@ -93,13 +94,16 @@ export type Variant = { 'DAO' : null } |
   { 'Escrow' : null } |
   { 'Split' : null } |
   { 'Facade' : null } |
+  { 'Chat' : null } |
   { 'Frontend' : null } |
   { 'Indicator' : null } |
   { 'Axioms' : null } |
   { 'Affiliate' : null } |
   { 'Founder' : null } |
+  { 'Assets' : null } |
   { 'ACORN' : null } |
   { 'Treasury' : null } |
+  { 'Encyclopedia' : null } |
   { 'ICPUSD' : null };
 export interface _SERVICE extends Split {}
 export declare const idlFactory: IDL.InterfaceFactory;

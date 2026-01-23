@@ -4,7 +4,7 @@
 
 
 - Attributes: `User`, `Users`, `Notification`, `Notifications`, `Coupon`, `DIP721`
-- Interfaces: `DIP721Interface`, `ICPUSDInterface`, `SplitInterface`, `TreasuryInterface`, `AffiliateInterface`, `SalesInterface`, `EscrowInterface`, `AxiomsInterface`, `DAOInterface`, `IndicatorInterface`
+- Interfaces: `DIP721Interface`, `ICPUSDInterface`, `SplitInterface`, `TreasuryInterface`, `AffiliateInterface`, `SalesInterface`, `EscrowInterface`, `AxiomsInterface`, `DAOInterface`, `IndicatorInterface`, `IndicatorInterfaceOld`
 - Commons: `C`, `E`
 - Libraries: `Base`, `Configs`, `E8S`, `Format`, `Iter`, `Map`, `Pagination`
 - Bases: `Principal`, `Nat`, `Time`, `Text`, `Error`

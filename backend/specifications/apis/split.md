@@ -4,7 +4,7 @@
 
 
 - Attributes: `Distribution`, `Distributions`, `Actor`, `ICP`
-- Interfaces: `IndicatorInterface`
+- Interfaces: `IndicatorInterface`, `IndicatorInterfaceOld`
 - Commons: `C`, `E`
 - Libraries: `Configs`, `E8S`, `Earning`, `Iter`, `Proportion`, `Map`
 - Bases: `Principal`, `Time`

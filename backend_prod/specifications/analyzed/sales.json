@@ -845,6 +845,13 @@
       "relativePath": "../escrow/Interface",
       "depth": 3
     },
+    "TreasuryInterface": {
+      "origin": "import TreasuryInterface \"../treasury/Interface\";",
+      "name": "TreasuryInterface",
+      "category": "interface",
+      "relativePath": "../treasury/Interface",
+      "depth": 3
+    },
     "FacadeInterface": {
       "origin": "import FacadeInterface \"../../periphery/facade/Interface\";",
       "name": "FacadeInterface",
@@ -859,12 +866,12 @@
       "relativePath": "../../periphery/indicator/Interface",
       "depth": 5
     },
-    "TreasuryInterface": {
-      "origin": "import TreasuryInterface \"../treasury/Interface\";",
-      "name": "TreasuryInterface",
+    "IndicatorInterfaceOld": {
+      "origin": "import IndicatorInterfaceOld \"../../periphery/indicator/InterfaceOld\";",
+      "name": "IndicatorInterfaceOld",
       "category": "interface",
-      "relativePath": "../treasury/Interface",
-      "depth": 3
+      "relativePath": "../../periphery/indicator/InterfaceOld",
+      "depth": 5
     },
     "E": {
       "origin": "import E \"../../common/Errors\";",
@@ -962,9 +969,10 @@
     "DIP721Interface",
     "AffiliateInterface",
     "EscrowInterface",
+    "TreasuryInterface",
     "FacadeInterface",
     "IndicatorInterface",
-    "TreasuryInterface",
+    "IndicatorInterfaceOld",
     "E",
     "Array",
     "Base",

@@ -33,8 +33,21 @@ module {
             __.head := (__.head + 1) % __.capacity
         };
         case (true) {
-            __.buffer[__.length] := ?value;
+            let tail = (__.head + __.length) % __.capacity;
+            __.buffer[tail] := ?value;
             __.length += 1
+        }
+    };
+    public func pop<T>(__ : Self<T>) : ?T {
+        switch (__.length == 0) {
+            case (true) null;
+            case (false) {
+                let value = __.buffer[__.head];
+                __.buffer[__.head] := null;
+                __.head := (__.head + 1) % __.capacity;
+                __.length -= 1;
+                value
+            }
         }
     };
 
@@ -81,6 +94,10 @@ module {
     public func toBeReplaced<T>(__ : Self<T>) : ?T = switch (__.length < __.capacity) {
         case (false) __.buffer[__.head];
         case (true) null
+    };
+    public func toBePopped<T>(__ : Self<T>) : ?T = switch (__.length > 0) {
+        case (false) null;
+        case (true) __.buffer[__.head]
     };
 
     public func size<T>(__ : Self<T>) : Nat = __.length;

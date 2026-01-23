@@ -28,7 +28,6 @@ import useHypothesisDetails from '@hooks/useHypothesisDetails'
 import useVoteColors from '@hooks/useVoteColors'
 import cn from '@libs/class'
 import { formatDate } from '@libs/date'
-import { round } from '@libs/formatter'
 import { success } from '@libs/toastify'
 import { build } from '@libs/url'
 import { EVote as EEvidenceVote } from '@utils/feed/evidence'
@@ -389,7 +388,9 @@ const HypothesisDetail = ({
                                                             %)
                                                         </span>
                                                         <span className="text-small font-medium">
-                                                            {regularVotes[index].value}
+                                                            {regularVotes[
+                                                                index
+                                                            ].value.toLocaleString('en')}
                                                         </span>
                                                         <FieldMembersIcon className="h-4 w-4 stroke-2 md:h-5 md:w-5" />
                                                     </p>
@@ -446,7 +447,11 @@ const HypothesisDetail = ({
                                                     >
                                                         <AcornIcon className="h-5 w-5 -translate-y-[2px] stroke-2 md:h-6 md:w-6" />
                                                         <span className="text-small font-medium">
-                                                            {round(poweredVotes[index].value)}
+                                                            {poweredVotes[
+                                                                index
+                                                            ].value.toLocaleString('en', {
+                                                                maximumFractionDigits: 2,
+                                                            })}
                                                         </span>
                                                         <span className="hidden md:block">
                                                             (
