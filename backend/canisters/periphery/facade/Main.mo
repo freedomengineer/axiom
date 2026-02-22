@@ -17,7 +17,6 @@ import EscrowInterface "../../core/escrow/Interface";
 import AxiomsInterface "../../core/axioms/Interface";
 import DAOInterface "../../periphery/dao/Interface";
 import IndicatorInterface "../../periphery/indicator/Interface";
-import IndicatorInterfaceOld "../../periphery/indicator/InterfaceOld";
 
 import C "../../common/Constants";
 import E "../../common/Errors";
@@ -36,14 +35,7 @@ import Time "mo:base/Time";
 import Text "mo:base/Text";
 import Error "mo:base/Error";
 
-(
-    with migration = func(
-        old : {
-            var Indicator : IndicatorInterfaceOld.Indicator
-        }
-    ) : {
-    } { {} }
-) shared ({ caller = indicator }) persistent actor class Facade() = this {
+shared ({ caller = indicator }) persistent actor class Facade() = this {
     ////// TEMPORARY IMPLEMENTATION ////////////
     private stable var shiftedTime : Int = 0;
     private func getNow() : Int = shiftedTime + Time.now();

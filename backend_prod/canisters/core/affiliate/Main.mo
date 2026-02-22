@@ -8,7 +8,6 @@ import SalesInterface "../sales/Interface";
 import SplitInterface "../split/Interface";
 import FacadeInterface "../../periphery/facade/Interface";
 import IndicatorInterface "../../periphery/indicator/Interface";
-import IndicatorInterfaceOld "../../periphery/indicator/InterfaceOld";
 
 import C "../../common/Constants";
 import E "../../common/Errors";
@@ -32,14 +31,7 @@ import Time "mo:base/Time";
 import Random "mo:base/Random";
 import Debug "mo:base/Debug";
 
-(
-    with migration = func(
-        old : {
-            var Indicator : IndicatorInterfaceOld.Indicator
-        }
-    ) : {
-    } { {} }
-) shared ({ caller = indicator }) persistent actor class Affiliate() = this {
+shared ({ caller = indicator }) persistent actor class Affiliate() = this {
         private transient let Indicator : IndicatorInterface.Indicator = actor (Principal.toText(indicator));
 
     private stable let users : Users.Users = Users.init();

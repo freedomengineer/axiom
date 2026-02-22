@@ -4,7 +4,7 @@
 
 
 - Attributes: `Burials`, `Burial`, `Users`, `User`
-- Interfaces: `TreasuryInterface`, `IndicatorInterface`, `IndicatorInterfaceOld`
+- Interfaces: `TreasuryInterface`, `IndicatorInterface`
 - Commons: `C`, `E`
 - Libraries: `E8S`, `Configs`, `Iter`, `Pagination`, `Proportion`
 - Bases: `Principal`, `Time`

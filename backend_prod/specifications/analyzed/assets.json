@@ -178,13 +178,6 @@
       "relativePath": "../../periphery/indicator/Interface",
       "depth": 5
     },
-    "IndicatorInterfaceOld": {
-      "origin": "import IndicatorInterfaceOld \"../../periphery/indicator/InterfaceOld\";",
-      "name": "IndicatorInterfaceOld",
-      "category": "interface",
-      "relativePath": "../../periphery/indicator/InterfaceOld",
-      "depth": 5
-    },
     "C": {
       "origin": "import C \"../../common/Constants\";",
       "name": "C",
@@ -223,7 +216,6 @@
   },
   "actorDependencies": [
     "IndicatorInterface",
-    "IndicatorInterfaceOld",
     "C",
     "Configs",
     "Iter",

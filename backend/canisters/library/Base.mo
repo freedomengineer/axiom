@@ -41,6 +41,9 @@ module {
         case (null) nullMap()
     };
 
+    public func ceil(x : Nat, max : Nat) : Nat = if (x > max) max else x;
+    public func floor(x : Nat, min : Nat) : Nat = if (x < min) min else x;
+
     ///
 
     public func deduplicate<T>(arr : [T], compare : Equal<T>) : [T] {

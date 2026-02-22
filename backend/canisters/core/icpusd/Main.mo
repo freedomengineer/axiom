@@ -1,7 +1,6 @@
 import XRC "canister:xrc";
 
 import IndicatorInterface "../../periphery/indicator/Interface";
-import IndicatorInterfaceOld "../../periphery/indicator/InterfaceOld";
 
 import E "../../common/Errors";
 
@@ -10,14 +9,7 @@ import Nat64 "mo:base/Nat64";
 import Nat32 "mo:base/Nat32";
 import Principal "mo:base/Principal";
 
-(
-    with migration = func(
-        old : {
-            var Indicator : IndicatorInterfaceOld.Indicator
-        }
-    ) : {
-    } { {} }
-) shared ({ caller = indicator }) persistent actor class ICPUSD() = this {
+shared ({ caller = indicator }) persistent actor class ICPUSD() = this {
     private transient let Indicator : IndicatorInterface.Indicator = actor (Principal.toText(indicator));
 
     public shared ({ caller }) func exchange(icpToUsd : Bool, amount : Nat) : async Nat {

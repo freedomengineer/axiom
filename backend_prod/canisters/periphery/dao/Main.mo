@@ -15,7 +15,6 @@ import TreasuryInterface "../../core/treasury/Interface";
 import AxiomsInterface "../../core/axioms/Interface";
 import FacadeInterface "../facade/Interface";
 import IndicatorInterface "../indicator/Interface";
-import IndicatorInterfaceOld "../indicator/InterfaceOld";
 
 import C "../../common/Constants";
 import E "../../common/Errors";
@@ -43,15 +42,7 @@ import Nat "mo:base/Nat";
 import Int "mo:base/Int";
 import Timer "mo:base/Timer";
 
-
-(
-    with migration = func(
-        old : {
-            var Indicator : IndicatorInterfaceOld.Indicator
-        }
-    ) : {
-    } { {} }
-) shared ({ caller = indicator }) persistent actor class DAO() = this {
+shared ({ caller = indicator }) persistent actor class DAO() = this {
         private transient let Indicator : IndicatorInterface.Indicator = actor (Principal.toText(indicator));
 
     private stable let proposals : Proposals.Proposals = Proposals.init();

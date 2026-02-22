@@ -5,7 +5,6 @@ import Actor "../../periphery/indicator/actors/Actor";
 import ICP "canister:icp_ledger";
 
 import IndicatorInterface "../../periphery/indicator/Interface";
-import IndicatorInterfaceOld "../../periphery/indicator/InterfaceOld";
 
 import C "../../common/Constants";
 import E "../../common/Errors";
@@ -21,14 +20,7 @@ import Time "mo:base/Time";
 
 import Map "../../library/Map";
 
-(
-    with migration = func(
-        old : {
-            var Indicator : IndicatorInterfaceOld.Indicator
-        }
-    ) : {
-    } { {} }
-) shared ({ caller = indicator }) persistent actor class Split() = this {
+shared ({ caller = indicator }) persistent actor class Split() = this {
     ////// TEMPORARY IMPLEMENTATION ////////////
     private stable var shiftedTime : Int = 0;
     private func getNow() : Int = shiftedTime + Time.now();

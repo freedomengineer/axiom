@@ -6,7 +6,6 @@ import ACORNTypes "../acorn/Types";
 
 import ACORNInterface "../acorn/Interface";
 import IndicatorInterface "../../periphery/indicator/Interface";
-import IndicatorInterfaceOld "../../periphery/indicator/InterfaceOld";
 
 import E "../../common/Errors";
 
@@ -15,14 +14,7 @@ import E8S "../../library/E8S";
 
 import Principal "mo:base/Principal";
 
-(
-    with migration = func(
-        old : {
-            var Indicator : IndicatorInterfaceOld.Indicator
-        }
-    ) : {
-    } { {} }
-) shared ({ caller = indicator }) persistent actor class Treasury() = this {
+shared ({ caller = indicator }) persistent actor class Treasury() = this {
     private transient let Indicator : IndicatorInterface.Indicator = actor (Principal.toText(indicator));
 
     private stable let totalSupply : E8S.E8S = E8S.fromFloat(450_000_000.0);

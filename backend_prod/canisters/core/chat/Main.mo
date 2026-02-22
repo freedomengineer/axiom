@@ -1,5 +1,4 @@
 import IndicatorInterface "../../periphery/indicator/Interface";
-import IndicatorInterfaceOld "../../periphery/indicator/InterfaceOld";
 
 import C "../../common/Constants";
 
@@ -9,14 +8,7 @@ import Iter "../../library/Iter";
 import Principal "mo:base/Principal";
 import Time "mo:base/Time";
 
-(
-    with migration = func(
-        old : {
-            var Indicator : IndicatorInterfaceOld.Indicator
-        }
-    ) : {
-    } { {} }
-) shared ({ caller = indicator }) persistent actor class Chat() = this {
+shared ({ caller = indicator }) persistent actor class Chat() = this {
         private transient let Indicator : IndicatorInterface.Indicator = actor (Principal.toText(indicator));
 
     private stable let configs : Configs.Configs = Configs.make([]);

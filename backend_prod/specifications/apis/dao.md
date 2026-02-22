@@ -4,7 +4,7 @@
 
 
 - Attributes: `Proposal`, `Proposals`, `Nominees`, `Nominee`, `Users`, `User`, `Detachment`, `Commitments`, `Installation`, `Notification`
-- Interfaces: `EscrowInterface`, `SplitInterface`, `TreasuryInterface`, `AxiomsInterface`, `FacadeInterface`, `IndicatorInterface`, `IndicatorInterfaceOld`
+- Interfaces: `EscrowInterface`, `SplitInterface`, `TreasuryInterface`, `AxiomsInterface`, `FacadeInterface`, `IndicatorInterface`
 - Commons: `C`, `E`
 - Libraries: `Base`, `Configs`, `Count`, `Delegable`, `E8S`, `Earning`, `Iter`, `List`, `Pagination`, `Proportion`, `Set`, `UniformBinaryVotes`, `Version`
 - Bases: `Principal`, `Text`, `Time`, `Error`, `Nat`, `Int`, `Timer`

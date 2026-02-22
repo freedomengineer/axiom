@@ -1,5 +1,4 @@
 import IndicatorInterface "../../periphery/indicator/Interface";
-import IndicatorInterfaceOld "../../periphery/indicator/InterfaceOld";
 
 import C "../../common/Constants";
 
@@ -9,14 +8,7 @@ import Iter "../../library/Iter";
 import Principal "mo:base/Principal";
 import Time "mo:base/Time";
 
-(
-    with migration = func(
-        old : {
-            var Indicator : IndicatorInterfaceOld.Indicator
-        }
-    ) : {
-    } { {} }
-) shared ({ caller = indicator }) persistent actor class Encyclopedia() = this {
+shared ({ caller = indicator }) persistent actor class Encyclopedia() = this {
     ////// TEMPORARY IMPLEMENTATION ////////////
     private stable var shiftedTime : Int = 0;
     private func getNow() : Int = shiftedTime + Time.now();

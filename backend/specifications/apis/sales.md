@@ -4,7 +4,7 @@
 
 
 - Attributes: `Package`, `Packages`, `AchievementPackage`, `AchievementPackages`, `EscrowBurial`, `FacadeUser`, `DIP721`
-- Interfaces: `DIP721Interface`, `AffiliateInterface`, `EscrowInterface`, `TreasuryInterface`, `FacadeInterface`, `IndicatorInterface`, `IndicatorInterfaceOld`
+- Interfaces: `DIP721Interface`, `AffiliateInterface`, `EscrowInterface`, `TreasuryInterface`, `FacadeInterface`, `IndicatorInterface`
 - Commons: `E`
 - Libraries: `Array`, `Base`, `Configs`, `E8S`, `List`, `Proportion`
 - Bases: `Nat`, `Principal`, `ExperimentalCycles`, `Debug`, `Error`

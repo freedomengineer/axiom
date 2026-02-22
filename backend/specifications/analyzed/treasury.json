@@ -679,13 +679,6 @@
       "relativePath": "../../periphery/indicator/Interface",
       "depth": 5
     },
-    "IndicatorInterfaceOld": {
-      "origin": "import IndicatorInterfaceOld \"../../periphery/indicator/InterfaceOld\";",
-      "name": "IndicatorInterfaceOld",
-      "category": "interface",
-      "relativePath": "../../periphery/indicator/InterfaceOld",
-      "depth": 5
-    },
     "E": {
       "origin": "import E \"../../common/Errors\";",
       "name": "E",
@@ -722,7 +715,6 @@
     "ACORNTypes",
     "ACORNInterface",
     "IndicatorInterface",
-    "IndicatorInterfaceOld",
     "E",
     "Configs",
     "E8S",

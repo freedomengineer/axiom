@@ -4,7 +4,7 @@
 
 
 - Attributes: `User`, `Users`, `Coupon`, `Coupons`
-- Interfaces: `ICPUSDInterface`, `SalesInterface`, `SplitInterface`, `FacadeInterface`, `IndicatorInterface`, `IndicatorInterfaceOld`
+- Interfaces: `ICPUSDInterface`, `SalesInterface`, `SplitInterface`, `FacadeInterface`, `IndicatorInterface`
 - Commons: `C`, `E`
 - Libraries: `Array`, `Base`, `Configs`, `E8S`, `Earning`, `Iter`, `List`, `Pagination`, `Proportion`, `SHA256`
 - Bases: `Blob`, `Principal`, `Nat`, `Int`, `Time`, `Random`, `Debug`

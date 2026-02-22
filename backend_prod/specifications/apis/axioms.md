@@ -4,7 +4,7 @@
 
 
 - Attributes: `Age`, `Ages`, `Evidence`, `Evidences`, `Field`, `Fields`, `Hypothesis`, `Hypotheses`, `Payout`, `Payouts`, `Ranks`, `User`, `Users`, `Flag`, `Flags`, `UserConfig`, `UserConfigs`, `Notification`, `Packages`
-- Interfaces: `EscrowInterface`, `TreasuryInterface`, `FacadeInterface`, `IndicatorInterface`, `IndicatorInterfaceOld`
+- Interfaces: `EscrowInterface`, `TreasuryInterface`, `FacadeInterface`, `IndicatorInterface`
 - Commons: `C`, `E`
 - Libraries: `Base`, `Configs`, `ClusterTree`, `Count`, `Date`, `DoubleClusterTree`, `DoubleRankTree`, `E8S`, `Earning`, `Format`, `Iter`, `List`, `Map`, `Pagination`, `Proportion`, `Set`, `BinaryVotes`, `TernaryVotes`
 - Bases: `Time`, `Principal`, `Text`, `Int`, `Nat`, `Timer`, `Float`, `Debug`
