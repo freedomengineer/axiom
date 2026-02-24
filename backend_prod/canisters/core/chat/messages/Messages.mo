@@ -35,6 +35,14 @@ module {
         #Last
     };
 
+    public func messagesLimitPerTier(__ : Tier) : Nat = switch (__ : Tier) {
+        case (#L32) 32;
+        case (#L512) 512;
+        case (#L4096) 4096;
+        case (#L16384) 16384;
+        case (#Extra(n)) 16384 * n
+    };
+
     /// CHAT ////// MESSAGES ////////////
 
     private type Self = Messages;
@@ -49,14 +57,7 @@ module {
     public func pushSendable(__ : Self, tier : Tier, sender : Principal, content : Content, repliedTo : ?Nat) : Nat {
         let id : Nat = nextId(__);
 
-        let limitReached = switch (tier) {
-            case (#L32) id >= 00_032; // 32
-            case (#L512) id >= 00_512; // 32*16
-            case (#L4096) id >= 04_096; // 32*16*8
-            case (#L16384) id >= 16_384; // 32*16*8*4
-            case (#Extra(n)) id >= 16_384 * n; // 32*16*8*4*n
-        };
-        if (limitReached) E.f(#NOT_VALID("Tier"), "Attempted to push a message with limit reached (" # debug_show (id) # " messages for tier " # debug_show (tier) # ")");
+        if (id >= messagesLimitPerTier(tier)) E.f(#NOT_VALID("Tier"), "Attempted to push a message with limit reached (" # debug_show (id) # " messages for tier " # debug_show (tier) # ")");
 
         MultiDimArray.push(__, Message.initSendable(sender, content, repliedTo));
 
@@ -77,7 +78,7 @@ module {
     public func size(__ : Self) : Nat = MultiDimArray.size(__);
     public func nextId(__ : Self) : Nat = MultiDimArray.size(__);
     public func lastId(__ : Self) : Nat = MultiDimArray.size(__) - 1;
-    public func lastTimestamp(__ : Self) : Int = Message.timestamp(message(__, lastId(__)));
+    public func lastActive(__ : Self) : Int = Message.timestamp(message(__, lastId(__)));
 
     public func message(__ : Self, id : Nat) : Message = switch (MultiDimArray.get(__, id)) {
         case (?message) message;

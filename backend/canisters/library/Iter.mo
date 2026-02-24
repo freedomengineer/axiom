@@ -182,5 +182,16 @@ module {
                 }
             }
         }
+    };
+
+    public func parallel<A, B>(xs : Iter<A>, ys : Iter<B>) : Iter<(?A, ?B)> {
+        object {
+            public func next() : ?(?A, ?B) {
+                switch (xs.next(), ys.next()) {
+                    case (null, null) null;
+                    case (x, y) ?(x, y)
+                }
+            }
+        }
     }
 }
