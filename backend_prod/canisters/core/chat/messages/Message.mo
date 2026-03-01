@@ -3,6 +3,8 @@ import E "../../../common/Errors";
 import List "../../../library/List";
 import Set "../../../library/Set";
 
+import Time "mo:base/Time";
+
 module {
     /// PRIVATE ////// DECLARATIONS ////////////
 
@@ -81,14 +83,14 @@ module {
 
     public func addReaction(__ : Self, reaction : Text, reactor : Principal) {
         let m : Sendable = sendable(__);
-        switch (List.find(m.reactions, func((key, _)) = key == reaction)) {
+        switch (List.find<(Text, Set<Principal>)>(m.reactions, func((key, _)) = key == reaction)) {
             case (?(_, reactors)) Set.put(reactors, Val(reactor));
             case (null) m.reactions := List.push((reaction, Set.make(Val(reactor))), m.reactions)
         }
     };
     public func removeReaction(__ : Self, reaction : Text, reactor : Principal) {
         let m : Sendable = sendable(__);
-        switch (List.find(m.reactions, func((key, _)) = key == reaction)) {
+        switch (List.find<(Text, Set<Principal>)>(m.reactions, func((key, _)) = key == reaction)) {
             case (?(_, reactors)) Set.delete(reactors, Val(reactor));
             case (null) E.f(#NOT_EXISTED("Reaction"), "Reaction " # reaction # " not found")
         }
@@ -101,12 +103,12 @@ module {
 
     /// PUBLIC ////// ACCESSORS ////////////
 
-    public func timestamp(__ : Self) : Int = switch (__ : Message) {
+    public func timestamp(__ : Self) : Int = switch (__) {
         case (#Sendable({ timestamp })) timestamp;
         case (#Log({ timestamp })) timestamp
     };
 
-    public func sendable(__ : Self) : Sendable = switch (__ : Message) {
+    public func sendable(__ : Self) : Sendable = switch (__) {
         case (#Sendable(m)) m;
         case (#Log(_)) E.f(#NOT_VALID("Message"), "Expected a sendable message, got a log message")
     };
@@ -115,7 +117,7 @@ module {
         case (#Sendable(m)) #Sendable({
             m with id;
             replies = List.toArray(m.replies);
-            reactions = List.toArrayMap(m.reactions, func((key, reactors)) = (key, Set.toArray(reactors)))
+            reactions = List.toArrayMap<(Text, Set<Principal>), (Text, [Principal])>(m.reactions, func((key, reactors)) = (key, Set.toArray<Principal>(reactors)))
         });
         case (#Log(m)) #Log({
             m with id

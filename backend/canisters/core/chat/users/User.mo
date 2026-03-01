@@ -21,12 +21,14 @@ module {
     private type Self = User;
 
     public type User = {
+        username : Text;
         dms : Set<Principal>;
         groups : Set<Nat>
     };
     public type Sharable = {};
 
-    public func init(getNow : () -> Int) : Self = {
+    public func init(username : Text) : Self = {
+        username;
         dms = Set.new<Principal>();
         groups = Set.new<Nat>()
     };

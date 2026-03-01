@@ -23,8 +23,8 @@ module {
 
     /// PUBLIC ////// MODIFIERS ////////////
 
-    public func register(__ : Self, principal : Principal) {
-        Map.put(__, PrincipalKey(principal), User.init())
+    public func register(__ : Self, principal : Principal, username : Text) {
+        Map.put(__, PrincipalKey(principal), User.init(username))
     };
 
     /// PUBLIC ////// ACCESSORS ////////////

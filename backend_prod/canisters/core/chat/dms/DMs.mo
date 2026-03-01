@@ -15,32 +15,9 @@ module {
     private type Map<K, V> = Map.Map<K, V>;
 
     private type DM = DM.DM;
+    private type PrivateSharableDM = DM.PrivateSharable;
 
     private let Key = Map.TextKey;
-
-    func _key(a : Principal, b : Principal) : Text {
-        var key = "";
-        for ((ca, cb) in Iter.parallel<Char, Char>(Principal.toText(a).chars(), Principal.toText(b).chars())) {
-            let xa = switch (ca) {
-                case (?'-') null;
-                case (_) ca
-            };
-            let xb = switch (cb) {
-                case (?'-') null;
-                case (_) cb
-            };
-            switch (xa, xb) {
-                case (null, ?cb) key #= Char.toText(cb);
-                case (?ca, null) key #= Char.toText(ca);
-                case ((?ca, ?cb)) switch (ca < cb) {
-                    case (true) key #= Char.toText(ca) # Char.toText(cb);
-                    case (false) key #= Char.toText(cb) # Char.toText(ca)
-                };
-                case (null, null) {}
-            }
-        };
-        key
-    };
 
     /// CHAT ////// CHANNELS ////////////
 
@@ -53,15 +30,19 @@ module {
     /// PUBLIC ////// MODIFIERS ////////////
 
     public func create(__ : Self, creator : Principal, to : Principal) : Text {
-        let key = _key(creator, to);
+        let key = DM.key(creator, to);
         Map.put(__, Key(key), DM.init(creator, to));
         key
     };
 
     /// PUBLIC ////// ACCESSORS ////////////
 
-    public func dm(__ : Self, a : Principal, b : Principal) : DM = switch (Map.get(__, Key(_key(a, b)))) {
+    public func dm(__ : Self, a : Principal, b : Principal) : DM = switch (Map.get(__, Key(DM.key(a, b)))) {
         case (?dm) dm;
-        case (null) E.f(#NOT_EXISTED("DM"), "Attempted to retrieve a non-existent DM between " # Principal.toText(a) # " and " # Principal.toText(b))
+        case (null) E.f(#NOT_EXISTED("DM"), "Attempted to retrieve a non-existent DM between " # debug_show a # " and " # debug_show b)
+    };
+
+    public func getPrivateDM(__ : Self, from : Principal, to : (Principal, Text)) : PrivateSharableDM {
+        DM.toPrivateSharable(dm(__, from, to.0), from, to.1)
     }
 }

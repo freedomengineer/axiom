@@ -1,179 +1,311 @@
-import Channel "../channels/Channel";
+import Channel "Channel";
+import Groups "../groups/Groups";
+import Group "../groups/Group";
+import DMs "../dms/DMs";
+import DM "../dms/DM";
 import Message "../messages/Message";
 import Messages "../messages/Messages";
+import User "../users/User";
 
 import E "../../../common/Errors";
 
 import Array "../../../library/Array";
 import Base "../../../library/Base";
+import Iter "../../../library/Iter";
 import List "../../../library/List";
 import Set "../../../library/Set";
+import Tree "../../../library/Tree";
 import Vector "../../../library/Vector";
 
 import Nat "mo:base/Nat";
 import Int "mo:base/Int";
 import Text "mo:base/Text";
+import Principal "mo:base/Principal";
 
 module {
     /// PRIVATE ////// DECLARATIONS ////////////
 
     private type List<T> = List.List<T>;
     private type Vector<T> = Vector.Vector<T>;
+    private type Set<T> = Set.Set<T>;
+    private type Iter<T> = Iter.Iter<T>;
+    private type Tree<K, V> = Tree.Tree<K, V>;
 
-    private type PrivateSharable = Channel.PrivateSharable;
-    private type InfoSharable = Channel.InfoSharable;
+    private type SharableChannel = Channel.Sharable;
     private type Channel = Channel.Channel;
+    private type Group = Group.Group;
+    private type Groups = Groups.Groups;
+    private type DM = DM.DM;
+    private type DMs = DMs.DMs;
     private type Messages = Messages.Messages;
+    private type SharableMessage = Message.Sharable;
     private type Tier = Messages.Tier;
+    private type User = User.User;
 
     private type Compare<T> = Base.Compare<T>;
     private type Sorted<T> = Base.Sort<T>;
     private type Order = Base.Order;
 
-    private type PublicEntry = (Nat, GroupChannel);
-    private type PrivateEntry = (Nat, Channel);
-
     private let Val = Set.PrincipalVal;
 
-    private func _publicRecent(orderBy : Order) : Compare<PublicEntry> = switch (orderBy) {
-        case (#ascending) func((_, a), (_, b)) = Int.compare(a.creationDate, b.creationDate);
-        case (#descending) func((_, a), (_, b)) = Int.compare(b.creationDate, a.creationDate)
+    private func _timestamp(message : SharableMessage) : Int = switch (message) {
+        case (#Sendable({ timestamp })) timestamp;
+        case (#Log({ timestamp })) timestamp
     };
-    private func _publicName(orderBy : Order) : Compare<PublicEntry> = switch (orderBy) {
-        case (#ascending) func((_, a), (_, b)) = Text.compare(a.name, b.name);
-        case (#descending) func((_, a), (_, b)) = Text.compare(b.name, a.name)
-    };
-    private func _publicMembers(orderBy : Order) : Compare<PublicEntry> = switch (orderBy) {
-        case (#ascending) func((_, a), (_, b)) = Nat.compare(Set.size(a.members), Set.size(b.members));
-        case (#descending) func((_, a), (_, b)) = Nat.compare(Set.size(b.members), Set.size(a.members))
-    };
-    private func _publicMessages(orderBy : Order) : Compare<PublicEntry> = switch (orderBy) {
-        case (#ascending) func((_, a), (_, b)) = Nat.compare(Messages.size(a.messages), Messages.size(b.messages));
-        case (#descending) func((_, a), (_, b)) = Nat.compare(Messages.size(b.messages), Messages.size(a.messages))
-    };
-
-    private func _privateLatest(orderBy : Order) : Compare<PrivateEntry> = switch (orderBy) {
-        case (#ascending) func((_, a), (_, b)) = Int.compare(Channel.lastActive(a), Channel.lastActive(b));
-        case (#descending) func((_, a), (_, b)) = Int.compare(Channel.lastActive(b), Channel.lastActive(a))
+    private func _lastActive(orderBy : Order) : Compare<SharableChannel> = switch (orderBy) {
+        case (#ascending) func(a, b) = Int.compare(_timestamp(a.lastMessage), _timestamp(b.lastMessage));
+        case (#descending) func(a, b) = Int.compare(_timestamp(b.lastMessage), _timestamp(a.lastMessage))
     };
 
     /// PUBLIC ////// DECLARATIONS ////////////
 
+    public type Key = {
+        #Group : Nat;
+        #DM : Text
+    };
+
     public type Category = {
         #Public;
-        #Private
-    };
-    public type PrivateCategory = {
-        #DM;
-        #Public;
-        #Private
+        #Private;
+        #DM
     };
 
-    public type PublicFilter = {
+    public type Filter = {
         tier : ?Tier;
-        creator : ?Principal;
-        admin : ?Principal;
-        member : ?Principal;
-        category : PublicCategory;
+        category : ?Category;
         q : ?Text
     };
-    public type PublicSort = {
-        #recent;
-        #name;
-        #tier;
-        #members;
-        #messages
-    };
-
-    public type PrivateFilter = {
-        tier : ?Tier;
-        creator : ?Principal;
-        admin : ?Principal;
-        member : ?Principal;
-        category : PrivateCategory;
-        q : ?Text
-    };
-    public type PrivateSort = {
-        #latest;
-        #name;
-        #tier;
-        #members;
-        #messages
+    public type Sort = {
+        #lastActive
     };
 
     /// CHAT ////// CHANNELS ////////////
 
     private type Self = Channels;
 
-    public type Channels = Vector<?Channel>;
-    public type PublicSharable = [PublicSharableChannel];
-    public type PrivateSharable = [PrivateSharableChannel];
+    public type Channels = {
+        dms : DMs;
+        groups : Groups
+    };
+    public type Sharable = [SharableChannel];
 
-    public func init() : Self = Vector.new();
+    public func init() : Self = {
+        dms = DMs.init();
+        groups = Groups.init()
+    };
 
     /// PUBLIC ////// MODIFIERS ////////////
 
+    public func createDM(__ : Self, creator : Principal, to : Principal) : Text {
+        DMs.create(__.dms, creator, to)
+    };
+    public func createGroup(__ : Self, name : Text, disableLogs : Bool, isPublic : Bool, creator : Principal) : Nat {
+        Groups.create(__.groups, name, disableLogs, isPublic, creator)
+    };
+
     /// PUBLIC ////// ACCESSORS ////////////
 
-    public func channel(__ : Self, key : Text) : Channel = switch (Map.get(__, Key(key))) {
-        case (?channel) channel;
-        case (null) E.f(#NOT_EXISTED("Channel"), "Attempted to retrieve a non-existent channel with key " # key)
-    };
-    public func getChannelPublic(__ : Self, key : Text) : PublicSharableChannel {
-        Channel.getChannelPublic(channel(__, key), key)
-    };
-    public func getChannelsPublic(__ : Self, filter : PublicFilter, sort : Sorted<PublicSort>, getUserChannels : (Principal) -> List<Text>) : PublicSharable {
-        var filtered : ?[Entry] = null;
-        let toEntry : (Text) -> Entry = func(key) = (key, channel(__, key));
-        let toSharable : (Entry) -> SharableChannel = func(i, e) = Channel.toSharable(e, i);
-
-        switch (filter.creator) {
-            case (null) {};
-            case (?creator) filtered := ?List.toArrayMap<Text, Entry>(getUserChannels(creator), toEntry)
-        };
-        switch (filter.status, filtered) {
-            case (null, _) {};
-            case (?status, null) filtered := ?Map.getEntriesFilterMap<Text, Channel, Entry>(__, func(x) = switch (_status(status)(x)) { case (true) ?x; case (false) null });
-            case (?status, ?prevResult) filtered := ?Array.filter<Entry>(prevResult, _status(status))
-        };
-        switch (filter.capitalRaised, filtered) {
-            case (null, _) {};
-            case (?capitalRaised, null) filtered := ?Map.getEntriesFilterMap<Text, Channel, Entry>(__, func(x) = switch (_capitalRaised(capitalRaised)(x)) { case (true) ?x; case (false) null });
-            case (?capitalRaised, ?prevResult) filtered := ?Array.filter<Entry>(prevResult, _capitalRaised(capitalRaised))
+    public func getChannels(__ : Self, filter : Filter, sort : Sorted<Sort>, (caller, user) : (Principal, User), getUsername : (Principal) -> Text) : Sharable {
+        let toSharableDM : Principal -> SharableChannel = func(i) = DMs.getPrivateDM(__.dms, caller, (i, getUsername(i)));
+        let toSharableGroup : Nat -> SharableChannel = func(i) = Groups.getPrivateGroup(__.groups, i);
+        let toSharable : { #A : Principal; #B : Nat } -> SharableChannel = func(e) = switch (e) {
+            case (#A(i)) DMs.getPrivateDM(__.dms, caller, (i, getUsername(i)));
+            case (#B(i)) Groups.getPrivateGroup(__.groups, i)
         };
 
-        switch (sort.by, sort.order, filtered) {
-            case (#recent, #ascending, null) Map.getEntriesMap<Text, Channel, SharableChannel>(__, toSharable);
-            case (#recent, #descending, null) Map.getEntriesRevMap<Text, Channel, SharableChannel>(__, toSharable);
-            case (#icpPaid, order, null) Array.sort<SharableChannel>(Map.getEntriesMap<Text, Channel, SharableChannel>(__, toSharable), _icpPaidNormal(order));
-            case (#recent, #ascending, ?unsorted) Array.map<Entry, SharableChannel>(unsorted, toSharable);
-            case (#recent, #descending, ?unsorted) Array.mapRev<Entry, SharableChannel>(unsorted, toSharable);
-            case (#icpPaid, order, ?unsorted) Array.sort<SharableChannel>(Array.map<Entry, SharableChannel>(unsorted, toSharable), _icpPaidNormal(order))
-        }
-    };
-
-    public func getChannelPrivate(__ : Self, key : Text) : PrivateSharableChannel {
-        Channel.getChannelPrivate(channel(__, key), key)
-    };
-    public func getChannelsPrivate(__ : Self, filter : PrivateFilter, sort : Sorted<PrivateSort>, userChannels : List<Text>) : PrivateSharable {
-        let toEntry : (Text) -> Entry = func(key) = (key, channel(__, key));
-        let toSharable : (Entry) -> PrivateSharableChannel = func(i, e) = Channel.toPrivateSharable(e, i);
-
-        var filtered : [Entry] = List.toArrayMap<Text, Entry>(userChannels, toEntry);
-
-        switch (filter.status) {
-            case (null) {};
-            case (?status) filtered := Array.filter<Entry>(filtered, _status(status))
-        };
-        switch (filter.capitalRaised) {
-            case (null) {};
-            case (?capitalRaised) filtered := Array.filter<Entry>(filtered, _capitalRaised(capitalRaised))
-        };
-
-        switch (sort.by, sort.order) {
-            case (#recent, #ascending) Array.map<Entry, PrivateSharableChannel>(filtered, toSharable);
-            case (#recent, #descending) Array.mapRev<Entry, PrivateSharableChannel>(filtered, toSharable);
-            case (#icpPaid, order) Array.sort<PrivateSharableChannel>(Array.map<Entry, PrivateSharableChannel>(filtered, toSharable), _icpPaidPrivate(order))
+        switch (filter.category, filter.tier, filter.q) {
+            case (null, null, null) Array.sort(
+                Iter.toArrayMap<{ #A : Principal; #B : Nat }, SharableChannel>(
+                    Iter.concatTwo<Principal, Nat>(Set.vals(user.dms), Set.vals(user.groups)),
+                    toSharable,
+                ),
+                _lastActive(sort.order),
+            );
+            case (?category, null, null) switch (category) {
+                case (#DM) Array.sort(Set.toArrayMap<Principal, SharableChannel>(user.dms, toSharableDM), _lastActive(sort.order));
+                case (c) Array.sort(
+                    Set.toArrayFilterMap<Nat, SharableChannel>(
+                        user.groups,
+                        func(i) {
+                            let group = Groups.group(__.groups, i);
+                            switch (Group.isPrivate(group), c) {
+                                case (false, #Public) ?Group.toPrivateSharable(group, i);
+                                case (true, #Private) ?Group.toPrivateSharable(group, i);
+                                case (_, _) null
+                            }
+                        },
+                    ),
+                    _lastActive(sort.order),
+                )
+            };
+            case (null, ?tier, null) Array.sort(
+                Iter.toArrayFilterMap<{ #A : Principal; #B : Nat }, SharableChannel>(
+                    Iter.concatTwo<Principal, Nat>(Set.vals(user.dms), Set.vals(user.groups)),
+                    func(e) = switch (e) {
+                        case (#A(i)) {
+                            let dm = DMs.dm(__.dms, caller, i);
+                            switch (dm.tier == tier) {
+                                case (true) ?DM.toPrivateSharable(dm, caller, getUsername(i));
+                                case (false) null
+                            }
+                        };
+                        case (#B(i)) {
+                            let group = Groups.group(__.groups, i);
+                            switch (group.tier == tier) {
+                                case (true) ?Group.toPrivateSharable(group, i);
+                                case (false) null
+                            }
+                        }
+                    },
+                ),
+                _lastActive(sort.order),
+            );
+            case (null, null, ?q) Array.sort(
+                Iter.toArrayFilterMap<{ #A : Principal; #B : Nat }, SharableChannel>(
+                    Iter.concatTwo<Principal, Nat>(Set.vals(user.dms), Set.vals(user.groups)),
+                    func(i) = switch (i) {
+                        case (#A(i)) {
+                            let name = getUsername(i);
+                            switch (Text.contains(Text.toLowercase(name), #text(Text.toLowercase(q)))) {
+                                case (true) ?DMs.getPrivateDM(__.dms, caller, (i, name));
+                                case (false) null
+                            }
+                        };
+                        case (#B(i)) {
+                            let group = Groups.group(__.groups, i);
+                            switch (Text.contains(Text.toLowercase(group.name), #text(Text.toLowercase(q)))) {
+                                case (true) ?Group.toPrivateSharable(group, i);
+                                case (false) null
+                            }
+                        }
+                    },
+                ),
+                _lastActive(sort.order),
+            );
+            case (?category, ?tier, null) switch (category) {
+                case (#DM) Array.sort(
+                    Set.toArrayFilterMap<Principal, SharableChannel>(
+                        user.dms,
+                        func(i) {
+                            let dm = DMs.dm(__.dms, caller, i);
+                            switch (dm.tier == tier) {
+                                case (true) ?DM.toPrivateSharable(dm, caller, getUsername(i));
+                                case (false) null
+                            }
+                        },
+                    ),
+                    _lastActive(sort.order),
+                );
+                case (c) Array.sort(
+                    Set.toArrayFilterMap<Nat, SharableChannel>(
+                        user.groups,
+                        func(i) {
+                            let group = Groups.group(__.groups, i);
+                            switch (Group.isPrivate(group), c, group.tier == tier) {
+                                case (false, #Public, true) ?Group.toPrivateSharable(group, i);
+                                case (true, #Private, true) ?Group.toPrivateSharable(group, i);
+                                case (_, _, _) null
+                            }
+                        },
+                    ),
+                    _lastActive(sort.order),
+                )
+            };
+            case (?category, null, ?q) switch (category) {
+                case (#DM) Array.sort(
+                    Set.toArrayFilterMap<Principal, SharableChannel>(
+                        user.dms,
+                        func(i) {
+                            let name = getUsername(i);
+                            switch (Text.contains(Text.toLowercase(name), #text(Text.toLowercase(q)))) {
+                                case (true) ?DMs.getPrivateDM(__.dms, caller, (i, name));
+                                case (false) null
+                            }
+                        },
+                    ),
+                    _lastActive(sort.order),
+                );
+                case (c) Array.sort(
+                    Set.toArrayFilterMap<Nat, SharableChannel>(
+                        user.groups,
+                        func(i) {
+                            let group = Groups.group(__.groups, i);
+                            switch (Group.isPrivate(group), c, Text.contains(Text.toLowercase(group.name), #text(Text.toLowercase(q)))) {
+                                case (false, #Public, true) ?Group.toPrivateSharable(group, i);
+                                case (true, #Private, true) ?Group.toPrivateSharable(group, i);
+                                case (_, _, _) null
+                            }
+                        },
+                    ),
+                    _lastActive(sort.order),
+                )
+            };
+            case (null, ?tier, ?q) Array.sort(
+                Iter.toArrayFilterMap<{ #A : Principal; #B : Nat }, SharableChannel>(
+                    Iter.concatTwo<Principal, Nat>(Set.vals(user.dms), Set.vals(user.groups)),
+                    func(i) = switch (i) {
+                        case (#A(i)) {
+                            let dm = DMs.dm(__.dms, caller, i);
+                            switch (dm.tier == tier) {
+                                case (true) {
+                                    let name = getUsername(i);
+                                    switch (Text.contains(Text.toLowercase(name), #text(Text.toLowercase(q)))) {
+                                        case (true) ?DM.toPrivateSharable(dm, caller, name);
+                                        case (false) null
+                                    }
+                                };
+                                case (false) null
+                            }
+                        };
+                        case (#B(i)) {
+                            let group = Groups.getPrivateGroup(__.groups, i);
+                            switch (group.tier == tier) {
+                                case (true) switch (Text.contains(Text.toLowercase(group.name), #text(Text.toLowercase(q)))) {
+                                    case (true) ?group;
+                                    case (false) null
+                                };
+                                case (false) null
+                            }
+                        }
+                    },
+                ),
+                _lastActive(sort.order),
+            );
+            case (?category, ?tier, ?q) switch (category) {
+                case (#DM) Array.sort(
+                    Set.toArrayFilterMap<Principal, SharableChannel>(
+                        user.dms,
+                        func(i) {
+                            let dm = DMs.getPrivateDM(__.dms, caller, (i, getUsername(i)));
+                            switch (dm.tier == tier) {
+                                case (true) switch (Text.contains(Text.toLowercase(getUsername(i)), #text(Text.toLowercase(q)))) {
+                                    case (true) ?dm;
+                                    case (false) null
+                                };
+                                case (false) null
+                            }
+                        },
+                    ),
+                    _lastActive(sort.order),
+                );
+                case (c) Array.sort(
+                    Set.toArrayFilterMap<Nat, SharableChannel>(
+                        user.groups,
+                        func(i) {
+                            let group = Groups.getPrivateGroup(__.groups, i);
+                            switch (group.tier == tier) {
+                                case (true) switch (Text.contains(Text.toLowercase(group.name), #text(Text.toLowercase(q)))) {
+                                    case (true) ?group;
+                                    case (false) null
+                                };
+                                case (false) null
+                            }
+                        },
+                    ),
+                    _lastActive(sort.order),
+                )
+            }
         }
     }
+
 }

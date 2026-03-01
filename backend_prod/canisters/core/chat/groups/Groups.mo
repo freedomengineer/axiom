@@ -1,6 +1,4 @@
 import Group "Group";
-import Channel "../channels/Channel";
-import Message "../messages/Message";
 import Messages "../messages/Messages";
 import User "../users/User";
 
@@ -26,6 +24,7 @@ module {
     private type Group = Group.Group;
     private type GroupInfo = Group.Info;
     private type SharableGroup = Group.Sharable;
+    private type PrivateSharableGroup = Group.PrivateSharable;
     private type Messages = Messages.Messages;
     private type Tier = Messages.Tier;
     private type User = User.User;
@@ -73,7 +72,7 @@ module {
         creator : ?Principal;
         admin : ?Principal;
         member : ?Principal;
-        category : Category;
+        category : ?Category;
         q : ?Text
     };
     public type Sort = {
@@ -187,17 +186,36 @@ module {
             case (?tier, null) filtered := ?Vector.toEntriesFilterMap<Group, Entry>(
                 __,
                 func(i, e) = switch (callerUser) {
-                    case (null) switch (Group.isTier(e, tier) and not Group.isPrivate(e)) {
+                    case (null) switch (e.tier == tier and not Group.isPrivate(e)) {
                         case (true) ?(i, e);
                         case (false) null
                     };
-                    case (?(caller, _)) switch (Group.isTier(e, tier) and not Group.isPrivateNotMember(e, caller)) {
+                    case (?(caller, _)) switch (e.tier == tier and not Group.isPrivateNotMember(e, caller)) {
                         case (true) ?(i, e);
                         case (false) null
                     }
                 },
             );
-            case (?tier, ?prevResult) filtered := ?Array.filter<Entry>(prevResult, func((_, e)) = Group.isTier(e, tier))
+            case (?tier, ?prevResult) filtered := ?Array.filter<Entry>(prevResult, func((_, e)) = e.tier == tier)
+        };
+        switch (filter.category, filtered) {
+            case (null, _) {};
+            case (?category, null) filtered := ?Vector.toEntriesFilterMap<Group, Entry>(
+                __,
+                func(i, e) = switch (category, Group.isPrivate(e)) {
+                    case (#Private, true) toFilter(i, e);
+                    case (#Public, false) toFilter(i, e);
+                    case (_, _) null
+                },
+            );
+            case (?category, ?prevResult) filtered := ?Array.filter<Entry>(
+                prevResult,
+                func((_, e)) = switch (category, Group.isPrivate(e)) {
+                    case (#Private, true) true;
+                    case (#Public, false) true;
+                    case (_, _) false
+                },
+            )
         };
         switch (filter.q, filtered) {
             case (null, _) {};
@@ -217,15 +235,24 @@ module {
             }
         };
 
+        let default : ?[Entry] -> [Entry] = func(unsorted) = switch (unsorted) {
+            case (null) Vector.toEntriesFilterMap<Group, Entry>(__, toFilter);
+            case (?unsorted) unsorted
+        };
+
         switch (sort.by, sort.order, filtered) {
-            case (#lastCreated, #descending, null) Vector.toEntriesFilterMapRev<Entry, SharableGroup>(__, func(i, e) = switch (toFilter(i, e)) { case (?(_, e)) ?toSharable(i, e); case (null) null });
-            case (#lastCreated, #ascending, null) Vector.toEntriesFilterMap<Entry, SharableGroup>(__, func(i, e) = switch (toFilter(i, e)) { case (?(_, e)) ?toSharable(i, e); case (null) null });
+            case (#lastCreated, #descending, null) Vector.toEntriesFilterMapRev<Group, SharableGroup>(__, func(i, e) = switch (toFilter(i, e)) { case (?(_, e)) ?toSharable(i, e); case (null) null });
+            case (#lastCreated, #ascending, null) Vector.toEntriesFilterMap<Group, SharableGroup>(__, func(i, e) = switch (toFilter(i, e)) { case (?(_, e)) ?toSharable(i, e); case (null) null });
             case (#lastCreated, order, ?unsorted) Array.map<Entry, SharableGroup>(Array.sort(unsorted, _lastCreated(order)), toSharable);
-            case (#lastActive, order, ?unsorted) Array.map<Entry, SharableGroup>(Array.sort(unsorted, _lastActive(order)), toSharable);
-            case (#name, order, ?unsorted) Array.map<Entry, SharableGroup>(Array.sort(unsorted, _name(order)), toSharable);
-            case (#tier, order, ?unsorted) Array.map<Entry, SharableGroup>(Array.sort(unsorted, _tier(order)), toSharable);
-            case (#members, order, ?unsorted) Array.map<Entry, SharableGroup>(Array.sort(unsorted, _members(order)), toSharable);
-            case (#messages, order, ?unsorted) Array.map<Entry, SharableGroup>(Array.sort(unsorted, _messages(order)), toSharable)
+            case (#lastActive, order, unsorted) Array.map<Entry, SharableGroup>(Array.sort(default(unsorted), _lastActive(order)), toSharable);
+            case (#name, order, unsorted) Array.map<Entry, SharableGroup>(Array.sort(default(unsorted), _name(order)), toSharable);
+            case (#tier, order, unsorted) Array.map<Entry, SharableGroup>(Array.sort(default(unsorted), _tier(order)), toSharable);
+            case (#members, order, unsorted) Array.map<Entry, SharableGroup>(Array.sort(default(unsorted), _members(order)), toSharable);
+            case (#messages, order, unsorted) Array.map<Entry, SharableGroup>(Array.sort(default(unsorted), _messages(order)), toSharable)
         }
+    };
+
+    public func getPrivateGroup(__ : Self, id : Nat) : PrivateSharableGroup {
+        Group.toPrivateSharable(group(__, id), id)
     }
 }

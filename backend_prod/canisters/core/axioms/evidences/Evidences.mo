@@ -263,23 +263,17 @@ module {
         };
         switch (filter.q, filtered) {
             case (null, _) {};
-            case (?pattern, null) {
-                let patternIns = #text(Text.toLowercase(pattern));
-                filtered := ?Vector.toEntriesFilterMap<?Evidence, Entry>(
-                    __,
-                    func(i, e) = switch (e) {
-                        case (?e) switch (Evidence.containsPattern(e, patternIns)) {
-                            case (true) toFilter(i, e);
-                            case (false) null
-                        };
-                        case (null) null
-                    },
-                )
-            };
-            case (?pattern, ?prev) {
-                let patternIns = #text(Text.toLowercase(pattern));
-                filtered := ?Array.filter<Entry>(prev, func(_, e) = Evidence.containsPattern(e, patternIns))
-            }
+            case (?pattern, null) filtered := ?Vector.toEntriesFilterMap<?Evidence, Entry>(
+                __,
+                func(i, e) = switch (e) {
+                    case (?e) switch (Evidence.containsPattern(e, #text(Text.toLowercase(pattern)))) {
+                        case (true) toFilter(i, e);
+                        case (false) null
+                    };
+                    case (null) null
+                },
+            );
+            case (?pattern, ?prev) filtered := ?Array.filter<Entry>(prev, func(_, e) = Evidence.containsPattern(e, #text(Text.toLowercase(pattern))))
         };
 
         let default : ?[Entry] -> [Entry] = func(unsorted) = switch (unsorted) {

@@ -19,10 +19,9 @@ module {
 
     /// PUBLIC ////// DECLARATIONS ////////////
 
-    public type PrivateSharable = {
-        name : ?Text;
-        tier : Tier;
-        lastMessage : SharableMessage
+    public type Key = {
+        #DM : Principal;
+        #Group : Nat
     };
 
     /// CHAT ////// CHANNEL ////////////
@@ -34,10 +33,17 @@ module {
         #Group : Group
     };
 
+    public type Sharable = {
+        id : Key;
+        name : Text;
+        tier : Tier;
+        lastMessage : SharableMessage
+    };
+
     /// PUBLIC ////// MODIFIERS ////////////
 
     public func setTier(__ : Self, tier : Tier) {
-        switch (__ : Self) {
+        switch (__) {
             case (#DM(dm)) dm.tier := tier;
             case (#Group(group)) group.tier := tier
         }
@@ -51,9 +57,13 @@ module {
 
     /// PUBLIC ////// ACCESSORS ////////////
 
+    public func isTier(__ : Self, tier : Tier) : Bool = switch (__) {
+        case (#DM(dm)) dm.tier == tier;
+        case (#Group(group)) group.tier == tier
+    };
     public func lastActive(__ : Self) : Int = Messages.lastActive(messages(__));
 
-    public func messages(__ : Self) : Messages = switch (__ : Self) {
+    public func messages(__ : Self) : Messages = switch (__) {
         case (#DM(dm)) dm.messages;
         case (#Group(group)) group.messages
     };

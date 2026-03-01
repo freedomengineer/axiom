@@ -1,6 +1,4 @@
 import Group "Group";
-import Channel "../channels/Channel";
-import Message "../messages/Message";
 import Messages "../messages/Messages";
 import User "../users/User";
 
@@ -26,6 +24,7 @@ module {
     private type Group = Group.Group;
     private type GroupInfo = Group.Info;
     private type SharableGroup = Group.Sharable;
+    private type PrivateSharableGroup = Group.PrivateSharable;
     private type Messages = Messages.Messages;
     private type Tier = Messages.Tier;
     private type User = User.User;
@@ -187,17 +186,17 @@ module {
             case (?tier, null) filtered := ?Vector.toEntriesFilterMap<Group, Entry>(
                 __,
                 func(i, e) = switch (callerUser) {
-                    case (null) switch (Group.isTier(e, tier) and not Group.isPrivate(e)) {
+                    case (null) switch (e.tier == tier and not Group.isPrivate(e)) {
                         case (true) ?(i, e);
                         case (false) null
                     };
-                    case (?(caller, _)) switch (Group.isTier(e, tier) and not Group.isPrivateNotMember(e, caller)) {
+                    case (?(caller, _)) switch (e.tier == tier and not Group.isPrivateNotMember(e, caller)) {
                         case (true) ?(i, e);
                         case (false) null
                     }
                 },
             );
-            case (?tier, ?prevResult) filtered := ?Array.filter<Entry>(prevResult, func((_, e)) = Group.isTier(e, tier))
+            case (?tier, ?prevResult) filtered := ?Array.filter<Entry>(prevResult, func((_, e)) = e.tier == tier)
         };
         switch (filter.category, filtered) {
             case (null, _) {};
@@ -251,5 +250,9 @@ module {
             case (#members, order, unsorted) Array.map<Entry, SharableGroup>(Array.sort(default(unsorted), _members(order)), toSharable);
             case (#messages, order, unsorted) Array.map<Entry, SharableGroup>(Array.sort(default(unsorted), _messages(order)), toSharable)
         }
+    };
+
+    public func getPrivateGroup(__ : Self, id : Nat) : PrivateSharableGroup {
+        Group.toPrivateSharable(group(__, id), id)
     }
 }

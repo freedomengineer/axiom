@@ -184,6 +184,23 @@ module {
         }
     };
 
+    public func concatTwo<A, B>(xs : Iter<A>, ys : Iter<B>) : Iter<{ #A : A; #B : B }> {
+        var cur = xs;
+        var cur2 = ys;
+
+        object {
+            public func next() : ?{ #A : A; #B : B } = switch (cur.next()) {
+                case (?next) ?(#A(next));
+                case (null) {
+                    switch (cur2.next()) {
+                        case (?next) ?(#B(next));
+                        case (null) null
+                    }
+                }
+            }
+        }
+    };
+
     public func parallel<A, B>(xs : Iter<A>, ys : Iter<B>) : Iter<(?A, ?B)> {
         object {
             public func next() : ?(?A, ?B) {

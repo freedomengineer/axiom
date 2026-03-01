@@ -137,20 +137,14 @@ module {
         };
         switch (filter.q, filtered) {
             case (null, _) {};
-            case (?pattern, null) {
-                let patternIns = #text(Text.toLowercase(pattern));
-                filtered := ?Tree.getEntriesFilterMap<Text, Field, Entry>(
-                    __,
-                    func(i, e) = switch (Field.containsPattern(e, patternIns)) {
-                        case (true) ?(i, e);
-                        case (false) null
-                    },
-                )
-            };
-            case (?pattern, ?prev) {
-                let patternIns = #text(Text.toLowercase(pattern));
-                filtered := ?Array.filter<Entry>(prev, func(_, e) = Field.containsPattern(e, patternIns))
-            }
+            case (?pattern, null) filtered := ?Tree.getEntriesFilterMap<Text, Field, Entry>(
+                __,
+                func(i, e) = switch (Field.containsPattern(e, #text(Text.toLowercase(pattern)))) {
+                    case (true) ?(i, e);
+                    case (false) null
+                },
+            );
+            case (?pattern, ?prev) filtered := ?Array.filter<Entry>(prev, func(_, e) = Field.containsPattern(e, #text(Text.toLowercase(pattern))))
         };
 
         switch (sort.by, sort.order, filtered) {

@@ -7,6 +7,7 @@ import List "../../../library/List";
 import Set "../../../library/Set";
 
 import Text "mo:base/Text";
+import Time "mo:base/Time";
 
 module {
     /// PRIVATE ////// DECLARATIONS ////////////
@@ -23,6 +24,10 @@ module {
 
     /// PUBLIC ////// DECLARATIONS ////////////
 
+    public type Key = {
+        #DM : Principal;
+        #Group : Nat
+    };
     public type PublicGroupSharable = {
         id : Nat;
         name : Text;
@@ -78,8 +83,8 @@ module {
         #JoinedPrivate : PublicGroupSharable
     };
     public type PrivateSharable = {
-        id : Nat;
-        name : ?Text;
+        id : Key;
+        name : Text;
         tier : Tier;
         lastMessage : SharableMessage
     };
@@ -138,7 +143,6 @@ module {
 
     /// PUBLIC ////// ACCESSORS ////////////
 
-    public func isTier(__ : Self, tier : Tier) : Bool = __.tier == tier;
     public func isPrivate(__ : Self) : Bool = switch (__.banned) {
         case (null) false;
         case (?_) true
@@ -216,8 +220,8 @@ module {
         }
     };
     public func toPrivateSharable(__ : Self, id : Nat) : PrivateSharable = {
-        id;
-        name = ?__.name;
+        id = #Group(id);
+        name = __.name;
         tier = __.tier;
         lastMessage = Messages.getLastMessage(__.messages)
     }
