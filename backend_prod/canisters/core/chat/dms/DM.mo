@@ -1,6 +1,8 @@
 import Message "../messages/Message";
 import Messages "../messages/Messages";
 
+import E "../../../common/Errors";
+
 import Base "../../../library/Base";
 import Iter "../../../library/Iter";
 import List "../../../library/List";
@@ -18,9 +20,11 @@ module {
     private type Set<T> = Set.Set<T>;
 
     private type SharableMessage = Message.Sharable;
-    private type Messages = Messages.Messages;
+    private type Messages = Messages.Messages<()>;
     private type SharableMessages = Messages.Sharable;
     private type Tier = Messages.Tier;
+    private type Direction = Messages.Direction;
+    private type Cursor = Messages.Cursor;
 
     /// PUBLIC ////// DECLARATIONS ////////////
 
@@ -85,7 +89,23 @@ module {
         creationDate = Time.now()
     };
 
+    /// PUBLIC ////// MODIFIERS ////////////
+
+    public func setTier(__ : Self, tier : Tier) {
+        __.tier := tier
+    };
+    public func deleteFirstMessages(__ : Self, limit : Nat) {
+        if (limit % 32 != 0) E.f(#NOT_VALID("Limit"), "Number of messages to delete must be a multiple of 32");
+
+        Messages.deleteFirstChunks(__.messages, limit / 32)
+    };
+
     /// PUBLIC ////// ACCESSORS ////////////
+
+    public func isTier(__ : Self, tier : Tier) : Bool = __.tier == tier;
+    public func lastActive(__ : Self) : Int = Messages.lastActive(__.messages);
+
+    public func pullMessages(__ : Self, direction : Direction, cursor : ?Cursor) : [SharableMessage] = Messages.pull(__.messages, direction, cursor);
 
     public func getInfo(__ : Self, id : Principal) : Info = {
         id = #DM(id);

@@ -3,7 +3,12 @@ import Messages "../messages/Messages";
 
 import E "../../../common/Errors";
 
+import Array "../../../library/Array";
+import Base "../../../library/Base";
+import Iter "../../../library/Iter";
 import List "../../../library/List";
+import Map "../../../library/Map";
+import MultiDimArray "../../../library/MultiDimArray";
 import Set "../../../library/Set";
 
 import Text "mo:base/Text";
@@ -14,15 +19,45 @@ module {
 
     private type List<T> = List.List<T>;
     private type Set<T> = Set.Set<T>;
+    private type Map<K, V> = Map.Map<K, V>;
+    private type Iter<T> = Iter.Iter<T>;
 
     private type SharableMessage = Message.Sharable;
-    private type Messages = Messages.Messages;
+    private type Messages = Messages.Messages<Nat>;
     private type SharableMessages = Messages.Sharable;
     private type Tier = Messages.Tier;
+    private type Direction = Messages.Direction;
+    private type Cursor = Messages.Cursor;
+    private type Version = Message.Version;
+    private type EncryptedDEK = Message.EncryptedDEK;
+    private type PlainDEK = Message.PlainDEK;
+    private type DEK = Message.DEK;
+    private type IV = Message.IV;
+    private type Signature = Message.Signature;
 
     private let Val = Set.PrincipalVal;
+    private let PrincipalKey = Map.PrincipalKey;
+    private let NatKey = Map.NatKey;
 
     /// PUBLIC ////// DECLARATIONS ////////////
+
+    public type MemberDEKs = {
+        deks : Map<Version, DEK>;
+        // Only last key matters since it's used to encrypt new messages, previous keys are only for decrypting old messages which can be requested to renew if failed
+        var lastRotationSignature : ?Signature
+    };
+    public type MemberDEKsSharable = {
+        deks : [(Version, DEK)];
+        lastRotationSignature : ?Signature
+    };
+    public type MemberDEKsParams = {
+        deks : [(Version, DEK)];
+        lastRotationSignature : Signature
+    };
+    public type MemberEncryptedDEKParams = {
+        dek : (Version, EncryptedDEK);
+        lastRotationSignature : Signature
+    };
 
     public type Key = {
         #DM : Principal;
@@ -34,10 +69,11 @@ module {
         tier : Tier;
         creator : Principal;
         admins : [Principal];
+        creationDate : Int;
+
         members : [Principal];
         messagesCount : (Nat, Nat);
-        lastActive : Int;
-        creationDate : Int
+        lastActive : Int
     };
     public type PrivateGroupSharable = {
         id : Nat;
@@ -52,13 +88,18 @@ module {
         id : Nat;
         name : Text;
         tier : Tier;
-        disableLogs : Bool;
         creator : Principal;
         admins : [Principal];
+        creationDate : Int;
+
         members : [Principal];
-        banned : [Principal];
         messagesCount : (Nat, Nat);
-        creationDate : Int
+        lastActive : Int;
+
+        disableLogs : Bool;
+        banned : [Principal];
+        versionRange : (Nat, Nat);
+        callerDeks : ?MemberDEKsSharable
     };
 
     /// CHAT ////// GROUP ////////////
@@ -71,9 +112,10 @@ module {
         var disableLogs : Bool;
         creator : Principal;
         admins : Set<Principal>;
-        members : Set<Principal>;
+        members : Map<Principal, MemberDEKs>;
         var banned : ?Set<Principal>; // only not null for public channels
         messages : Messages;
+        var keyVersion : Version;
         creationDate : Int
     };
 
@@ -86,32 +128,250 @@ module {
         id : Key;
         name : Text;
         tier : Tier;
-        lastMessage : SharableMessage
+        lastMessage : SharableMessage;
+        keyVersion : Version;
+        callerDeks : MemberDEKsSharable
     };
 
-    public func init(name : Text, disableLogs : Bool, isPublic : Bool, creator : Principal, getNow : () -> Int) : Self = {
-        var tier = #L32;
-        var name;
-        var disableLogs;
-        creator;
-        admins = Set.make(Val(creator));
-        members = Set.make(Val(creator));
-        var banned = switch (isPublic) {
-            case (true) ?Set.new<Principal>();
-            case (false) null
+    public func initPublic(name : Text, disableLogs : Bool, creator : Principal, admins : [Principal], members : [Principal], plainDek : PlainDEK, getNow : () -> Int) : Self {
+        let adminSet : Set<Principal> = Set.fromArray(Array.map<Principal, Set.Val<Principal>>(admins, func(x) = Val(x)));
+        let memberSet : Set<Principal> = Set.fromArray(Array.map<Principal, Set.Val<Principal>>(members, func(x) = Val(x)));
+
+        if (Set.excludes(adminSet, Val(creator))) E.f(#NOT_VALID("Admin"), "Creator is not in the admins list");
+        if (Set.excludes(memberSet, Val(creator))) E.f(#NOT_VALID("Member"), "Creator is not in the members list");
+
+        for (admin in Set.vals(adminSet)) {
+            if (Set.excludes(memberSet, Val(admin))) E.f(#NOT_VALID("Admin"), "Admin " # debug_show admin # " is not in the members list")
         };
-        messages = Messages.init();
-        creationDate = getNow()
+
+        let memberMap : Map<Principal, MemberDEKs> = Map.fromEntries(
+            Array.map<Principal, (Map.Key<Principal>, MemberDEKs)>(
+                members,
+                func(x) = (PrincipalKey(x), { deks = Map.make<Version, DEK>(NatKey(1), #Plain(plainDek)); var lastRotationSignature = null }),
+            )
+        );
+
+        {
+            var tier = #L32;
+            var name;
+            var disableLogs;
+            creator;
+            admins = adminSet;
+            members = memberMap;
+            var banned = ?Set.new<Principal>();
+            var keyVersion = 1;
+            messages = Messages.init();
+            creationDate = getNow()
+        }
+    };
+    public func initPrivate(name : Text, disableLogs : Bool, creator : Principal, admins : [Principal], members : [(Principal, MemberEncryptedDEKParams)], getNow : () -> Int) : Self {
+        let adminSet : Set<Principal> = Set.fromArray(Array.map<Principal, Set.Val<Principal>>(admins, func(x) = Val(x)));
+        let memberMap : Map<Principal, MemberDEKs> = Map.fromEntries(
+            Array.map<(Principal, MemberEncryptedDEKParams), (Map.Key<Principal>, MemberDEKs)>(
+                members,
+                func((i, e)) = (PrincipalKey(i), { deks = Map.make<Version, DEK>(NatKey(1), #Encrypted(e.dek.1)); var lastRotationSignature = ?e.lastRotationSignature }),
+            )
+        );
+
+        if (Set.excludes(adminSet, Val(creator))) E.f(#NOT_VALID("Admin"), "Creator is not in the admins list");
+        if (Map.excludes(memberMap, PrincipalKey(creator))) E.f(#NOT_VALID("Member"), "Creator is not in the members list");
+
+        for (admin in Set.vals(adminSet)) {
+            if (Map.excludes(memberMap, PrincipalKey(admin))) E.f(#NOT_VALID("Admin"), "Admin " # debug_show admin # " is not in the members list")
+        };
+
+        {
+            var tier = #L32;
+            var name;
+            var disableLogs;
+            creator;
+            admins = adminSet;
+            members = memberMap;
+            var banned = ?Set.new<Principal>();
+            var keyVersion = 1;
+            messages = Messages.init();
+            creationDate = getNow()
+        }
     };
 
     /// PUBLIC ////// MODIFIERS ////////////
 
-    public func addMember(__ : Self, member : Principal) {
-        Set.put(__.members, Val(member))
+    public func setTier(__ : Self, tier : Tier) {
+        __.tier := tier
     };
-    public func removeMember(__ : Self, member : Principal) {
-        Set.delete(__.members, Val(member))
+    public func deleteFirstMessages(__ : Self, limit : Nat) {
+        if (limit % 32 != 0) E.f(#NOT_VALID("Limit"), "Number of messages to delete must be a multiple of 32");
+
+        let messagesCount : Nat = Messages.size(__.messages);
+        if (limit > messagesCount) E.f(#NOT_VALID("Limit"), "Number of messages to delete is greater than the number of messages in the channel");
+        if (messagesCount == 0) E.f(#NOT_VALID("Messages"), "No messages to delete");
+
+        let firstVersion : Version = Message.keyVersion(Messages.firstMessage(__.messages));
+        let lastVersion : Version = Message.keyVersion(Messages.lastMessage(__.messages));
+
+        Messages.deleteFirstChunks(__.messages, limit / 32);
+
+        let firstVersionAfter : Version = switch (MultiDimArray.isEmpty(__.messages)) {
+            case (true) lastVersion;
+            case (false) Message.keyVersion(Messages.firstMessage(__.messages))
+        };
+
+        if (firstVersionAfter > firstVersion) {
+            for ((member, memberDeks) in Map.entries(__.members)) {
+                for (version in Iter.range(firstVersion, firstVersionAfter - 1)) {
+                    Map.delete(memberDeks.deks, NatKey(version))
+                }
+            }
+        }
     };
+
+    public func publicGroup(__ : Self, newDek : PlainDEK) {
+        if (not isPrivate(__)) E.f(#NOT_VALID("Group"), "This is already a public group");
+
+        let lastVersion : Version = switch (MultiDimArray.isEmpty(__.messages)) {
+            case (true) 1;
+            case (false) Message.keyVersion(Messages.lastMessage(__.messages))
+        };
+        __.keyVersion += lastVersion + 1; // if no new messages since last rotation, just override
+
+        for ((member, memberDeks) in Map.entries(__.members)) {
+            Map.put(memberDeks.deks, NatKey(__.keyVersion), #Plain(newDek))
+        };
+        __.banned := ?Set.new<Principal>()
+    };
+    public func privateGroup(__ : Self, membersDek : [(Principal, MemberEncryptedDEKParams)]) {
+        if (isPrivate(__)) E.f(#NOT_VALID("Group"), "This is already a private group");
+
+        let membersNewDek : Map<Principal, MemberEncryptedDEKParams> = Map.fromEntries(
+            Array.map<(Principal, MemberEncryptedDEKParams), (Map.Key<Principal>, MemberEncryptedDEKParams)>(membersDek, func((principal, dek)) = (PrincipalKey(principal), dek))
+        );
+        if (Map.size(membersNewDek) != Map.size(__.members)) E.f(#NOT_VALID("Member"), "New DEKs for all existing members' DEKs must be provided");
+
+        let lastVersion : Version = switch (MultiDimArray.isEmpty(__.messages)) {
+            case (true) 1;
+            case (false) Message.keyVersion(Messages.lastMessage(__.messages))
+        };
+        __.keyVersion += lastVersion + 1; // if no new messages since last rotation, just override
+
+        for ((member, dek) in Map.entries(membersNewDek)) {
+            switch (Map.get(__.members, PrincipalKey(member)), dek.dek.0 == __.keyVersion) {
+                case (_, false) E.f(#NOT_VALID("Member"), "Next DEK version for member " # debug_show member # " is " # debug_show __.keyVersion # ", not " # debug_show dek.dek);
+                case (null, _) E.f(#NOT_EXISTED("Member"), "Member to rotate " # debug_show member # " does not exist");
+                case (?memberDeks, true) {
+                    memberDeks.lastRotationSignature := ?dek.lastRotationSignature;
+                    Map.put(memberDeks.deks, NatKey(__.keyVersion), #Encrypted(dek.dek.1))
+                }
+            }
+        };
+        __.banned := null
+    };
+
+    public func addMembersPublic(__ : Self, members : [Principal]) : Set<Principal> {
+        let membersToAdd : Set<Principal> = Set.new();
+        for (member in members.vals()) {
+            if (Map.includes(__.members, PrincipalKey(member))) E.f(#ALREADY_EXISTED("Member"), "Member " # debug_show member # " already exists");
+            Set.put(membersToAdd, Val(member))
+        };
+
+        let plainDeks : Map<Version, DEK> = Map.new();
+        for (dek in Map.entries(Map.unwrap(__.members, PrincipalKey(__.creator)).deks)) {
+            switch (dek) {
+                case (_, #Encrypted(_)) {};
+                case (version, plainDek) Map.put(plainDeks, NatKey(version), plainDek)
+            }
+        };
+        for (member in Set.vals(membersToAdd)) {
+            Map.put<Principal, MemberDEKs>(__.members, PrincipalKey(member), { deks = plainDeks; var lastRotationSignature = null })
+        };
+        membersToAdd
+    };
+    public func addMembersPrivate(__ : Self, membersDeks : [(Principal, MemberDEKsParams)]) : Map<Principal, MemberDEKs> {
+        let (firstVersion, lastVersion) : (Version, Version) = switch (MultiDimArray.isEmpty(__.messages)) {
+            case (true)(1, 1);
+            case (false)(Message.keyVersion(Messages.firstMessage(__.messages)), Message.keyVersion(Messages.lastMessage(__.messages)))
+        };
+        let versionCount : Nat = lastVersion - firstVersion + 1;
+        let membersToAdd : Map<Principal, MemberDEKs> = Map.new();
+
+        for ((member, memberDeks) in membersDeks.vals()) {
+            if (Map.includes(__.members, PrincipalKey(member))) E.f(#ALREADY_EXISTED("Member"), "Member " # debug_show member # " already exists");
+            if (Array.size(memberDeks.deks) != versionCount) E.f(#NOT_VALID("Member"), "Number of DEKs for member " # debug_show member # " must be equal to the number of versions available so far");
+
+            let deks : Map<Version, DEK> = Map.fromEntries(
+                Array.map<(Version, DEK), (Map.Key<Version>, DEK)>(memberDeks.deks, func((version, dek)) = (NatKey(version), dek))
+            );
+            for (version in Iter.range(firstVersion, lastVersion)) {
+                if (not Map.includes(deks, NatKey(version))) E.f(#NOT_EXISTED("Member DEK"), "DEK version " # debug_show version # " of member " # debug_show member # " not found")
+            };
+
+            Map.put<Principal, MemberDEKs>(membersToAdd, PrincipalKey(member), { deks; var lastRotationSignature = ?memberDeks.lastRotationSignature })
+        };
+        for ((member, memberDeks) in Map.entries(membersToAdd)) {
+            Map.put(__.members, PrincipalKey(member), memberDeks)
+        };
+        membersToAdd
+    };
+
+    public func removeMembersPublic(__ : Self, members : [Principal]) : Set<Principal> {
+        let membersToRemove : Set<Principal> = Set.fromArray(
+            Array.map<Principal, Set.Val<Principal>>(members, func(x) = Val(x))
+        );
+        for (member in Set.vals(membersToRemove)) {
+            Map.delete(__.members, PrincipalKey(member))
+        };
+        membersToRemove
+    };
+    public func removeMembersPrivate(__ : Self, members : [Principal], membersDek : [(Principal, MemberEncryptedDEKParams)]) : Set<Principal> {
+        let membersToRemove : Set<Principal> = Set.fromArray(
+            Array.map<Principal, Set.Val<Principal>>(members, func(x) = Val(x))
+        );
+        let membersNewDek : Map<Principal, MemberEncryptedDEKParams> = Map.fromEntries(
+            Array.map<(Principal, MemberEncryptedDEKParams), (Map.Key<Principal>, MemberEncryptedDEKParams)>(membersDek, func((principal, dek)) = (PrincipalKey(principal), dek))
+        );
+        if (Map.size(membersNewDek) != (Map.size(__.members) - Set.size(membersToRemove))) E.f(#NOT_VALID("Member"), "New DEKs for all existing members' DEKs must be provided");
+
+        let lastVersion : Version = switch (MultiDimArray.isEmpty(__.messages)) {
+            case (true) 1;
+            case (false) Message.keyVersion(Messages.lastMessage(__.messages))
+        };
+        __.keyVersion += lastVersion + 1; // if no new messages since last rotation, just override
+
+        for (member in Set.vals(membersToRemove)) {
+            if (not Map.includes(__.members, PrincipalKey(member))) E.f(#NOT_VALID("Member"), "Member to remove " # debug_show member # " does not exist");
+            Map.delete(__.members, PrincipalKey(member))
+        };
+
+        for ((member, dek) in Map.entries(membersNewDek)) {
+            switch (Map.get(__.members, PrincipalKey(member)), dek.dek.0 == __.keyVersion) {
+                case (_, false) E.f(#NOT_VALID("Member"), "Next DEK version for member " # debug_show member # " is " # debug_show __.keyVersion # ", not " # debug_show dek.dek);
+                case (null, _) E.f(#NOT_EXISTED("Member"), "Member to rotate " # debug_show member # " does not exist");
+                case (?memberDeks, true) {
+                    memberDeks.lastRotationSignature := ?dek.lastRotationSignature;
+                    Map.put(memberDeks.deks, NatKey(__.keyVersion), #Encrypted(dek.dek.1))
+                }
+            }
+        };
+
+        membersToRemove
+    };
+
+    // Accept that banning only preventing members from sending messages, they can still read further messages
+    public func banMembers(__ : Self, members : [Principal]) : Set<Principal> {
+        switch (__.banned) {
+            case (null) E.f(#NOT_VALID("Group"), "This is not a public group");
+            case (?banned) {
+                let membersToBan : Set<Principal> = Set.fromArray(
+                    Array.map<Principal, Set.Val<Principal>>(members, func(x) = Val(x))
+                );
+                for (member in Set.vals(membersToBan)) {
+                    Set.put(banned, Val(member));
+                    Map.delete(__.members, PrincipalKey(member))
+                };
+                membersToBan
+            }
+        }
+    };
+
     public func addAdmin(__ : Self, admin : Principal) {
         Set.put(__.admins, Val(admin))
     };
@@ -143,17 +403,22 @@ module {
 
     /// PUBLIC ////// ACCESSORS ////////////
 
+    public func isTier(__ : Self, tier : Tier) : Bool = __.tier == tier;
+    public func lastActive(__ : Self) : Int = Messages.lastActive(__.messages);
+
+    public func pullMessages(__ : Self, direction : Direction, cursor : ?Cursor) : [SharableMessage] = Messages.pull(__.messages, direction, cursor);
+
     public func isPrivate(__ : Self) : Bool = switch (__.banned) {
-        case (null) false;
-        case (?_) true
+        case (null) true;
+        case (?_) false
     };
     public func isPrivateNotMember(__ : Self, member : Principal) : Bool = switch (__.banned) {
-        case (null) false;
-        case (?_) Set.excludes(__.members, Val(member))
+        case (null) Map.excludes(__.members, PrincipalKey(member));
+        case (?_) false
     };
     public func isCreator(__ : Self, creator : Principal) : Bool = __.creator == creator;
     public func isAdmin(__ : Self, admin : Principal) : Bool = Set.includes(__.admins, Val(admin));
-    public func isMember(__ : Self, member : Principal) : Bool = Set.includes(__.members, Val(member));
+    public func isMember(__ : Self, member : Principal) : Bool = Map.includes(__.members, PrincipalKey(member));
     public func isBanned(__ : Self, member : Principal) : Bool = switch (__.banned) {
         case (null) false;
         case (?banned) Set.includes(banned, Val(member))
@@ -161,35 +426,19 @@ module {
 
     public func containsPattern(__ : Self, pattern : { #text : Text }) : Bool = Text.contains(Text.toLowercase(__.name), pattern);
 
-    public func getInfo(__ : Self, id : Nat) : Info = {
-        id = id;
-        name = __.name;
-        tier = __.tier;
-        disableLogs = __.disableLogs;
-        creator = __.creator;
-        admins = Set.toArray(__.admins);
-        members = Set.toArray(__.members);
-        banned = switch (__.banned) {
-            case (null)[];
-            case (?banned) Set.toArray(banned)
-        };
-        messagesCount = (Messages.size(__.messages), Messages.messagesLimitPerTier(__.tier));
-        creationDate = __.creationDate
-    };
-
     public func toSharable(__ : Self, id : Nat, caller : ?Principal) : Sharable = switch (__.banned, caller) {
-        case (null, _) #Public({
+        case (?_, _) #Public({
             id;
             name = __.name;
             tier = __.tier;
             creator = __.creator;
             admins = Set.toArray(__.admins);
-            members = Set.toArray(__.members);
+            members = Map.getKeys(__.members);
             messagesCount = (Messages.size(__.messages), Messages.messagesLimitPerTier(__.tier));
             lastActive = Messages.lastActive(__.messages);
             creationDate = __.creationDate
         });
-        case (?_, null) #Private({
+        case (null, null) #Private({
             id;
             name = __.name;
             tier = __.tier;
@@ -197,14 +446,14 @@ module {
             admins = Set.toArray(__.admins);
             creationDate = __.creationDate
         });
-        case (?_, ?caller) switch (Set.includes(__.members, Val(caller))) {
+        case (null, ?caller) switch (Map.includes(__.members, PrincipalKey(caller))) {
             case (true) #JoinedPrivate({
                 id;
                 name = __.name;
                 tier = __.tier;
                 creator = __.creator;
                 admins = Set.toArray(__.admins);
-                members = Set.toArray(__.members);
+                members = Map.getKeys(__.members);
                 messagesCount = (Messages.size(__.messages), Messages.messagesLimitPerTier(__.tier));
                 lastActive = Messages.lastActive(__.messages);
                 creationDate = __.creationDate
@@ -219,10 +468,45 @@ module {
             })
         }
     };
-    public func toPrivateSharable(__ : Self, id : Nat) : PrivateSharable = {
+    public func toPrivateSharable(__ : Self, id : Nat, caller : Principal) : PrivateSharable = {
         id = #Group(id);
         name = __.name;
         tier = __.tier;
-        lastMessage = Messages.getLastMessage(__.messages)
+        lastMessage = Messages.getLastMessage(__.messages);
+        keyVersion = __.keyVersion;
+        callerDeks = switch (Map.get(__.members, PrincipalKey(caller))) {
+            case (?memberDeks)({
+                deks = Map.getEntries(memberDeks.deks);
+                lastRotationSignature = memberDeks.lastRotationSignature
+            });
+            case (null)({ deks = []; lastRotationSignature = null })
+        }
+    };
+    public func getInfo(__ : Self, id : Nat, caller : Principal) : Info = switch (isPrivateNotMember(__, caller)) {
+        case (true) E.f(#NOT_VALID("Caller"), "Caller is not a member of the private group");
+        case (false)({
+            id = id;
+            name = __.name;
+            tier = __.tier;
+            creator = __.creator;
+            creationDate = __.creationDate;
+            disableLogs = __.disableLogs;
+            admins = Set.toArray(__.admins);
+            members = Map.getKeys(__.members);
+            banned = switch (__.banned) {
+                case (null)[];
+                case (?banned) Set.toArray(banned)
+            };
+            messagesCount = (Messages.size(__.messages), Messages.messagesLimitPerTier(__.tier));
+            lastActive = Messages.lastActive(__.messages);
+            versionRange = (Message.keyVersion(Messages.firstMessage(__.messages)), Message.keyVersion(Messages.lastMessage(__.messages)));
+            callerDeks = switch (Map.get(__.members, PrincipalKey(caller))) {
+                case (?memberDeks) ?{
+                    deks = Map.getEntries(memberDeks.deks);
+                    lastRotationSignature = memberDeks.lastRotationSignature
+                };
+                case (null) ?{ deks = []; lastRotationSignature = null }
+            }
+        })
     }
 }

@@ -3,6 +3,7 @@
 ## Dependencies
 
 
+- Attributes: `User`, `Users`, `Channel`, `Channels`
 - Interfaces: `IndicatorInterface`
 - Commons: `C`
 - Libraries: `Configs`, `Iter`

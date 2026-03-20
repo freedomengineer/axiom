@@ -37,10 +37,12 @@ module {
     private type Groups = Groups.Groups;
     private type DM = DM.DM;
     private type DMs = DMs.DMs;
-    private type Messages = Messages.Messages;
+    private type Messages<T> = Messages.Messages<T>;
     private type SharableMessage = Message.Sharable;
     private type Tier = Messages.Tier;
     private type User = User.User;
+    private type PlainDEK = Message.PlainDEK;
+    private type MemberEncryptedDEKParams = Group.MemberEncryptedDEKParams;
 
     private type Compare<T> = Base.Compare<T>;
     private type Sorted<T> = Base.Sort<T>;
@@ -99,38 +101,43 @@ module {
     public func createDM(__ : Self, creator : Principal, to : Principal) : Text {
         DMs.create(__.dms, creator, to)
     };
-    public func createGroup(__ : Self, name : Text, disableLogs : Bool, isPublic : Bool, creator : Principal) : Nat {
-        Groups.create(__.groups, name, disableLogs, isPublic, creator)
+    public func createPublicGroup(__ : Self, name : Text, disableLogs : Bool, creator : Principal, admins : [Principal], members : [Principal], plainDek : PlainDEK) : Nat {
+        Groups.createPublic(__.groups, name, disableLogs, creator, admins, members, plainDek)
+    };
+    public func createPrivateGroup(__ : Self, name : Text, disableLogs : Bool, creator : Principal, admins : [Principal], members : [(Principal, MemberEncryptedDEKParams)]) : Nat {
+        Groups.createPrivate(__.groups, name, disableLogs, creator, admins, members)
     };
 
     /// PUBLIC ////// ACCESSORS ////////////
 
     public func getChannels(__ : Self, filter : Filter, sort : Sorted<Sort>, (caller, user) : (Principal, User), getUsername : (Principal) -> Text) : Sharable {
-        let toSharableDM : Principal -> SharableChannel = func(i) = DMs.getPrivateDM(__.dms, caller, (i, getUsername(i)));
-        let toSharableGroup : Nat -> SharableChannel = func(i) = Groups.getPrivateGroup(__.groups, i);
-        let toSharable : { #A : Principal; #B : Nat } -> SharableChannel = func(e) = switch (e) {
-            case (#A(i)) DMs.getPrivateDM(__.dms, caller, (i, getUsername(i)));
-            case (#B(i)) Groups.getPrivateGroup(__.groups, i)
-        };
-
         switch (filter.category, filter.tier, filter.q) {
             case (null, null, null) Array.sort(
                 Iter.toArrayMap<{ #A : Principal; #B : Nat }, SharableChannel>(
                     Iter.concatTwo<Principal, Nat>(Set.vals(user.dms), Set.vals(user.groups)),
-                    toSharable,
+                    func(e) = switch (e) {
+                        case (#A(i)) DMs.getPrivateDM(__.dms, caller, (i, getUsername(i)));
+                        case (#B(i)) Groups.getPrivateGroup(__.groups, i, caller)
+                    },
                 ),
                 _lastActive(sort.order),
             );
             case (?category, null, null) switch (category) {
-                case (#DM) Array.sort(Set.toArrayMap<Principal, SharableChannel>(user.dms, toSharableDM), _lastActive(sort.order));
+                case (#DM) Array.sort(
+                    Set.toArrayMap<Principal, SharableChannel>(
+                        user.dms,
+                        func(i) = DMs.getPrivateDM(__.dms, caller, (i, getUsername(i))),
+                    ),
+                    _lastActive(sort.order),
+                );
                 case (c) Array.sort(
                     Set.toArrayFilterMap<Nat, SharableChannel>(
                         user.groups,
                         func(i) {
                             let group = Groups.group(__.groups, i);
                             switch (Group.isPrivate(group), c) {
-                                case (false, #Public) ?Group.toPrivateSharable(group, i);
-                                case (true, #Private) ?Group.toPrivateSharable(group, i);
+                                case (false, #Public) ?Group.toPrivateSharable(group, i, caller);
+                                case (true, #Private) ?Group.toPrivateSharable(group, i, caller);
                                 case (_, _) null
                             }
                         },
@@ -152,7 +159,7 @@ module {
                         case (#B(i)) {
                             let group = Groups.group(__.groups, i);
                             switch (group.tier == tier) {
-                                case (true) ?Group.toPrivateSharable(group, i);
+                                case (true) ?Group.toPrivateSharable(group, i, caller);
                                 case (false) null
                             }
                         }
@@ -174,7 +181,7 @@ module {
                         case (#B(i)) {
                             let group = Groups.group(__.groups, i);
                             switch (Text.contains(Text.toLowercase(group.name), #text(Text.toLowercase(q)))) {
-                                case (true) ?Group.toPrivateSharable(group, i);
+                                case (true) ?Group.toPrivateSharable(group, i, caller);
                                 case (false) null
                             }
                         }
@@ -202,8 +209,8 @@ module {
                         func(i) {
                             let group = Groups.group(__.groups, i);
                             switch (Group.isPrivate(group), c, group.tier == tier) {
-                                case (false, #Public, true) ?Group.toPrivateSharable(group, i);
-                                case (true, #Private, true) ?Group.toPrivateSharable(group, i);
+                                case (false, #Public, true) ?Group.toPrivateSharable(group, i, caller);
+                                case (true, #Private, true) ?Group.toPrivateSharable(group, i, caller);
                                 case (_, _, _) null
                             }
                         },
@@ -231,8 +238,8 @@ module {
                         func(i) {
                             let group = Groups.group(__.groups, i);
                             switch (Group.isPrivate(group), c, Text.contains(Text.toLowercase(group.name), #text(Text.toLowercase(q)))) {
-                                case (false, #Public, true) ?Group.toPrivateSharable(group, i);
-                                case (true, #Private, true) ?Group.toPrivateSharable(group, i);
+                                case (false, #Public, true) ?Group.toPrivateSharable(group, i, caller);
+                                case (true, #Private, true) ?Group.toPrivateSharable(group, i, caller);
                                 case (_, _, _) null
                             }
                         },
@@ -258,7 +265,7 @@ module {
                             }
                         };
                         case (#B(i)) {
-                            let group = Groups.getPrivateGroup(__.groups, i);
+                            let group = Groups.getPrivateGroup(__.groups, i, caller);
                             switch (group.tier == tier) {
                                 case (true) switch (Text.contains(Text.toLowercase(group.name), #text(Text.toLowercase(q)))) {
                                     case (true) ?group;
@@ -292,13 +299,17 @@ module {
                     Set.toArrayFilterMap<Nat, SharableChannel>(
                         user.groups,
                         func(i) {
-                            let group = Groups.getPrivateGroup(__.groups, i);
-                            switch (group.tier == tier) {
-                                case (true) switch (Text.contains(Text.toLowercase(group.name), #text(Text.toLowercase(q)))) {
-                                    case (true) ?group;
+                            let group = Groups.group(__.groups, i);
+                            switch (group.tier == tier, Group.isPrivate(group), c) {
+                                case (true, false, #Public) switch (Text.contains(Text.toLowercase(group.name), #text(Text.toLowercase(q)))) {
+                                    case (true) ?Group.toPrivateSharable(group, i, caller);
                                     case (false) null
                                 };
-                                case (false) null
+                                case (true, true, #Private) switch (Text.contains(Text.toLowercase(group.name), #text(Text.toLowercase(q)))) {
+                                    case (true) ?Group.toPrivateSharable(group, i, caller);
+                                    case (false) null
+                                };
+                                case (_, _, _) null
                             }
                         },
                     ),

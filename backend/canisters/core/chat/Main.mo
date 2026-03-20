@@ -1,3 +1,8 @@
+import User "users/User";
+import Users "users/Users";
+import Channel "channels/Channel";
+import Channels "channels/Channels";
+
 import IndicatorInterface "../../periphery/indicator/Interface";
 
 import C "../../common/Constants";
@@ -20,6 +25,9 @@ shared ({ caller = indicator }) persistent actor class Chat() = this {
     ////// TEMPORARY IMPLEMENTATION ////////////
 
     private transient let Indicator : IndicatorInterface.Indicator = actor (Principal.toText(indicator));
+
+    private stable let users : Users.Users = Users.init();
+    private stable let channels : Channels.Channels = Channels.init();
 
     private stable let configs : Configs.Configs = Configs.make([]);
 

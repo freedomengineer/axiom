@@ -257,6 +257,34 @@
     }
   ],
   "imports": {
+    "User": {
+      "origin": "import User \"users/User\";",
+      "name": "User",
+      "category": "attribute",
+      "relativePath": "users/User",
+      "depth": 2
+    },
+    "Users": {
+      "origin": "import Users \"users/Users\";",
+      "name": "Users",
+      "category": "attribute",
+      "relativePath": "users/Users",
+      "depth": 2
+    },
+    "Channel": {
+      "origin": "import Channel \"channels/Channel\";",
+      "name": "Channel",
+      "category": "attribute",
+      "relativePath": "channels/Channel",
+      "depth": 2
+    },
+    "Channels": {
+      "origin": "import Channels \"channels/Channels\";",
+      "name": "Channels",
+      "category": "attribute",
+      "relativePath": "channels/Channels",
+      "depth": 2
+    },
     "IndicatorInterface": {
       "origin": "import IndicatorInterface \"../../periphery/indicator/Interface\";",
       "name": "IndicatorInterface",
@@ -301,6 +329,10 @@
     }
   },
   "actorDependencies": [
+    "User",
+    "Users",
+    "Channel",
+    "Channels",
     "IndicatorInterface",
     "C",
     "Configs",

@@ -1,4 +1,5 @@
 import Group "Group";
+import Message "../messages/Message";
 import Messages "../messages/Messages";
 import User "../users/User";
 
@@ -7,6 +8,7 @@ import E "../../../common/Errors";
 import Array "../../../library/Array";
 import Base "../../../library/Base";
 import List "../../../library/List";
+import Map "../../../library/Map";
 import Set "../../../library/Set";
 import Vector "../../../library/Vector";
 
@@ -20,14 +22,17 @@ module {
     private type List<T> = List.List<T>;
     private type Vector<T> = Vector.Vector<T>;
     private type Set<T> = Set.Set<T>;
+    private type Map<K, V> = Map.Map<K, V>;
 
     private type Group = Group.Group;
     private type GroupInfo = Group.Info;
     private type SharableGroup = Group.Sharable;
     private type PrivateSharableGroup = Group.PrivateSharable;
-    private type Messages = Messages.Messages;
+    private type Messages = Messages.Messages<Nat>;
     private type Tier = Messages.Tier;
     private type User = User.User;
+    private type PlainDEK = Message.PlainDEK;
+    private type MemberEncryptedDEKParams = Group.MemberEncryptedDEKParams;
 
     private type Compare<T> = Base.Compare<T>;
     private type Sorted<T> = Base.Sort<T>;
@@ -52,8 +57,8 @@ module {
         case (#descending) func((_, a), (_, b)) = Nat.compare(Messages.messagesLimitPerTier(b.tier), Messages.messagesLimitPerTier(a.tier))
     };
     private func _members(orderBy : Order) : Compare<Entry> = switch (orderBy) {
-        case (#ascending) func((_, a), (_, b)) = Nat.compare(Set.size(a.members), Set.size(b.members));
-        case (#descending) func((_, a), (_, b)) = Nat.compare(Set.size(b.members), Set.size(a.members))
+        case (#ascending) func((_, a), (_, b)) = Nat.compare(Map.size(a.members), Map.size(b.members));
+        case (#descending) func((_, a), (_, b)) = Nat.compare(Map.size(b.members), Map.size(a.members))
     };
     private func _messages(orderBy : Order) : Compare<Entry> = switch (orderBy) {
         case (#ascending) func((_, a), (_, b)) = Nat.compare(Messages.size(a.messages), Messages.size(b.messages));
@@ -95,11 +100,14 @@ module {
 
     /// PUBLIC ////// MODIFIERS ////////////
 
-    public func create(__ : Self, name : Text, disableLogs : Bool, isPublic : Bool, creator : Principal, getNow : () -> Int) : Nat {
+    public func createPublic(__ : Self, name : Text, disableLogs : Bool, creator : Principal, admins : [Principal], members : [Principal], plainDek : PlainDEK, getNow : () -> Int) : Nat {
         let id : Nat = nextId(__);
-
-        Vector.add(__, Group.init(name, disableLogs, isPublic, creator, getNow));
-
+        Vector.add(__, Group.initPublic(name, disableLogs, creator, admins, members, plainDek, getNow));
+        id
+    };
+    public func createPrivate(__ : Self, name : Text, disableLogs : Bool, creator : Principal, admins : [Principal], members : [(Principal, MemberEncryptedDEKParams)], getNow : () -> Int) : Nat {
+        let id : Nat = nextId(__);
+        Vector.add(__, Group.initPrivate(name, disableLogs, creator, admins, members, getNow));
         id
     };
 
@@ -252,7 +260,7 @@ module {
         }
     };
 
-    public func getPrivateGroup(__ : Self, id : Nat) : PrivateSharableGroup {
-        Group.toPrivateSharable(group(__, id), id)
+    public func getPrivateGroup(__ : Self, id : Nat, caller : Principal) : PrivateSharableGroup {
+        Group.toPrivateSharable(group(__, id), id, caller)
     }
 }
