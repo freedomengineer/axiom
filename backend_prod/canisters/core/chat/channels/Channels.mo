@@ -37,12 +37,14 @@ module {
     private type Groups = Groups.Groups;
     private type DM = DM.DM;
     private type DMs = DMs.DMs;
-    private type Messages<T> = Messages.Messages<T>;
+    private type Messages = Messages.Messages;
     private type SharableMessage = Message.Sharable;
     private type Tier = Messages.Tier;
     private type User = User.User;
     private type PlainDEK = Message.PlainDEK;
-    private type MemberEncryptedDEKParams = Group.MemberEncryptedDEKParams;
+    private type EncryptedDEK = Message.EncryptedDEK;
+    private type Signature = Message.Signature;
+    private type MemberEncryptedDEK = Message.MemberEncryptedDEK;
 
     private type Compare<T> = Base.Compare<T>;
     private type Sorted<T> = Base.Sort<T>;
@@ -98,17 +100,20 @@ module {
 
     /// PUBLIC ////// MODIFIERS ////////////
 
-    public func createDM(__ : Self, creator : Principal, to : Principal) : Text {
+    public func createDM(__ : Self, creator : (Principal, EncryptedDEK), to : (Principal, EncryptedDEK)) : Text {
         DMs.create(__.dms, creator, to)
     };
     public func createPublicGroup(__ : Self, name : Text, disableLogs : Bool, creator : Principal, admins : [Principal], members : [Principal], plainDek : PlainDEK) : Nat {
         Groups.createPublic(__.groups, name, disableLogs, creator, admins, members, plainDek)
     };
-    public func createPrivateGroup(__ : Self, name : Text, disableLogs : Bool, creator : Principal, admins : [Principal], members : [(Principal, MemberEncryptedDEKParams)]) : Nat {
+    public func createPrivateGroup(__ : Self, name : Text, disableLogs : Bool, creator : Principal, admins : [Principal], members : [(Principal, EncryptedDEK)]) : Nat {
         Groups.createPrivate(__.groups, name, disableLogs, creator, admins, members)
     };
 
     /// PUBLIC ////// ACCESSORS ////////////
+
+    public func dm(__ : Self, a : Principal, b : Principal) : DM = DMs.dm(__.dms, a, b);
+    public func group(__ : Self, id : Nat) : Group = Groups.group(__.groups, id);
 
     public func getChannels(__ : Self, filter : Filter, sort : Sorted<Sort>, (caller, user) : (Principal, User), getUsername : (Principal) -> Text) : Sharable {
         switch (filter.category, filter.tier, filter.q) {
@@ -116,7 +121,7 @@ module {
                 Iter.toArrayMap<{ #A : Principal; #B : Nat }, SharableChannel>(
                     Iter.concatTwo<Principal, Nat>(Set.vals(user.dms), Set.vals(user.groups)),
                     func(e) = switch (e) {
-                        case (#A(i)) DMs.getPrivateDM(__.dms, caller, (i, getUsername(i)));
+                        case (#A(i)) DMs.getPrivateDM(__.dms, (i, getUsername(i)), caller);
                         case (#B(i)) Groups.getPrivateGroup(__.groups, i, caller)
                     },
                 ),
@@ -126,7 +131,7 @@ module {
                 case (#DM) Array.sort(
                     Set.toArrayMap<Principal, SharableChannel>(
                         user.dms,
-                        func(i) = DMs.getPrivateDM(__.dms, caller, (i, getUsername(i))),
+                        func(i) = DMs.getPrivateDM(__.dms, (i, getUsername(i)), caller),
                     ),
                     _lastActive(sort.order),
                 );
@@ -152,7 +157,7 @@ module {
                         case (#A(i)) {
                             let dm = DMs.dm(__.dms, caller, i);
                             switch (dm.tier == tier) {
-                                case (true) ?DM.toPrivateSharable(dm, caller, getUsername(i));
+                                case (true) ?DM.toPrivateSharable(dm, (i, getUsername(i)), caller);
                                 case (false) null
                             }
                         };
@@ -174,7 +179,7 @@ module {
                         case (#A(i)) {
                             let name = getUsername(i);
                             switch (Text.contains(Text.toLowercase(name), #text(Text.toLowercase(q)))) {
-                                case (true) ?DMs.getPrivateDM(__.dms, caller, (i, name));
+                                case (true) ?DMs.getPrivateDM(__.dms, (i, name), caller);
                                 case (false) null
                             }
                         };
@@ -196,7 +201,7 @@ module {
                         func(i) {
                             let dm = DMs.dm(__.dms, caller, i);
                             switch (dm.tier == tier) {
-                                case (true) ?DM.toPrivateSharable(dm, caller, getUsername(i));
+                                case (true) ?DM.toPrivateSharable(dm, (i, getUsername(i)), caller);
                                 case (false) null
                             }
                         },
@@ -225,7 +230,7 @@ module {
                         func(i) {
                             let name = getUsername(i);
                             switch (Text.contains(Text.toLowercase(name), #text(Text.toLowercase(q)))) {
-                                case (true) ?DMs.getPrivateDM(__.dms, caller, (i, name));
+                                case (true) ?DMs.getPrivateDM(__.dms, (i, name), caller);
                                 case (false) null
                             }
                         },
@@ -257,7 +262,7 @@ module {
                                 case (true) {
                                     let name = getUsername(i);
                                     switch (Text.contains(Text.toLowercase(name), #text(Text.toLowercase(q)))) {
-                                        case (true) ?DM.toPrivateSharable(dm, caller, name);
+                                        case (true) ?DM.toPrivateSharable(dm, (i, name), caller);
                                         case (false) null
                                     }
                                 };
@@ -283,7 +288,7 @@ module {
                     Set.toArrayFilterMap<Principal, SharableChannel>(
                         user.dms,
                         func(i) {
-                            let dm = DMs.getPrivateDM(__.dms, caller, (i, getUsername(i)));
+                            let dm = DMs.getPrivateDM(__.dms, (i, getUsername(i)), caller);
                             switch (dm.tier == tier) {
                                 case (true) switch (Text.contains(Text.toLowercase(getUsername(i)), #text(Text.toLowercase(q)))) {
                                     case (true) ?dm;

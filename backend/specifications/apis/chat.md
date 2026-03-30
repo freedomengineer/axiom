@@ -3,11 +3,11 @@
 ## Dependencies
 
 
-- Attributes: `User`, `Users`, `Channel`, `Channels`
+- Attributes: `User`, `Users`, `Channel`, `Channels`, `DM`, `DMs`, `Group`, `Groups`, `Message`, `Messages`
 - Interfaces: `IndicatorInterface`
 - Commons: `C`
-- Libraries: `Configs`, `Iter`
-- Bases: `Principal`, `Time`
+- Libraries: `Configs`, `Iter`, `Management`
+- Bases: `Principal`, `Text`, `Time`
 ## Modifiers
 
 ### 1. `shiftToMidnight(days)` returns `()`
@@ -74,12 +74,100 @@
 }
 ```
 
-### 5. `register(principal, initialAmount)` returns `()`
+### 5. `register(principal, username)` returns `()`
 
 #### Arguments:
 
 ```json
-{"principal": "Principal", "initialAmount": "Nat"}
+{"principal": "Principal", "username": "Text"}
+```
+
+### 6. `setUsername(principal, username)` returns `()`
+
+#### Arguments:
+
+```json
+{"principal": "Principal", "username": "Text"}
+```
+
+### 7. `createDM(ownedDek, to)` returns `Text`
+
+#### Arguments:
+
+```json
+{"ownedDek": "Blob", "to": ["Principal", "Blob"]}
+```
+
+#### Returns:
+```json
+"Text"
+```
+
+### 8. `createPublicGroup(plainDek, name, disableLogs, admins, members)` returns `Nat`
+
+#### Arguments:
+
+```json
+{"plainDek": "Blob", "name": "Text", "disableLogs": "Bool", "admins": ["Principal"], "members": ["Principal"]}
+```
+
+#### Returns:
+```json
+"Nat"
+```
+
+### 9. `createPrivateGroup(name, disableLogs, admins, members)` returns `Nat`
+
+#### Arguments:
+
+```json
+{"name": "Text", "disableLogs": "Bool", "admins": ["Principal"], "members": [["Principal", "Blob"]]}
+```
+
+#### Returns:
+```json
+"Nat"
+```
+
+### 10. `joinPublicGroup(id)` returns `Message.MemberDEKsSharable`
+
+#### Arguments:
+
+```json
+{"id": "Nat"}
+```
+
+#### Returns:
+```json
+[["Nat", {"#ENCRYPTED": "Blob", "#PLAIN": "Blob"}]]
+```
+
+### 11. `leavePublicGroup(id)` returns `()`
+
+#### Arguments:
+
+```json
+{"id": "Nat"}
+```
+
+### 12. `getIbeMasterPublicKey()` returns `Blob`
+
+#### Returns:
+```json
+"Blob"
+```
+
+### 13. `getMyVetKey(transportPublicKey)` returns `Blob`
+
+#### Arguments:
+
+```json
+{"transportPublicKey": "Blob"}
+```
+
+#### Returns:
+```json
+"Blob"
 ```
 
 ## Accessors

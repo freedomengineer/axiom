@@ -92,6 +92,24 @@ module {
         snapshot_id : Blob
     };
 
+    public type VetKDCurve = { #bls12_381_g2 };
+    public type VetKDKeyId = { curve : VetKDCurve; name : Text };
+
+    public type VetKDPublicKeyArgs = {
+        canister_id : ?Principal;
+        context : Blob;
+        key_id : VetKDKeyId
+    };
+    public type VetKDPublicKeyResult = { public_key : Blob };
+
+    public type VetKDDeriveKeyArgs = {
+        input : Blob;
+        context : Blob;
+        transport_public_key : Blob;
+        key_id : VetKDKeyId
+    };
+    public type VetKDDeriveKeyResult = { encrypted_key : Blob };
+
     public type ActorManagement = actor {
         create_canister : CreateCanisterArgs -> async CreateCanisterResult;
         install_code : InstallCodeArgs -> async ();
@@ -105,7 +123,10 @@ module {
         take_canister_snapshot : TakeCanisterSnapshotArgs -> async TakeCanisterSnapshotResult;
         load_canister_snapshot : (LoadCanisterSnapshotArgs) -> async ();
         list_canister_snapshots : ListCanisterSnapshotsArgs -> async ListCanisterSnapshotsResult;
-        delete_canister_snapshot : DeleteCanisterSnapshotArgs -> async ()
+        delete_canister_snapshot : DeleteCanisterSnapshotArgs -> async ();
+
+        vetkd_public_key : VetKDPublicKeyArgs -> async VetKDPublicKeyResult;
+        vetkd_derive_key : VetKDDeriveKeyArgs -> async VetKDDeriveKeyResult
     };
 
     public let IC0 : ActorManagement = actor ("aaaaa-aa")

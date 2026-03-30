@@ -1,6 +1,7 @@
 import E "../../../common/Errors";
 
 import List "../../../library/List";
+import Map "../../../library/Map";
 import Set "../../../library/Set";
 
 import Time "mo:base/Time";
@@ -10,6 +11,7 @@ module {
 
     private type List<T> = List.List<T>;
     private type Set<T> = Set.Set<T>;
+    private type Map<K, V> = Map.Map<K, V>;
 
     private let Val = Set.PrincipalVal;
 
@@ -29,6 +31,9 @@ module {
         #Encrypted : EncryptedDEK;
         #Plain : PlainDEK
     };
+    public type MemberDEKs = Map<Version, DEK>;
+    public type MemberDEKsSharable = [(Version, DEK)];
+    public type MemberEncryptedDEK = (Version, EncryptedDEK);
 
     public type Content = {
         #EncryptedText : EncryptedText;
@@ -39,17 +44,17 @@ module {
         }
     };
 
-    public type Log<T> = {
+    public type Log = {
         encryptedText : EncryptedText;
         iv : IV;
-        keyVersion : T; // Nat/null - Key rotation (when kicking members)
+        keyVersion : Nat; // Key rotation (when kicking members)
         timestamp : Int
     };
-    public type Sendable<T> = {
+    public type Sendable = {
         sender : Principal;
         content : Content;
         iv : IV;
-        keyVersion : T; // Nat/null - Key rotation (when kicking members)
+        keyVersion : Nat; // Key rotation (when kicking members)
         repliedTo : ?Nat;
         var replies : List<Nat>;
         var reactions : List<(Text, Set<Principal>)>;
@@ -73,18 +78,18 @@ module {
 
     /// CHAT ////// MESSAGE ////////////
 
-    private type Self<T> = Message<T>;
+    private type Self = Message;
 
-    public type Message<T> = {
-        #Sendable : Sendable<T>;
-        #Log : Log<T>
+    public type Message = {
+        #Sendable : Sendable;
+        #Log : Log
     };
     public type Sharable = {
         #Sendable : SendableSharable;
         #Log : LogSharable
     };
 
-    public func initSendable<T>(sender : Principal, content : Content, iv : IV, keyVersion : T, repliedTo : ?Nat) : Self<T> = #Sendable({
+    public func initSendable(sender : Principal, content : Content, iv : IV, keyVersion : Nat, repliedTo : ?Nat) : Self = #Sendable({
         sender;
         content;
         iv;
@@ -94,7 +99,7 @@ module {
         var reactions = List.nil();
         timestamp = Time.now()
     });
-    public func initLog<T>(encryptedText : EncryptedText, iv : IV, keyVersion : T) : Self<T> = #Log({
+    public func initLog(encryptedText : EncryptedText, iv : IV, keyVersion : Nat) : Self = #Log({
         encryptedText;
         iv;
         keyVersion;
@@ -103,43 +108,43 @@ module {
 
     /// PUBLIC ////// MODIFIERS ////////////
 
-    public func addReaction<T>(__ : Self<T>, reaction : Text, reactor : Principal) {
-        let m : Sendable<T> = sendable(__);
+    public func addReaction(__ : Self, reaction : Text, reactor : Principal) {
+        let m : Sendable = sendable(__);
         switch (List.find<(Text, Set<Principal>)>(m.reactions, func((key, _)) = key == reaction)) {
             case (?(_, reactors)) Set.put(reactors, Val(reactor));
             case (null) m.reactions := List.push((reaction, Set.make(Val(reactor))), m.reactions)
         }
     };
-    public func removeReaction<T>(__ : Self<T>, reaction : Text, reactor : Principal) {
-        let m : Sendable<T> = sendable(__);
+    public func removeReaction(__ : Self, reaction : Text, reactor : Principal) {
+        let m : Sendable = sendable(__);
         switch (List.find<(Text, Set<Principal>)>(m.reactions, func((key, _)) = key == reaction)) {
             case (?(_, reactors)) Set.delete(reactors, Val(reactor));
             case (null) E.f(#NOT_EXISTED("Reaction"), "Reaction " # reaction # " not found")
         }
     };
 
-    public func addReply<T>(__ : Self<T>, replyId : Nat) {
-        let m : Sendable<T> = sendable(__);
+    public func addReply(__ : Self, replyId : Nat) {
+        let m : Sendable = sendable(__);
         m.replies := List.push(replyId, m.replies)
     };
 
     /// PUBLIC ////// ACCESSORS ////////////
 
-    public func timestamp<T>(__ : Self<T>) : Int = switch (__) {
+    public func timestamp(__ : Self) : Int = switch (__) {
         case (#Sendable({ timestamp })) timestamp;
         case (#Log({ timestamp })) timestamp
     };
-    public func keyVersion<T>(__ : Self<T>) : T = switch (__) {
+    public func keyVersion(__ : Self) : Nat = switch (__) {
         case (#Sendable({ keyVersion })) keyVersion;
         case (#Log({ keyVersion })) keyVersion
     };
 
-    public func sendable<T>(__ : Self<T>) : Sendable<T> = switch (__) {
+    public func sendable(__ : Self) : Sendable = switch (__) {
         case (#Sendable(m)) m;
         case (#Log(_)) E.f(#NOT_VALID("Message"), "Expected a sendable message, got a log message")
     };
 
-    public func toSharable<T>(__ : Self<T>, id : Nat) : Sharable = switch (__) {
+    public func toSharable(__ : Self, id : Nat) : Sharable = switch (__) {
         case (#Sendable(m)) #Sendable({
             m with id;
             replies = List.toArray(m.replies);

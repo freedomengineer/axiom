@@ -14,6 +14,7 @@ import TreasuryInterface "../../core/treasury/Interface";
 import AffiliateInterface "../../core/affiliate/Interface";
 import SalesInterface "../../core/sales/Interface";
 import EscrowInterface "../../core/escrow/Interface";
+import ChatInterface "../../core/chat/Interface";
 import AxiomsInterface "../../core/axioms/Interface";
 import DAOInterface "../../periphery/dao/Interface";
 import IndicatorInterface "../../periphery/indicator/Interface";
@@ -152,6 +153,7 @@ shared ({ caller = indicator }) persistent actor class Facade() = this {
         let Affiliate : AffiliateInterface.Affiliate = await Indicator.Affiliate();
         let ICPUSD : ICPUSDInterface.ICPUSD = await Indicator.ICPUSD();
         let Split : SplitInterface.Split = await Indicator.Split();
+        let Chat : ChatInterface.Chat = await Indicator.Chat();
         let Axioms : AxiomsInterface.Axioms = await Indicator.Axioms();
         let DAO : DAOInterface.DAO = await Indicator.DAO();
 
@@ -159,6 +161,7 @@ shared ({ caller = indicator }) persistent actor class Facade() = this {
         await Affiliate.expectUserNotFound(caller);
         await DAO.expectUserNotFound(caller);
         await Axioms.expectUserNotFound(caller);
+        await Chat.expectUserNotFound(caller);
 
         let adjustedUsdPaid : Nat = await Sales.expectPackageFound(capitalRaised);
         let icpPaid : Nat = await ICPUSD.exchange(false, adjustedUsdPaid);
@@ -171,6 +174,7 @@ shared ({ caller = indicator }) persistent actor class Facade() = this {
         await Escrow.register(caller, buriedAmount);
         await DAO.register(caller);
         await Axioms.register(caller);
+        await Chat.register(caller, lowercasedUsername);
 
         Users.register(users, caller, lowercasedUsername, capitalRaised)
     };
@@ -218,6 +222,9 @@ shared ({ caller = indicator }) persistent actor class Facade() = this {
 
         let Treasury : TreasuryInterface.Treasury = await Indicator.Treasury();
         await Treasury.delegatedClaim(#DAO, caller, UPDATE_USERNAME_FEE.val);
+
+        let Chat : ChatInterface.Chat = await Indicator.Chat();
+        await Chat.setUsername(caller, lowercasedUsername);
 
         User.updateUsername(user, lowercasedUsername)
     };

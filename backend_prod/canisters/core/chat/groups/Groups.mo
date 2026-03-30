@@ -28,11 +28,12 @@ module {
     private type GroupInfo = Group.Info;
     private type SharableGroup = Group.Sharable;
     private type PrivateSharableGroup = Group.PrivateSharable;
-    private type Messages = Messages.Messages<Nat>;
+    private type Messages = Messages.Messages;
     private type Tier = Messages.Tier;
     private type User = User.User;
     private type PlainDEK = Message.PlainDEK;
-    private type MemberEncryptedDEKParams = Group.MemberEncryptedDEKParams;
+    private type EncryptedDEK = Message.EncryptedDEK;
+    private type MemberEncryptedDEK = Message.MemberEncryptedDEK;
 
     private type Compare<T> = Base.Compare<T>;
     private type Sorted<T> = Base.Sort<T>;
@@ -105,7 +106,7 @@ module {
         Vector.add(__, Group.initPublic(name, disableLogs, creator, admins, members, plainDek));
         id
     };
-    public func createPrivate(__ : Self, name : Text, disableLogs : Bool, creator : Principal, admins : [Principal], members : [(Principal, MemberEncryptedDEKParams)]) : Nat {
+    public func createPrivate(__ : Self, name : Text, disableLogs : Bool, creator : Principal, admins : [Principal], members : [(Principal, EncryptedDEK)]) : Nat {
         let id : Nat = nextId(__);
         Vector.add(__, Group.initPrivate(name, disableLogs, creator, admins, members));
         id

@@ -12,7 +12,7 @@ module {
     private type List<T> = List.List<T>;
     private type MultiDimArray<T> = MultiDimArray.MultiDimArray<T>;
 
-    private type Message<T> = Message.Message<T>;
+    private type Message = Message.Message;
     private type SharableMessage = Message.Sharable;
     private type Content = Message.Content;
 
@@ -45,16 +45,16 @@ module {
 
     /// CHAT ////// MESSAGES ////////////
 
-    private type Self<T> = Messages<T>;
+    private type Self = Messages;
 
-    public type Messages<T> = MultiDimArray<Message<T>>;
+    public type Messages = MultiDimArray<Message>;
     public type Sharable = [SharableMessage];
 
-    public func init<T>() : Self<T> = MultiDimArray.new<Message<T>>([32, 16, 8, 4]);
+    public func init() : Self = MultiDimArray.new<Message>([32, 16, 8, 4]);
 
     /// PUBLIC ////// MODIFIERS ////////////
 
-    public func pushSendable<T>(__ : Self<T>, tier : Tier, sender : Principal, content : Content, iv : Blob, keyVersion : T, repliedTo : ?Nat) : Nat {
+    public func pushSendable(__ : Self, tier : Tier, sender : Principal, content : Content, iv : Blob, keyVersion : Nat, repliedTo : ?Nat) : Nat {
         let id : Nat = nextId(__);
 
         if (id >= messagesLimitPerTier(tier)) E.f(#NOT_VALID("Tier"), "Attempted to push a message with limit reached (" # debug_show (id) # " messages for tier " # debug_show (tier) # ")");
@@ -69,30 +69,30 @@ module {
         id
     };
 
-    public func deleteFirstChunks<T>(__ : Self<T>, chunks : Nat) {
+    public func deleteFirstChunks(__ : Self, chunks : Nat) {
         MultiDimArray.deleteFirstChunks(__, chunks)
     };
 
     /// PUBLIC ////// ACCESSORS ////////////
 
-    public func size<T>(__ : Self<T>) : Nat = MultiDimArray.size(__);
-    public func nextId<T>(__ : Self<T>) : Nat = MultiDimArray.size(__);
-    public func lastId<T>(__ : Self<T>) : Nat = MultiDimArray.size(__) - 1;
-    public func lastActive<T>(__ : Self<T>) : Int = Message.timestamp(message(__, lastId(__)));
+    public func size(__ : Self) : Nat = MultiDimArray.size(__);
+    public func nextId(__ : Self) : Nat = MultiDimArray.size(__);
+    public func lastId(__ : Self) : Nat = MultiDimArray.size(__) - 1;
+    public func lastActive(__ : Self) : Int = Message.timestamp(message(__, lastId(__)));
 
-    public func firstMessage<T>(__ : Self<T>) : Message<T> = message(__, 0);
-    public func lastMessage<T>(__ : Self<T>) : Message<T> = message(__, lastId(__));
+    public func firstMessage(__ : Self) : Message = message(__, 0);
+    public func lastMessage(__ : Self) : Message = message(__, lastId(__));
 
-    public func message<T>(__ : Self<T>, id : Nat) : Message<T> = switch (MultiDimArray.get(__, id)) {
+    public func message(__ : Self, id : Nat) : Message = switch (MultiDimArray.get(__, id)) {
         case (?message) message;
         case (null) E.f(#NOT_EXISTED("Message"), "Attempted to get a non-existent message id " # debug_show (id) # ". Max id available is " # debug_show (lastId(__)))
     };
-    public func getLastMessage<T>(__ : Self<T>) : SharableMessage {
+    public func getLastMessage(__ : Self) : SharableMessage {
         let id = lastId(__);
         Message.toSharable(message(__, id), id)
     };
 
-    public func pull<T>(__ : Self<T>, direction : Direction, cursor : ?Cursor) : [SharableMessage] {
+    public func pull(__ : Self, direction : Direction, cursor : ?Cursor) : [SharableMessage] {
         var messages : List<SharableMessage> = List.nil();
 
         let last : Nat = lastId(__);

@@ -11,7 +11,7 @@ module {
     private type Tier = Messages.Tier;
     private type Direction = Messages.Direction;
     private type Cursor = Messages.Cursor;
-    private type Messages = Messages.Messages<Nat>;
+    private type Messages = Messages.Messages;
     private type SharableMessage = Message.Sharable;
 
     private type DM = DM.DM;

@@ -21,19 +21,23 @@ module {
     private type Self = User;
 
     public type User = {
-        username : Text;
+        var username : Text;
         dms : Set<Principal>;
         groups : Set<Nat>
     };
     public type Sharable = {};
 
     public func init(username : Text) : Self = {
-        username;
+        var username;
         dms = Set.new<Principal>();
         groups = Set.new<Nat>()
     };
 
     /// PUBLIC ////// MODIFIERS ////////////
+
+    public func setUsername(__ : Self, username : Text) {
+        __.username := username
+    };
 
     public func addDm(__ : Self, dm : Principal) {
         Set.put(__.dms, PrincipalVal(dm))

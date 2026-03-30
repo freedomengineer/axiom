@@ -1118,6 +1118,13 @@
       "relativePath": "../../core/escrow/Interface",
       "depth": 5
     },
+    "ChatInterface": {
+      "origin": "import ChatInterface \"../../core/chat/Interface\";",
+      "name": "ChatInterface",
+      "category": "interface",
+      "relativePath": "../../core/chat/Interface",
+      "depth": 5
+    },
     "AxiomsInterface": {
       "origin": "import AxiomsInterface \"../../core/axioms/Interface\";",
       "name": "AxiomsInterface",
@@ -1252,6 +1259,7 @@
     "AffiliateInterface",
     "SalesInterface",
     "EscrowInterface",
+    "ChatInterface",
     "AxiomsInterface",
     "DAOInterface",
     "IndicatorInterface",
