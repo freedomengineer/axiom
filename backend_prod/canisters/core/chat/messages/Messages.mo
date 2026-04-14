@@ -14,17 +14,12 @@ module {
 
     private type Message = Message.Message;
     private type SharableMessage = Message.Sharable;
-    private type Content = Message.Content;
+    private type SendableContent = Message.SendableContent;
+    private type LogContent = Message.LogContent;
+    private type Tier = Message.Tier;
 
     /// PUBLIC ////// DECLARATIONS ////////////
 
-    public type Tier = {
-        #L32;
-        #L512;
-        #L4096;
-        #L16384;
-        #Extra : Nat
-    };
     public type Direction = {
         #Forward : ?Nat;
         #Backward : ?Nat
@@ -54,7 +49,7 @@ module {
 
     /// PUBLIC ////// MODIFIERS ////////////
 
-    public func pushSendable(__ : Self, tier : Tier, sender : Principal, content : Content, iv : Blob, keyVersion : Nat, repliedTo : ?Nat) : Nat {
+    public func pushSendable(__ : Self, tier : Tier, sender : Principal, content : SendableContent, iv : Blob, keyVersion : Nat, repliedTo : ?Nat) : Nat {
         let id : Nat = nextId(__);
 
         if (id >= messagesLimitPerTier(tier)) E.f(#NOT_VALID("Tier"), "Attempted to push a message with limit reached (" # debug_show (id) # " messages for tier " # debug_show (tier) # ")");
@@ -65,6 +60,15 @@ module {
             case (?replyId) Message.addReply(message(__, replyId), id);
             case (null) {}
         };
+
+        id
+    };
+    public func pushLog(__ : Self, tier : Tier, content : LogContent) : Nat {
+        let id : Nat = nextId(__);
+
+        if (id >= messagesLimitPerTier(tier)) E.f(#NOT_VALID("Tier"), "Attempted to push a message with limit reached (" # debug_show (id) # " messages for tier " # debug_show (tier) # ")");
+
+        MultiDimArray.push(__, Message.initLog(content));
 
         id
     };
@@ -82,6 +86,27 @@ module {
 
     public func firstMessage(__ : Self) : Message = message(__, 0);
     public func lastMessage(__ : Self) : Message = message(__, lastId(__));
+
+    public func firstVersion(__ : Self) : ?Nat {
+        var index : Nat = 0;
+        while (index < MultiDimArray.size(__)) {
+            switch (Message.keyVersion(message(__, index))) {
+                case (?version) return ?version;
+                case (null) index += 1
+            }
+        };
+        null
+    };
+    public func lastVersion(__ : Self) : ?Nat {
+        var index : Nat = MultiDimArray.size(__) - 1;
+        while (index >= 0) {
+            switch (Message.keyVersion(message(__, index))) {
+                case (?version) return ?version;
+                case (null) index -= 1
+            }
+        };
+        null
+    };
 
     public func message(__ : Self, id : Nat) : Message = switch (MultiDimArray.get(__, id)) {
         case (?message) message;

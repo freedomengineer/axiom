@@ -24,7 +24,7 @@ module {
     private type SharableMessage = Message.Sharable;
     private type Messages = Messages.Messages;
     private type SharableMessages = Messages.Sharable;
-    private type Tier = Messages.Tier;
+    private type Tier = Message.Tier;
     private type Direction = Messages.Direction;
     private type Cursor = Messages.Cursor;
     private type Version = Message.Version;
@@ -131,21 +131,24 @@ module {
 
     /// PUBLIC ////// MODIFIERS ////////////
 
-    public func deleteFirstMessages(__ : Self, limit : Nat) {
+    public func deleteFirstMessages(__ : Self, limit : Nat, by : ?Principal, getNow : () -> Int) {
         if (limit % 32 != 0) E.f(#NOT_VALID("Limit"), "Number of messages to delete must be a multiple of 32");
 
         let messagesCount : Nat = Messages.size(__.messages);
         if (limit > messagesCount) E.f(#NOT_VALID("Limit"), "Number of messages to delete is greater than the number of messages in the channel");
         if (messagesCount == 0) E.f(#NOT_VALID("Messages"), "No messages to delete");
 
-        let firstVersion : Version = Message.keyVersion(Messages.firstMessage(__.messages));
-        let lastVersion : Version = Message.keyVersion(Messages.lastMessage(__.messages));
+        let (firstVersion, lastVersion) : (Version, Version) = switch (Messages.firstVersion(__.messages), Messages.lastVersion(__.messages)) {
+            case (?firstVersion, ?lastVersion)(firstVersion, lastVersion);
+            case (null, null)(__.keyVersion, __.keyVersion);
+            case (_, _) E.unreachable()
+        };
 
         Messages.deleteFirstChunks(__.messages, limit / 32);
 
-        let firstVersionAfter : Version = switch (MultiDimArray.isEmpty(__.messages)) {
-            case (true) lastVersion;
-            case (false) Message.keyVersion(Messages.firstMessage(__.messages))
+        let firstVersionAfter : Version = switch (Messages.firstVersion(__.messages)) {
+            case (?version) version;
+            case (null) lastVersion
         };
 
         if (firstVersionAfter > firstVersion) {
@@ -153,13 +156,15 @@ module {
                 Map.delete(__.members.0.1, NatKey(version));
                 Map.delete(__.members.1.1, NatKey(version))
             }
-        }
+        };
+
+        ignore Messages.pushLog(__.messages, __.tier, #MessageDeleted({ amount = limit; by = by }), getNow)
     };
 
-    public func rotate(__ : Self, membersDek : ((Principal, MemberEncryptedDEK), (Principal, MemberEncryptedDEK))) {
-        let lastVersion : Version = switch (MultiDimArray.isEmpty(__.messages)) {
-            case (true) 1;
-            case (false) Message.keyVersion(Messages.lastMessage(__.messages))
+    public func rotate(__ : Self, membersDek : ((Principal, MemberEncryptedDEK), (Principal, MemberEncryptedDEK)), keyHash : Blob, by : Principal, getNow : () -> Int) {
+        let lastVersion : Version = switch (Messages.lastVersion(__.messages)) {
+            case (?version) version;
+            case (null) __.keyVersion
         };
         __.keyVersion += lastVersion + 1; // if no new messages since last rotation, just override
 
@@ -175,11 +180,15 @@ module {
                 Map.put(__.members.1.1, NatKey(__.keyVersion), #Encrypted(membersDek.0.1.1))
             };
             case (false, false) E.f(#NOT_VALID("Members"), "Members to rotate are not the same as the members in the channel")
-        }
+        };
+
+        ignore Messages.pushLog(__.messages, __.tier, #KeyRotated({ to = __.keyVersion; keyHash; by }), getNow)
     };
 
-    public func setTier(__ : Self, tier : Tier) {
-        __.tier := tier
+    public func setTier(__ : Self, tier : Tier, getNow : () -> Int) {
+        let lastTier : Tier = __.tier;
+        __.tier := tier;
+        ignore Messages.pushLog(__.messages, __.tier, #ChannelTierChanged({ from = lastTier; to = tier }), getNow)
     };
     public func disableLogs(__ : Self) {
         __.disableLogs := true
@@ -217,7 +226,11 @@ module {
         members = (__.members.0.0, __.members.1.0);
         messagesCount = (Messages.size(__.messages), Messages.messagesLimitPerTier(__.tier));
         lastActive = Messages.lastActive(__.messages);
-        versionRange = (Message.keyVersion(Messages.firstMessage(__.messages)), Message.keyVersion(Messages.lastMessage(__.messages)));
+        versionRange = switch (Messages.firstVersion(__.messages), Messages.lastVersion(__.messages)) {
+            case (?firstVersion, ?lastVersion)(firstVersion, lastVersion);
+            case (null, null)(__.keyVersion, __.keyVersion);
+            case (_, _) E.unreachable()
+        };
         callerDeks = switch (__.members.0.0 == caller and __.members.1.0 == to.0, __.members.0.0 == to.0 and __.members.1.0 == caller) {
             case (true, _) Map.getEntries(__.members.0.1);
             case (_, true) Map.getEntries(__.members.1.1);

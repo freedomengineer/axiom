@@ -6,7 +6,7 @@
 - Attributes: `User`, `Users`, `Channel`, `Channels`, `DM`, `DMs`, `Group`, `Groups`, `Message`, `Messages`
 - Interfaces: `IndicatorInterface`
 - Commons: `C`
-- Libraries: `Configs`, `Iter`, `Management`
+- Libraries: `Configs`, `Iter`, `Management`, `Map`, `Set`
 - Bases: `Principal`, `Text`, `Time`
 ## Modifiers
 
@@ -121,7 +121,55 @@
 "Nat"
 ```
 
-### 9. `joinPublicGroup(id)` returns `Message.MemberDEKsSharable`
+### 9. `publicGroup(id, dek)` returns `()`
+
+#### Arguments:
+
+```json
+{"id": "Nat", "dek": "Blob"}
+```
+
+### 10. `privateGroup(id, members, keyHash)` returns `()`
+
+#### Arguments:
+
+```json
+{"id": "Nat", "members": [["Principal", ["Nat", "Blob"]]], "keyHash": "Blob"}
+```
+
+### 11. `addAdmins(id, admins)` returns `()`
+
+#### Arguments:
+
+```json
+{"id": "Nat", "admins": ["Principal"]}
+```
+
+### 12. `removeAdmins(id, admins)` returns `()`
+
+#### Arguments:
+
+```json
+{"id": "Nat", "admins": ["Principal"]}
+```
+
+### 13. `banMembersPublicGroup(id, members)` returns `()`
+
+#### Arguments:
+
+```json
+{"id": "Nat", "members": ["Principal"]}
+```
+
+### 14. `unbanMembersPublicGroup(id, members)` returns `()`
+
+#### Arguments:
+
+```json
+{"id": "Nat", "members": ["Principal"]}
+```
+
+### 15. `joinPublicGroup(id)` returns `Message.MemberDEKsSharable`
 
 #### Arguments:
 
@@ -134,7 +182,7 @@
 [["Nat", {"#ENCRYPTED": "Blob", "#PLAIN": "Blob"}]]
 ```
 
-### 10. `leavePublicGroup(id)` returns `()`
+### 16. `leavePublicGroup(id)` returns `()`
 
 #### Arguments:
 
@@ -142,14 +190,30 @@
 {"id": "Nat"}
 ```
 
-### 11. `getIbeMasterPublicKey()` returns `Blob`
+### 17. `inviteMembersPrivateGroup(id, members)` returns `()`
+
+#### Arguments:
+
+```json
+{"id": "Nat", "members": [["Principal", [["Nat", {"#ENCRYPTED": "Blob", "#PLAIN": "Blob"}]]]]}
+```
+
+### 18. `kickMembersPrivateGroup(id, members, membersDek, keyHash)` returns `()`
+
+#### Arguments:
+
+```json
+{"id": "Nat", "members": ["Principal"], "membersDek": [["Principal", ["Nat", "Blob"]]], "keyHash": "Blob"}
+```
+
+### 19. `getIbeMasterPublicKey()` returns `Blob`
 
 #### Returns:
 ```json
 "Blob"
 ```
 
-### 12. `getMyVetKey(transportPublicKey)` returns `Blob`
+### 20. `getMyVetKey(transportPublicKey)` returns `Blob`
 
 #### Arguments:
 

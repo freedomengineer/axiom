@@ -8,7 +8,7 @@ import E "../../../common/Errors";
 module {
     /// PRIVATE ////// DECLARATIONS ////////////
 
-    private type Tier = Messages.Tier;
+    private type Tier = Message.Tier;
     private type Direction = Messages.Direction;
     private type Cursor = Messages.Cursor;
     private type Messages = Messages.Messages;

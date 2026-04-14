@@ -17,7 +17,13 @@ module {
 
     /// PUBLIC ////// DECLARATIONS ////////////
 
-    public type VetKeyId = { curve : { #bls12_381_g2 }; name : Text };
+    public type Tier = {
+        #L32;
+        #L512;
+        #L4096;
+        #L16384;
+        #Extra : Nat
+    };
     public type Version = Nat;
     public type EncryptedDEK = Blob;
     public type PlainDEK = Blob;
@@ -35,7 +41,7 @@ module {
     public type MemberDEKsSharable = [(Version, DEK)];
     public type MemberEncryptedDEK = (Version, EncryptedDEK);
 
-    public type Content = {
+    public type SendableContent = {
         #EncryptedText : EncryptedText;
         #FileDerivationPath : FileDerivationPath;
         #Composite : {
@@ -44,15 +50,92 @@ module {
         }
     };
 
+    public type AdminsAddedData = {
+        admins : [Principal]
+    };
+    public type AdminsRemovedData = {
+        admins : [Principal]
+    };
+    public type MembersInvitedData = {
+        members : [Principal];
+        by : Principal
+    };
+    public type MembersKickedData = {
+        members : [Principal];
+        by : Principal
+    };
+    public type MemberJoinedData = {
+        member : Principal
+    };
+    public type MemberLeftData = {
+        member : Principal
+    };
+    public type ChannelRenamedData = {
+        from : Text;
+        to : Text
+    };
+    public type ChannelTierChangedData = {
+        from : Tier;
+        to : Tier
+    };
+    public type ChannelVisibilityChangedData = {
+        toPrivate : Bool
+    };
+    public type MessageDeletedData = {
+        amount : Nat;
+        by : ?Principal
+    };
+    public type KeyRotatedData = {
+        to : Nat;
+        keyHash : Blob;
+        by : Principal
+    };
+    public type StakeWithdrawnData = {
+        amount : Nat;
+        by : Principal
+    };
+    public type StakeDepositedData = {
+        amount : Nat;
+        by : Principal
+    };
+    public type LogContentVariant = {
+        #AdminsAdded;
+        #AdminsRemoved;
+        #MembersInvited;
+        #MembersKicked;
+        #MemberJoined;
+        #MemberLeft;
+        #ChannelRenamed;
+        #ChannelTierChanged;
+        #MessageDeleted;
+        #KeyRotated;
+        #StakeWithdrawn;
+        #StakeDeposited
+    };
+
+    public type LogContent = {
+        #AdminsAdded : AdminsAddedData;
+        #AdminsRemoved : AdminsRemovedData;
+        #MembersInvited : MembersInvitedData;
+        #MembersKicked : MembersKickedData;
+        #MemberJoined : MemberJoinedData;
+        #MemberLeft : MemberLeftData;
+        #ChannelRenamed : ChannelRenamedData;
+        #ChannelTierChanged : ChannelTierChangedData;
+        #ChannelVisibilityChanged : ChannelVisibilityChangedData;
+        #MessageDeleted : MessageDeletedData;
+        #KeyRotated : KeyRotatedData;
+        #StakeWithdrawn : StakeWithdrawnData;
+        #StakeDeposited : StakeDepositedData
+    };
+
     public type Log = {
-        encryptedText : EncryptedText;
-        iv : IV;
-        keyVersion : Nat; // Key rotation (when kicking members)
+        content : LogContent;
         timestamp : Int
     };
     public type Sendable = {
         sender : Principal;
-        content : Content;
+        content : SendableContent;
         iv : IV;
         keyVersion : Nat; // Key rotation (when kicking members)
         repliedTo : ?Nat;
@@ -63,13 +146,13 @@ module {
 
     public type LogSharable = {
         id : Nat;
-        encryptedText : EncryptedText;
+        content : LogContent;
         timestamp : Int
     };
     public type SendableSharable = {
         id : Nat;
         sender : Principal;
-        content : Content;
+        content : SendableContent;
         repliedTo : ?Nat;
         replies : [Nat];
         reactions : [(Text, [Principal])];
@@ -89,7 +172,7 @@ module {
         #Log : LogSharable
     };
 
-    public func initSendable(sender : Principal, content : Content, iv : IV, keyVersion : Nat, repliedTo : ?Nat) : Self = #Sendable({
+    public func initSendable(sender : Principal, content : SendableContent, iv : IV, keyVersion : Nat, repliedTo : ?Nat) : Self = #Sendable({
         sender;
         content;
         iv;
@@ -99,10 +182,8 @@ module {
         var reactions = List.nil();
         timestamp = Time.now()
     });
-    public func initLog(encryptedText : EncryptedText, iv : IV, keyVersion : Nat) : Self = #Log({
-        encryptedText;
-        iv;
-        keyVersion;
+    public func initLog(content : LogContent) : Self = #Log({
+        content;
         timestamp = Time.now()
     });
 
@@ -134,9 +215,9 @@ module {
         case (#Sendable({ timestamp })) timestamp;
         case (#Log({ timestamp })) timestamp
     };
-    public func keyVersion(__ : Self) : Nat = switch (__) {
-        case (#Sendable({ keyVersion })) keyVersion;
-        case (#Log({ keyVersion })) keyVersion
+    public func keyVersion(__ : Self) : ?Nat = switch (__) {
+        case (#Sendable({ keyVersion })) ?keyVersion;
+        case (#Log(_)) null
     };
 
     public func sendable(__ : Self) : Sendable = switch (__) {

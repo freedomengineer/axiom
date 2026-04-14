@@ -29,8 +29,8 @@ module {
     private type SharableGroup = Group.Sharable;
     private type PrivateSharableGroup = Group.PrivateSharable;
     private type Messages = Messages.Messages;
-    private type Tier = Messages.Tier;
     private type User = User.User;
+    private type Tier = Message.Tier;
     private type PlainDEK = Message.PlainDEK;
     private type EncryptedDEK = Message.EncryptedDEK;
     private type MemberEncryptedDEK = Message.MemberEncryptedDEK;

@@ -470,6 +470,279 @@
       }
     },
     {
+      "name": "publicGroup",
+      "flag": {
+        "isQuery": false,
+        "callerRequired": true
+      },
+      "argTypes": {
+        "id": {
+          "origin": "Nat",
+          "singular": {
+            "name": "Nat"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        },
+        "dek": {
+          "origin": "Message.PlainDEK",
+          "singular": {
+            "name": "PlainDEK",
+            "parent": "Message"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async ()",
+        "singular": {
+          "name": "()"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
+      "name": "privateGroup",
+      "flag": {
+        "isQuery": false,
+        "callerRequired": true
+      },
+      "argTypes": {
+        "id": {
+          "origin": "Nat",
+          "singular": {
+            "name": "Nat"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        },
+        "members": {
+          "origin": "[(Principal, Message.MemberEncryptedDEK)]",
+          "singular": {
+            "name": "()"
+          },
+          "entries": [
+            [
+              null,
+              {
+                "origin": "Principal",
+                "singular": {
+                  "name": "Principal"
+                },
+                "entries": [],
+                "isArray": false,
+                "isOptional": false,
+                "isAsync": false
+              }
+            ],
+            [
+              null,
+              {
+                "origin": "Message.MemberEncryptedDEK",
+                "singular": {
+                  "name": "MemberEncryptedDEK",
+                  "parent": "Message"
+                },
+                "entries": [],
+                "isArray": false,
+                "isOptional": false,
+                "isAsync": false
+              }
+            ]
+          ],
+          "isArray": true,
+          "isOptional": false,
+          "isAsync": false
+        },
+        "keyHash": {
+          "origin": "Blob",
+          "singular": {
+            "name": "Blob"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async ()",
+        "singular": {
+          "name": "()"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
+      "name": "addAdmins",
+      "flag": {
+        "isQuery": false,
+        "callerRequired": true
+      },
+      "argTypes": {
+        "id": {
+          "origin": "Nat",
+          "singular": {
+            "name": "Nat"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        },
+        "admins": {
+          "origin": "[Principal]",
+          "singular": {
+            "name": "Principal"
+          },
+          "entries": [],
+          "isArray": true,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async ()",
+        "singular": {
+          "name": "()"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
+      "name": "removeAdmins",
+      "flag": {
+        "isQuery": false,
+        "callerRequired": true
+      },
+      "argTypes": {
+        "id": {
+          "origin": "Nat",
+          "singular": {
+            "name": "Nat"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        },
+        "admins": {
+          "origin": "[Principal]",
+          "singular": {
+            "name": "Principal"
+          },
+          "entries": [],
+          "isArray": true,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async ()",
+        "singular": {
+          "name": "()"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
+      "name": "banMembersPublicGroup",
+      "flag": {
+        "isQuery": false,
+        "callerRequired": true
+      },
+      "argTypes": {
+        "id": {
+          "origin": "Nat",
+          "singular": {
+            "name": "Nat"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        },
+        "members": {
+          "origin": "[Principal]",
+          "singular": {
+            "name": "Principal"
+          },
+          "entries": [],
+          "isArray": true,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async ()",
+        "singular": {
+          "name": "()"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
+      "name": "unbanMembersPublicGroup",
+      "flag": {
+        "isQuery": false,
+        "callerRequired": true
+      },
+      "argTypes": {
+        "id": {
+          "origin": "Nat",
+          "singular": {
+            "name": "Nat"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        },
+        "members": {
+          "origin": "[Principal]",
+          "singular": {
+            "name": "Principal"
+          },
+          "entries": [],
+          "isArray": true,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async ()",
+        "singular": {
+          "name": "()"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
       "name": "joinPublicGroup",
       "flag": {
         "isQuery": false,
@@ -510,6 +783,160 @@
           "origin": "Nat",
           "singular": {
             "name": "Nat"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async ()",
+        "singular": {
+          "name": "()"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
+      "name": "inviteMembersPrivateGroup",
+      "flag": {
+        "isQuery": false,
+        "callerRequired": true
+      },
+      "argTypes": {
+        "id": {
+          "origin": "Nat",
+          "singular": {
+            "name": "Nat"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        },
+        "members": {
+          "origin": "[(Principal, Message.MemberDEKsSharable)]",
+          "singular": {
+            "name": "()"
+          },
+          "entries": [
+            [
+              null,
+              {
+                "origin": "Principal",
+                "singular": {
+                  "name": "Principal"
+                },
+                "entries": [],
+                "isArray": false,
+                "isOptional": false,
+                "isAsync": false
+              }
+            ],
+            [
+              null,
+              {
+                "origin": "Message.MemberDEKsSharable",
+                "singular": {
+                  "name": "MemberDEKsSharable",
+                  "parent": "Message"
+                },
+                "entries": [],
+                "isArray": false,
+                "isOptional": false,
+                "isAsync": false
+              }
+            ]
+          ],
+          "isArray": true,
+          "isOptional": false,
+          "isAsync": false
+        }
+      },
+      "returnType": {
+        "origin": "async ()",
+        "singular": {
+          "name": "()"
+        },
+        "entries": [],
+        "isArray": false,
+        "isOptional": false,
+        "isAsync": true
+      }
+    },
+    {
+      "name": "kickMembersPrivateGroup",
+      "flag": {
+        "isQuery": false,
+        "callerRequired": true
+      },
+      "argTypes": {
+        "id": {
+          "origin": "Nat",
+          "singular": {
+            "name": "Nat"
+          },
+          "entries": [],
+          "isArray": false,
+          "isOptional": false,
+          "isAsync": false
+        },
+        "members": {
+          "origin": "[Principal]",
+          "singular": {
+            "name": "Principal"
+          },
+          "entries": [],
+          "isArray": true,
+          "isOptional": false,
+          "isAsync": false
+        },
+        "membersDek": {
+          "origin": "[(Principal, Message.MemberEncryptedDEK)]",
+          "singular": {
+            "name": "()"
+          },
+          "entries": [
+            [
+              null,
+              {
+                "origin": "Principal",
+                "singular": {
+                  "name": "Principal"
+                },
+                "entries": [],
+                "isArray": false,
+                "isOptional": false,
+                "isAsync": false
+              }
+            ],
+            [
+              null,
+              {
+                "origin": "Message.MemberEncryptedDEK",
+                "singular": {
+                  "name": "MemberEncryptedDEK",
+                  "parent": "Message"
+                },
+                "entries": [],
+                "isArray": false,
+                "isOptional": false,
+                "isAsync": false
+              }
+            ]
+          ],
+          "isArray": true,
+          "isOptional": false,
+          "isAsync": false
+        },
+        "keyHash": {
+          "origin": "Blob",
+          "singular": {
+            "name": "Blob"
           },
           "entries": [],
           "isArray": false,
@@ -761,6 +1188,20 @@
       "relativePath": "../../library/Management",
       "depth": 4
     },
+    "Map": {
+      "origin": "import Map \"../../library/Map\";",
+      "name": "Map",
+      "category": "library",
+      "relativePath": "../../library/Map",
+      "depth": 4
+    },
+    "Set": {
+      "origin": "import Set \"../../library/Set\";",
+      "name": "Set",
+      "category": "library",
+      "relativePath": "../../library/Set",
+      "depth": 4
+    },
     "Principal": {
       "origin": "import Principal \"mo:base/Principal\";",
       "name": "Principal",
@@ -799,6 +1240,8 @@
     "Configs",
     "Iter",
     "Management",
+    "Map",
+    "Set",
     "Principal",
     "Text",
     "Time"
@@ -1232,6 +1675,80 @@
       "isOptional": false,
       "isAsync": false
     },
+    "[(Principal, Message.MemberEncryptedDEK)]": {
+      "origin": "[(Principal, Message.MemberEncryptedDEK)]",
+      "singular": {
+        "name": "()"
+      },
+      "entries": [
+        [
+          null,
+          {
+            "origin": "Principal",
+            "singular": {
+              "name": "Principal"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          null,
+          {
+            "origin": "Message.MemberEncryptedDEK",
+            "singular": {
+              "name": "()"
+            },
+            "entries": [
+              [
+                null,
+                {
+                  "origin": "Version",
+                  "singular": {
+                    "name": "Nat"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                null,
+                {
+                  "origin": "EncryptedDEK",
+                  "singular": {
+                    "name": "Blob"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ]
+            ],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ]
+      ],
+      "isArray": true,
+      "isOptional": false,
+      "isAsync": false
+    },
+    "Blob": {
+      "origin": "Blob",
+      "singular": {
+        "name": "Blob"
+      },
+      "entries": [],
+      "isArray": false,
+      "isOptional": false,
+      "isAsync": false
+    },
     "async Message.MemberDEKsSharable": {
       "origin": "async Message.MemberDEKsSharable",
       "singular": {
@@ -1295,6 +1812,97 @@
       "isArray": true,
       "isOptional": false,
       "isAsync": true
+    },
+    "[(Principal, Message.MemberDEKsSharable)]": {
+      "origin": "[(Principal, Message.MemberDEKsSharable)]",
+      "singular": {
+        "name": "()"
+      },
+      "entries": [
+        [
+          null,
+          {
+            "origin": "Principal",
+            "singular": {
+              "name": "Principal"
+            },
+            "entries": [],
+            "isArray": false,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ],
+        [
+          null,
+          {
+            "origin": "Message.MemberDEKsSharable",
+            "singular": {
+              "name": "()"
+            },
+            "entries": [
+              [
+                null,
+                {
+                  "origin": "Version",
+                  "singular": {
+                    "name": "Nat"
+                  },
+                  "entries": [],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ],
+              [
+                null,
+                {
+                  "origin": "DEK",
+                  "singular": {
+                    "name": "()"
+                  },
+                  "entries": [
+                    [
+                      "#Encrypted",
+                      {
+                        "origin": "EncryptedDEK",
+                        "singular": {
+                          "name": "Blob"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ],
+                    [
+                      "#Plain",
+                      {
+                        "origin": "PlainDEK",
+                        "singular": {
+                          "name": "Blob"
+                        },
+                        "entries": [],
+                        "isArray": false,
+                        "isOptional": false,
+                        "isAsync": false
+                      }
+                    ]
+                  ],
+                  "isArray": false,
+                  "isOptional": false,
+                  "isAsync": false
+                }
+              ]
+            ],
+            "isArray": true,
+            "isOptional": false,
+            "isAsync": false
+          }
+        ]
+      ],
+      "isArray": true,
+      "isOptional": false,
+      "isAsync": false
     },
     "Configs.Key": {
       "origin": "Configs.Key",
@@ -1788,16 +2396,6 @@
       "isArray": false,
       "isOptional": false,
       "isAsync": true
-    },
-    "Blob": {
-      "origin": "Blob",
-      "singular": {
-        "name": "Blob"
-      },
-      "entries": [],
-      "isArray": false,
-      "isOptional": false,
-      "isAsync": false
     }
   }
 }

@@ -136,9 +136,9 @@ shared ({ caller = founder }) persistent actor class Indicator() = this {
         for ((actorVariant, commitment) in Map.entries(commitments)) {
             await _installCode(actorVariant, commitment, commitHash, #install)
         };
-        for (actorVariant in [#Affiliate, #Axioms, #DAO, #Escrow, #Facade].vals()) {
+        for (actorVariant in [#Affiliate, #Axioms, #Chat, #DAO, #Escrow, #Facade].vals()) {
             let id : Text = Principal.toText(Actors.getPrincipal(actors, actorVariant));
-            let actorInstance : AffiliateInterface.Affiliate or AxiomsInterface.Axioms or DAOInterface.DAO or EscrowInterface.Escrow or FacadeInterface.Facade = actor (id);
+            let actorInstance : AffiliateInterface.Affiliate or AxiomsInterface.Axioms or ChatInterface.Chat or DAOInterface.DAO or EscrowInterface.Escrow or FacadeInterface.Facade = actor (id);
             await actorInstance.initialize()
         };
         Version.increase(version, updateLevel);
@@ -340,7 +340,7 @@ shared ({ caller = founder }) persistent actor class Indicator() = this {
         await expectAuthorized(caller, [#DAO, #Indicator]);
         for ((actorVariant, configs) in actorsConfigs.vals()) {
             let id : Text = Principal.toText(Actors.getPrincipal(actors, actorVariant));
-            let actorInstance : AffiliateInterface.Affiliate or AxiomsInterface.Axioms or EscrowInterface.Escrow or SalesInterface.Sales or DAOInterface.DAO or FacadeInterface.Facade = actor (id);
+            let actorInstance : AffiliateInterface.Affiliate or AxiomsInterface.Axioms or ChatInterface.Chat or EscrowInterface.Escrow or SalesInterface.Sales or DAOInterface.DAO or FacadeInterface.Facade = actor (id);
             await actorInstance.setConfigs(configs)
         }
     };
@@ -348,7 +348,7 @@ shared ({ caller = founder }) persistent actor class Indicator() = this {
         await expectAuthorized(caller, [#DAO, #Indicator]);
         for ((actorVariant, configs) in actorsConfigs.vals()) {
             let id : Text = Principal.toText(Actors.getPrincipal(actors, actorVariant));
-            let actorInstance : AffiliateInterface.Affiliate or AxiomsInterface.Axioms or EscrowInterface.Escrow or SalesInterface.Sales or DAOInterface.DAO or FacadeInterface.Facade = actor (id);
+            let actorInstance : AffiliateInterface.Affiliate or AxiomsInterface.Axioms or ChatInterface.Chat or EscrowInterface.Escrow or SalesInterface.Sales or DAOInterface.DAO or FacadeInterface.Facade = actor (id);
             await actorInstance.putConfigs(configs)
         }
     };

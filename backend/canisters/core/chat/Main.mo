@@ -16,6 +16,8 @@ import C "../../common/Constants";
 import Configs "../../library/Configs";
 import Iter "../../library/Iter";
 import Management "../../library/Management";
+import Map "../../library/Map";
+import Set "../../library/Set";
 
 import Principal "mo:base/Principal";
 import Text "mo:base/Text";
@@ -47,13 +49,13 @@ shared ({ caller = indicator }) persistent actor class Chat() = this {
 
     /// PROTECTED ////// MODIFIERS ////////////
 
-    // public shared ({ caller }) func initialize() : async () {
-    //     await Indicator.expectAuthorized(caller, [#Indicator]);
-    //     await Indicator.expectUnreleased();
+    public shared ({ caller }) func initialize() : async () {
+        await Indicator.expectAuthorized(caller, [#Indicator]);
+        await Indicator.expectUnreleased();
 
-    //     let founder : Principal = await Indicator.getPrincipal(#Founder);
-    //     Users.addFounder(users, founder, getNow)
-    // };
+        let founder : Principal = await Indicator.getPrincipal(#Founder);
+        Users.addFounder(users, founder)
+    };
     public shared ({ caller }) func setConfigs(entries : [(Configs.Key, Configs.SharableValue)]) : async () {
         await Indicator.expectAuthorized(caller, [#Indicator]);
         Configs.setBatch(configs, entries)
@@ -95,24 +97,89 @@ shared ({ caller = indicator }) persistent actor class Chat() = this {
         id
     };
 
+    public shared ({ caller }) func publicGroup(id : Nat, dek : Message.PlainDEK) : async () {
+        let group : Group.Group = Channels.group(channels, id);
+        Group.expectCreator(group, caller);
+        Group.expectPrivate(group);
+
+        Group.publicGroup(group, dek, caller, getNow)
+    };
+    public shared ({ caller }) func privateGroup(id : Nat, members : [(Principal, Message.MemberEncryptedDEK)], keyHash : Blob) : async () {
+        let group : Group.Group = Channels.group(channels, id);
+        Group.expectCreator(group, caller);
+        Group.expectPublic(group);
+
+        Group.privateGroup(group, members, keyHash, caller, getNow)
+    };
+
+    public shared ({ caller }) func addAdmins(id : Nat, admins : [Principal]) : async () {
+        let group : Group.Group = Channels.group(channels, id);
+        Group.expectCreator(group, caller);
+
+        Group.addAdmins(group, admins, getNow)
+    };
+    public shared ({ caller }) func removeAdmins(id : Nat, admins : [Principal]) : async () {
+        let group : Group.Group = Channels.group(channels, id);
+        Group.expectCreator(group, caller);
+
+        Group.removeAdmins(group, admins, getNow)
+    };
+
+    public shared ({ caller }) func banMembersPublicGroup(id : Nat, members : [Principal]) : async () {
+        let group : Group.Group = Channels.group(channels, id);
+        Group.expectAdmin(group, caller);
+
+        let bannedMembers : Set.Set<Principal> = Group.banMembers(group, members);
+        for (member in Set.vals(bannedMembers)) {
+            let userBanned : User.User = Users.user(users, member);
+            User.leaveGroup(userBanned, id)
+        }
+    };
+    public shared ({ caller }) func unbanMembersPublicGroup(id : Nat, members : [Principal]) : async () {
+        let group : Group.Group = Channels.group(channels, id);
+        Group.expectAdmin(group, caller);
+
+        Group.unbanMembers(group, members)
+    };
+
     public shared ({ caller }) func joinPublicGroup(id : Nat) : async Message.MemberDEKsSharable {
         let user : User.User = Users.user(users, caller);
         let group : Group.Group = Channels.group(channels, id);
-
         Group.expectNotMember(group, caller);
+        Group.expectNotBanned(group, caller);
 
-        let deks : Message.MemberDEKsSharable = Group.joinPublic(group, caller);
+        let deks : Message.MemberDEKsSharable = Group.joinPublic(group, caller, getNow);
         User.joinGroup(user, id);
         deks
     };
     public shared ({ caller }) func leavePublicGroup(id : Nat) : async () {
         let user : User.User = Users.user(users, caller);
         let group : Group.Group = Channels.group(channels, id);
-
         Group.expectMember(group, caller);
 
-        Group.leavePublic(group, caller);
+        Group.leavePublic(group, caller, getNow);
         User.leaveGroup(user, id)
+    };
+
+    public shared ({ caller }) func inviteMembersPrivateGroup(id : Nat, members : [(Principal, Message.MemberDEKsSharable)]) : async () {
+        let group : Group.Group = Channels.group(channels, id);
+        Group.expectAdmin(group, caller);
+
+        let invitedMembers : Map.Map<Principal, Message.MemberDEKs> = Group.addMembersPrivate(group, members, caller, getNow);
+        for ((member, _) in Map.entries(invitedMembers)) {
+            let invitedUser : User.User = Users.user(users, member);
+            User.joinGroup(invitedUser, id)
+        }
+    };
+    public shared ({ caller }) func kickMembersPrivateGroup(id : Nat, members : [Principal], membersDek : [(Principal, Message.MemberEncryptedDEK)], keyHash : Blob) : async () {
+        let group : Group.Group = Channels.group(channels, id);
+        Group.expectAdmin(group, caller);
+
+        let kickedMembers : Set.Set<Principal> = Group.removeMembersPrivate(group, members, membersDek, keyHash, caller, getNow);
+        for (member in Set.vals(kickedMembers)) {
+            let kickedUser : User.User = Users.user(users, member);
+            User.leaveGroup(kickedUser, id)
+        }
     };
 
     /// PUBLIC ////// ACCESSORS ////////////

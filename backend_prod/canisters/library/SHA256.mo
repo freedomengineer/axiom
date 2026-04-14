@@ -253,5 +253,15 @@ module {
     public func fromBlob(data : Blob) : Text {
         let bytes = Blob.toArray(data);
         fromBytes(bytes)
+    };
+    public func fromBytesRaw(data : [Nat8]) : Blob {
+        let digest = Digest();
+        digest.write(data);
+        let sum : [Nat8] = digest.sum();
+        Blob.fromArray(sum)
+    };
+    public func fromBlobRaw(data : Blob) : Blob {
+        let bytes = Blob.toArray(data);
+        fromBytesRaw(bytes)
     }
 }

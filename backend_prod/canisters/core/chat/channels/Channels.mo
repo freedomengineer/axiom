@@ -38,9 +38,9 @@ module {
     private type DM = DM.DM;
     private type DMs = DMs.DMs;
     private type Messages = Messages.Messages;
-    private type SharableMessage = Message.Sharable;
-    private type Tier = Messages.Tier;
     private type User = User.User;
+    private type SharableMessage = Message.Sharable;
+    private type Tier = Message.Tier;
     private type PlainDEK = Message.PlainDEK;
     private type EncryptedDEK = Message.EncryptedDEK;
     private type Signature = Message.Signature;

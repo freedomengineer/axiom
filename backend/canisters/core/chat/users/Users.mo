@@ -23,6 +23,9 @@ module {
 
     /// PUBLIC ////// MODIFIERS ////////////
 
+    public func addFounder(__ : Self, founder : Principal) {
+        Map.put(__, PrincipalKey(founder), User.init("axiom_founder"))
+    };
     public func register(__ : Self, principal : Principal, username : Text) {
         Map.put(__, PrincipalKey(principal), User.init(username))
     };
